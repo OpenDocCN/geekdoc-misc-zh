@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1">
+
+  <link rel="stylesheet" href="/default2.css" type="text/css">
+<title>Error: 404 File not Found</title>
+<script type="text/javascript" language="javascript">
+function photoWindow(theURL) {
+    windowHandle = window.open(theURL, 'ss', 'toolbar=no,location=yes,status=no,menubar=no,scrollbars=yes,resizable=yes,width=850,height=700');
+    if (!windowHandle) { windowHandle.opener = self; }
+    windowHandle.focus();
+}
+function goBackTo(theURL) {
+    if (self.opener) {
+	window.open(theURL);
+    }
+    else {
+	window.location.href=theURL;
+    }
+}
+</script>
+
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+
+</head>
+<body bgcolor="white" text="black">
+
+
+
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+    var pageTracker = _gat._getTracker("UA-3465023-1");
+    var ref = document.referrer;
+    if (ref.search(/images.google/) != -1 && ref.search(/prev/) != -1) {
+	var regex = new RegExp("images.google.([^/]+).*&prev=([^&]+)");
+	var match = regex.exec(ref);
+	pageTracker._clearOrganic();
+	pageTracker._addOrganic("images.google."+ match[1],"q");
+	pageTracker._setReferrerOverride("http://images.google." + match[1] + unescape(match[2]));
+    }
+pageTracker._setCustomVar(
+      1,                   
+      "Section",           
+      "global",      
+      3                    // Sets the scope to page-level 
+      ); 
+pageTracker._trackPageview('Error 404 (ref: )');
+} catch(err) {}
+
+    var exitTracker = pageTracker._createEventTracker('Exit Points');
+    </script>
+
+<center>
+<table border=0 cellpadding=20 cellspacing=0>
+
+<tr>
+<td valign=middle bgcolor=white>
+<img align=left width=91 height=85 src="/pi/graphics/sad-pi.gif" alt="sad pi">
+</td>
+<td><h2>The page you requested doesn't exist.  Sorry!</h2></td>
+</tr>
+
+
+<tr>
+<td valign=middle>
+&nbsp;
+</td>
+<td valign=middle bgcolor=ececec>
+
+<ul>
+<li>Looking for a photo? Search here: <form method=get action=/photos/photo-search><input type=text name=search_text size=20></form>
+<li>Looking for something else?  <a href="/">Visit Eve's home page</a>.<br><br>
+<li>Or you may <a href="mailto:eve@eveandersson.com" onClick="exitTracker._trackEvent('Click - email','eve@eveandersson.com, Error 404')">send me an email</a> to report the broken link.  Thanks!
+
+</ul>
+
+</td>
+</tr>
+</table>
+</center>
+
+</body>
+</html>
+

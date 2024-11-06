@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://idz-failover.s3.amazonaws.com/styles.css">
+    <title>Error</title>
+  </head>
+  <body>
+
+
+    <div id="superhero" class="site-down" style="display: none;">
+      <div id="main-column">
+
+        <img class="image" src="https://idz-failover.s3.amazonaws.com/superheros.jpg" alt="Superhero">
+
+        <div class="container">
+
+          <div class="content">
+            <h1>We're sorry, but it appears our site is being held hostage.</h1>
+            <p>Don't worry, our supercoders are on the job and won't rest till it's back.</p>
+            <img class="logo" src="https://idz-failover.s3.amazonaws.com/IDZlogo.png" alt="Intel Developer Zone">
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <div id="alien" class="site-down" style="display: none;">
+      <div id="main-column">
+
+        <div class="container">
+
+        <img class="image" src="https://idz-failover.s3.amazonaws.com/alien.jpg" alt="Alien">
+
+          <div class="content">
+            <h1>We're sorry, but it appears our site has been abducted by aliens!</h1>
+            <p>Don't worry, we won't stop until it's back where it belongs.</p>
+            <img class="logo" src="https://idz-failover.s3.amazonaws.com/IDZlogo.png" alt="Intel Developer Zone">
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <div id="internet-sign" class="site-down" style="display: none;">
+      <div id="main-column">
+
+        <div class="container">
+
+          <div class="content">
+            <img class="logo" src="https://idz-failover.s3.amazonaws.com/IDZlogo.png" alt="Intel Developer Zone">
+
+            <h1>We're sorry, but it appears we're lost in the internet somewhere.</h1>
+            <p>Don't worry, we'll stop to ask for directions from our team of developers!</p>
+          </div>
+
+        <img class="image" src="https://idz-failover.s3.amazonaws.com/internet-sign.png" alt="Internet Sign">
+
+        </div>
+
+      </div>
+    </div>
+
+    <script src="https://idz-failover.s3.amazonaws.com/randomize.js"></script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-17890616-1']);
+    _gaq.push(['_require', 'inpage_linkid', '//www.google-analytics.com/plugins/ga/inpage_linkid.js']);
+    _gaq.push(['_setDomainName', '.intel.com']);
+    _gaq.push(['_setAllowLinker', true]);
+    _gaq.push(['_setCustomVar', 2, 'content', 'Akamai Error Page', 3]);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script');
+      ga.type = 'text/javascript';
+      ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+  </body>
+</html>
