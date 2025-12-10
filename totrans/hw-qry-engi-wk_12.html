@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Physical Plans and Expressions</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Physical Plans and Expressions</h1>
+<blockquote>原文：<a href="https://howqueryengineswork.com/08-physical-plan.html">https://howqueryengineswork.com/08-physical-plan.html</a></blockquote>
+                        
+<p><em>The source code discussed in this chapter can be found in the <code>physical-plan</code> module of the <a href="https://github.com/andygrove/how-query-engines-work">KQuery project</a>.</em></p>
+<p>Logical plans describe what computation to perform. Physical plans describe how to perform it. This chapter covers the physical plan layer, where abstract operations become executable code.</p>
+<h2 id="why-separate-physical-from-logical"><a class="header" href="#why-separate-physical-from-logical">Why Separate Physical from Logical?</a></h2>
+<p>A logical plan says “aggregate this data by department.” A physical plan specifies which algorithm to use. There might be several valid choices:</p>
+<ul>
+<li>Hash Aggregate: Build a hash map keyed by grouping columns, update accumulators as rows arrive. Works well for unsorted data with moderate cardinality.</li>
+<li>Sort Aggregate: Requires data sorted by grouping columns, but uses less memory since it only tracks one group at a time.</li>
+</ul>
+<p>Similarly for joins:</p>
+<ul>
+<li>Hash Join: Build a hash table from one side, probe with the other. Fast for equi-joins.</li>
+<li>Sort-Merge Join: Sort both sides, merge them. Good when data is already sorted.</li>
+<li>Nested Loop Join: For each row on the left, scan the entire right side. Simple but slow; necessary for non-equi joins.</li>
+</ul>
+<p>The logical plan does not care which algorithm runs. The query planner chooses based on data characteristics, available indexes, and cost estimates. Keeping logical and physical separate enables this flexibility.</p>
+<p>Physical plans might also vary by execution environment:</p>
+<ul>
+<li>Single-threaded vs parallel execution</li>
+<li>CPU vs GPU computation</li>
+<li>Local vs distributed processing</li>
+</ul>
+<h2 id="the-physicalplan-interface"><a class="header" href="#the-physicalplan-interface">The PhysicalPlan Interface</a></h2>
+<p>Physical plans produce data. The interface reflects this:</p>
+<pre><code class="language-kotlin">interface PhysicalPlan {
+
+  fun schema(): Schema
+
+  /* Execute a physical plan and produce a series of record batches. */
+  fun execute(): Sequence&lt;RecordBatch&gt;
+
+  /*
+   * Returns the children (inputs) of this physical plan. This method is used
+   * to enable use of the visitor pattern to walk a query tree.
+   */
+  fun children(): List&lt;PhysicalPlan&gt;
+}
+</code></pre>
+<p>The key method is <code>execute()</code>, which returns a sequence of record batches. This is the pull-based execution model: the caller pulls batches as needed rather than having batches pushed to it. Kotlin’s <code>Sequence</code> is lazy, so computation happens only when batches are consumed.</p>
+<h2 id="physical-expressions"><a class="header" href="#physical-expressions">Physical Expressions</a></h2>
+<p>Logical expressions reference columns by name. Physical expressions reference columns by index for efficiency. At execution time, we do not want to search for column names.</p>
+<pre><code class="language-kotlin">interface Expression {
+  fun evaluate(input: RecordBatch): ColumnVector
+}
+</code></pre>
+<p>A physical expression takes a record batch and produces a column vector. The output has one value per row in the input batch.</p>
+<h3 id="column-expression"><a class="header" href="#column-expression">Column Expression</a></h3>
+<p>The simplest expression retrieves a column from the input:</p>
+<pre><code class="language-kotlin">class ColumnExpression(val i: Int) : Expression {
+
+  override fun evaluate(input: RecordBatch): ColumnVector {
+    return input.field(i)
+  }
+}
+</code></pre>
+<p>No computation, just a lookup by index.</p>
+<h3 id="literal-expression"><a class="header" href="#literal-expression">Literal Expression</a></h3>
+<p>Literal values produce a column where every row has the same value. Rather than allocating storage for identical values, we use a <code>LiteralValueVector</code> that returns the same value for any index:</p>
+<pre><code class="language-kotlin">class LiteralValueVector(
+    val arrowType: ArrowType,
+    val value: Any?,
+    val size: Int
+) : ColumnVector {
+
+  override fun getType(): ArrowType = arrowType
+
+  override fun getValue(i: Int): Any? {
+    if (i &lt; 0 || i &gt;= size) {
+      throw IndexOutOfBoundsException()
+    }
+    return value
+  }
+
+  override fun size(): Int = size
+}
+</code></pre>
+<p>This optimization matters because expressions like <code>salary * 1.1</code> would otherwise allocate a column of 1.1 values just to multiply element-wise.</p>
+<pre><code class="language-kotlin">class LiteralDoubleExpression(val value: Double) : Expression {
+  override fun evaluate(input: RecordBatch): ColumnVector {
+    return LiteralValueVector(ArrowTypes.DoubleType, value, input.rowCount())
+  }
+}
+</code></pre>
+<h3 id="binary-expressions"><a class="header" href="#binary-expressions">Binary Expressions</a></h3>
+<p>Binary expressions evaluate two sub-expressions and combine them. A base class handles the common logic:</p>
+<pre><code class="language-kotlin">abstract class BinaryExpression(val l: Expression, val r: Expression) : Expression {
+
+  override fun evaluate(input: RecordBatch): ColumnVector {
+    val ll = l.evaluate(input)
+    val rr = r.evaluate(input)
+    assert(ll.size() == rr.size())
+    return evaluate(ll, rr)
+  }
+
+  abstract fun evaluate(l: ColumnVector, r: ColumnVector): ColumnVector
+}
+</code></pre>
+<p>Comparison expressions produce boolean results:</p>
+<pre><code class="language-kotlin">class EqExpression(l: Expression, r: Expression) : BooleanExpression(l, r) {
+
+  override fun evaluate(l: Any?, r: Any?, arrowType: ArrowType): Boolean {
+    return when (arrowType) {
+      ArrowTypes.Int32Type -&gt; (l as Int) == (r as Int)
+      ArrowTypes.Int64Type -&gt; (l as Long) == (r as Long)
+      ArrowTypes.DoubleType -&gt; (l as Double) == (r as Double)
+      ArrowTypes.StringType -&gt; toString(l) == toString(r)
+      else -&gt; throw IllegalStateException("Unsupported type: $arrowType")
+    }
+  }
+}
+</code></pre>
+<p>Math expressions produce numeric results:</p>
+<pre><code class="language-kotlin">class AddExpression(l: Expression, r: Expression) : MathExpression(l, r) {
+
+  override fun evaluate(l: Any?, r: Any?, arrowType: ArrowType): Any? {
+    return when (arrowType) {
+      ArrowTypes.Int32Type -&gt; (l as Int) + (r as Int)
+      ArrowTypes.Int64Type -&gt; (l as Long) + (r as Long)
+      ArrowTypes.DoubleType -&gt; (l as Double) + (r as Double)
+      else -&gt; throw IllegalStateException("Unsupported type: $arrowType")
+    }
+  }
+}
+</code></pre>
+<h3 id="aggregate-expressions"><a class="header" href="#aggregate-expressions">Aggregate Expressions</a></h3>
+<p>Aggregate expressions work differently. Rather than producing one output value per input row, they reduce many rows to one value. This requires accumulators that maintain state across batches:</p>
+<pre><code class="language-kotlin">interface AggregateExpression {
+  fun inputExpression(): Expression
+  fun createAccumulator(): Accumulator
+}
+
+interface Accumulator {
+  fun accumulate(value: Any?)
+  fun finalValue(): Any?
+}
+</code></pre>
+<p>Each aggregate type creates its own accumulator:</p>
+<pre><code class="language-kotlin">class MaxExpression(private val expr: Expression) : AggregateExpression {
+
+  override fun inputExpression(): Expression = expr
+
+  override fun createAccumulator(): Accumulator = MaxAccumulator()
+}
+
+class MaxAccumulator : Accumulator {
+  var value: Any? = null
+
+  override fun accumulate(value: Any?) {
+    if (value != null) {
+      if (this.value == null) {
+        this.value = value
+      } else {
+        val isMax = when (value) {
+          is Int -&gt; value &gt; this.value as Int
+          is Long -&gt; value &gt; this.value as Long
+          is Double -&gt; value &gt; this.value as Double
+          else -&gt; throw UnsupportedOperationException("MAX not supported for: ${value.javaClass}")
+        }
+        if (isMax) {
+          this.value = value
+        }
+      }
+    }
+  }
+
+  override fun finalValue(): Any? = value
+}
+</code></pre>
+<h2 id="physical-plans"><a class="header" href="#physical-plans">Physical Plans</a></h2>
+<p>With expressions defined, we can implement the physical plan operators.</p>
+<h3 id="scan"><a class="header" href="#scan">Scan</a></h3>
+<p>Scan reads from a data source. It is the simplest operator, delegating entirely to the data source:</p>
+<pre><code class="language-kotlin">class ScanExec(val ds: DataSource, val projection: List&lt;String&gt;) : PhysicalPlan {
+
+  override fun schema(): Schema = ds.schema().select(projection)
+
+  override fun children(): List&lt;PhysicalPlan&gt; = listOf()
+
+  override fun execute(): Sequence&lt;RecordBatch&gt; = ds.scan(projection)
+}
+</code></pre>
+<p>The projection list tells the data source which columns to read. For columnar formats like Parquet, this avoids reading unnecessary data.</p>
+<h3 id="projection"><a class="header" href="#projection">Projection</a></h3>
+<p>Projection evaluates expressions to produce new columns:</p>
+<pre><code class="language-kotlin">class ProjectionExec(
+    val input: PhysicalPlan,
+    val schema: Schema,
+    val expr: List&lt;Expression&gt;
+) : PhysicalPlan {
+
+  override fun schema(): Schema = schema
+
+  override fun children(): List&lt;PhysicalPlan&gt; = listOf(input)
+
+  override fun execute(): Sequence&lt;RecordBatch&gt; {
+    return input.execute().map { batch -&gt;
+      val columns = expr.map { it.evaluate(batch) }
+      RecordBatch(schema, columns)
+    }
+  }
+}
+</code></pre>
+<p>For each input batch, evaluate each expression to produce output columns. When an expression is just a column reference, the output column is the same object as the input column; no data is copied.</p>
+<h3 id="selection-filter"><a class="header" href="#selection-filter">Selection (Filter)</a></h3>
+<p>Selection keeps rows where a predicate is true:</p>
+<pre><code class="language-kotlin">class SelectionExec(
+    val input: PhysicalPlan,
+    val expr: Expression
+) : PhysicalPlan {
+
+  override fun schema(): Schema = input.schema()
+
+  override fun children(): List&lt;PhysicalPlan&gt; = listOf(input)
+
+  override fun execute(): Sequence&lt;RecordBatch&gt; {
+    return input.execute().map { batch -&gt;
+      val result = expr.evaluate(batch) as BitVector
+      val filteredFields = batch.schema.fields.indices.map { i -&gt;
+        filter(batch.field(i), result)
+      }
+      RecordBatch(batch.schema, filteredFields)
+    }
+  }
+
+  private fun filter(v: ColumnVector, selection: BitVector): ColumnVector {
+    // Count selected rows
+    var count = 0
+    (0 until selection.valueCount).forEach {
+      if (selection.get(it) == 1) count++
+    }
+
+    // Build filtered vector
+    val filtered = FieldVectorFactory.create(v.getType(), count)
+    var index = 0
+    (0 until selection.valueCount).forEach {
+      if (selection.get(it) == 1) {
+        filtered.set(index++, v.getValue(it))
+      }
+    }
+    return filtered
+  }
+}
+</code></pre>
+<p>The predicate expression produces a bit vector (one bit per row). We then copy values where the bit is set. This is a straightforward implementation; production systems optimize cases where all or no rows match.</p>
+<h3 id="hash-aggregate"><a class="header" href="#hash-aggregate">Hash Aggregate</a></h3>
+<p>Hash aggregation groups rows by key and computes aggregates. It processes all input before producing output:</p>
+<pre><code class="language-kotlin">class HashAggregateExec(
+    val input: PhysicalPlan,
+    val groupExpr: List&lt;Expression&gt;,
+    val aggregateExpr: List&lt;AggregateExpression&gt;,
+    val schema: Schema
+) : PhysicalPlan {
+
+  override fun schema(): Schema = schema
+
+  override fun children(): List&lt;PhysicalPlan&gt; = listOf(input)
+
+  override fun execute(): Sequence&lt;RecordBatch&gt; {
+    val map = HashMap&lt;List&lt;Any?&gt;, List&lt;Accumulator&gt;&gt;()
+
+    // Process all input batches
+    input.execute().forEach { batch -&gt;
+      val groupKeys = groupExpr.map { it.evaluate(batch) }
+      val aggrInputs = aggregateExpr.map { it.inputExpression().evaluate(batch) }
+
+      // For each row, update accumulators
+      (0 until batch.rowCount()).forEach { row -&gt;
+        val key = groupKeys.map { it.getValue(row) }
+
+        val accumulators = map.getOrPut(key) {
+          aggregateExpr.map { it.createAccumulator() }
+        }
+
+        accumulators.forEachIndexed { i, acc -&gt;
+          acc.accumulate(aggrInputs[i].getValue(row))
+        }
+      }
+    }
+
+    // Build output batch from accumulated results
+    val root = VectorSchemaRoot.create(schema.toArrow(), allocator)
+    root.allocateNew()
+    root.rowCount = map.size
+
+    map.entries.forEachIndexed { rowIndex, entry -&gt;
+      val (groupKey, accumulators) = entry
+
+      groupExpr.indices.forEach { i -&gt;
+        root.getVector(i).set(rowIndex, groupKey[i])
+      }
+      aggregateExpr.indices.forEach { i -&gt;
+        root.getVector(groupExpr.size + i).set(rowIndex, accumulators[i].finalValue())
+      }
+    }
+
+    return sequenceOf(RecordBatch(schema, root.fieldVectors.map { ArrowFieldVector(it) }))
+  }
+}
+</code></pre>
+<p>The hash map keys are lists of grouping column values. Each entry holds accumulators for that group. After processing all input, we iterate the map to build the output batch.</p>
+<p>This is the “hash” aggregate because we use a hash map. For sorted data, a “sort” aggregate would be more efficient since we could emit results as soon as the grouping key changes, without storing all groups in memory.</p>
+<h2 id="execution-model"><a class="header" href="#execution-model">Execution Model</a></h2>
+<p>KQuery uses pull-based execution: the root operator calls <code>execute()</code> on its children, which call their children, and so on. Data flows up as batches are requested.</p>
+<p>The alternative is push-based execution, where operators push batches to their parents. Both models work; the choice affects how backpressure and parallelism are handled.</p>
+<p>Returning <code>Sequence&lt;RecordBatch&gt;</code> enables lazy evaluation. If the root only needs the first batch (for a <code>LIMIT 1</code> query), we avoid computing subsequent batches.</p>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<p>Physical plans are executable, but we still need something to create them from logical plans. The next chapter covers the query planner that performs this translation.</p>
+<p><em>This book is also available for purchase in ePub, MOBI, and PDF format from <a href="https://leanpub.com/how-query-engines-work">https://leanpub.com/how-query-engines-work</a></em></p>
+<p><strong>Copyright © 2020-2025 Andy Grove. All rights reserved.</strong></p>
+
+                        
+</body>
+</html>

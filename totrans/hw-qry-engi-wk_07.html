@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Type System</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Type System</h1>
+<blockquote>原文：<a href="https://howqueryengineswork.com/03-type-system.html">https://howqueryengineswork.com/03-type-system.html</a></blockquote>
+                        
+<p><em>The source code discussed in this chapter can be found in the <code>datatypes</code> module of the <a href="https://github.com/andygrove/how-query-engines-work">KQuery project</a>.</em></p>
+<p>Every query engine needs a type system—a way to represent and reason about data types. When you write <code>SELECT price * quantity</code>, the engine must know that <code>price</code> and <code>quantity</code> are numbers that can be multiplied, and what type the result will be. This chapter builds KQuery’s type system on top of Apache Arrow.</p>
+<h2 id="why-types-matter"><a class="header" href="#why-types-matter">Why Types Matter</a></h2>
+<p>Consider this query:</p>
+<pre><code class="language-sql">SELECT name, salary * 1.1 AS new_salary
+FROM employees
+WHERE department = 'Engineering'
+</code></pre>
+<p>Before executing, the query engine must answer:</p>
+<ul>
+<li>Is <code>salary</code> a numeric type that supports multiplication?</li>
+<li>What’s the result type of <code>salary * 1.1</code>? (If salary is an integer, should the result be integer or floating point?)</li>
+<li>Is <code>department</code> a string type that supports equality comparison?</li>
+<li>What columns and types does the result have?</li>
+</ul>
+<p>These questions arise during query planning, before we touch any data. A well-designed type system catches errors early (“you can’t multiply a string by a number”) and enables optimizations (“this column is never null, so skip null checks”).</p>
+<h2 id="building-on-arrow"><a class="header" href="#building-on-arrow">Building on Arrow</a></h2>
+<p>Rather than invent our own type system, we’ll use Apache Arrow’s types directly. This gives us:</p>
+<ul>
+<li>A rich set of standard types (integers, floats, strings, dates, etc.)</li>
+<li>Efficient in-memory representation (as covered in the previous chapter)</li>
+<li>Compatibility with Arrow-based tools and file formats</li>
+</ul>
+<p>Arrow’s type system includes:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Category</th><th>Types</th></tr>
+</thead>
+<tbody>
+<tr><td>Boolean</td><td>Bool</td></tr>
+<tr><td>Integers</td><td>Int8, Int16, Int32, Int64 (signed and unsigned)</td></tr>
+<tr><td>Floating point</td><td>Float32, Float64</td></tr>
+<tr><td>Text</td><td>Utf8 (variable-length strings)</td></tr>
+<tr><td>Binary</td><td>Binary (variable-length bytes)</td></tr>
+<tr><td>Temporal</td><td>Date32, Date64, Timestamp, Time32, Time64, Duration</td></tr>
+<tr><td>Nested</td><td>List, Struct, Map</td></tr>
+</tbody>
+</table>
+</div>
+<p>For KQuery, we’ll focus on the common types: booleans, integers, floating point numbers, and strings. We define convenient constants for these:</p>
+<pre><code class="language-kotlin">object ArrowTypes {
+    val BooleanType = ArrowType.Bool()
+    val Int8Type = ArrowType.Int(8, true)
+    val Int16Type = ArrowType.Int(16, true)
+    val Int32Type = ArrowType.Int(32, true)
+    val Int64Type = ArrowType.Int(64, true)
+    val UInt8Type = ArrowType.Int(8, false)
+    val UInt16Type = ArrowType.Int(16, false)
+    val UInt32Type = ArrowType.Int(32, false)
+    val UInt64Type = ArrowType.Int(64, false)
+    val FloatType = ArrowType.FloatingPoint(FloatingPointPrecision.SINGLE)
+    val DoubleType = ArrowType.FloatingPoint(FloatingPointPrecision.DOUBLE)
+    val StringType = ArrowType.Utf8()
+}
+</code></pre>
+<h2 id="schemas-and-fields"><a class="header" href="#schemas-and-fields">Schemas and Fields</a></h2>
+<p>A schema describes the structure of a dataset: what columns exist and what type each has. Schemas are essential metadata that flows through the entire query engine.</p>
+<p>Arrow represents schemas as a list of fields, where each field has:</p>
+<ul>
+<li>A name (string)</li>
+<li>A data type (ArrowType)</li>
+<li>A nullable flag (can this column contain nulls?)</li>
+</ul>
+<p>For example, an employee table might have this schema:</p>
+<pre><code>Schema:
+  - id: Int32, not nullable
+  - name: Utf8, nullable
+  - department: Utf8, nullable
+  - salary: Float64, not nullable
+</code></pre>
+<p>Schemas serve multiple purposes:</p>
+<ol>
+<li>Validation: Reject queries that reference non-existent columns or misuse types</li>
+<li>Planning: Determine output types for expressions</li>
+<li>Optimization: Skip null checks for non-nullable columns</li>
+<li>Execution: Allocate correctly-typed storage for results</li>
+</ol>
+<h2 id="column-vectors"><a class="header" href="#column-vectors">Column Vectors</a></h2>
+<p>Arrow stores column data in vectors (also called arrays). Each vector type has its own class: <code>IntVector</code>, <code>Float8Vector</code>, <code>VarCharVector</code>, etc. This is efficient but inconvenient—code that processes columns would need type-specific branches everywhere.</p>
+<p>KQuery introduces a <code>ColumnVector</code> interface to abstract over the underlying Arrow vectors:</p>
+<pre><code class="language-kotlin">/** Abstraction over different implementations of a column vector. */
+interface ColumnVector : AutoCloseable {
+  fun getType(): ArrowType
+
+  fun getValue(i: Int): Any?
+
+  fun size(): Int
+}
+</code></pre>
+<p>This interface lets us write generic code that works with any column type. The <code>getValue</code> method returns <code>Any?</code> (Kotlin’s equivalent of Java’s <code>Object</code>), which isn’t ideal for performance but keeps our code simple.</p>
+<p>We can wrap an Arrow <code>FieldVector</code> in this interface:</p>
+<pre><code class="language-kotlin">/** Wrapper around Arrow FieldVector */
+class ArrowFieldVector(val field: FieldVector) : ColumnVector {
+
+  override fun getType(): ArrowType {
+    return when (field) {
+      is BitVector -&gt; ArrowTypes.BooleanType
+      is TinyIntVector -&gt; ArrowTypes.Int8Type
+      is SmallIntVector -&gt; ArrowTypes.Int16Type
+      ...
+      else -&gt; throw IllegalStateException("Unsupported vector type: ${field.javaClass.name}")
+    }
+  }
+
+  override fun getValue(i: Int): Any? {
+
+    if (field.isNull(i)) {
+      return null
+    }
+
+    return when (field) {
+      is BitVector -&gt; if (field.get(i) == 1) true else false
+      is TinyIntVector -&gt; field.get(i)
+      is SmallIntVector -&gt; field.get(i)
+      ...
+      else -&gt; throw IllegalStateException("Unsupported vector type: ${field.javaClass.name}")
+    }
+  }
+
+  override fun size(): Int {
+    return field.valueCount
+  }
+
+  override fun close() {
+    field.close()
+  }
+}
+</code></pre>
+<h2 id="literal-values"><a class="header" href="#literal-values">Literal Values</a></h2>
+<p>Sometimes we need a “column” that contains the same value repeated. For example, when evaluating <code>salary * 1.1</code>, the literal <code>1.1</code> needs to act like a column of 1.1 values (one per row in the batch).</p>
+<p>Rather than allocate memory for thousands of identical values, we create a virtual column:</p>
+<pre><code class="language-kotlin">class LiteralValueVector(
+    private val arrowType: ArrowType,
+    private val value: Any?,
+    private val size: Int
+) : ColumnVector {
+
+    override fun getType(): ArrowType = arrowType
+
+    override fun getValue(i: Int): Any? {
+        if (i &lt; 0 || i &gt;= size) {
+            throw IndexOutOfBoundsException()
+        }
+        return value
+    }
+
+    override fun size(): Int = size
+}
+</code></pre>
+<p>This returns the same value for any valid index, using constant memory regardless of how many rows we’re processing.</p>
+<h2 id="record-batches"><a class="header" href="#record-batches">Record Batches</a></h2>
+<p>A record batch groups multiple columns together with a schema. This is the fundamental unit of data that flows through our query engine.</p>
+<pre><code class="language-kotlin">class RecordBatch(
+    val schema: Schema,
+    val fields: List&lt;ColumnVector&gt;
+) {
+    fun rowCount(): Int = fields.first().size()
+
+    fun columnCount(): Int = fields.size
+
+    fun field(i: Int): ColumnVector = fields[i]
+}
+</code></pre>
+<p>Record batches enable batch processing: rather than processing one row at a time (slow due to function call overhead) or loading entire datasets into memory (impractical for large data), we process chunks of typically 1,000 to 100,000 rows.</p>
+<h2 id="type-coercion"><a class="header" href="#type-coercion">Type Coercion</a></h2>
+<p>Real query engines need type coercion: automatically converting types when necessary. For example:</p>
+<ul>
+<li><code>5 + 3.14</code> should promote the integer <code>5</code> to a float</li>
+<li>Comparing <code>Int32</code> to <code>Int64</code> should work without explicit casts</li>
+<li>String-to-date conversion for predicates like <code>date &gt; '2024-01-01'</code></li>
+</ul>
+<p>KQuery keeps things simple and requires explicit types in most cases. A production query engine would implement coercion rules, typically promoting to the “wider” type (Int32 → Int64 → Float64).</p>
+<h2 id="putting-it-together"><a class="header" href="#putting-it-together">Putting It Together</a></h2>
+<p>Here’s how these pieces fit together. When processing a query:</p>
+<ol>
+<li>Data sources provide schemas describing available columns</li>
+<li>Query planning uses schemas to validate expressions and determine result types</li>
+<li>Execution passes record batches between operators</li>
+<li>Each operator produces output batches with a known schema</li>
+</ol>
+<p>The type system is the foundation that makes this possible. Without it, we couldn’t validate queries, plan efficiently, or allocate storage correctly.</p>
+<p>The next chapter builds on this foundation to create abstractions for reading data from files.</p>
+<p><em>This book is also available for purchase in ePub, MOBI, and PDF format from <a href="https://leanpub.com/how-query-engines-work">https://leanpub.com/how-query-engines-work</a></em></p>
+<p><strong>Copyright © 2020-2025 Andy Grove. All rights reserved.</strong></p>
+
+                        
+</body>
+</html>

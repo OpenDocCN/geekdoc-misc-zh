@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Joins</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Joins</h1>
+<blockquote>原文：<a href="https://howqueryengineswork.com/10-joins.html">https://howqueryengineswork.com/10-joins.html</a></blockquote>
+                        
+<p><em>The source code discussed in this chapter can be found in the <code>logical-plan</code> and <code>physical-plan</code> modules of the <a href="https://github.com/andygrove/how-query-engines-work">KQuery project</a>.</em></p>
+<p>Joins combine rows from two tables based on a condition. They are fundamental to relational databases and often the most expensive operation in a query. This chapter covers join types and algorithms, with a focus on hash joins.</p>
+<h2 id="join-types"><a class="header" href="#join-types">Join Types</a></h2>
+<h3 id="inner-join"><a class="header" href="#inner-join">Inner Join</a></h3>
+<p>An inner join returns rows where the join condition matches in both tables:</p>
+<pre><code class="language-sql">SELECT e.name, d.dept_name
+FROM employees e
+INNER JOIN departments d ON e.dept_id = d.id
+</code></pre>
+<p>If an employee has no matching department, that employee is excluded from the results. If a department has no employees, it is also excluded.</p>
+<h3 id="left-outer-join"><a class="header" href="#left-outer-join">Left Outer Join</a></h3>
+<p>A left outer join returns all rows from the left table, with matching rows from the right table where available:</p>
+<pre><code class="language-sql">SELECT e.name, d.dept_name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.id
+</code></pre>
+<p>Employees without a matching department still appear in the results, with NULL for <code>dept_name</code>.</p>
+<h3 id="right-outer-join"><a class="header" href="#right-outer-join">Right Outer Join</a></h3>
+<p>A right outer join is the mirror of left join: all rows from the right table, with matches from the left:</p>
+<pre><code class="language-sql">SELECT e.name, d.dept_name
+FROM employees e
+RIGHT JOIN departments d ON e.dept_id = d.id
+</code></pre>
+<p>Departments without employees appear with NULL for employee columns.</p>
+<h3 id="full-outer-join"><a class="header" href="#full-outer-join">Full Outer Join</a></h3>
+<p>A full outer join returns all rows from both tables, matching where possible:</p>
+<pre><code class="language-sql">SELECT e.name, d.dept_name
+FROM employees e
+FULL OUTER JOIN departments d ON e.dept_id = d.id
+</code></pre>
+<p>Both unmatched employees and unmatched departments appear, with NULLs for missing columns.</p>
+<h3 id="cross-join"><a class="header" href="#cross-join">Cross Join</a></h3>
+<p>A cross join returns every combination of rows from both tables (the Cartesian product):</p>
+<pre><code class="language-sql">SELECT e.name, d.dept_name
+FROM employees e
+CROSS JOIN departments d
+</code></pre>
+<p>If employees has 100 rows and departments has 10 rows, the result has 1,000 rows. Cross joins are rarely useful on their own but sometimes appear in query plans as intermediate steps.</p>
+<h3 id="semi-join"><a class="header" href="#semi-join">Semi Join</a></h3>
+<p>A semi join returns rows from the left table where at least one match exists in the right table, but does not include columns from the right table:</p>
+<pre><code class="language-sql">SELECT e.name
+FROM employees e
+WHERE EXISTS (SELECT 1 FROM departments d WHERE d.id = e.dept_id)
+</code></pre>
+<p>Semi joins are not directly expressible in standard SQL syntax but arise from EXISTS subqueries. The Subqueries chapter covers this in detail.</p>
+<h3 id="anti-join"><a class="header" href="#anti-join">Anti Join</a></h3>
+<p>An anti join returns rows from the left table where no match exists in the right table:</p>
+<pre><code class="language-sql">SELECT e.name
+FROM employees e
+WHERE NOT EXISTS (SELECT 1 FROM departments d WHERE d.id = e.dept_id)
+</code></pre>
+<p>Anti joins arise from NOT EXISTS or NOT IN subqueries.</p>
+<h2 id="join-conditions"><a class="header" href="#join-conditions">Join Conditions</a></h2>
+<h3 id="equi-joins"><a class="header" href="#equi-joins">Equi-joins</a></h3>
+<p>Most joins use equality conditions:</p>
+<pre><code class="language-sql">ON employees.dept_id = departments.id
+</code></pre>
+<p>These are called equi-joins. Query engines optimize heavily for equi-joins because hash-based algorithms work well with equality comparisons.</p>
+<h3 id="non-equi-joins"><a class="header" href="#non-equi-joins">Non-equi Joins</a></h3>
+<p>Some joins use inequality or range conditions:</p>
+<pre><code class="language-sql">SELECT *
+FROM events e
+JOIN time_ranges t ON e.timestamp BETWEEN t.start_time AND t.end_time
+</code></pre>
+<p>Non-equi joins cannot use hash-based algorithms and typically require nested loop or specialized range join implementations.</p>
+<h2 id="join-algorithms"><a class="header" href="#join-algorithms">Join Algorithms</a></h2>
+<p>The choice of join algorithm dramatically affects performance. The three main approaches are nested loop join, sort-merge join, and hash join.</p>
+<h3 id="nested-loop-join"><a class="header" href="#nested-loop-join">Nested Loop Join</a></h3>
+<p>The simplest algorithm: for each row in the left table, scan the entire right table looking for matches.</p>
+<pre><code>for each row L in left_table:
+    for each row R in right_table:
+        if matches(L, R):
+            emit(L, R)
+</code></pre>
+<p>Time complexity: O(n × m) where n and m are the table sizes.</p>
+<p>Nested loop join is simple but slow for large tables. It is useful when:</p>
+<ul>
+<li>One table is very small</li>
+<li>An index exists on the join column of the inner table</li>
+<li>The join condition is not an equality (non-equi join)</li>
+</ul>
+<p>With an index, the inner loop becomes an index lookup rather than a full scan, dramatically improving performance.</p>
+<h3 id="sort-merge-join"><a class="header" href="#sort-merge-join">Sort-Merge Join</a></h3>
+<p>Sort both tables by the join key, then merge them:</p>
+<pre><code>sort left_table by join_key
+sort right_table by join_key
+
+while both tables have rows:
+    if left.key == right.key:
+        emit all matching combinations
+        advance both
+    else if left.key &lt; right.key:
+        advance left
+    else:
+        advance right
+</code></pre>
+<p>Time complexity: O(n log n + m log m) for sorting, plus O(n + m) for merging.</p>
+<p>Sort-merge join is efficient when:</p>
+<ul>
+<li>Data is already sorted by the join key</li>
+<li>The result of the join needs to be sorted anyway</li>
+<li>Memory is limited (external sort can spill to disk)</li>
+</ul>
+<h3 id="hash-join"><a class="header" href="#hash-join">Hash Join</a></h3>
+<p>Build a hash table from one table, then probe it with the other:</p>
+<pre><code>// Build phase
+hash_table = {}
+for each row R in build_table:
+    key = R.join_column
+    hash_table[key].append(R)
+
+// Probe phase
+for each row L in probe_table:
+    key = L.join_column
+    for each match in hash_table[key]:
+        emit(L, match)
+</code></pre>
+<p>Time complexity: O(n + m) assuming good hash distribution.</p>
+<p>Hash join is usually the fastest algorithm for equi-joins when:</p>
+<ul>
+<li>The smaller table fits in memory</li>
+<li>The join condition uses equality</li>
+</ul>
+<h2 id="hash-join-in-detail"><a class="header" href="#hash-join-in-detail">Hash Join in Detail</a></h2>
+<p>Hash join is the workhorse of modern query engines. Let us examine it more closely.</p>
+<h3 id="choosing-the-build-side"><a class="header" href="#choosing-the-build-side">Choosing the Build Side</a></h3>
+<p>The build side should be the smaller table. Building a hash table from 1,000 rows and probing with 1,000,000 rows is much faster than the reverse.</p>
+<p>The query optimizer estimates table sizes and chooses the build side. With statistics, it can account for filters that reduce table sizes:</p>
+<pre><code class="language-sql">SELECT *
+FROM large_table l
+JOIN small_table s ON l.id = s.id
+WHERE s.category = 'active'
+</code></pre>
+<p>Even if <code>small_table</code> has more rows than <code>large_table</code>, after filtering it might be smaller.</p>
+<h3 id="hash-table-structure"><a class="header" href="#hash-table-structure">Hash Table Structure</a></h3>
+<p>For each unique join key, the hash table stores all rows from the build side with that key. The simplest structure is a hash map from key to list of rows:</p>
+<pre><code class="language-kotlin">val hashTable = HashMap&lt;Any, MutableList&lt;RecordBatch&gt;&gt;()
+</code></pre>
+<p>In practice, implementations optimize memory layout for cache efficiency.</p>
+<h3 id="handling-hash-collisions"><a class="header" href="#handling-hash-collisions">Handling Hash Collisions</a></h3>
+<p>When different keys hash to the same bucket, we must compare actual key values during the probe phase:</p>
+<pre><code class="language-kotlin">fun probe(key: Any): List&lt;Row&gt; {
+    val bucket = hashTable[key.hashCode()]
+    return bucket.filter { it.joinKey == key }
+}
+</code></pre>
+<p>Good hash functions minimize collisions, but the probe must always verify equality.</p>
+<h3 id="kquerys-hash-join-implementation"><a class="header" href="#kquerys-hash-join-implementation">KQuery’s Hash Join Implementation</a></h3>
+<p>KQuery implements hash join in <code>HashJoinExec</code>. The implementation supports inner, left, and right joins:</p>
+<pre><code class="language-kotlin">class HashJoinExec(
+    val left: PhysicalPlan,
+    val right: PhysicalPlan,
+    val joinType: JoinType,
+    val leftKeys: List&lt;Int&gt;,
+    val rightKeys: List&lt;Int&gt;,
+    val schema: Schema,
+    val rightColumnsToExclude: Set&lt;Int&gt;
+) : PhysicalPlan {
+
+    override fun execute(): Sequence&lt;RecordBatch&gt; {
+        // Build phase: load all right-side rows into a hash table
+        val hashTable = HashMap&lt;List&lt;Any?&gt;, MutableList&lt;List&lt;Any?&gt;&gt;&gt;()
+
+        right.execute().forEach { batch -&gt;
+            for (rowIndex in 0 until batch.rowCount()) {
+                val key = rightKeys.map { keyIndex -&gt;
+                    normalizeValue(batch.field(keyIndex).getValue(rowIndex))
+                }
+                val row = (0 until batch.columnCount()).map {
+                    batch.field(it).getValue(rowIndex)
+                }
+                hashTable.getOrPut(key) { mutableListOf() }.add(row)
+            }
+        }
+
+        // Probe phase: iterate through left side and find matches
+        return sequence {
+            left.execute().forEach { leftBatch -&gt;
+                val outputRows = mutableListOf&lt;List&lt;Any?&gt;&gt;()
+
+                for (leftRowIndex in 0 until leftBatch.rowCount()) {
+                    val probeKey = leftKeys.map { keyIndex -&gt;
+                        normalizeValue(leftBatch.field(keyIndex).getValue(leftRowIndex))
+                    }
+                    val leftRow = (0 until leftBatch.columnCount()).map {
+                        leftBatch.field(it).getValue(leftRowIndex)
+                    }
+                    val matchedRows = hashTable[probeKey]
+
+                    when (joinType) {
+                        JoinType.Inner -&gt; {
+                            if (matchedRows != null) {
+                                for (rightRow in matchedRows) {
+                                    outputRows.add(combineRows(leftRow, rightRow))
+                                }
+                            }
+                        }
+                        JoinType.Left -&gt; {
+                            if (matchedRows != null) {
+                                for (rightRow in matchedRows) {
+                                    outputRows.add(combineRows(leftRow, rightRow))
+                                }
+                            } else {
+                                // No match: include left row with nulls for right columns
+                                val nullRightRow = List(rightSchema.fields.size) { null }
+                                outputRows.add(combineRows(leftRow, nullRightRow))
+                            }
+                        }
+                        // Right join handled after probe phase...
+                    }
+                }
+
+                if (outputRows.isNotEmpty()) {
+                    yield(createBatch(outputRows))
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>Key aspects of this implementation:</p>
+<p>The build phase loads the entire right table into a hash table keyed by the join columns. Each key maps to a list of rows (to handle duplicate keys).</p>
+<p>The probe phase iterates through the left table, looking up each row’s key in the hash table. For inner joins, rows without matches are skipped. For left joins, unmatched rows are emitted with NULLs for the right columns.</p>
+<p>The <code>rightColumnsToExclude</code> parameter handles the common case where join keys have the same name on both sides. Without this, the output would have duplicate columns.</p>
+<h3 id="outer-joins"><a class="header" href="#outer-joins">Outer Joins</a></h3>
+<p>KQuery’s implementation handles left and right outer joins:</p>
+<p>For left outer join, when a probe row has no match in the hash table, we emit the left row combined with NULLs for all right columns. This happens inline during the probe phase.</p>
+<p>For right outer join, we need to track which build (right) rows were matched. After the probe phase completes, we emit unmatched right rows with NULLs for the left columns. This requires either a second pass or tracking matched keys during the probe.</p>
+<p>Full outer join combines both approaches: emit unmatched left rows during probing, then emit unmatched right rows after.</p>
+<h3 id="memory-considerations"><a class="header" href="#memory-considerations">Memory Considerations</a></h3>
+<p>The build side must fit in memory for a simple hash join. For large tables, query engines use techniques like:</p>
+<p>Grace hash join: Partition both tables by hash value, then join matching partitions. Each partition is smaller and more likely to fit in memory.</p>
+<p>Hybrid hash join: Keep as much of the build side in memory as possible, spill the rest to disk, then process spilled partitions separately.</p>
+<p>Adaptive execution: Start with hash join, switch to sort-merge if memory pressure is detected.</p>
+<h2 id="join-ordering"><a class="header" href="#join-ordering">Join Ordering</a></h2>
+<p>For queries joining multiple tables, the order matters enormously:</p>
+<pre><code class="language-sql">SELECT *
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+JOIN products p ON o.product_id = p.id
+</code></pre>
+<p>This could execute as:</p>
+<ul>
+<li>(orders JOIN customers) JOIN products</li>
+<li>(orders JOIN products) JOIN customers</li>
+<li>(customers JOIN products) JOIN orders (usually bad)</li>
+</ul>
+<p>The optimizer evaluates costs and chooses the best order. Generally, joins that produce smaller intermediate results should happen first.</p>
+<h2 id="bloom-filters"><a class="header" href="#bloom-filters">Bloom Filters</a></h2>
+<p>A Bloom filter is a probabilistic data structure that can quickly test whether an element might be in a set. Query engines use Bloom filters to speed up joins:</p>
+<ol>
+<li>Build a Bloom filter from the build side keys</li>
+<li>Before probing, check if the probe key might exist</li>
+<li>Skip rows that definitely have no match</li>
+</ol>
+<p>Bloom filters have false positives (might say “yes” when the answer is “no”) but no false negatives. This means some unnecessary probes happen, but no matches are missed.</p>
+<p>For selective joins where most probe rows have no match, Bloom filters significantly reduce work.</p>
+<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
+<p>Joins are complex and performance-critical. Key points:</p>
+<ul>
+<li>Hash join is typically fastest for equi-joins</li>
+<li>The build side should be the smaller table</li>
+<li>Join ordering affects performance dramatically</li>
+<li>Memory constraints may require spilling to disk</li>
+<li>Query optimizers use statistics to make good choices</li>
+</ul>
+<p>KQuery implements hash join for inner, left, and right joins. The implementation demonstrates the core algorithm: build a hash table from one side, probe with the other. Production systems add optimizations like spilling to disk and Bloom filters, but the fundamental approach remains the same.</p>
+<p><em>This book is also available for purchase in ePub, MOBI, and PDF format from <a href="https://leanpub.com/how-query-engines-work">https://leanpub.com/how-query-engines-work</a></em></p>
+<p><strong>Copyright © 2020-2025 Andy Grove. All rights reserved.</strong></p>
+
+                        
+</body>
+</html>

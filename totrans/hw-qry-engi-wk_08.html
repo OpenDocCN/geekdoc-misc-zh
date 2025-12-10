@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Data Sources</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Data Sources</h1>
+<blockquote>原文：<a href="https://howqueryengineswork.com/04-data-sources.html">https://howqueryengineswork.com/04-data-sources.html</a></blockquote>
+                        
+<p><em>The source code discussed in this chapter can be found in the <code>datasource</code> module of the <a href="https://github.com/andygrove/how-query-engines-work">KQuery project</a>.</em></p>
+<p>A query engine needs data to query. The data might come from CSV files, Parquet files, databases, or even data that already exists in memory. We want our query engine to work with any of these without caring about the details. This chapter introduces the data source abstraction that makes this possible.</p>
+<h2 id="why-abstract-data-sources"><a class="header" href="#why-abstract-data-sources">Why Abstract Data Sources?</a></h2>
+<p>Consider a simple query:</p>
+<pre><code class="language-sql">SELECT name, salary FROM employees WHERE department = 'Engineering'
+</code></pre>
+<p>From the query engine’s perspective, it needs to:</p>
+<ol>
+<li>Know what columns exist (to validate that <code>name</code>, <code>salary</code>, and <code>department</code> are real)</li>
+<li>Know the types of those columns (to validate that comparing <code>department</code> to a string makes sense)</li>
+<li>Read the actual data, preferably just the columns it needs</li>
+</ol>
+<p>Whether <code>employees</code> is a CSV file, a Parquet file, or an in-memory table, these requirements are the same. By defining a common interface, we can write query planning and execution logic once and have it work with any data source.</p>
+<h2 id="the-datasource-interface"><a class="header" href="#the-datasource-interface">The DataSource Interface</a></h2>
+<p>KQuery defines a simple interface that all data sources must implement:</p>
+<pre><code class="language-kotlin">interface DataSource {
+
+  / Return the schema for the underlying data source */
+  fun schema(): Schema
+
+  / Scan the data source, selecting the specified columns */
+  fun scan(projection: List&lt;String&gt;): Sequence&lt;RecordBatch&gt;
+}
+</code></pre>
+<p>schema() returns the schema of the data, the column names and their types. The query planner uses this during planning to validate queries. If you reference a column that does not exist, the planner can report an error before execution begins.</p>
+<p>scan(projection) reads the data and returns it as a sequence of record batches. The <code>projection</code> parameter lists which columns to read. This is important for efficiency: if a query only uses three columns from a table with fifty columns, we should only read those three. Some file formats like Parquet support this natively. For others like CSV, we might read everything but only build vectors for the requested columns.</p>
+<p>The return type <code>Sequence&lt;RecordBatch&gt;</code> enables streaming. Rather than loading an entire file into memory, we can process it batch by batch. This matters when data is larger than available memory.</p>
+<h2 id="csv-data-source"><a class="header" href="#csv-data-source">CSV Data Source</a></h2>
+<p>CSV is the simplest format to understand but has some awkward properties. The file is just text with values separated by commas (or tabs, or semicolons). There is no schema embedded in the file, only optional column names in the first row.</p>
+<p>Here is what a CSV file might look like:</p>
+<pre><code>id,name,department,salary
+1,Alice,Engineering,95000
+2,Bob,Sales,87000
+3,Carol,Engineering,102000
+</code></pre>
+<p>To read this, we need to handle several things:</p>
+<ol>
+<li>Parse column names from the header row (if present)</li>
+<li>Infer or accept a schema (what types are these columns?)</li>
+<li>Parse text values into typed values</li>
+<li>Handle missing or malformed values</li>
+</ol>
+<p>KQuery’s <code>CsvDataSource</code> accepts an optional schema. If provided, it uses that schema. If not, it infers one by reading the header row and treating all columns as strings:</p>
+<pre><code class="language-kotlin">class CsvDataSource(
+    val filename: String,
+    val schema: Schema?,
+    private val hasHeaders: Boolean,
+    private val batchSize: Int
+) : DataSource {
+
+  private val finalSchema: Schema by lazy { schema ?: inferSchema() }
+
+  override fun schema(): Schema {
+    return finalSchema
+  }
+  // ...
+}
+</code></pre>
+<p>The <code>scan</code> method streams through the file, parsing rows into batches. For each batch, it creates Arrow vectors and populates them with parsed values:</p>
+<pre><code class="language-kotlin">override fun scan(projection: List&lt;String&gt;): Sequence&lt;RecordBatch&gt; {
+  val readSchema =
+      if (projection.isNotEmpty()) {
+        finalSchema.select(projection)
+      } else {
+        finalSchema
+      }
+
+  val parser = buildParser(settings)
+  parser.beginParsing(file.inputStream().reader())
+
+  return ReaderAsSequence(readSchema, parser, batchSize)
+}
+</code></pre>
+<p>The <code>ReaderAsSequence</code> class implements Kotlin’s <code>Sequence</code> interface, reading rows on demand and grouping them into batches. Each batch converts string values to the appropriate Arrow vector type based on the schema.</p>
+<h3 id="type-conversion"><a class="header" href="#type-conversion">Type Conversion</a></h3>
+<p>CSV files are text, but our schema might specify that a column is an integer or a float. The CSV reader must parse these strings into typed values:</p>
+<pre><code class="language-kotlin">when (vector) {
+  is IntVector -&gt;
+      rows.withIndex().forEach { row -&gt;
+        val valueStr = row.value.getValue(field.value.name, "").trim()
+        if (valueStr.isEmpty()) {
+          vector.setNull(row.index)
+        } else {
+          vector.set(row.index, valueStr.toInt())
+        }
+      }
+  is Float8Vector -&gt;
+      rows.withIndex().forEach { row -&gt;
+        val valueStr = row.value.getValue(field.value.name, "")
+        if (valueStr.isEmpty()) {
+          vector.setNull(row.index)
+        } else {
+          vector.set(row.index, valueStr.toDouble())
+        }
+      }
+  // ... other types
+}
+</code></pre>
+<p>Empty values become nulls. Invalid values (like “abc” in an integer column) will throw an exception, which is the right behaviour since the data does not match the declared schema.</p>
+<h2 id="parquet-data-source"><a class="header" href="#parquet-data-source">Parquet Data Source</a></h2>
+<p>Parquet is a binary columnar format designed for analytics. Unlike CSV, Parquet files contain:</p>
+<ul>
+<li>Schema information (column names, types, nullability)</li>
+<li>Data organized in column chunks within row groups</li>
+<li>Compression (snappy, gzip, etc.)</li>
+<li>Optional statistics (min/max values per column chunk)</li>
+</ul>
+<p>This makes Parquet much more efficient for query engines. Reading a single column means reading just that column’s data, not the entire file. The schema is known without inference. And compression reduces both storage and I/O.</p>
+<p>KQuery’s <code>ParquetDataSource</code> is simpler than the CSV version because the Parquet library provides much of what we need:</p>
+<pre><code class="language-kotlin">class ParquetDataSource(private val filename: String) : DataSource {
+
+  override fun schema(): Schema {
+    return ParquetScan(filename, listOf()).use {
+      val arrowSchema = SchemaConverter().fromParquet(it.schema).arrowSchema
+      SchemaConverter.fromArrow(arrowSchema)
+    }
+  }
+
+  override fun scan(projection: List&lt;String&gt;): Sequence&lt;RecordBatch&gt; {
+    return ParquetScan(filename, projection)
+  }
+}
+</code></pre>
+<p>The schema comes directly from the file’s metadata. The scan reads row groups one at a time, converting Parquet’s columnar format to Arrow vectors.</p>
+<h3 id="projection-pushdown"><a class="header" href="#projection-pushdown">Projection Pushdown</a></h3>
+<p>Parquet’s columnar organization means projection pushdown is efficient. When we request only certain columns, the Parquet reader only decompresses and reads those column chunks. For wide tables (hundreds of columns) where queries touch only a few, this can be orders of magnitude faster than reading everything.</p>
+<h2 id="in-memory-data-source"><a class="header" href="#in-memory-data-source">In-Memory Data Source</a></h2>
+<p>Sometimes data is already in memory, perhaps loaded from another source or generated by a previous query. The <code>InMemoryDataSource</code> wraps existing record batches:</p>
+<pre><code class="language-kotlin">class InMemoryDataSource(
+    val schema: Schema,
+    val data: List&lt;RecordBatch&gt;
+) : DataSource {
+
+  override fun schema(): Schema {
+    return schema
+  }
+
+  override fun scan(projection: List&lt;String&gt;): Sequence&lt;RecordBatch&gt; {
+    val projectionIndices =
+        projection.map { name -&gt; schema.fields.indexOfFirst { it.name == name } }
+    return data.asSequence().map { batch -&gt;
+      RecordBatch(schema, projectionIndices.map { i -&gt; batch.field(i) })
+    }
+  }
+}
+</code></pre>
+<p>This is useful for testing and for queries that build on other queries. Projection here just selects which columns to include in the output batches.</p>
+<h2 id="other-data-sources"><a class="header" href="#other-data-sources">Other Data Sources</a></h2>
+<p>Real query engines support many more data sources. Some common ones:</p>
+<p>JSON: Structured but schema-less. Each line might be a JSON object. Schema inference is possible but complex since nested structures must be flattened or represented as Arrow’s nested types.</p>
+<p>ORC: Similar to Parquet, another columnar format popular in the Hadoop ecosystem. Data is stored in columnar “stripes” with schema and statistics.</p>
+<p>Databases: Query engines can read from other databases via JDBC or native protocols. The schema comes from the database’s catalog. Pushing predicates down to the source database can dramatically reduce data transfer.</p>
+<p>Object Storage: Cloud systems like S3 or GCS can serve as data sources. The query engine lists files matching a pattern and reads them, often in parallel.</p>
+<p>Streaming Sources: Kafka, Kinesis, or other message queues. These require different handling since data arrives continuously rather than being read from a file.</p>
+<h2 id="schema-less-sources"><a class="header" href="#schema-less-sources">Schema-less Sources</a></h2>
+<p>Some data sources do not have fixed schemas. JSON documents can have different fields in each record. Schema-on-read systems defer schema decisions until query time.</p>
+<p>Handling schema-less sources adds complexity. Options include:</p>
+<ul>
+<li>Require users to declare a schema explicitly</li>
+<li>Infer a schema from a sample of the data</li>
+<li>Use a flexible representation like a map of string to value</li>
+<li>Reject queries that reference non-existent fields at runtime rather than planning time</li>
+</ul>
+<p>KQuery requires schemas at planning time, so schema-less sources must provide or infer a schema somehow.</p>
+<h2 id="connecting-data-sources-to-the-query-engine"><a class="header" href="#connecting-data-sources-to-the-query-engine">Connecting Data Sources to the Query Engine</a></h2>
+<p>Data sources plug into the query engine through the execution context. In KQuery, you register data sources with names:</p>
+<pre><code class="language-kotlin">val ctx = ExecutionContext()
+ctx.registerCsv("employees", "data/employees.csv")
+ctx.registerParquet("sales", "data/sales.parquet")
+
+val result = ctx.sql("SELECT * FROM employees e JOIN sales s ON e.id = s.employee_id")
+</code></pre>
+<p>The query planner resolves table names to data sources, retrieves schemas for validation, and creates scan operations in the query plan. The details of CSV versus Parquet versus anything else are hidden behind the <code>DataSource</code> interface.</p>
+<p>This separation is powerful. Adding support for a new file format means implementing two methods. The rest of the query engine, from planning through optimization to execution, works without modification.</p>
+<p><em>This book is also available for purchase in ePub, MOBI, and PDF format from <a href="https://leanpub.com/how-query-engines-work">https://leanpub.com/how-query-engines-work</a></em></p>
+<p><strong>Copyright © 2020-2025 Andy Grove. All rights reserved.</strong></p>
+
+                        
+</body>
+</html>

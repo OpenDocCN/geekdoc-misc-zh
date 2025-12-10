@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>What Is a Query Engine?</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>What Is a Query Engine?</h1>
+<blockquote>原文：<a href="https://howqueryengineswork.com/01-what-is-a-query-engine.html">https://howqueryengineswork.com/01-what-is-a-query-engine.html</a></blockquote>
+                        
+<p>If you have written code to search through a list or filter items in an array, you have already implemented a tiny query engine. A query engine is simply software that retrieves and processes data based on some criteria. The difference between your <code>for</code> loop and a production query engine is scale, generality, and optimization, but the core idea is the same.</p>
+<p>Consider this Python code that finds all students with a GPA above 3.5:</p>
+<pre><code class="language-python">high_achievers = []
+for student in students:
+    if student.gpa &gt; 3.5:
+        high_achievers.append(student)
+</code></pre>
+<p>This is querying data. Now imagine you need to do this across millions of records stored in files, join data from multiple sources, group results, and compute aggregates, all while keeping response times reasonable. That is what query engines do.</p>
+<h2 id="from-code-to-queries"><a class="header" href="#from-code-to-queries">From Code to Queries</a></h2>
+<p>The code above works, but it has limitations. What if you want to change the filter condition? You would need to modify and recompile the code. What if someone without programming experience needs to analyze the data?</p>
+<p>Query languages like SQL solve this by providing a declarative way to express what data you want, without specifying how to get it:</p>
+<pre><code class="language-sql">SELECT name, gpa
+FROM students
+WHERE gpa &gt; 3.5;
+</code></pre>
+<p>This query expresses the same logic as our Python loop, but the query engine decides how to execute it efficiently. This separation of “what” from “how” is powerful. The same query can run against a small file or a distributed cluster of servers.</p>
+<h2 id="anatomy-of-a-query-engine"><a class="header" href="#anatomy-of-a-query-engine">Anatomy of a Query Engine</a></h2>
+<p>A query engine transforms a query (like the SQL above) into actual results through several stages:</p>
+<ol>
+<li>Parsing: Convert the query text into a structured representation (like an abstract syntax tree)</li>
+<li>Planning: Determine which operations are needed (scan, filter, join, aggregate)</li>
+<li>Optimization: Reorder and transform operations for efficiency</li>
+<li>Execution: Actually process the data and produce results</li>
+</ol>
+<p>This pipeline might remind you of a compiler, and that is no coincidence. Query engines are essentially specialized compilers that translate declarative queries into efficient execution plans.</p>
+<h2 id="a-concrete-example"><a class="header" href="#a-concrete-example">A Concrete Example</a></h2>
+<p>Let us look at a slightly more complex query:</p>
+<pre><code class="language-sql">SELECT department, AVG(salary)
+FROM employees
+WHERE hire_date &gt; '2020-01-01'
+GROUP BY department
+ORDER BY AVG(salary) DESC;
+</code></pre>
+<p>This query:</p>
+<ul>
+<li>Scans the <code>employees</code> table</li>
+<li>Filters to only recent hires</li>
+<li>Groups employees by department</li>
+<li>Computes the average salary per department</li>
+<li>Sorts results by that average</li>
+</ul>
+<p>A query engine must determine the most efficient way to execute these operations. Should it filter before or after grouping? How should it store intermediate results? These decisions significantly impact performance, especially with large datasets.</p>
+<h2 id="sql-the-universal-query-language"><a class="header" href="#sql-the-universal-query-language">SQL: The Universal Query Language</a></h2>
+<p>SQL (Structured Query Language) has been the dominant query language since the 1970s. You will encounter it in:</p>
+<ul>
+<li>Relational databases (PostgreSQL, MySQL, SQLite)</li>
+<li>Data warehouses (Snowflake, BigQuery, Redshift)</li>
+<li>Big data systems (Apache Spark, Presto, Hive)</li>
+<li>Even embedded analytics (DuckDB)</li>
+</ul>
+<p>Here are two more examples showing SQL’s expressiveness:</p>
+<p>Finding the top 5 most visited pages yesterday:</p>
+<pre><code class="language-sql">SELECT page_url, COUNT(*) AS visits
+FROM page_views
+WHERE view_date = CURRENT_DATE - 1
+GROUP BY page_url
+ORDER BY visits DESC
+LIMIT 5;
+</code></pre>
+<p>Calculating month-over-month growth:</p>
+<pre><code class="language-sql">SELECT month, revenue,
+       revenue - LAG(revenue) OVER (ORDER BY month) AS growth
+FROM monthly_sales
+WHERE year = 2024;
+</code></pre>
+<h2 id="beyond-sql-dataframe-apis"><a class="header" href="#beyond-sql-dataframe-apis">Beyond SQL: DataFrame APIs</a></h2>
+<p>Whilst SQL is ubiquitous, many query engines also provide programmatic APIs. These are especially popular in data science where queries are often built dynamically or mixed with custom code.</p>
+<p>Here is the same query expressed using Apache Spark’s DataFrame API in Scala:</p>
+<pre><code class="language-scala">val spark = SparkSession.builder
+  .appName("Example")
+  .master("local[*]")
+  .getOrCreate()
+
+val result = spark.read.parquet("/data/employees")
+  .filter($"hire_date" &gt; "2020-01-01")
+  .groupBy("department")
+  .agg(avg("salary").as("avg_salary"))
+  .orderBy(desc("avg_salary"))
+
+result.show()
+</code></pre>
+<p>The DataFrame API provides the same logical operations as SQL but expressed as method calls. Under the hood, both approaches generate the same query plan.</p>
+<h2 id="why-build-a-query-engine"><a class="header" href="#why-build-a-query-engine">Why Build a Query Engine?</a></h2>
+<p>Understanding query engines helps you:</p>
+<ul>
+<li>Write better queries, because knowing how queries execute helps you write efficient ones</li>
+<li>Debug performance issues, because understanding the optimizer helps diagnose slow queries</li>
+<li>Appreciate database internals, because query engines are at the heart of every database</li>
+<li>Build data tools, because many applications need query-like functionality</li>
+</ul>
+<p>Query engines also touch many areas of computer science: parsing and compilers, data structures, algorithms, distributed systems, and optimization. Building one is excellent practice.</p>
+<h2 id="what-this-book-covers"><a class="header" href="#what-this-book-covers">What This Book Covers</a></h2>
+<p>This book walks through building a complete query engine from scratch. We will implement:</p>
+<ul>
+<li>A type system for representing data</li>
+<li>Data source connectors for reading files</li>
+<li>Logical and physical query plans</li>
+<li>A SQL parser and planner</li>
+<li>Query optimization rules</li>
+<li>Parallel and distributed execution</li>
+</ul>
+<p>The query engine (called KQuery) is intentionally simple, optimized for learning rather than production use. But the concepts apply directly to real systems like Apache Spark, Presto, and DataFusion.</p>
+<p><em>This book is also available for purchase in ePub, MOBI, and PDF format from <a href="https://leanpub.com/how-query-engines-work">https://leanpub.com/how-query-engines-work</a></em></p>
+<p><strong>Copyright © 2020-2025 Andy Grove. All rights reserved.</strong></p>
+
+                        
+</body>
+</html>

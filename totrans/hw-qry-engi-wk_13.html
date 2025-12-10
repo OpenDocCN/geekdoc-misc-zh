@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Query Planner</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Query Planner</h1>
+<blockquote>原文：<a href="https://howqueryengineswork.com/09-query-planner.html">https://howqueryengineswork.com/09-query-planner.html</a></blockquote>
+                        
+<p><em>The source code discussed in this chapter can be found in the <code>query-planner</code> module of the <a href="https://github.com/andygrove/how-query-engines-work">KQuery project</a>.</em></p>
+<p>We now have logical plans that describe what to compute and physical plans that describe how to compute it. The query planner bridges these: it takes a logical plan and produces a physical plan that can be executed.</p>
+<h2 id="what-the-query-planner-does"><a class="header" href="#what-the-query-planner-does">What the Query Planner Does</a></h2>
+<p>The query planner walks the logical plan tree and creates a corresponding physical plan tree. For each logical operator, it creates the appropriate physical operator. For each logical expression, it creates the corresponding physical expression.</p>
+<p>Some translations are straightforward. A logical <code>Scan</code> becomes a physical <code>ScanExec</code>. A logical <code>Add</code> expression becomes a physical <code>AddExpression</code>.</p>
+<p>Other translations involve choices. A logical <code>Aggregate</code> could become a <code>HashAggregateExec</code> or a <code>SortAggregateExec</code> depending on whether the input is sorted. A logical <code>Join</code> could become a hash join, sort-merge join, or nested loop join. These decisions affect performance significantly.</p>
+<p>KQuery’s query planner is simple: it makes fixed choices (always hash aggregate, for example). Production query planners use cost-based optimization to estimate which physical plan will be fastest.</p>
+<h2 id="the-queryplanner-class"><a class="header" href="#the-queryplanner-class">The QueryPlanner Class</a></h2>
+<p>The planner has two main methods: one for plans, one for expressions.</p>
+<pre><code class="language-kotlin">class QueryPlanner {
+
+    fun createPhysicalPlan(plan: LogicalPlan): PhysicalPlan {
+        return when (plan) {
+            is Scan -&gt; ...
+            is Selection -&gt; ...
+            is Projection -&gt; ...
+            is Aggregate -&gt; ...
+            else -&gt; throw IllegalStateException("Unknown plan: $plan")
+        }
+    }
+
+    fun createPhysicalExpr(expr: LogicalExpr, input: LogicalPlan): Expression {
+        return when (expr) {
+            is Column -&gt; ...
+            is LiteralLong -&gt; ...
+            is BinaryExpr -&gt; ...
+            else -&gt; throw IllegalStateException("Unknown expression: $expr")
+        }
+    }
+}
+</code></pre>
+<p>Both methods use pattern matching to dispatch on the type. Both are recursive: translating a <code>Projection</code> requires translating its input plan, and translating a <code>BinaryExpr</code> requires translating its child expressions.</p>
+<h2 id="translating-expressions"><a class="header" href="#translating-expressions">Translating Expressions</a></h2>
+<h3 id="column-references"><a class="header" href="#column-references">Column References</a></h3>
+<p>Logical expressions reference columns by name. Physical expressions use column indices for efficiency. The planner performs this lookup:</p>
+<pre><code class="language-kotlin">is Column -&gt; {
+    val i = input.schema().fields.indexOfFirst { it.name == expr.name }
+    if (i == -1) {
+        throw SQLException("No column named '${expr.name}'")
+    }
+    ColumnExpression(i)
+}
+</code></pre>
+<p>If the column does not exist in the input schema, we throw an error. This should not happen if the logical plan was validated, but the check provides a safety net.</p>
+<h3 id="literals"><a class="header" href="#literals">Literals</a></h3>
+<p>Literal translations are trivial since we just copy the value:</p>
+<pre><code class="language-kotlin">is LiteralLong -&gt; LiteralLongExpression(expr.n)
+is LiteralDouble -&gt; LiteralDoubleExpression(expr.n)
+is LiteralString -&gt; LiteralStringExpression(expr.str)
+</code></pre>
+<h3 id="binary-expressions"><a class="header" href="#binary-expressions">Binary Expressions</a></h3>
+<p>Binary expressions require recursively translating both operands, then creating the appropriate physical operator:</p>
+<pre><code class="language-kotlin">is BinaryExpr -&gt; {
+    val l = createPhysicalExpr(expr.l, input)
+    val r = createPhysicalExpr(expr.r, input)
+    when (expr) {
+        // Comparison
+        is Eq -&gt; EqExpression(l, r)
+        is Neq -&gt; NeqExpression(l, r)
+        is Gt -&gt; GtExpression(l, r)
+        is GtEq -&gt; GtEqExpression(l, r)
+        is Lt -&gt; LtExpression(l, r)
+        is LtEq -&gt; LtEqExpression(l, r)
+
+        // Boolean
+        is And -&gt; AndExpression(l, r)
+        is Or -&gt; OrExpression(l, r)
+
+        // Math
+        is Add -&gt; AddExpression(l, r)
+        is Subtract -&gt; SubtractExpression(l, r)
+        is Multiply -&gt; MultiplyExpression(l, r)
+        is Divide -&gt; DivideExpression(l, r)
+
+        else -&gt; throw IllegalStateException("Unsupported: $expr")
+    }
+}
+</code></pre>
+<h3 id="aliases"><a class="header" href="#aliases">Aliases</a></h3>
+<p>Aliases are interesting: they have no physical representation. An alias just gives a name to an expression for use in planning. At execution time, we evaluate the underlying expression:</p>
+<pre><code class="language-kotlin">is Alias -&gt; {
+    // Aliases only affect naming during planning, not execution
+    createPhysicalExpr(expr.expr, input)
+}
+</code></pre>
+<h2 id="translating-plans"><a class="header" href="#translating-plans">Translating Plans</a></h2>
+<h3 id="scan"><a class="header" href="#scan">Scan</a></h3>
+<p>Scan is the simplest translation. We pass the data source and projection through:</p>
+<pre><code class="language-kotlin">is Scan -&gt; {
+    ScanExec(plan.dataSource, plan.projection)
+}
+</code></pre>
+<h3 id="selection-filter"><a class="header" href="#selection-filter">Selection (Filter)</a></h3>
+<p>Selection translates the input plan and the filter expression:</p>
+<pre><code class="language-kotlin">is Selection -&gt; {
+    val input = createPhysicalPlan(plan.input)
+    val filterExpr = createPhysicalExpr(plan.expr, plan.input)
+    SelectionExec(input, filterExpr)
+}
+</code></pre>
+<p>Note that <code>createPhysicalExpr</code> receives <code>plan.input</code> (the logical input), not <code>input</code> (the physical input). We need the logical schema to resolve column names to indices.</p>
+<h3 id="projection"><a class="header" href="#projection">Projection</a></h3>
+<p>Projection translates the input and each projection expression:</p>
+<pre><code class="language-kotlin">is Projection -&gt; {
+    val input = createPhysicalPlan(plan.input)
+    val projectionExpr = plan.expr.map { createPhysicalExpr(it, plan.input) }
+    val projectionSchema = Schema(plan.expr.map { it.toField(plan.input) })
+    ProjectionExec(input, projectionSchema, projectionExpr)
+}
+</code></pre>
+<p>We derive the output schema from the logical expressions since they know their output types.</p>
+<h3 id="aggregate"><a class="header" href="#aggregate">Aggregate</a></h3>
+<p>Aggregate translation involves grouping expressions and aggregate functions:</p>
+<pre><code class="language-kotlin">is Aggregate -&gt; {
+    val input = createPhysicalPlan(plan.input)
+    val groupExpr = plan.groupExpr.map { createPhysicalExpr(it, plan.input) }
+    val aggregateExpr = plan.aggregateExpr.map {
+        when (it) {
+            is Max -&gt; MaxExpression(createPhysicalExpr(it.expr, plan.input))
+            is Min -&gt; MinExpression(createPhysicalExpr(it.expr, plan.input))
+            is Sum -&gt; SumExpression(createPhysicalExpr(it.expr, plan.input))
+            is Avg -&gt; AvgExpression(createPhysicalExpr(it.expr, plan.input))
+            is Count -&gt; CountExpression(createPhysicalExpr(it.expr, plan.input))
+            else -&gt; throw IllegalStateException("Unsupported: $it")
+        }
+    }
+    HashAggregateExec(input, groupExpr, aggregateExpr, plan.schema())
+}
+</code></pre>
+<p>Notice that we always create <code>HashAggregateExec</code>. A more sophisticated planner might choose <code>SortAggregateExec</code> when the input is already sorted by the grouping columns.</p>
+<h2 id="a-complete-example"><a class="header" href="#a-complete-example">A Complete Example</a></h2>
+<p>Consider this query:</p>
+<pre><code class="language-sql">SELECT department, AVG(salary)
+FROM employees
+WHERE state = 'CO'
+GROUP BY department
+</code></pre>
+<p>The logical plan:</p>
+<pre><code>Aggregate: groupBy=[#department], aggr=[AVG(#salary)]
+    Selection: #state = 'CO'
+        Scan: employees
+</code></pre>
+<p>The query planner walks this top-down:</p>
+<ol>
+<li>Aggregate: Create physical plan for input, translate expressions
+<ul>
+<li>Recurse to translate Selection</li>
+</ul>
+</li>
+<li>Selection: Create physical plan for input, translate filter expression
+<ul>
+<li>Recurse to translate Scan</li>
+</ul>
+</li>
+<li>Scan: Create ScanExec directly</li>
+</ol>
+<p>Building physical plans bottom-up:</p>
+<ol>
+<li><code>ScanExec(employeesDataSource, [])</code></li>
+<li><code>SelectionExec(scanExec, EqExpression(ColumnExpression(2), LiteralStringExpression("CO")))</code></li>
+<li><code>HashAggregateExec(selectionExec, [ColumnExpression(0)], [AvgExpression(ColumnExpression(3))], schema)</code></li>
+</ol>
+<p>The result is an executable physical plan.</p>
+<h2 id="where-optimization-fits"><a class="header" href="#where-optimization-fits">Where Optimization Fits</a></h2>
+<p>The query planner shown here does direct translation. Each logical operator becomes exactly one physical operator.</p>
+<p>In practice, optimization happens between logical planning and physical planning:</p>
+<ol>
+<li>Parse SQL to logical plan</li>
+<li>Optimize the logical plan (reorder joins, push down predicates, etc.)</li>
+<li>Translate optimized logical plan to physical plan</li>
+</ol>
+<p>Alternatively, some systems perform physical optimization:</p>
+<ol>
+<li>Parse SQL to logical plan</li>
+<li>Generate multiple candidate physical plans</li>
+<li>Estimate cost of each</li>
+<li>Choose the cheapest</li>
+</ol>
+<p>KQuery uses the first approach with a simple optimizer (covered in the next chapter after Joins and Subqueries). The planner here assumes it receives an already-optimized logical plan.</p>
+<h2 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h2>
+<p>The query planner should catch errors that slip past logical plan validation:</p>
+<ul>
+<li>Unknown column names</li>
+<li>Unsupported expression types</li>
+<li>Type mismatches</li>
+</ul>
+<p>In KQuery, these throw exceptions. Production systems would produce structured error messages with source locations.</p>
+<p><em>This book is also available for purchase in ePub, MOBI, and PDF format from <a href="https://leanpub.com/how-query-engines-work">https://leanpub.com/how-query-engines-work</a></em></p>
+<p><strong>Copyright © 2020-2025 Andy Grove. All rights reserved.</strong></p>
+
+                        
+</body>
+</html>
