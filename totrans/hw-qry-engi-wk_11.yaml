@@ -1,407 +1,625 @@
 - en: SQL Support
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: SQL 支持
 - en: 原文：[https://howqueryengineswork.com/07-sql-support.html](https://howqueryengineswork.com/07-sql-support.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/07-sql-support.html](https://howqueryengineswork.com/07-sql-support.html)
 - en: '*The source code discussed in this chapter can be found in the `sql` module
     of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在 [KQuery 项目](https://github.com/andygrove/how-query-engines-work)
+    的 `sql` 模块中找到。*'
 - en: 'The previous chapter showed how to build queries using the DataFrame API. But
     most users expect to write SQL. This chapter covers parsing SQL text into a logical
     plan, which involves two steps: parsing (text to syntax tree) and planning (syntax
     tree to logical plan).'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 上一章展示了如何使用 DataFrame API 构建查询。但大多数用户期望编写 SQL。本章涵盖了将 SQL 文本解析为逻辑计划的过程，这涉及两个步骤：解析（文本到语法树）和计划（语法树到逻辑计划）。
 - en: '[The Journey from SQL to Logical Plan](#the-journey-from-sql-to-logical-plan)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[从 SQL 到逻辑计划的旅程](#the-journey-from-sql-to-logical-plan)'
 - en: 'Consider this query:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑这个查询：
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'To execute this, we need to:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 要执行此操作，我们需要：
 - en: 'Tokenize: Break the text into tokens (keywords, identifiers, literals, operators)'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 分词：将文本分解为标记（关键字、标识符、文字、运算符）
 - en: 'Parse: Build a syntax tree that represents the query structure'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 解析：构建表示查询结构的语法树
 - en: 'Plan: Convert the syntax tree into a logical plan'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 计划：将语法树转换为逻辑计划
 - en: The result is the same logical plan we could build with the DataFrame API, but
     constructed from SQL text instead of code.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 结果是与 DataFrame API 构建的同逻辑计划相同，但由 SQL 文本而不是代码构建。
 - en: '[Tokenizing](#tokenizing)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[分词](#tokenizing)'
 - en: The tokenizer (or lexer) converts a string into a sequence of tokens. Each token
     has a type and a value.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 分词器（或词法分析器）将字符串转换为一系列标记。每个标记都有一个类型和一个值。
 - en: '[PRE1]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Token types include:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 标记类型包括：
 - en: 'Keywords: `SELECT`, `FROM`, `WHERE`, `AND`, `OR`, etc.'
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 关键字：`SELECT`、`FROM`、`WHERE`、`AND`、`OR` 等。
 - en: 'Identifiers: table names, column names'
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 标识符：表名、列名
 - en: 'Literals: strings (`''hello''`), numbers (`42`, `3.14`)'
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 文字：字符串（`'hello'`）、数字（`42`、`3.14`）
 - en: 'Symbols: operators and punctuation (`+`, `-`, `*`, `/`, `=`, `<`, `>`, `(`,
     `)`, `,`)'
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 符号：运算符和标点符号（`+`、`-`、`*`、`/`、`=`、`<`、`>`、`(`、`)`、`,`）
 - en: 'For the query `SELECT a + b FROM c`, tokenizing produces:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于查询 `SELECT a + b FROM c`，分词产生：
 - en: '[PRE2]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The tokenizer handles details like recognizing that `SELECT` is a keyword but
     `employee` is an identifier, parsing string literals with their quotes, and recognizing
     multi-character operators like `<=` and `!=`.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 分词器处理诸如识别 `SELECT` 是一个关键字但 `employee` 是一个标识符、解析带有引号的字符串文字以及识别多字符运算符（如 `<=` 和
+    `!=`）等细节。
 - en: '[Parsing with Pratt Parsers](#parsing-with-pratt-parsers)'
+  id: totrans-23
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[使用 Pratt 解析器进行解析](#parsing-with-pratt-parsers)'
 - en: Parsing turns tokens into a tree structure. The challenge is handling operator
     precedence correctly. In `1 + 2 * 3`, multiplication binds tighter than addition,
     so the result should be `1 + (2 * 3)`, not `(1 + 2) * 3`.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 解析将标记转换为树结构。挑战在于正确处理运算符优先级。在 `1 + 2 * 3` 中，乘法的优先级高于加法，因此结果应该是 `1 + (2 * 3)`，而不是
+    `(1 + 2) * 3`。
 - en: KQuery uses a Pratt parser, based on Vaughan Pratt’s 1973 paper “Top Down Operator
     Precedence”. Pratt parsers handle precedence elegantly and produce clear, debuggable
     code.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery 使用基于 Vaughan Pratt 1973 年论文“自顶向下运算符优先级”的 Pratt 解析器。Pratt 解析器优雅地处理优先级，并产生清晰、可调试的代码。
 - en: 'The core algorithm is remarkably simple:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 核心算法非常简单：
 - en: '[PRE3]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The algorithm:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 算法：
 - en: Parse a “prefix” expression (a literal, identifier, or unary operator)
+  id: totrans-29
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 解析“前缀”表达式（文字、标识符或一元运算符）
 - en: While the next operator has higher precedence than what we started with, parse
     it as an “infix” expression (binary operator) with the current expression as the
     left side
+  id: totrans-30
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 当下一个运算符的优先级高于我们开始时的优先级时，将解析为具有当前表达式作为左侧的“中缀”表达式（二元运算符）
 - en: Return when we hit a lower-precedence operator
+  id: totrans-31
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 当遇到优先级较低的运算符时返回
 - en: The magic is in `parseInfix`, which recursively calls `parse` with the new operator’s
     precedence. This naturally groups higher-precedence operations first.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 魔法在于 `parseInfix`，它递归地调用 `parse` 并带有新运算符的优先级。这自然地将优先级较高的操作分组在一起。
 - en: '[SQL Expressions](#sql-expressions)'
+  id: totrans-33
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[SQL 表达式](#sql-expressions)'
 - en: 'The parser builds a syntax tree using SQL expression types:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 解析器使用 SQL 表达式类型构建语法树：
 - en: '[PRE4]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: These mirror logical expressions but stay closer to SQL syntax. We use a generic
     `SqlBinaryExpr` with a string operator rather than separate classes for each operator
     since the distinctions matter more in the logical plan.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些与逻辑表达式相似，但更接近 SQL 语法。我们使用通用的 `SqlBinaryExpr` 和字符串运算符，而不是为每个运算符创建单独的类，因为区别在逻辑计划中更为重要。
 - en: '[Precedence in Action](#precedence-in-action)'
+  id: totrans-37
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[运算符优先级示例](#precedence-in-action)'
 - en: 'Consider parsing `1 + 2 * 3`:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑解析 `1 + 2 * 3`：
 - en: '[PRE5]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Addition has precedence 50, multiplication has 60\. Walking through:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 加法优先级为 50，乘法优先级为 60。遍历：
 - en: 'Parse prefix: `SqlLong(1)`'
+  id: totrans-41
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 解析前缀：`SqlLong(1)`
 - en: Next token `+` has precedence 50 > 0, so parse infix
+  id: totrans-42
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 下一个标记 `+` 的优先级 50 > 0，因此解析中缀
 - en: In `parseInfix`, consume `+`, then recursively call `parse(50)`
+  id: totrans-43
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 在 `parseInfix` 中，消费 `+`，然后递归调用 `parse(50)`
 - en: 'Parse prefix: `SqlLong(2)`'
+  id: totrans-44
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 解析前缀：`SqlLong(2)`
 - en: Next token `*` has precedence 60 > 50, so parse infix
+  id: totrans-45
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 下一个标记 `*` 的优先级 60 > 50，因此解析中缀
 - en: Consume `*`, recursively call `parse(60)`
+  id: totrans-46
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 消费 `*`，递归调用 `parse(60)`
 - en: 'Parse prefix: `SqlLong(3)`'
+  id: totrans-47
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 解析前缀：`SqlLong(3)`
 - en: No more tokens, return `SqlLong(3)`
+  id: totrans-48
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 没有更多标记，返回 `SqlLong(3)`
 - en: Return `SqlBinaryExpr(SqlLong(2), "*", SqlLong(3))`
+  id: totrans-49
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 返回 `SqlBinaryExpr(SqlLong(2), "*", SqlLong(3))`
 - en: Next precedence is 0 < 50, so return
+  id: totrans-50
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 下一个优先级是 0 < 50，因此返回
 - en: Return `SqlBinaryExpr(SqlLong(1), "+", SqlBinaryExpr(...))`
+  id: totrans-51
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 返回 `SqlBinaryExpr(SqlLong(1), "+", SqlBinaryExpr(...))`
 - en: 'Result: `1 + (2 * 3)`, as expected.'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 结果：`1 + (2 * 3)`，如预期。
 - en: 'Compare with `1 * 2 + 3`:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 与 `1 * 2 + 3` 进行比较：
 - en: '[PRE6]'
+  id: totrans-54
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Parse prefix: `SqlLong(1)`'
+  id: totrans-55
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 解析前缀：`SqlLong(1)`
 - en: '`*` has precedence 60 > 0, parse infix'
+  id: totrans-56
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`*` 的优先级 60 > 0，解析中缀'
 - en: Consume `*`, call `parse(60)`
+  id: totrans-57
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 消费 `*`，调用 `parse(60)`
 - en: 'Parse prefix: `SqlLong(2)`'
+  id: totrans-58
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 解析前缀：`SqlLong(2)`
 - en: '`+` has precedence 50 < 60, so return `SqlLong(2)`'
+  id: totrans-59
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`+` 的优先级 50 < 60，因此返回 `SqlLong(2)`'
 - en: Return `SqlBinaryExpr(SqlLong(1), "*", SqlLong(2))`
+  id: totrans-60
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 返回 `SqlBinaryExpr(SqlLong(1), "*", SqlLong(2))`
 - en: '`+` has precedence 50 > 0, parse infix'
+  id: totrans-61
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`+` 的优先级 50 > 0，解析中缀'
 - en: Consume `+`, call `parse(50)`
+  id: totrans-62
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 消费 `+`，调用 `parse(50)`
 - en: 'Parse prefix: `SqlLong(3)`'
+  id: totrans-63
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 解析前缀：`SqlLong(3)`
 - en: No more tokens, return
+  id: totrans-64
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 没有更多标记，返回
 - en: Return `SqlBinaryExpr(SqlBinaryExpr(...), "+", SqlLong(3))`
+  id: totrans-65
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 返回 `SqlBinaryExpr(SqlBinaryExpr(...), "+", SqlLong(3))`
 - en: 'Result: `(1 * 2) + 3`, correct again.'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 结果：`(1 * 2) + 3`，再次正确。
 - en: '[Parsing SELECT Statements](#parsing-select-statements)'
+  id: totrans-67
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[解析 SELECT 语句](#parsing-select-statements)'
 - en: 'Beyond expressions, we need to parse complete SQL statements. A SELECT statement
     has the following structure:'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 除此之外，我们还需要解析完整的 SQL 语句。一个 SELECT 语句具有以下结构：
 - en: '[PRE7]'
+  id: totrans-69
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Parsing a SELECT statement is straightforward procedural code: expect `SELECT`,
     parse a comma-separated list of expressions, expect `FROM`, parse the table name,
     optionally parse `WHERE` and its expression, and so on.'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 解析 SELECT 语句是直接的程序性代码：期望 `SELECT`，解析逗号分隔的表达式列表，期望 `FROM`，解析表名，可选地解析 `WHERE`
+    和其表达式，等等。
 - en: '[SQL Planning: The Hard Part](#sql-planning-the-hard-part)'
+  id: totrans-71
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[SQL 计划：困难的部分](#sql-planning-the-hard-part)'
 - en: Parsing is mechanical. Planning is where things get interesting.
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 解析是机械的。规划是事情变得有趣的地方。
 - en: 'Consider this query:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑这个查询：
 - en: '[PRE8]'
+  id: totrans-74
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'The WHERE clause references both `state` (a column from the table) and `monthly_salary`
     (an alias defined in the SELECT list). This is natural for humans but creates
     a problem: the filter needs columns that exist at different points in the plan.'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: WHERE 子句引用了 `state`（表中的列）和 `monthly_salary`（在 SELECT 列表中定义的别名）。这对人类来说是自然的，但会创建一个问题：过滤器需要存在于计划不同点的列。
 - en: If we filter before projecting, `monthly_salary` does not exist yet. If we filter
     after projecting, `state` may no longer be available.
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在投影之前过滤，`monthly_salary` 还不存在。如果我们在投影之后过滤，`state` 可能不再可用。
 - en: '[Solution: Intermediate Projections](#solution-intermediate-projections)'
+  id: totrans-77
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[解决方案：中间投影](#solution-intermediate-projections)'
 - en: 'One approach adds columns to an intermediate projection:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 一种方法是在中间投影中添加列：
 - en: '[PRE9]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: The inner projection computes all needed columns including `state`. The filter
     can then reference everything. The outer projection removes `state` from the final
     output.
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 内部投影计算所有需要的列，包括 `state`。然后过滤器可以引用所有内容。外部投影从最终输出中删除 `state`。
 - en: '[Translation Logic](#translation-logic)'
+  id: totrans-81
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[翻译逻辑](#translation-logic)'
 - en: 'The planner walks the SQL expression tree and builds logical expressions:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 计划器遍历 SQL 表达式树并构建逻辑表达式：
 - en: '[PRE10]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[Finding Column References](#finding-column-references)'
+  id: totrans-84
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[查找列引用](#finding-column-references)'
 - en: 'To determine which columns the filter needs, we walk the expression tree:'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了确定过滤器需要哪些列，我们遍历表达式树：
 - en: '[PRE11]'
+  id: totrans-86
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: With this, the planner can compare columns in the filter against columns in
     the projection and add any missing ones to the intermediate projection.
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，计划器可以将过滤器中的列与投影中的列进行比较，并将任何缺失的列添加到中间投影中。
 - en: '[Aggregate Queries](#aggregate-queries)'
+  id: totrans-88
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[聚合查询](#aggregate-queries)'
 - en: 'Aggregate queries add more complexity. Consider:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 聚合查询增加了更多复杂性。考虑：
 - en: '[PRE12]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'The planner must:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 计划器必须：
 - en: Identify aggregate functions (`AVG`)
+  id: totrans-92
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 识别聚合函数（`AVG`）
 - en: Separate grouping expressions (`department`) from aggregates
+  id: totrans-93
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 将分组表达式（`department`）与聚合分开
 - en: Handle HAVING, which filters after aggregation
+  id: totrans-94
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 处理 HAVING，它在聚合之后过滤
 - en: Ensure columns in SELECT are either in GROUP BY or inside aggregates
+  id: totrans-95
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 确保在 SELECT 中列要么在 GROUP BY 中，要么在聚合内部
 - en: The full implementation handles these cases but the code is involved. See the
     source repository for details.
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 完整实现处理这些情况，但代码较为复杂。请参阅源代码库以获取详细信息。
 - en: '[Why Build Your Own Parser?](#why-build-your-own-parser)'
+  id: totrans-97
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[为什么构建自己的解析器？](#why-build-your-own-parser)'
 - en: You might wonder why we build a parser instead of using a parser generator like
     ANTLR or a library like Apache Calcite.
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能会想知道为什么我们构建解析器而不是使用像ANTLR这样的解析器生成器或像Apache Calcite这样的库。
 - en: 'Building a hand-written parser has advantages:'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 构建手写解析器的优点：
 - en: 'Control: You decide exactly what SQL features to support'
+  id: totrans-100
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 控制：你决定支持哪些SQL特性
 - en: 'Error messages: You can produce clear, context-specific errors'
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 错误信息：你可以生成清晰、上下文相关的错误
 - en: 'Simplicity: No external dependencies or generated code'
+  id: totrans-102
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 简单性：无需外部依赖或生成代码
 - en: 'Learning: Understanding parsing deepens your understanding of the whole system'
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 学习：理解解析加深了你对该整个系统的理解
 - en: For a production system, using an existing SQL parser is often sensible. But
     for learning how query engines work, building a parser reveals how SQL’s apparent
     flexibility maps to structured operations.
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于一个生产系统，使用现有的SQL解析器通常是明智的。但为了了解查询引擎的工作原理，构建解析器揭示了SQL的表面灵活性如何映射到结构化操作。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以ePub、MOBI和PDF格式在[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)上提供购买。*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权 © 2020-2025 安迪·格鲁夫。版权所有。**'

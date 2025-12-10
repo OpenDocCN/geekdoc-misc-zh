@@ -1,282 +1,431 @@
 - en: Physical Plans and Expressions
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 物理计划和表达式
 - en: 原文：[https://howqueryengineswork.com/08-physical-plan.html](https://howqueryengineswork.com/08-physical-plan.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/08-physical-plan.html](https://howqueryengineswork.com/08-physical-plan.html)
 - en: '*The source code discussed in this chapter can be found in the `physical-plan`
     module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在 [KQuery 项目](https://github.com/andygrove/how-query-engines-work)
+    的 `physical-plan` 模块中找到。*'
 - en: Logical plans describe what computation to perform. Physical plans describe
     how to perform it. This chapter covers the physical plan layer, where abstract
     operations become executable code.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 逻辑计划描述要执行的计算。物理计划描述如何执行。本章涵盖了物理计划层，其中抽象操作变为可执行代码。
 - en: '[Why Separate Physical from Logical?](#why-separate-physical-from-logical)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[为什么将物理与逻辑分开？](#why-separate-physical-from-logical)'
 - en: 'A logical plan says “aggregate this data by department.” A physical plan specifies
     which algorithm to use. There might be several valid choices:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 逻辑计划表示“按部门汇总这些数据。”物理计划指定使用哪种算法。可能有几个有效的选择：
 - en: 'Hash Aggregate: Build a hash map keyed by grouping columns, update accumulators
     as rows arrive. Works well for unsorted data with moderate cardinality.'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 哈希聚合：按分组列键构建哈希映射，随着行的到达更新累加器。对于具有适度基数的不排序数据效果良好。
 - en: 'Sort Aggregate: Requires data sorted by grouping columns, but uses less memory
     since it only tracks one group at a time.'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 排序聚合：需要按分组列排序的数据，但由于它一次只跟踪一个组，所以使用的内存较少。
 - en: 'Similarly for joins:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于连接也是类似的：
 - en: 'Hash Join: Build a hash table from one side, probe with the other. Fast for
     equi-joins.'
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 哈希连接：从一个侧面构建哈希表，用另一个侧面进行探测。对于等值连接非常快。
 - en: 'Sort-Merge Join: Sort both sides, merge them. Good when data is already sorted.'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 排序-合并连接：对两边进行排序，然后合并。当数据已经排序时效果很好。
 - en: 'Nested Loop Join: For each row on the left, scan the entire right side. Simple
     but slow; necessary for non-equi joins.'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 嵌套循环连接：对于左边的每一行，扫描整个右边的所有行。简单但慢；对于非等值连接是必要的。
 - en: The logical plan does not care which algorithm runs. The query planner chooses
     based on data characteristics, available indexes, and cost estimates. Keeping
     logical and physical separate enables this flexibility.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 逻辑计划不关心运行哪种算法。查询规划器根据数据特征、可用索引和成本估计进行选择。保持逻辑和物理分离，使得这种灵活性成为可能。
 - en: 'Physical plans might also vary by execution environment:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 物理计划可能也因执行环境而异：
 - en: Single-threaded vs parallel execution
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 单线程与并行执行
 - en: CPU vs GPU computation
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: CPU 与 GPU 计算
 - en: Local vs distributed processing
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 本地与分布式处理
 - en: '[The PhysicalPlan Interface](#the-physicalplan-interface)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[物理计划接口](#the-physicalplan-interface)'
 - en: 'Physical plans produce data. The interface reflects this:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 物理计划产生数据。接口反映了这一点：
 - en: '[PRE0]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The key method is `execute()`, which returns a sequence of record batches.
     This is the pull-based execution model: the caller pulls batches as needed rather
     than having batches pushed to it. Kotlin’s `Sequence` is lazy, so computation
     happens only when batches are consumed.'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 关键方法是 `execute()`，它返回一系列的记录批次。这是基于拉取的执行模型：调用者按需拉取批次，而不是让批次推送到它。Kotlin 的 `Sequence`
+    是懒加载的，所以只有在批次被消费时才会进行计算。
 - en: '[Physical Expressions](#physical-expressions)'
+  id: totrans-21
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[物理表达式](#physical-expressions)'
 - en: Logical expressions reference columns by name. Physical expressions reference
     columns by index for efficiency. At execution time, we do not want to search for
     column names.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 逻辑表达式通过名称引用列。物理表达式通过索引引用列以提高效率。在执行时间，我们不希望搜索列名。
 - en: '[PRE1]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: A physical expression takes a record batch and produces a column vector. The
     output has one value per row in the input batch.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 物理表达式接受一个记录批次并产生一个列向量。输出对于输入批次中的每一行有一个值。
 - en: '[Column Expression](#column-expression)'
+  id: totrans-25
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[列表达式](#column-expression)'
 - en: 'The simplest expression retrieves a column from the input:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 最简单的表达式是从输入中检索一个列：
 - en: '[PRE2]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: No computation, just a lookup by index.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有计算，只是通过索引查找。
 - en: '[Literal Expression](#literal-expression)'
+  id: totrans-29
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[文字表达式](#literal-expression)'
 - en: 'Literal values produce a column where every row has the same value. Rather
     than allocating storage for identical values, we use a `LiteralValueVector` that
     returns the same value for any index:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 文字值产生一个列，其中每一行都有相同的值。而不是为相同的值分配存储空间，我们使用一个 `LiteralValueVector`，它对任何索引都返回相同的值：
 - en: '[PRE3]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: This optimization matters because expressions like `salary * 1.1` would otherwise
     allocate a column of 1.1 values just to multiply element-wise.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种优化很重要，因为像 `salary * 1.1` 这样的表达式否则会分配一个包含 1.1 个值的列，只是为了逐元素相乘。
 - en: '[PRE4]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Binary Expressions](#binary-expressions)'
+  id: totrans-34
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[二元表达式](#binary-expressions)'
 - en: 'Binary expressions evaluate two sub-expressions and combine them. A base class
     handles the common logic:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 二元表达式评估两个子表达式并将它们组合。一个基类处理常见的逻辑：
 - en: '[PRE5]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Comparison expressions produce boolean results:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 比较表达式产生布尔结果：
 - en: '[PRE6]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Math expressions produce numeric results:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 数学表达式产生数值结果：
 - en: '[PRE7]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '[Aggregate Expressions](#aggregate-expressions)'
+  id: totrans-41
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[聚合表达式](#aggregate-expressions)'
 - en: 'Aggregate expressions work differently. Rather than producing one output value
     per input row, they reduce many rows to one value. This requires accumulators
     that maintain state across batches:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 聚合表达式的工作方式不同。它们不是为每行输入产生一个输出值，而是将多行减少到一个值。这需要维护跨批次的累加器：
 - en: '[PRE8]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Each aggregate type creates its own accumulator:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个聚合类型都创建自己的累加器：
 - en: '[PRE9]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[Physical Plans](#physical-plans)'
+  id: totrans-46
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[物理计划](#physical-plans)'
 - en: With expressions defined, we can implement the physical plan operators.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 定义了表达式后，我们可以实现物理计划操作符。
 - en: '[Scan](#scan)'
+  id: totrans-48
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[扫描](#scan)'
 - en: 'Scan reads from a data source. It is the simplest operator, delegating entirely
     to the data source:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 扫描从数据源读取。它是最简单的操作符，完全委托给数据源：
 - en: '[PRE10]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: The projection list tells the data source which columns to read. For columnar
     formats like Parquet, this avoids reading unnecessary data.
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 投影列表告诉数据源要读取哪些列。对于像 Parquet 这样的列式格式，这避免了读取不必要的数据。
 - en: '[Projection](#projection)'
+  id: totrans-52
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[投影](#projection)'
 - en: 'Projection evaluates expressions to produce new columns:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 投影评估表达式以产生新列：
 - en: '[PRE11]'
+  id: totrans-54
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: For each input batch, evaluate each expression to produce output columns. When
     an expression is just a column reference, the output column is the same object
     as the input column; no data is copied.
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于每个输入批次，评估每个表达式以产生输出列。当一个表达式只是一个列引用时，输出列与输入列是相同的对象；不复制数据。
 - en: '[Selection (Filter)](#selection-filter)'
+  id: totrans-56
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[选择（过滤）](#selection-filter)'
 - en: 'Selection keeps rows where a predicate is true:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 选择保留谓词为真的行：
 - en: '[PRE12]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: The predicate expression produces a bit vector (one bit per row). We then copy
     values where the bit is set. This is a straightforward implementation; production
     systems optimize cases where all or no rows match.
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 谓词表达式产生一个位向量（每行一个位）。然后我们复制位被设置的值。这是一个简单的实现；生产系统优化了所有行都匹配或没有行匹配的情况。
 - en: '[Hash Aggregate](#hash-aggregate)'
+  id: totrans-60
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[哈希聚合](#hash-aggregate)'
 - en: 'Hash aggregation groups rows by key and computes aggregates. It processes all
     input before producing output:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 哈希聚合通过键对行进行分组并计算聚合。它在产生输出之前处理所有输入：
 - en: '[PRE13]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: The hash map keys are lists of grouping column values. Each entry holds accumulators
     for that group. After processing all input, we iterate the map to build the output
     batch.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 哈希表键是分组列值的列表。每个条目持有该组的累加器。在处理所有输入后，我们遍历映射来构建输出批次。
 - en: This is the “hash” aggregate because we use a hash map. For sorted data, a “sort”
     aggregate would be more efficient since we could emit results as soon as the grouping
     key changes, without storing all groups in memory.
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一种“哈希”聚合，因为我们使用了哈希表。对于排序数据，使用“排序”聚合会更高效，因为我们可以在分组键改变时立即输出结果，而不需要在内存中存储所有分组。
 - en: '[Execution Model](#execution-model)'
+  id: totrans-65
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[执行模型](#execution-model)'
 - en: 'KQuery uses pull-based execution: the root operator calls `execute()` on its
     children, which call their children, and so on. Data flows up as batches are requested.'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery 使用基于拉取的执行：根操作符对其子操作符调用 `execute()`，然后它们对其子操作符调用，依此类推。数据在请求批次时向上流动。
 - en: The alternative is push-based execution, where operators push batches to their
     parents. Both models work; the choice affects how backpressure and parallelism
     are handled.
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一种选择是基于推的执行，其中操作符将批次推送到它们的父操作符。两种模型都有效；选择影响如何处理背压和并行性。
 - en: Returning `Sequence<RecordBatch>` enables lazy evaluation. If the root only
     needs the first batch (for a `LIMIT 1` query), we avoid computing subsequent batches.
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回 `Sequence<RecordBatch>` 允许延迟评估。如果根节点只需要第一个批次（对于 `LIMIT 1` 查询），我们就可以避免计算后续批次。
 - en: '[Next Steps](#next-steps)'
+  id: totrans-69
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[下一步](#next-steps)'
 - en: Physical plans are executable, but we still need something to create them from
     logical plans. The next chapter covers the query planner that performs this translation.
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 物理计划是可执行的，但我们仍然需要某种东西从逻辑计划中创建它们。下一章将介绍执行此转换的查询规划器。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以 ePub、MOBI 和 PDF 格式在 [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)
+    上出售。*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

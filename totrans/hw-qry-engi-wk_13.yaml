@@ -1,304 +1,463 @@
 - en: Query Planner
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 查询规划器
 - en: 原文：[https://howqueryengineswork.com/09-query-planner.html](https://howqueryengineswork.com/09-query-planner.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/09-query-planner.html](https://howqueryengineswork.com/09-query-planner.html)
 - en: '*The source code discussed in this chapter can be found in the `query-planner`
     module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在[KQuery项目](https://github.com/andygrove/how-query-engines-work)的`query-planner`模块中找到。*'
 - en: 'We now have logical plans that describe what to compute and physical plans
     that describe how to compute it. The query planner bridges these: it takes a logical
     plan and produces a physical plan that can be executed.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们有了描述要计算什么的逻辑计划以及描述如何计算它的物理计划。查询规划器连接这些：它接受一个逻辑计划并生成一个可以执行的物理计划。
 - en: '[What the Query Planner Does](#what-the-query-planner-does)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[查询规划器的作用](#what-the-query-planner-does)'
 - en: The query planner walks the logical plan tree and creates a corresponding physical
     plan tree. For each logical operator, it creates the appropriate physical operator.
     For each logical expression, it creates the corresponding physical expression.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询规划器遍历逻辑计划树并创建相应的物理计划树。对于每个逻辑运算符，它创建相应的物理运算符。对于每个逻辑表达式，它创建相应的物理表达式。
 - en: Some translations are straightforward. A logical `Scan` becomes a physical `ScanExec`.
     A logical `Add` expression becomes a physical `AddExpression`.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些翻译是直接的。逻辑`Scan`变为物理`ScanExec`。逻辑`Add`表达式变为物理`AddExpression`。
 - en: Other translations involve choices. A logical `Aggregate` could become a `HashAggregateExec`
     or a `SortAggregateExec` depending on whether the input is sorted. A logical `Join`
     could become a hash join, sort-merge join, or nested loop join. These decisions
     affect performance significantly.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 其他翻译涉及选择。逻辑`Aggregate`可能成为`HashAggregateExec`或`SortAggregateExec`，这取决于输入是否已排序。逻辑`Join`可能成为散列连接、排序合并连接或嵌套循环连接。这些决策对性能有重大影响。
 - en: 'KQuery’s query planner is simple: it makes fixed choices (always hash aggregate,
     for example). Production query planners use cost-based optimization to estimate
     which physical plan will be fastest.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery的查询规划器很简单：它做出固定的选择（例如，总是散列聚合）。生产查询规划器使用基于成本的优化来估计哪个物理计划将最快。
 - en: '[The QueryPlanner Class](#the-queryplanner-class)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[查询规划器类](#the-queryplanner-class)'
 - en: 'The planner has two main methods: one for plans, one for expressions.'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 规划器有两个主要方法：一个用于计划，一个用于表达式。
 - en: '[PRE0]'
+  id: totrans-11
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Both methods use pattern matching to dispatch on the type. Both are recursive:
     translating a `Projection` requires translating its input plan, and translating
     a `BinaryExpr` requires translating its child expressions.'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 两种方法都使用模式匹配来根据类型进行分发。两者都是递归的：翻译`Projection`需要翻译其输入计划，翻译`BinaryExpr`需要翻译其子表达式。
 - en: '[Translating Expressions](#translating-expressions)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[翻译表达式](#translating-expressions)'
 - en: '[Column References](#column-references)'
+  id: totrans-14
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[列引用](#column-references)'
 - en: 'Logical expressions reference columns by name. Physical expressions use column
     indices for efficiency. The planner performs this lookup:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 逻辑表达式通过名称引用列。物理表达式使用列索引以提高效率。规划器执行此查找：
 - en: '[PRE1]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: If the column does not exist in the input schema, we throw an error. This should
     not happen if the logical plan was validated, but the check provides a safety
     net.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果列在输入模式中不存在，我们抛出错误。如果逻辑计划已验证，则不应发生这种情况，但检查提供了安全网。
 - en: '[Literals](#literals)'
+  id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[文字](#literals)'
 - en: 'Literal translations are trivial since we just copy the value:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 文字翻译是简单的，因为我们只需复制值：
 - en: '[PRE2]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Binary Expressions](#binary-expressions)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[二进制表达式](#binary-expressions)'
 - en: 'Binary expressions require recursively translating both operands, then creating
     the appropriate physical operator:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 二进制表达式需要递归地翻译两个操作数，然后创建适当的物理运算符：
 - en: '[PRE3]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[Aliases](#aliases)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[别名](#aliases)'
 - en: 'Aliases are interesting: they have no physical representation. An alias just
     gives a name to an expression for use in planning. At execution time, we evaluate
     the underlying expression:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 别名很有趣：它们没有物理表示。别名只是为表达式提供一个名称，以便在规划中使用。在执行时，我们评估底层表达式：
 - en: '[PRE4]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Translating Plans](#translating-plans)'
+  id: totrans-27
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[翻译计划](#translating-plans)'
 - en: '[Scan](#scan)'
+  id: totrans-28
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[扫描](#scan)'
 - en: 'Scan is the simplest translation. We pass the data source and projection through:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 扫描是最简单的翻译。我们通过数据源和投影传递：
 - en: '[PRE5]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[Selection (Filter)](#selection-filter)'
+  id: totrans-31
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[选择（过滤器）](#selection-filter)'
 - en: 'Selection translates the input plan and the filter expression:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 选择将输入计划和过滤器表达式进行翻译：
 - en: '[PRE6]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Note that `createPhysicalExpr` receives `plan.input` (the logical input), not
     `input` (the physical input). We need the logical schema to resolve column names
     to indices.
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`createPhysicalExpr` 接收 `plan.input`（逻辑输入），而不是 `input`（物理输入）。我们需要逻辑模式来解析列名到索引。
 - en: '[Projection](#projection)'
+  id: totrans-35
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[投影](#projection)'
 - en: 'Projection translates the input and each projection expression:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 投影将输入和每个投影表达式进行转换：
 - en: '[PRE7]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: We derive the output schema from the logical expressions since they know their
     output types.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们从逻辑表达式中推导输出模式，因为它们知道它们的输出类型。
 - en: '[Aggregate](#aggregate)'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[聚合](#aggregate)'
 - en: 'Aggregate translation involves grouping expressions and aggregate functions:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 聚合转换涉及分组表达式和聚合函数：
 - en: '[PRE8]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Notice that we always create `HashAggregateExec`. A more sophisticated planner
     might choose `SortAggregateExec` when the input is already sorted by the grouping
     columns.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，我们总是创建 `HashAggregateExec`。一个更复杂的规划器可能会在输入已经按分组列排序时选择 `SortAggregateExec`。
 - en: '[A Complete Example](#a-complete-example)'
+  id: totrans-43
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[完整示例](#a-complete-example)'
 - en: 'Consider this query:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑这个查询：
 - en: '[PRE9]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'The logical plan:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 逻辑计划：
 - en: '[PRE10]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'The query planner walks this top-down:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询规划器自上而下遍历：
 - en: 'Aggregate: Create physical plan for input, translate expressions'
+  id: totrans-49
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 聚合：为输入创建物理计划，翻译表达式
 - en: Recurse to translate Selection
+  id: totrans-50
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 递归翻译选择
 - en: 'Selection: Create physical plan for input, translate filter expression'
+  id: totrans-51
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 选择：为输入创建物理计划，翻译过滤表达式
 - en: Recurse to translate Scan
+  id: totrans-52
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 递归翻译扫描
 - en: 'Scan: Create ScanExec directly'
+  id: totrans-53
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 扫描：直接创建 `ScanExec`
 - en: 'Building physical plans bottom-up:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 自下而上构建物理计划：
 - en: '`ScanExec(employeesDataSource, [])`'
+  id: totrans-55
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`ScanExec(employeesDataSource, [])`'
 - en: '`SelectionExec(scanExec, EqExpression(ColumnExpression(2), LiteralStringExpression("CO")))`'
+  id: totrans-56
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`SelectionExec(scanExec, EqExpression(ColumnExpression(2), LiteralStringExpression("CO")))`'
 - en: '`HashAggregateExec(selectionExec, [ColumnExpression(0)], [AvgExpression(ColumnExpression(3))],
     schema)`'
+  id: totrans-57
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`HashAggregateExec(selectionExec, [ColumnExpression(0)], [AvgExpression(ColumnExpression(3))],
+    schema)`'
 - en: The result is an executable physical plan.
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 结果是一个可执行的物理计划。
 - en: '[Where Optimization Fits](#where-optimization-fits)'
+  id: totrans-59
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[哪里适合优化 WHERE](#where-optimization-fits)'
 - en: The query planner shown here does direct translation. Each logical operator
     becomes exactly one physical operator.
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里显示的查询规划器进行直接翻译。每个逻辑运算符正好对应一个物理运算符。
 - en: 'In practice, optimization happens between logical planning and physical planning:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 实际上，优化发生在逻辑规划和物理规划之间：
 - en: Parse SQL to logical plan
+  id: totrans-62
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 将 SQL 解析为逻辑计划
 - en: Optimize the logical plan (reorder joins, push down predicates, etc.)
+  id: totrans-63
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 优化逻辑计划（重新排序连接，向下推算谓词等）
 - en: Translate optimized logical plan to physical plan
+  id: totrans-64
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 将优化的逻辑计划转换为物理计划
 - en: 'Alternatively, some systems perform physical optimization:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者，一些系统执行物理优化：
 - en: Parse SQL to logical plan
+  id: totrans-66
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 将 SQL 解析为逻辑计划
 - en: Generate multiple candidate physical plans
+  id: totrans-67
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 生成多个候选物理计划
 - en: Estimate cost of each
+  id: totrans-68
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 估算每个的成本
 - en: Choose the cheapest
+  id: totrans-69
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 选择最便宜的
 - en: KQuery uses the first approach with a simple optimizer (covered in the next
     chapter after Joins and Subqueries). The planner here assumes it receives an already-optimized
     logical plan.
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery 使用第一种方法，具有简单的优化器（在下一章“连接”和“子查询”之后介绍）。这里的规划器假设它接收一个已经优化的逻辑计划。
 - en: '[Error Handling](#error-handling)'
+  id: totrans-71
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[错误处理](#error-handling)'
 - en: 'The query planner should catch errors that slip past logical plan validation:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询规划器应该捕获逻辑计划验证中遗漏的错误：
 - en: Unknown column names
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 未知列名
 - en: Unsupported expression types
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不支持的表达式类型
 - en: Type mismatches
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型不匹配
 - en: In KQuery, these throw exceptions. Production systems would produce structured
     error messages with source locations.
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 KQuery 中，这些会抛出异常。生产系统会生成带有源位置的格式化错误消息。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以 ePub、MOBI 和 PDF 格式提供购买，请访问 [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

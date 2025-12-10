@@ -1,292 +1,456 @@
 - en: Query Execution
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 查询执行
 - en: 原文：[https://howqueryengineswork.com/13-execution.html](https://howqueryengineswork.com/13-execution.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/13-execution.html](https://howqueryengineswork.com/13-execution.html)
 - en: '*The source code discussed in this chapter can be found in the `execution`
     module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在 [KQuery 项目](https://github.com/andygrove/how-query-engines-work)
+    的 `execution` 模块中找到。*'
 - en: 'We have built all the pieces: data sources, logical plans, physical plans,
     a query planner, and an optimizer. This chapter ties them together into a working
     query engine.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经构建了所有组件：数据源、逻辑计划、物理计划、查询规划器和优化器。本章将它们组合成一个可工作的查询引擎。
 - en: '[The Execution Context](#the-execution-context)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[执行上下文](#the-execution-context)'
 - en: 'The `ExecutionContext` is the entry point for running queries. It manages registered
     tables and coordinates the execution pipeline:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ExecutionContext` 是运行查询的入口点。它管理已注册的表并协调执行管道：'
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Users interact with the context to:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 用户通过与上下文交互来：
 - en: Register data sources as named tables
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 将数据源注册为命名表
 - en: Build queries using SQL or the DataFrame API
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 使用 SQL 或 DataFrame API 构建查询
 - en: Execute queries and consume results
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 执行查询并消费结果
 - en: '[The Execution Pipeline](#the-execution-pipeline)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[执行管道](#the-execution-pipeline)'
 - en: 'When you execute a query, it flows through several stages:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你执行一个查询时，它将通过几个阶段：
 - en: '[PRE1]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: For DataFrame queries, the pipeline starts at the logical plan stage since the
     DataFrame API builds logical plans directly.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于 DataFrame 查询，管道从逻辑计划阶段开始，因为 DataFrame API 直接构建逻辑计划。
 - en: '[Stage 1: Parsing (SQL only)](#stage-1-parsing-sql-only)'
+  id: totrans-15
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[阶段 1：解析（仅限 SQL）](#stage-1-parsing-sql-only)'
 - en: 'SQL text becomes tokens, then a syntax tree:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: SQL 文本变成标记，然后是语法树：
 - en: '[PRE2]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Stage 2: Logical Planning](#stage-2-logical-planning)'
+  id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[阶段 2：逻辑规划](#stage-2-logical-planning)'
 - en: 'The SQL AST (or DataFrame) becomes a logical plan:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: SQL AST（或 DataFrame）变成逻辑计划：
 - en: '[PRE3]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[Stage 3: Optimization](#stage-3-optimization)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[阶段 3：优化](#stage-3-optimization)'
 - en: 'The optimizer transforms the logical plan:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 优化器转换逻辑计划：
 - en: '[PRE4]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Stage 4: Physical Planning](#stage-4-physical-planning)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[阶段 4：物理规划](#stage-4-physical-planning)'
 - en: 'The query planner creates an executable physical plan:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询规划器创建一个可执行的物理计划：
 - en: '[PRE5]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[Stage 5: Execution](#stage-5-execution)'
+  id: totrans-27
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[阶段 5：执行](#stage-5-execution)'
 - en: 'The physical plan executes, producing record batches:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 物理计划执行，生成记录批次：
 - en: '[PRE6]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[Running a Query](#running-a-query)'
+  id: totrans-30
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[运行查询](#running-a-query)'
 - en: 'Here is a complete example:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是一个完整的示例：
 - en: '[PRE7]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Or using the DataFrame API:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者使用 DataFrame API：
 - en: '[PRE8]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Both approaches produce the same physical plan and results.
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 两种方法产生相同的物理计划和结果。
 - en: '[Lazy Evaluation](#lazy-evaluation)'
+  id: totrans-36
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[懒加载评估](#lazy-evaluation)'
 - en: Notice that building a DataFrame does not execute anything. The DataFrame just
     holds a logical plan. Execution happens only when you call `execute()` and consume
     the resulting sequence.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意到构建 DataFrame 并不会执行任何操作。DataFrame 只持有逻辑计划。执行只有在调用 `execute()` 并消费结果序列时才会发生。
 - en: 'This lazy evaluation has benefits:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种懒加载评估有以下好处：
 - en: The optimizer sees the complete query before execution
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在执行之前，优化器可以看到完整的查询
 - en: Errors in the plan are caught before processing starts
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在处理开始之前就捕捉到计划中的错误
 - en: Resources are not allocated until needed
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 资源在需要时才分配
 - en: '[Consuming Results](#consuming-results)'
+  id: totrans-42
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[消费结果](#consuming-results)'
 - en: 'The `execute()` method returns `Sequence<RecordBatch>`. You can process results
     in several ways:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: '`execute()` 方法返回 `Sequence<RecordBatch>`。你可以以多种方式处理结果：'
 - en: 'Iterate batches:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 遍历批次：
 - en: '[PRE9]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Collect all results:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 收集所有结果：
 - en: '[PRE10]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Take only what you need:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 只取所需：
 - en: '[PRE11]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: Because `Sequence` is lazy, taking only the first batch avoids computing subsequent
     batches. This matters for queries with `LIMIT`.
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为 `Sequence` 是懒加载的，只取第一批数据可以避免计算后续批次。这对于带有 `LIMIT` 的查询很重要。
 - en: '[Example: NYC Taxi Data](#example-nyc-taxi-data)'
+  id: totrans-51
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[示例：纽约出租车数据](#example-nyc-taxi-data)'
 - en: Let us run a real query against the NYC Taxi dataset, a common benchmark dataset
     with millions of rows.
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们运行一个针对纽约出租车数据集的真实查询，这是一个常见的基准数据集，包含数百万行。
 - en: '[PRE12]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Output:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE13]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '[The Impact of Optimization](#the-impact-of-optimization)'
+  id: totrans-56
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[优化影响](#the-impact-of-optimization)'
 - en: 'To see how much the optimizer helps, we can bypass it:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了看到优化器能帮助多少，我们可以绕过它：
 - en: '[PRE14]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'The unoptimized query takes about five times longer. The difference comes from
     projection push-down: the optimized plan reads only the columns it needs (`passenger_count`,
     `fare_amount`), while the unoptimized plan reads all 17 columns from the CSV file.'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 未优化的查询大约需要五倍的时间。差异来自于投影下推：优化计划只读取它需要的列（`passenger_count`，`fare_amount`），而未优化的计划从
+    CSV 文件中读取所有 17 列。
 - en: For wider tables or more selective filters, the optimization impact would be
     even greater.
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于更宽的表或更精确的筛选器，优化影响会更大。
 - en: '[Comparison with Apache Spark](#comparison-with-apache-spark)'
+  id: totrans-61
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[与 Apache Spark 的比较](#comparison-with-apache-spark)'
 - en: 'For reference, here is the same query in Apache Spark:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 仅供参考，以下是 Apache Spark 中的相同查询：
 - en: '[PRE15]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: KQuery’s performance is competitive for this query. Spark has more overhead
     for small-to-medium datasets but scales better to very large datasets through
     its distributed execution capabilities.
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery 对于此类查询的性能具有竞争力。Spark 对于中小型数据集有更多开销，但通过其分布式执行能力，在处理非常大的数据集时扩展性更好。
 - en: '[Error Handling](#error-handling)'
+  id: totrans-65
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[错误处理](#error-handling)'
 - en: 'Errors can occur at any stage:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 错误可能出现在任何阶段：
 - en: 'Parsing: Syntax errors in SQL'
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 解析：SQL 中的语法错误
 - en: 'Planning: Unknown table or column names, type mismatches'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 规划：未知表或列名，类型不匹配
 - en: 'Execution: Runtime errors like division by zero, file not found'
+  id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 执行：运行时错误，如除以零、文件未找到
 - en: KQuery currently throws exceptions for errors. A production system would provide
     structured error types with source locations and helpful messages.
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery 目前会抛出异常来处理错误。一个生产系统会提供具有源位置和有用信息的结构化错误类型。
 - en: '[What We Have Built](#what-we-have-built)'
+  id: totrans-71
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[我们所构建的内容](#what-we-have-built)'
 - en: 'At this point, we have a working query engine that can:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们有一个可以工作的查询引擎，它能：
 - en: Read CSV files
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 读取 CSV 文件
 - en: Execute SQL queries
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 执行 SQL 查询
 - en: Execute DataFrame queries
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 执行 DataFrame 查询
 - en: Optimize query plans
+  id: totrans-76
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优化查询计划
 - en: Process data in batches
+  id: totrans-77
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 批量处理数据
 - en: 'The remaining chapters cover more advanced topics: parallel execution within
     a single machine, and distributed execution across a cluster.'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 剩余章节涵盖了更高级的主题：单机内的并行执行，以及集群间的分布式执行。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以 ePub、MOBI 和 PDF 格式可供购买，详情请访问 [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权 © 2020-2025 安迪·格鲁夫。版权所有。**'

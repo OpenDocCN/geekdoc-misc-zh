@@ -1,30 +1,44 @@
 - en: Acknowledgments
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 致谢
 - en: 原文：[https://howqueryengineswork.com/00-acknowledgments.html](https://howqueryengineswork.com/00-acknowledgments.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/00-acknowledgments.html](https://howqueryengineswork.com/00-acknowledgments.html)
 - en: This book would not have been possible without the support of my family, who
     are incredibly patient with me when I get absorbed with yet another side project.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有家人的支持，这本书是无法完成的。他们在我沉迷于另一个项目时，始终对我表现出极大的耐心。
 - en: Special thanks go to Matthew Powers, a.k.a. Mr. Powers, for inspiring me to
     write this book in the first place. Matthew is the author of the book “Writing
     Beautiful Apache Spark Code” which is also available on Leanpub.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 特别感谢马修·鲍尔斯（Matthew Powers），也就是鲍尔斯先生，是他激励我最初写这本书。马修是《编写漂亮的Apache Spark代码》一书的作者，该书也可在Leanpub上找到。
 - en: I also need to thank the countless people who have interacted with me over the
     past six years as I worked on the DataFusion project, especially the Apache Arrow
     and Apache DataFusion PMC members, committers, and contributors. This book would
     not have been possible without you.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 我还需要感谢在过去六年里与我互动的无数人，尤其是在DataFusion项目上，特别是Apache Arrow和Apache DataFusion的PMC成员、提交者和贡献者。没有你们，这本书是无法完成的。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以ePub、MOBI和PDF格式在[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)上出售*。'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利**。'

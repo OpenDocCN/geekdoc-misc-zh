@@ -1,305 +1,454 @@
 - en: Data Sources
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 数据源
 - en: 原文：[https://howqueryengineswork.com/04-data-sources.html](https://howqueryengineswork.com/04-data-sources.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/04-data-sources.html](https://howqueryengineswork.com/04-data-sources.html)
 - en: '*The source code discussed in this chapter can be found in the `datasource`
     module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在[KQuery项目](https://github.com/andygrove/how-query-engines-work)的`datasource`模块中找到。*'
 - en: A query engine needs data to query. The data might come from CSV files, Parquet
     files, databases, or even data that already exists in memory. We want our query
     engine to work with any of these without caring about the details. This chapter
     introduces the data source abstraction that makes this possible.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询引擎需要数据来进行查询。数据可能来自CSV文件、Parquet文件、数据库，甚至已经存在于内存中的数据。我们希望我们的查询引擎能够与这些数据源一起工作，而不关心细节。本章介绍了使这成为可能的数据源抽象。
 - en: '[Why Abstract Data Sources?](#why-abstract-data-sources)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[为什么需要抽象数据源？](#why-abstract-data-sources)'
 - en: 'Consider a simple query:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑一个简单的查询：
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'From the query engine’s perspective, it needs to:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 从查询引擎的角度来看，它需要：
 - en: Know what columns exist (to validate that `name`, `salary`, and `department`
     are real)
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 知道哪些列存在（以验证`name`、`salary`和`department`是真实的）
 - en: Know the types of those columns (to validate that comparing `department` to
     a string makes sense)
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 知道这些列的类型（以验证将`department`与字符串进行比较是有意义的）
 - en: Read the actual data, preferably just the columns it needs
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 读取实际数据，最好是它需要的列
 - en: Whether `employees` is a CSV file, a Parquet file, or an in-memory table, these
     requirements are the same. By defining a common interface, we can write query
     planning and execution logic once and have it work with any data source.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 无论`employees`是CSV文件、Parquet文件还是内存中的表，这些要求都是相同的。通过定义一个公共接口，我们可以一次性编写查询规划和执行逻辑，并且它可以与任何数据源一起工作。
 - en: '[The DataSource Interface](#the-datasource-interface)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[数据源接口](#the-datasource-interface)'
 - en: 'KQuery defines a simple interface that all data sources must implement:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery定义了一个简单的接口，所有数据源都必须实现：
 - en: '[PRE1]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: schema() returns the schema of the data, the column names and their types. The
     query planner uses this during planning to validate queries. If you reference
     a column that does not exist, the planner can report an error before execution
     begins.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: schema()返回数据的模式，即列名及其类型。查询规划器在规划期间使用它来验证查询。如果你引用了一个不存在的列，规划器可以在执行开始之前报告错误。
 - en: 'scan(projection) reads the data and returns it as a sequence of record batches.
     The `projection` parameter lists which columns to read. This is important for
     efficiency: if a query only uses three columns from a table with fifty columns,
     we should only read those three. Some file formats like Parquet support this natively.
     For others like CSV, we might read everything but only build vectors for the requested
     columns.'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: scan(projection)读取数据，并以记录批次的序列返回它。`projection`参数列出了要读取的列。这对于效率很重要：如果查询只使用表中的三个列，而表有五十个列，我们只应该读取这三个列。一些文件格式如Parquet原生支持这一点。对于其他如CSV的格式，我们可能读取所有内容，但只为请求的列构建向量。
 - en: The return type `Sequence<RecordBatch>` enables streaming. Rather than loading
     an entire file into memory, we can process it batch by batch. This matters when
     data is larger than available memory.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回类型`Sequence<RecordBatch>`启用流式处理。我们不需要将整个文件加载到内存中，我们可以分批处理它。当数据大于可用内存时，这很重要。
 - en: '[CSV Data Source](#csv-data-source)'
+  id: totrans-18
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[CSV数据源](#csv-data-source)'
 - en: CSV is the simplest format to understand but has some awkward properties. The
     file is just text with values separated by commas (or tabs, or semicolons). There
     is no schema embedded in the file, only optional column names in the first row.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: CSV是最容易理解的格式，但有一些尴尬的特性。文件只是由逗号（或制表符，或分号）分隔的值组成的文本。文件中没有嵌入模式，只有第一行可选的列名。
 - en: 'Here is what a CSV file might look like:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 下面是一个CSV文件可能的样子：
 - en: '[PRE2]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'To read this, we need to handle several things:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 要读取这个，我们需要处理几件事情：
 - en: Parse column names from the header row (if present)
+  id: totrans-23
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 从标题行中解析列名（如果有的话）
 - en: Infer or accept a schema (what types are these columns?)
+  id: totrans-24
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 推断或接受一个模式（这些列的类型是什么？）
 - en: Parse text values into typed values
+  id: totrans-25
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 将文本值解析为类型值
 - en: Handle missing or malformed values
+  id: totrans-26
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 处理缺失或格式不正确的值
 - en: 'KQuery’s `CsvDataSource` accepts an optional schema. If provided, it uses that
     schema. If not, it infers one by reading the header row and treating all columns
     as strings:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery的`CsvDataSource`接受一个可选的模式。如果提供了，它使用那个模式。如果没有提供，它通过读取标题行并将所有列视为字符串来推断一个模式：
 - en: '[PRE3]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The `scan` method streams through the file, parsing rows into batches. For
     each batch, it creates Arrow vectors and populates them with parsed values:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: '`scan` 方法通过文件流式传输，将行解析到批次中。对于每个批次，它创建 Arrow 向量并用解析的值填充它们：'
 - en: '[PRE4]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: The `ReaderAsSequence` class implements Kotlin’s `Sequence` interface, reading
     rows on demand and grouping them into batches. Each batch converts string values
     to the appropriate Arrow vector type based on the schema.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ReaderAsSequence` 类实现了 Kotlin 的 `Sequence` 接口，按需读取行并将它们分组到批次中。每个批次根据模式将字符串值转换为适当的
+    Arrow 向量类型。'
 - en: '[Type Conversion](#type-conversion)'
+  id: totrans-32
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[类型转换](#type-conversion)'
 - en: 'CSV files are text, but our schema might specify that a column is an integer
     or a float. The CSV reader must parse these strings into typed values:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: CSV 文件是文本，但我们的模式可能指定列是整数或浮点数。CSV 读取器必须将这些字符串解析为类型值：
 - en: '[PRE5]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Empty values become nulls. Invalid values (like “abc” in an integer column)
     will throw an exception, which is the right behaviour since the data does not
     match the declared schema.
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 空值变为 null。无效值（如整数列中的“abc”）将抛出异常，这是正确的行为，因为数据与声明的模式不匹配。
 - en: '[Parquet Data Source](#parquet-data-source)'
+  id: totrans-36
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Parquet 数据源](#parquet-data-source)'
 - en: 'Parquet is a binary columnar format designed for analytics. Unlike CSV, Parquet
     files contain:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: Parquet 是一种为分析设计的二进制列格式。与 CSV 不同，Parquet 文件包含：
 - en: Schema information (column names, types, nullability)
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模式信息（列名、类型、可空性）
 - en: Data organized in column chunks within row groups
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行组内按列块组织的数据
 - en: Compression (snappy, gzip, etc.)
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 压缩（snappy、gzip 等）
 - en: Optional statistics (min/max values per column chunk)
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可选的统计信息（每列块的 min/max 值）
 - en: This makes Parquet much more efficient for query engines. Reading a single column
     means reading just that column’s data, not the entire file. The schema is known
     without inference. And compression reduces both storage and I/O.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 这使得 Parquet 对查询引擎更加高效。读取单个列意味着只读取该列的数据，而不是整个文件。模式是已知的，无需推断。并且压缩减少了存储和 I/O。
 - en: 'KQuery’s `ParquetDataSource` is simpler than the CSV version because the Parquet
     library provides much of what we need:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery 的 `ParquetDataSource` 比 CSV 版本简单，因为 Parquet 库提供了我们需要的许多功能：
 - en: '[PRE6]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: The schema comes directly from the file’s metadata. The scan reads row groups
     one at a time, converting Parquet’s columnar format to Arrow vectors.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 模式直接来自文件的元数据。扫描逐个读取行组，将 Parquet 的列格式转换为 Arrow 向量。
 - en: '[Projection Pushdown](#projection-pushdown)'
+  id: totrans-46
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[投影下推](#projection-pushdown)'
 - en: Parquet’s columnar organization means projection pushdown is efficient. When
     we request only certain columns, the Parquet reader only decompresses and reads
     those column chunks. For wide tables (hundreds of columns) where queries touch
     only a few, this can be orders of magnitude faster than reading everything.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: Parquet 的列组织意味着投影下推是高效的。当我们只请求某些列时，Parquet 读取器只解压缩和读取这些列块。对于只有少数列被查询的宽表（数百列），这可以比读取所有内容快几个数量级。
 - en: '[In-Memory Data Source](#in-memory-data-source)'
+  id: totrans-48
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[内存数据源](#in-memory-data-source)'
 - en: 'Sometimes data is already in memory, perhaps loaded from another source or
     generated by a previous query. The `InMemoryDataSource` wraps existing record
     batches:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时数据已经存在于内存中，可能是从另一个来源加载或由之前的查询生成。`InMemoryDataSource` 包装现有的记录批次：
 - en: '[PRE7]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: This is useful for testing and for queries that build on other queries. Projection
     here just selects which columns to include in the output batches.
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 这对于测试和基于其他查询的查询很有用。这里的投影只是选择要包含在输出批次中的列。
 - en: '[Other Data Sources](#other-data-sources)'
+  id: totrans-52
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[其他数据源](#other-data-sources)'
 - en: 'Real query engines support many more data sources. Some common ones:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 真正的查询引擎支持更多的数据源。一些常见的数据源：
 - en: 'JSON: Structured but schema-less. Each line might be a JSON object. Schema
     inference is possible but complex since nested structures must be flattened or
     represented as Arrow’s nested types.'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: JSON：结构化但无模式。每一行可能是一个 JSON 对象。模式推断是可能的，但复杂，因为嵌套结构必须展平或表示为 Arrow 的嵌套类型。
 - en: 'ORC: Similar to Parquet, another columnar format popular in the Hadoop ecosystem.
     Data is stored in columnar “stripes” with schema and statistics.'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: ORC：类似于 Parquet，另一种在 Hadoop 生态系统中流行的列格式。数据以具有模式和统计信息的列“条带”形式存储。
 - en: 'Databases: Query engines can read from other databases via JDBC or native protocols.
     The schema comes from the database’s catalog. Pushing predicates down to the source
     database can dramatically reduce data transfer.'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据库：查询引擎可以通过 JDBC 或本地协议从其他数据库读取。模式来自数据库的目录。将谓词下推到源数据库可以显着减少数据传输。
 - en: 'Object Storage: Cloud systems like S3 or GCS can serve as data sources. The
     query engine lists files matching a pattern and reads them, often in parallel.'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 对象存储：云系统如S3或GCS可以作为数据源。查询引擎列出匹配模式的文件并读取它们，通常并行读取。
 - en: 'Streaming Sources: Kafka, Kinesis, or other message queues. These require different
     handling since data arrives continuously rather than being read from a file.'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 流式数据源：Kafka、Kinesis或其他消息队列。由于数据是连续到达而不是从文件中读取，因此需要不同的处理方式。
 - en: '[Schema-less Sources](#schema-less-sources)'
+  id: totrans-59
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[无模式数据源](#schema-less-sources)'
 - en: Some data sources do not have fixed schemas. JSON documents can have different
     fields in each record. Schema-on-read systems defer schema decisions until query
     time.
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些数据源没有固定的模式。JSON文档中的每个记录可以有不同的字段。基于读取的模式的系统将模式决策推迟到查询时间。
 - en: 'Handling schema-less sources adds complexity. Options include:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 处理无模式数据源增加了复杂性。选项包括：
 - en: Require users to declare a schema explicitly
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 要求用户显式声明模式
 - en: Infer a schema from a sample of the data
+  id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从数据样本中推断模式
 - en: Use a flexible representation like a map of string to value
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用灵活的表示方式，如字符串到值的映射
 - en: Reject queries that reference non-existent fields at runtime rather than planning
     time
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在运行时而不是规划时拒绝引用不存在字段的查询
 - en: KQuery requires schemas at planning time, so schema-less sources must provide
     or infer a schema somehow.
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery在规划时需要模式，因此无模式的数据源必须以某种方式提供或推断模式。
 - en: '[Connecting Data Sources to the Query Engine](#connecting-data-sources-to-the-query-engine)'
+  id: totrans-67
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[将数据源连接到查询引擎](#connecting-data-sources-to-the-query-engine)'
 - en: 'Data sources plug into the query engine through the execution context. In KQuery,
     you register data sources with names:'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据源通过执行上下文连接到查询引擎。在KQuery中，您可以通过名称注册数据源：
 - en: '[PRE8]'
+  id: totrans-69
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: The query planner resolves table names to data sources, retrieves schemas for
     validation, and creates scan operations in the query plan. The details of CSV
     versus Parquet versus anything else are hidden behind the `DataSource` interface.
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询规划器将表名解析为数据源，检索用于验证的模式，并在查询计划中创建扫描操作。CSV与Parquet或其他任何东西的详细信息都隐藏在`DataSource`接口之后。
 - en: This separation is powerful. Adding support for a new file format means implementing
     two methods. The rest of the query engine, from planning through optimization
     to execution, works without modification.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种分离非常强大。添加对新文件格式的支持意味着实现两种方法。查询引擎的其余部分，从规划到优化再到执行，无需修改即可工作。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以ePub、MOBI和PDF格式可供购买，详情请访问[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

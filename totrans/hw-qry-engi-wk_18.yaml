@@ -1,423 +1,605 @@
 - en: Parallel Query Execution
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 并行查询执行
 - en: 原文：[https://howqueryengineswork.com/14-parallel-query.html](https://howqueryengineswork.com/14-parallel-query.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/14-parallel-query.html](https://howqueryengineswork.com/14-parallel-query.html)
 - en: A single-threaded query engine leaves most of a modern computer idle. My desktop
     has 24 CPU cores, but a single-threaded query uses only one of them, wasting 96%
     of available compute power. Parallel query execution changes this by spreading
     work across multiple cores.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 单线程查询引擎让大多数现代计算机处于闲置状态。我的台式机有24个CPU核心，但单线程查询只使用其中一个，浪费了96%的计算能力。并行查询执行通过将工作分散到多个核心上来改变这一点。
 - en: 'The goal is straightforward: if a query takes 60 seconds on one core, running
     it across 12 cores should take closer to 5 seconds. We rarely achieve perfect
     linear speedup due to coordination overhead and uneven data distribution, but
     even partial parallelism delivers substantial improvements.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 目标很简单：如果一个查询在一个核心上需要60秒，那么在12个核心上运行应该接近5秒。由于协调开销和数据分布不均匀，我们很少能够实现完美的线性加速，但即使是部分并行化也能带来显著的改进。
 - en: This chapter covers parallel execution on a single machine using multiple threads
     or coroutines. The next chapter extends these ideas to distributed execution across
     multiple machines, which introduces network coordination and data exchange between
     nodes.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章介绍了在单台机器上使用多个线程或协程进行并行执行。下一章将扩展这些思想到多台机器的分布式执行，这引入了节点之间的网络协调和数据交换。
 - en: '[Why Parallelism Helps](#why-parallelism-helps)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[为什么并行化有帮助](#why-parallelism-helps)'
 - en: 'Query engines spend their time on three activities: reading data from storage,
     computing results, and writing output. Each of these can benefit from parallelism.'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询引擎主要花费时间在三个活动上：从存储中读取数据、计算结果和写入输出。这些活动中的每一个都可以从并行化中受益。
 - en: For I/O-bound queries that spend most of their time reading data, parallelism
     helps because modern storage systems (SSDs, NVMe drives) can handle multiple concurrent
     read requests faster than sequential ones. The operating system and storage controller
     can optimize the order of reads, and multiple threads keep the I/O pipeline busy.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于I/O密集型的查询，它们大部分时间都在读取数据，并行化有助于提高效率，因为现代存储系统（SSDs、NVMe驱动器）可以比顺序请求更快地处理多个并发读取请求。操作系统和存储控制器可以优化读取的顺序，并且多个线程保持I/O管道忙碌。
 - en: For CPU-bound queries that spend their time on computation (aggregations, joins,
     complex expressions), parallelism directly multiplies throughput. If twelve cores
     each process their share of the data, the total time approaches one-twelfth of
     the single-threaded time.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于计算密集型的查询，它们花费时间在计算上（聚合、连接、复杂表达式），并行化直接乘以吞吐量。如果12个核心各自处理它们的数据份额，总时间接近单线程时间的十二分之一。
 - en: In practice, most queries are a mix of both, and parallelism helps in both cases.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 在实践中，大多数查询都是两者的混合体，并行化在这两种情况下都有帮助。
 - en: '[Data Parallelism](#data-parallelism)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[数据并行](#data-parallelism)'
 - en: 'The form of parallelism we will explore is called data parallelism: running
     the same computation on different subsets of data simultaneously. If we have 100
     million rows to process, we split them into chunks and process each chunk on a
     different thread.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将要探索的并行化形式被称为数据并行：同时在不同数据子集上运行相同的计算。如果我们有1亿行数据要处理，我们将它们分成块，并在不同的线程上处理每个块。
 - en: This contrasts with pipeline parallelism, where different operators in the query
     run simultaneously on different stages of the data. Pipeline parallelism is harder
     to implement and offers less benefit for most query workloads, so most query engines
     focus on data parallelism.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 这与管道并行形成对比，在管道并行中，查询中的不同操作在不同的数据阶段上同时运行。管道并行更难实现，并且对于大多数查询工作负载的收益较少，因此大多数查询引擎都专注于数据并行。
 - en: Data parallelism requires the input data to be partitioned, meaning split into
     independent chunks that can be processed separately. The natural partitioning
     depends on how data is stored.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据并行需要输入数据被分区，即分成可以单独处理的独立块。自然的分区取决于数据是如何存储的。
 - en: '[A Practical Example](#a-practical-example)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[一个实际例子](#a-practical-example)'
 - en: The NYC taxi data set provides a convenient test case for parallel execution.
     The data is already partitioned by month, with one CSV file per month, giving
     us twelve partitions for a year of data. The most straightforward approach to
     parallel query execution is to use one thread per partition, execute the same
     query in parallel across all partitions, and then combine the results.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 纽约市出租车数据集为并行执行提供了一个方便的测试用例。数据已经按月份分区，每月一个 CSV 文件，给我们提供了十二个分区来处理一年的数据。并行查询执行的最直接方法是每个分区使用一个线程，并行地在所有分区上执行相同的查询，然后组合结果。
 - en: '*The source code for this example can be found at `jvm/examples/src/main/kotlin/ParallelQuery.kt`
     in the KQuery GitHub repository.*'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: '*此示例的源代码可以在 KQuery GitHub 仓库中的 `jvm/examples/src/main/kotlin/ParallelQuery.kt`
+    找到。*'
 - en: 'We will run an aggregate query across all twelve months in parallel using Kotlin
     coroutines. First, here is the single-threaded function for querying one partition:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将使用 Kotlin 协程并行地对所有十二个月进行聚合查询。首先，这是查询单个分区的单线程函数：
 - en: '[PRE0]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'With this helper function, we can run the query in parallel across all twelve
     partitions:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用这个辅助函数，我们可以在所有十二个分区上并行运行查询：
 - en: '[PRE1]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Running on a desktop with 24 cores produces output like this:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在具有 24 个核心的桌面上运行会产生如下输出：
 - en: '[PRE2]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The total duration (25.5 seconds) is roughly the same as the slowest individual
     query (25.4 seconds for April). All twelve queries ran concurrently, so the overall
     time was determined by the slowest partition rather than the sum of all partitions.
     A single-threaded approach would have taken roughly 250 seconds (the sum of all
     query times).
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 总持续时间（25.5 秒）大致与最慢的单个查询相同（4 月为 25.4 秒）。所有十二个查询都是并发运行的，所以整体时间由最慢的分区决定，而不是所有分区的总和。单线程方法大约需要
+    250 秒（所有查询时间的总和）。
 - en: 'However, we now have a problem: the result is a list of twelve batches, each
     containing partial aggregates. There will be a result for `passenger_count=1`
     from each of the twelve partitions, when we want a single combined result.'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，我们现在有一个问题：结果是包含十二个批次的列表，每个批次都包含部分聚合。当我们想要一个单一组合结果时，每个分区都会有 `passenger_count=1`
+    的结果。
 - en: '[Combining Results](#combining-results)'
+  id: totrans-25
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[组合结果](#combining-results)'
 - en: How we combine results from parallel execution depends on the type of query.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们如何组合并行执行的结果取决于查询的类型。
 - en: For projection and filter queries, results can simply be concatenated. If each
     partition produces filtered rows, the final result is just all those rows together,
     similar to SQL’s `UNION ALL`. No further processing is needed.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于投影和过滤查询，结果可以简单地连接。如果每个分区都产生了过滤后的行，最终结果就是所有这些行的组合，类似于 SQL 的 `UNION ALL`。不需要进一步处理。
 - en: Aggregate queries require a two-phase approach that is often described using
     “map-reduce” terminology. The “map” phase runs the aggregate on each partition
     independently. The “reduce” phase combines those partial results into a final
     answer.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 聚合查询需要一个两阶段的方法，通常使用“map-reduce”术语来描述。在“map”阶段，每个分区独立运行聚合。在“reduce”阶段，将这些部分结果组合成最终答案。
 - en: The combine step uses the same aggregate function for `MIN`, `MAX`, and `SUM`.
     To find the minimum across all partitions, we take the minimum of each partition’s
     minimum. The same logic applies to maximum and sum.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 组合步骤使用相同的聚合函数 `MIN`、`MAX` 和 `SUM`。为了找到所有分区中的最小值，我们取每个分区最小值的最小值。相同的逻辑适用于最大值和总和。
 - en: '`COUNT` is different. We do not want the count of the counts. We want the sum
     of the counts. If partition A counted 1000 rows and partition B counted 2000 rows,
     the total count is 3000, not 2.'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: '`COUNT` 是不同的。我们不想计算计数的数量。我们想要计数的总和。如果分区 A 计数了 1000 行，分区 B 计数了 2000 行，总计数是 3000，而不是
+    2。'
 - en: '`AVG` is trickier still. The average of averages is not the correct overall
     average unless all partitions have the same number of rows. The correct approach
     is to compute the sum and count separately, then divide at the end. Some query
     engines rewrite `AVG(x)` into `SUM(x) / COUNT(x)` during planning specifically
     to handle parallel aggregation correctly.'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: '`AVG` 更加复杂。除非所有分区都有相同数量的行，否则平均值的平均值不是正确的整体平均值。正确的方法是分别计算总和和计数，然后在最后除以。一些查询引擎在规划阶段将
+    `AVG(x)` 重写为 `SUM(x) / COUNT(x)`，以正确处理并行聚合。'
 - en: 'For our taxi data example, we run a secondary aggregation on the partial results:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于我们的出租车数据示例，我们在部分结果上运行二级聚合：
 - en: '[PRE3]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'This produces the final result set:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 这会产生最终的结果集：
 - en: '[PRE4]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Partitioning Strategies](#partitioning-strategies)'
+  id: totrans-36
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[分区策略](#partitioning-strategies)'
 - en: The “one thread per file” strategy worked well in our example because we had
     twelve files and roughly twelve cores. But this approach does not generalise well.
     What if we have thousands of small files? Starting a thread per file would create
     excessive overhead. What if we have one massive file? A single thread would process
     it while the others sit idle.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们的例子中，“每个文件一个线程”的策略效果很好，因为我们有十二个文件和大约十二个核心。但这种方法并不具有普遍性。如果我们有成千上万的小文件怎么办？为每个文件启动一个线程会创建过多的开销。如果我们有一个巨大的文件怎么办？一个线程会处理它，而其他线程则闲置。
 - en: A better approach is to separate the concept of partitions (logical units of
     data) from workers (threads or processes). The query planner can then assign multiple
     partitions to each worker, or split large partitions across multiple workers,
     to balance the load.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个更好的方法是分离分区（数据逻辑单元）和工作进程（线程或进程）的概念。然后查询计划器可以为每个工作进程分配多个分区，或将大型分区拆分到多个工作进程中，以平衡负载。
 - en: '[File-Based Partitioning](#file-based-partitioning)'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[基于文件的分区](#file-based-partitioning)'
 - en: The simplest form of partitioning uses files as partition boundaries. Each file
     becomes one partition. This works well when files are roughly equal in size and
     the number of files is appropriate for the available parallelism.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 最简单的分区形式使用文件作为分区边界。每个文件成为一个分区。当文件大小大致相等且文件数量适合可用并行性时，这种方法效果很好。
 - en: '[Row Group Partitioning](#row-group-partitioning)'
+  id: totrans-41
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[行组分区](#row-group-partitioning)'
 - en: Some file formats have natural internal partitions. Apache Parquet files consist
     of multiple “row groups”, each containing a batch of columnar data (typically
     128MB or so). A query planner can inspect the available Parquet files, enumerate
     all row groups across all files, and schedule reading these row groups across
     a fixed pool of worker threads.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些文件格式具有自然的内部分区。Apache Parquet 文件由多个“行组”组成，每个行组包含一批列式数据（通常是大约 128MB）。查询计划器可以检查可用的
+    Parquet 文件，枚举所有文件中的所有行组，并在固定的工作线程池中安排读取这些行组。
 - en: This provides finer-grained parallelism than file-based partitioning. A single
     large Parquet file with ten row groups can be processed by ten workers, while
     ten small files might be processed by fewer workers to avoid overhead.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 这比基于文件的分区提供了更细粒度的并行性。一个包含十个行组的单个大型 Parquet 文件可以由十个工作进程处理，而十个小型文件可能需要较少的工作进程来避免开销。
 - en: '[Splitting Unstructured Files](#splitting-unstructured-files)'
+  id: totrans-44
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[拆分非结构化文件](#splitting-unstructured-files)'
 - en: CSV and other text formats lack internal structure, making them harder to partition.
     We can inspect the file size and divide it into equal chunks, but record boundaries
     do not align with arbitrary byte offsets. A record might span two chunks.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: CSV 和其他文本格式缺乏内部结构，这使得它们更难进行分区。我们可以检查文件大小并将其分成相等的块，但记录边界并不与任意的字节偏移量对齐。一个记录可能跨越两个块。
 - en: The solution is to adjust chunk boundaries to record boundaries. After calculating
     the byte offset for a chunk boundary, we scan forward to find the next record
     delimiter (typically a newline, though this gets complicated with quoted fields
     that contain newlines). Each worker then knows the exact byte range of complete
     records it should process.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 解决方案是调整块边界以与记录边界对齐。在计算块边界的字节偏移量后，我们向前扫描以找到下一个记录分隔符（通常是换行符，但在包含换行符的引号字段中这会变得复杂）。然后每个工作进程都知道它应该处理的完整记录的确切字节范围。
 - en: This complexity is one reason data engineering pipelines often convert CSV to
     Parquet early on. Parquet’s structured format makes subsequent parallel processing
     much simpler.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种复杂性是数据工程管道通常早期将 CSV 转换为 Parquet 的一个原因。Parquet 的结构化格式使得后续的并行处理变得简单得多。
 - en: '[Partition Pruning](#partition-pruning)'
+  id: totrans-48
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[分区修剪](#partition-pruning)'
 - en: When data is organised into partitions based on column values, the query planner
     can skip entire partitions that cannot contain matching rows. This optimisation
     is called partition pruning.
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 当数据根据列值组织到分区中时，查询计划器可以跳过无法包含匹配行的整个分区。这种优化称为分区修剪。
 - en: 'A common convention is to use directory names containing key-value pairs to
     indicate partition contents:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 一种常见的约定是使用包含键值对的目录名称来指示分区内容：
 - en: '[PRE5]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Given this structure, a query filtering on `WHERE year = 2019 AND month = 3`
     can read only the partition for March 2019, skipping the other eleven months entirely.
     This is a form of predicate push-down applied at the partition level.
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定这种结构，一个基于 `WHERE year = 2019 AND month = 3` 的查询可以只读取 2019 年 3 月的分区，完全跳过其他十一个月。这是在分区级别应用的一种谓词下推形式。
 - en: The query planner examines filter predicates, identifies which ones reference
     partition keys, and eliminates partitions that cannot satisfy those predicates.
     For range queries like `WHERE month >= 6`, the planner would include partitions
     6 through 12 and exclude partitions 1 through 5.
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询规划器检查过滤谓词，确定哪些引用分区键，并消除无法满足这些谓词的分区。对于像`WHERE month >= 6`这样的范围查询，规划器将包括6到12的分区，并排除1到5的分区。
 - en: Partition pruning is particularly valuable for time-series data, where queries
     typically focus on recent time periods. A well-partitioned dataset can reduce
     I/O by orders of magnitude compared to scanning everything.
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 分区修剪对于时间序列数据尤其有价值，因为查询通常集中在最近的时间段。一个良好的分区数据集可以将I/O减少几个数量级，与扫描所有数据相比。
 - en: '[Parallel Joins](#parallel-joins)'
+  id: totrans-55
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[并行连接](#parallel-joins)'
 - en: Joins present a different challenge for parallel execution than aggregates.
     With aggregates, we can process partitions independently and combine results at
     the end. Joins require matching rows from two different tables, and matching rows
     might be in different partitions.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接对并行执行比聚合提出了不同的挑战。对于聚合，我们可以独立处理分区并在最后合并结果。连接需要从两个不同的表中匹配行，而匹配的行可能位于不同的分区中。
 - en: '[Broadcast Join](#broadcast-join)'
+  id: totrans-57
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[广播连接](#broadcast-join)'
 - en: When one side of a join is small enough to fit in memory, the simplest parallel
     strategy is the broadcast join. We load the small table entirely into memory on
     each worker, then each worker joins its partition of the large table against this
     shared copy.
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 当连接的一侧足够小，可以完全放入内存时，最简单的并行策略是广播连接。我们将在每个工作器上完全将小表加载到内存中，然后每个工作器将大表的一部分与这个共享副本进行连接。
 - en: 'For example, joining a 1-billion-row `orders` table with a 10,000-row `products`
     table: each worker loads all 10,000 products into memory, then processes its assigned
     partitions of the orders table, looking up product details as it goes. No coordination
     between workers is needed during execution because every worker has all the data
     it needs.'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，将包含10亿行的`orders`表与包含10,000行的`products`表进行连接：每个工作器将所有10,000个产品加载到内存中，然后处理其分配的订单表分区，在处理过程中查找产品详情。在执行过程中不需要工作器之间的协调，因为每个工作器都有它需要的所有数据。
 - en: The broadcast join works well when the small table truly is small. If it grows
     too large, the memory overhead of replicating it to every worker becomes prohibitive.
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 当小表确实很小的时候，广播连接效果很好。如果它变得太大，将副本复制到每个工作器的内存开销变得难以承受。
 - en: '[Partitioned Hash Join](#partitioned-hash-join)'
+  id: totrans-61
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[分区哈希连接](#partitioned-hash-join)'
 - en: 'When both sides of a join are large, we need a different approach: the partitioned
     hash join (also called parallel hash join or shuffle hash join).'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 当连接的两侧都很大时，我们需要不同的方法：分区哈希连接（也称为并行哈希连接或洗牌哈希连接）。
 - en: The key insight is that rows can only join if their join keys match. If we partition
     both tables by the join key using the same partitioning scheme, then rows that
     might join will end up in corresponding partitions. We can then perform independent
     hash joins on each pair of partitions.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 关键的洞察是，只有当行的连接键匹配时，行才能进行连接。如果我们使用相同的分区方案通过连接键对两个表进行分区，那么可能进行连接的行最终会落在相应的分区中。然后我们可以在每一对分区上独立执行哈希连接。
 - en: Consider joining `orders` and `customers` on `customer_id`. We partition both
     tables by hashing `customer_id` into, say, 16 buckets. All orders for customer
     12345 end up in the same bucket (perhaps bucket 7), and all details for customer
     12345 also end up in bucket 7\. Workers can then join bucket 7 of orders with
     bucket 7 of customers, completely independently of what happens in other buckets.
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑在`customer_id`上连接`orders`和`customers`。我们将两个表都通过散列`customer_id`到，比如说，16个桶进行分区。客户12345的所有订单最终都会落在同一个桶中（可能是桶7），客户12345的所有详细信息也会落在桶7中。然后工作器可以将订单的桶7与客户的桶7进行连接，完全独立于其他桶中的操作。
 - en: 'The process has two phases:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 该过程有两个阶段：
 - en: 'Partition phase: Read both inputs and write each row to an appropriate partition
     based on the hash of its join key. This redistributes the data.'
+  id: totrans-66
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 分区阶段：读取两个输入，并根据其连接键的哈希将每一行写入适当的分区。这重新分配了数据。
 - en: 'Join phase: For each pair of partitions, perform a standard hash join. One
     side builds a hash table, the other side probes it.'
+  id: totrans-67
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 连接阶段：对于每一对分区，执行标准的哈希连接。一方构建一个哈希表，另一方探测它。
 - en: The partition phase is the expensive part. It requires reading all data, computing
     hashes, and writing to temporary storage (either memory or disk). For distributed
     execution across multiple machines, this phase involves network transfer, which
     we will discuss in the next chapter.
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 分区阶段是成本较高的部分。它需要读取所有数据，计算哈希值，并写入临时存储（内存或磁盘）。对于跨多台机器的分布式执行，此阶段涉及网络传输，我们将在下一章中讨论。
 - en: '[Repartitioning and Exchange](#repartitioning-and-exchange)'
+  id: totrans-69
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[重新分区和交换](#repartitioning-and-exchange)'
 - en: 'The partitioned hash join illustrates a general concept: sometimes we need
     to reorganise data during query execution. Data arrives partitioned one way (perhaps
     by file), but we need it partitioned a different way (by join key, or into a single
     partition for final aggregation).'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 分区哈希连接说明了通用概念：有时在查询执行过程中我们需要重新组织数据。数据以某种方式分区到达（可能是通过文件），但我们需要以不同的方式分区（通过连接键，或进入单个分区进行最终聚合）。
 - en: This reorganisation is called repartitioning or shuffling. The operator that
     performs it is often called an exchange operator.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种重新组织被称为重新分区或洗牌。执行此操作的运算符通常被称为交换操作符。
 - en: 'An exchange operator reads its input partitions and writes to output partitions
     based on some partitioning scheme:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 交换操作根据某种分区方案读取其输入分区并写入输出分区：
 - en: 'Hash partitioning: Rows are assigned to partitions based on the hash of one
     or more columns. This is used for joins and some aggregates.'
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 哈希分区：行根据一个或多个列的哈希值分配到分区。这用于连接和一些聚合。
 - en: 'Round-robin partitioning: Rows are distributed evenly across partitions without
     regard to content. This is useful for load balancing when the specific partition
     does not matter.'
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 轮询分区：行在分区之间均匀分布，不考虑内容。这在特定分区不重要时的负载均衡很有用。
 - en: 'Single partition: All rows go to one partition. This is used for final aggregation
     or sorting when we need a single combined result.'
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 单个分区：所有行都进入一个分区。这用于需要单个组合结果时的最终聚合或排序。
 - en: For parallel execution on a single machine, the exchange operator might use
     shared memory queues or temporary files to pass data between threads. For distributed
     execution, it uses network transfer. The logical concept is the same; only the
     physical mechanism differs.
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于单机上的并行执行，交换操作可能会使用共享内存队列或临时文件在线程之间传递数据。对于分布式执行，它使用网络传输。逻辑概念是相同的；只是物理机制不同。
 - en: Understanding exchange operators is important because they represent the points
     in a query plan where parallelism changes. We will explore this further in the
     next chapter on distributed execution.
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 理解交换操作符很重要，因为它们代表了查询计划中并行性改变的点。我们将在下一章关于分布式执行的章节中进一步探讨这一点。
 - en: '[Limits of Parallelism](#limits-of-parallelism)'
+  id: totrans-78
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[并行性的限制](#limits-of-parallelism)'
 - en: Not every query benefits equally from parallelism. Several factors limit how
     much speedup we can achieve.
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 并非每个查询都能从并行化中获得相同的好处。几个因素限制了我们可以实现多少速度提升。
 - en: 'Amdahl’s Law: If part of a computation must run sequentially, that sequential
     portion limits overall speedup. A query where 90% of the work can be parallelised
     achieves at most 10x speedup, no matter how many cores we throw at it, because
     the remaining 10% still takes the same amount of time.'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: Amdahl定律：如果计算的一部分必须顺序运行，那么这个顺序部分限制了整体加速。90%的工作可以并行化的查询最多只能实现10倍的速度提升，无论我们投入多少核心，因为剩余的10%仍然需要相同的时间。
 - en: 'Coordination overhead: Spawning threads, distributing work, and collecting
     results all have costs. For small datasets, this overhead can exceed the time
     saved by parallelism. There is a minimum dataset size below which single-threaded
     execution is actually faster.'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 协调开销：创建线程、分配工作以及收集结果都有成本。对于小数据集，这种开销可能会超过并行化节省的时间。存在一个最小数据集大小，低于这个大小单线程执行实际上更快。
 - en: 'Memory pressure: Parallel execution multiplies memory usage. If each of 12
     workers builds a hash table for a join, we need 12 times the memory of a single
     worker. When memory runs short, workers spill to disk, which is dramatically slower.'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 内存压力：并行执行会乘以内存使用量。如果每个工人为连接构建一个哈希表，我们需要比单个工人多12倍的内存。当内存不足时，工人会溢出到磁盘，这会大大减慢速度。
 - en: 'Uneven partitions: If some partitions are larger than others, fast workers
     finish early and sit idle while slow workers complete their larger partitions.
     The overall time is determined by the slowest worker. Good partitioning schemes
     try to distribute work evenly, but this is not always achievable.'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 不均匀的分区：如果某些分区比其他分区大，快速的工作者会提前完成并闲置，而慢速的工作者则需要完成更大的分区。整体时间由最慢的工作者决定。好的分区方案试图均匀分配工作，但这并不总是可行的。
 - en: 'I/O bandwidth: Parallelism helps CPU-bound work more than I/O-bound work. If
     a query is bottlenecked on disk or network throughput, adding more CPU cores does
     not help once we saturate the available bandwidth.'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: I/O 带宽：并行化对CPU密集型工作比I/O密集型工作更有帮助。如果一个查询在磁盘或网络吞吐量上成为瓶颈，一旦我们饱和了可用带宽，增加更多的CPU核心就没有帮助了。
 - en: Despite these limitations, parallel execution provides substantial benefits
     for most analytical queries on modern hardware. The key is understanding when
     it helps and when the overhead is not worthwhile.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管存在这些限制，但在现代硬件上，并行执行为大多数分析查询提供了实质性的好处。关键在于理解何时它能有所帮助，何时开销不值得。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以ePub、MOBI和PDF格式可供购买，详情请访问[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

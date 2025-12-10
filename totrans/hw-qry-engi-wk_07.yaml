@@ -1,287 +1,442 @@
 - en: Type System
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 类型系统
 - en: 原文：[https://howqueryengineswork.com/03-type-system.html](https://howqueryengineswork.com/03-type-system.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/03-type-system.html](https://howqueryengineswork.com/03-type-system.html)
 - en: '*The source code discussed in this chapter can be found in the `datatypes`
     module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在 [KQuery 项目](https://github.com/andygrove/how-query-engines-work)
+    的 `datatypes` 模块中找到。*'
 - en: Every query engine needs a type system—a way to represent and reason about data
     types. When you write `SELECT price * quantity`, the engine must know that `price`
     and `quantity` are numbers that can be multiplied, and what type the result will
     be. This chapter builds KQuery’s type system on top of Apache Arrow.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个查询引擎都需要一个类型系统——一种表示和推理数据类型的方法。当你写 `SELECT price * quantity` 时，引擎必须知道 `price`
+    和 `quantity` 是可以相乘的数字，以及结果将是什么类型。本章在 Apache Arrow 的基础上构建了 KQuery 的类型系统。
 - en: '[Why Types Matter](#why-types-matter)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[类型的重要性](#why-types-matter)'
 - en: 'Consider this query:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑这个查询：
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Before executing, the query engine must answer:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 在执行之前，查询引擎必须回答：
 - en: Is `salary` a numeric type that supports multiplication?
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`salary` 是否是支持乘法的数值类型？'
 - en: What’s the result type of `salary * 1.1`? (If salary is an integer, should the
     result be integer or floating point?)
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`salary * 1.1` 的结果类型是什么？（如果工资是整数，结果应该是整数还是浮点数？）'
 - en: Is `department` a string type that supports equality comparison?
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`department` 是否是支持等值比较的字符串类型？'
 - en: What columns and types does the result have?
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果包含哪些列和类型？
 - en: These questions arise during query planning, before we touch any data. A well-designed
     type system catches errors early (“you can’t multiply a string by a number”) and
     enables optimizations (“this column is never null, so skip null checks”).
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些问题在查询规划期间出现，在我们接触任何数据之前。一个设计良好的类型系统可以早期捕获错误（“你不能将字符串乘以数字”）并启用优化（“这个列永远不会为空，因此跳过空值检查”）。
 - en: '[Building on Arrow](#building-on-arrow)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[基于 Arrow 构建](#building-on-arrow)'
 - en: 'Rather than invent our own type system, we’ll use Apache Arrow’s types directly.
     This gives us:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不会发明自己的类型系统，而是直接使用 Apache Arrow 的类型。这给我们：
 - en: A rich set of standard types (integers, floats, strings, dates, etc.)
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一系列丰富的标准类型（整数、浮点数、字符串、日期等）
 - en: Efficient in-memory representation (as covered in the previous chapter)
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 高效的内存表示（如前一章所述）
 - en: Compatibility with Arrow-based tools and file formats
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与基于 Arrow 的工具和文件格式兼容
 - en: 'Arrow’s type system includes:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: Arrow 的类型系统包括：
 - en: '| Category | Types |'
+  id: totrans-19
   prefs: []
   type: TYPE_TB
+  zh: '| 类别 | 类型 |'
 - en: '| --- | --- |'
+  id: totrans-20
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| Boolean | Bool |'
+  id: totrans-21
   prefs: []
   type: TYPE_TB
+  zh: '| 布尔值 | Bool |'
 - en: '| Integers | Int8, Int16, Int32, Int64 (signed and unsigned) |'
+  id: totrans-22
   prefs: []
   type: TYPE_TB
+  zh: '| 整数 | Int8, Int16, Int32, Int64 (有符号和无符号) |'
 - en: '| Floating point | Float32, Float64 |'
+  id: totrans-23
   prefs: []
   type: TYPE_TB
+  zh: '| 浮点数 | Float32, Float64 |'
 - en: '| Text | Utf8 (variable-length strings) |'
+  id: totrans-24
   prefs: []
   type: TYPE_TB
+  zh: '| 文本 | Utf8 (可变长度字符串) |'
 - en: '| Binary | Binary (variable-length bytes) |'
+  id: totrans-25
   prefs: []
   type: TYPE_TB
+  zh: '| 二进制 | Binary (可变长度字节) |'
 - en: '| Temporal | Date32, Date64, Timestamp, Time32, Time64, Duration |'
+  id: totrans-26
   prefs: []
   type: TYPE_TB
+  zh: '| 时间 | Date32, Date64, Timestamp, Time32, Time64, Duration |'
 - en: '| Nested | List, Struct, Map |'
+  id: totrans-27
   prefs: []
   type: TYPE_TB
+  zh: '| 嵌套 | List, Struct, Map |'
 - en: 'For KQuery, we’ll focus on the common types: booleans, integers, floating point
     numbers, and strings. We define convenient constants for these:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于 KQuery，我们将关注常见类型：布尔值、整数、浮点数和字符串。我们为这些定义了方便的常量：
 - en: '[PRE1]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[Schemas and Fields](#schemas-and-fields)'
+  id: totrans-30
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[模式与字段](#schemas-and-fields)'
 - en: 'A schema describes the structure of a dataset: what columns exist and what
     type each has. Schemas are essential metadata that flows through the entire query
     engine.'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 模式描述了数据集的结构：存在哪些列以及每个列的类型。模式是整个查询引擎中流动的必要元数据。
 - en: 'Arrow represents schemas as a list of fields, where each field has:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: Arrow 将模式表示为字段列表，其中每个字段具有：
 - en: A name (string)
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个名称（字符串）
 - en: A data type (ArrowType)
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数据类型（ArrowType）
 - en: A nullable flag (can this column contain nulls?)
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个可空标志（此列是否可以包含空值？）
 - en: 'For example, an employee table might have this schema:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，员工表可能具有以下模式：
 - en: '[PRE2]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Schemas serve multiple purposes:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 模式服务于多个目的：
 - en: 'Validation: Reject queries that reference non-existent columns or misuse types'
+  id: totrans-39
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 验证：拒绝引用不存在列或误用类型的查询
 - en: 'Planning: Determine output types for expressions'
+  id: totrans-40
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 规划：确定表达式的输出类型
 - en: 'Optimization: Skip null checks for non-nullable columns'
+  id: totrans-41
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 优化：跳过非空列的空值检查
 - en: 'Execution: Allocate correctly-typed storage for results'
+  id: totrans-42
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 执行：为结果分配正确类型的存储
 - en: '[Column Vectors](#column-vectors)'
+  id: totrans-43
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[列向量](#column-vectors)'
 - en: 'Arrow stores column data in vectors (also called arrays). Each vector type
     has its own class: `IntVector`, `Float8Vector`, `VarCharVector`, etc. This is
     efficient but inconvenient—code that processes columns would need type-specific
     branches everywhere.'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: Arrow 在向量（也称为数组）中存储列数据。每种向量类型都有自己的类：`IntVector`、`Float8Vector`、`VarCharVector`
+    等。这是高效的，但不太方便——处理列的代码需要在每个地方都有类型特定的分支。
 - en: 'KQuery introduces a `ColumnVector` interface to abstract over the underlying
     Arrow vectors:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery 引入了一个 `ColumnVector` 接口来抽象底层的 Arrow 向量：
 - en: '[PRE3]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: This interface lets us write generic code that works with any column type. The
     `getValue` method returns `Any?` (Kotlin’s equivalent of Java’s `Object`), which
     isn’t ideal for performance but keeps our code simple.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个接口让我们能够编写与任何列类型都兼容的通用代码。`getValue` 方法返回 `Any?`（Kotlin 对 Java 的 `Object` 的等效），这虽然对性能不是最佳，但使我们的代码更简单。
 - en: 'We can wrap an Arrow `FieldVector` in this interface:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以将 Arrow 的 `FieldVector` 包裹在这个接口中：
 - en: '[PRE4]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Literal Values](#literal-values)'
+  id: totrans-50
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[字面量值](#literal-values)'
 - en: Sometimes we need a “column” that contains the same value repeated. For example,
     when evaluating `salary * 1.1`, the literal `1.1` needs to act like a column of
     1.1 values (one per row in the batch).
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时候我们需要一个包含相同值重复的“列”。例如，当评估 `salary * 1.1` 时，字面量 `1.1` 需要像 1.1 值的列一样（每个批次中的一行）行动。
 - en: 'Rather than allocate memory for thousands of identical values, we create a
     virtual column:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 而不是为成千上万的相同值分配内存，我们创建一个虚拟列：
 - en: '[PRE5]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: This returns the same value for any valid index, using constant memory regardless
     of how many rows we’re processing.
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 这对于任何有效的索引都返回相同的值，使用常量内存，而不管我们正在处理多少行。
 - en: '[Record Batches](#record-batches)'
+  id: totrans-55
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[记录批次](#record-batches)'
 - en: A record batch groups multiple columns together with a schema. This is the fundamental
     unit of data that flows through our query engine.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 记录批次将多个列与架构一起分组。这是我们查询引擎中流动的基本数据单元。
 - en: '[PRE6]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Record batches enable batch processing: rather than processing one row at a
     time (slow due to function call overhead) or loading entire datasets into memory
     (impractical for large data), we process chunks of typically 1,000 to 100,000
     rows.'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 记录批次允许批量处理：而不是一次处理一行（由于函数调用开销而缓慢）或加载整个数据集到内存中（对于大数据来说不切实际），我们处理通常为 1,000 到 100,000
+    行的块。
 - en: '[Type Coercion](#type-coercion)'
+  id: totrans-59
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[类型强制转换](#type-coercion)'
 - en: 'Real query engines need type coercion: automatically converting types when
     necessary. For example:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 真实的查询引擎需要类型强制转换：在必要时自动转换类型。例如：
 - en: '`5 + 3.14` should promote the integer `5` to a float'
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`5 + 3.14` 应该将整数 `5` 提升为浮点数'
 - en: Comparing `Int32` to `Int64` should work without explicit casts
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 比较 `Int32` 和 `Int64` 应该可以在不进行显式转换的情况下工作
 - en: String-to-date conversion for predicates like `date > '2024-01-01'`
+  id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于 `date > '2024-01-01'` 这样的谓词进行字符串到日期的转换
 - en: KQuery keeps things simple and requires explicit types in most cases. A production
     query engine would implement coercion rules, typically promoting to the “wider”
     type (Int32 → Int64 → Float64).
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery 保持简单，并在大多数情况下需要显式类型。生产查询引擎会实现强制转换规则，通常提升到“更宽”的类型（Int32 → Int64 → Float64）。
 - en: '[Putting It Together](#putting-it-together)'
+  id: totrans-65
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[整合一切](#putting-it-together)'
 - en: 'Here’s how these pieces fit together. When processing a query:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些部分是如何组合在一起的。在处理查询时：
 - en: Data sources provide schemas describing available columns
+  id: totrans-67
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 数据源提供描述可用列的架构
 - en: Query planning uses schemas to validate expressions and determine result types
+  id: totrans-68
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 查询规划使用架构来验证表达式并确定结果类型
 - en: Execution passes record batches between operators
+  id: totrans-69
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 执行阶段在算子之间传递记录批次
 - en: Each operator produces output batches with a known schema
+  id: totrans-70
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 每个算子产生具有已知架构的输出批次
 - en: The type system is the foundation that makes this possible. Without it, we couldn’t
     validate queries, plan efficiently, or allocate storage correctly.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型系统是这个可能性的基础。没有它，我们无法验证查询、高效规划或正确分配存储。
 - en: The next chapter builds on this foundation to create abstractions for reading
     data from files.
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一章将在此基础上创建从文件中读取数据的抽象。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: '*这本书也可以以 ePub、MOBI 和 PDF 格式从 [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)
+    购买*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

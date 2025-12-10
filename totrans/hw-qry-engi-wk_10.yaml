@@ -1,203 +1,314 @@
 - en: DataFrame API
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 数据帧API
 - en: 原文：[https://howqueryengineswork.com/06-dataframe.html](https://howqueryengineswork.com/06-dataframe.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/06-dataframe.html](https://howqueryengineswork.com/06-dataframe.html)
 - en: '*The source code discussed in this chapter can be found in the `logical-plan`
     module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在[KQuery项目](https://github.com/andygrove/how-query-engines-work)的`logical-plan`模块中找到。*'
 - en: The previous chapter showed how to represent queries as logical plans. But constructing
     those plans by hand is tedious. This chapter introduces the DataFrame API, a fluent
     interface that makes building logical plans natural and readable.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 这更紧凑，但更难阅读。嵌套是从内到外进行的，这与我们思考查询执行的方式相反（先扫描，然后过滤，最后投影）。
 - en: '[Building Plans The Hard Way](#building-plans-the-hard-way)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[艰难构建计划](#building-plans-the-hard-way)'
 - en: 'Consider this query:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑这个查询：
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'To build this as a logical plan, we construct each piece separately and then
     wire them together:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 要构建逻辑计划，我们分别构建每个部分，然后将它们连接起来：
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'This works, but it is verbose and the code structure does not mirror the query
     structure. We can improve this slightly by nesting the constructors:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这可以工作，但较为冗长，代码结构并不反映查询结构。我们可以通过嵌套构造函数来稍微改进这一点：
 - en: '[PRE2]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: This is more compact, but harder to read. The nesting goes from inside out,
     opposite to how we think about query execution (scan first, then filter, then
     project).
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '[上一章展示了如何将查询表示为逻辑计划。但手动构建这些计划是繁琐的。本章介绍了数据帧API，这是一个流畅的接口，使构建逻辑计划变得自然且易于阅读。]'
 - en: '[The DataFrame Approach](#the-dataframe-approach)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[数据帧方法](#the-dataframe-approach)'
 - en: 'A DataFrame wraps a logical plan and provides methods that return new DataFrames.
     Each method call adds a node to the plan. This creates a fluent API where code
     reads top-to-bottom in execution order:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据帧封装了一个逻辑计划，并提供返回新数据帧的方法。每次方法调用都会向计划添加一个节点。这创建了一个从上到下按执行顺序读取的流畅API：
 - en: '[PRE3]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Read this as: start with the CSV file, filter to Colorado, project the columns
     we want. The code structure matches the mental model.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 这样理解：从CSV文件开始，筛选出科罗拉多州的数据，投影我们想要的列。代码结构与思维模型相匹配。
 - en: '[The DataFrame Interface](#the-dataframe-interface)'
+  id: totrans-16
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[数据帧接口](#the-dataframe-interface)'
 - en: 'The interface is simple:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 接口很简单：
 - en: '[PRE4]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Each transformation method (`project`, `filter`, `aggregate`, `join`) returns
     a new DataFrame. This enables method chaining. The `schema` method exposes the
     output schema for inspection. The `logicalPlan` method retrieves the underlying
     plan when we need it for optimization or execution.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个转换方法（`project`、`filter`、`aggregate`、`join`）都返回一个新的数据帧。这使方法链式调用成为可能。`schema`方法暴露输出模式以供检查。`logicalPlan`方法在需要优化或执行时检索底层计划。
 - en: '[Implementation](#implementation)'
+  id: totrans-20
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[实现](#implementation)'
 - en: 'The implementation wraps a logical plan and creates new plan nodes on each
     method call:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 实现封装了一个逻辑计划，并在每次方法调用时创建新的计划节点：
 - en: '[PRE5]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Each method constructs a new logical plan node with the current plan as input,
     then wraps it in a new DataFrame. The original DataFrame is unchanged (DataFrames
     are immutable), so you can branch from any point:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个方法都使用当前计划作为输入构建一个新的逻辑计划节点，然后将其包装在一个新的数据帧中。原始数据帧保持不变（数据帧是不可变的），因此可以从任何点分支：
 - en: '[PRE6]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Joins combine two DataFrames based on a condition:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接根据条件组合两个数据帧：
 - en: '[PRE7]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: The Joins chapter covers join types and algorithms in detail.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接章节详细介绍了连接类型和算法。
 - en: '[Execution Context](#execution-context)'
+  id: totrans-28
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[执行上下文](#execution-context)'
 - en: 'We need a starting point for building DataFrames. The execution context creates
     initial DataFrames from data sources:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们需要一个起点来构建数据帧。执行上下文从数据源创建初始数据帧：
 - en: '[PRE8]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Later chapters expand this context to handle query execution. For now, it just
     creates DataFrames.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 后续章节将扩展此上下文以处理查询执行。目前，它只是创建数据帧。
 - en: '[Convenience Methods](#convenience-methods)'
+  id: totrans-32
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[便捷方法](#convenience-methods)'
 - en: The basic API works but is still verbose. Kotlin’s features let us make it more
     expressive.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 基本API功能正常，但仍然较为冗长。Kotlin的特性使我们能够使其更加简洁。
 - en: 'Helper functions create expressions concisely:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 辅助函数可以简洁地创建表达式：
 - en: '[PRE9]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Infix operators let us write expressions naturally:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 中缀操作符允许我们自然地编写表达式：
 - en: '[PRE10]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Now we can write queries that read almost like SQL:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，我们可以编写几乎像SQL一样的查询：
 - en: '[PRE11]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'This reads: take the CSV, keep rows where state equals CO, compute id, names,
     salary, and a 10% bonus column, then keep only rows where bonus exceeds 1000.'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 这表示：读取CSV文件，保留州等于CO的行，计算id、names、salary以及10%的奖金列，然后只保留奖金超过1000的行。
 - en: '[DataFrames vs SQL](#dataframes-vs-sql)'
+  id: totrans-41
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[数据帧与SQL](#dataframes-vs-sql)'
 - en: Both DataFrames and SQL describe what data you want. Why offer both?
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据框（DataFrames）和 SQL 都描述了您想要的数据。为什么提供两种？
 - en: SQL is familiar to analysts and can be embedded in applications as strings.
     But SQL strings are opaque to the compiler. Typos and type errors only appear
     at runtime.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: SQL 对分析师来说很熟悉，可以作为字符串嵌入到应用程序中。但 SQL 字符串对编译器来说是透明的。错误和类型错误只有在运行时才会出现。
 - en: 'DataFrames integrate with the programming language. The compiler catches method
     name typos. IDEs provide autocomplete. You can build queries dynamically using
     normal programming constructs:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据框与编程语言集成。编译器会捕获方法名错误。IDE 提供自动完成功能。您可以使用常规编程结构动态构建查询：
 - en: '[PRE12]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: Most modern query engines support both interfaces. Users choose based on their
     needs.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数现代查询引擎都支持这两种接口。用户根据自己的需求进行选择。
 - en: '[The Underlying Plan](#the-underlying-plan)'
+  id: totrans-47
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[底层计划](#the-underlying-plan)'
 - en: 'However we build it, the result is a logical plan. Our example query:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 无论我们如何构建它，结果都是一个逻辑计划。我们的示例查询：
 - en: '[PRE13]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Produces this plan:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 生成以下计划：
 - en: '[PRE14]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: The DataFrame is just a convenient way to construct this tree. Once built, the
     plan goes through optimization and physical planning regardless of how it was
     created.
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据框只是构建此树的一种方便方式。一旦构建完成，计划就会经过优化和物理规划，无论它是如何创建的。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以 ePub、MOBI 和 PDF 格式在 [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)
+    上提供购买*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

@@ -1,324 +1,494 @@
 - en: Query Optimizations
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 查询优化
 - en: 原文：[https://howqueryengineswork.com/12-optimizations.html](https://howqueryengineswork.com/12-optimizations.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/12-optimizations.html](https://howqueryengineswork.com/12-optimizations.html)
 - en: '*The source code discussed in this chapter can be found in the `optimizer`
     module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在[KQuery项目](https://github.com/andygrove/how-query-engines-work)的`optimizer`模块中找到。*'
 - en: A query engine that executes plans exactly as written will produce correct results
     but may be slow. Users writing SQL or DataFrame queries naturally express what
     they want, not how to compute it efficiently. The optimizer transforms logical
     plans into equivalent but faster plans.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个执行计划与所写内容完全一致的查询引擎将产生正确的结果，但可能很慢。编写SQL或DataFrame查询的用户自然地表达他们想要什么，而不是如何高效地计算。优化器将逻辑计划转换为等效但更快的计划。
 - en: '[Why Optimize?](#why-optimize)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[为什么要优化？](#why-optimize)'
 - en: 'Consider a query that joins two tables and then filters:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑一个先连接两个表然后进行过滤的查询：
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Executing this literally means: join all employees with all departments, then
     filter to Colorado. If there are 100,000 employees and only 5,000 in Colorado,
     we do 95,000 unnecessary join lookups.'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 这样执行实际上意味着：连接所有员工与所有部门，然后过滤到科罗拉多州。如果有10万名员工，其中只有5000人在科罗拉多州，我们将进行95,000次不必要的连接查找。
 - en: 'An optimizer recognizes that the filter on `state` only touches the `employees`
     table and can be applied before the join:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个优化器认识到对`state`的过滤只触及`employees`表，可以在连接之前应用：
 - en: '[PRE1]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Now we join only 5,000 employees instead of 100,000\. This produces the same
     result but is much faster.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们只连接5000名员工而不是10万名。这会产生相同的结果，但速度要快得多。
 - en: '[Rule-Based Optimization](#rule-based-optimization)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[基于规则的优化](#rule-based-optimization)'
 - en: 'KQuery uses rule-based optimization: a set of transformation rules that each
     improve the plan in some way. Rules are applied in sequence, each taking a logical
     plan and returning a (hopefully better) logical plan.'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery使用基于规则的优化：一组改进计划的转换规则。规则按顺序应用，每个规则都接受一个逻辑计划并返回一个（希望更好）的逻辑计划。
 - en: '[PRE2]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Rules work by walking the plan tree and rebuilding it with modifications. This
     functional approach (build a new tree rather than mutate the old one) is simpler
     and less error-prone.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 规则通过遍历计划树并对其进行修改来工作。这种功能性的方法（构建一个新树而不是修改旧树）更简单且错误更少。
 - en: '[Projection Push-Down](#projection-push-down)'
+  id: totrans-15
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[投影下推](#projection-push-down)'
 - en: Projection push-down reduces memory usage by reading only the columns that the
     query actually uses. If a table has 50 columns but the query only references 3,
     we should read only those 3.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 投影下推通过只读取查询实际使用的列来减少内存使用。如果一个表有50列，但查询只引用了3列，我们应该只读取这3列。
 - en: 'The rule works by:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 该规则通过：
 - en: Walking the plan top-down, collecting column names referenced in each operator
+  id: totrans-18
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 从上到下遍历计划，收集每个操作符中引用的列名
 - en: When reaching a Scan, replacing it with a Scan that projects only the needed
     columns
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 当达到扫描时，用只投影所需列的扫描替换它
 - en: 'First, we need a helper to extract column references from expressions:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们需要一个辅助工具从表达式提取列引用：
 - en: '[PRE3]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Then the rule itself:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后是规则本身：
 - en: '[PRE4]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Given this plan:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定此计划：
 - en: '[PRE5]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'The optimizer produces:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 优化器产生：
 - en: '[PRE6]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: The Scan now reads only four columns instead of all columns in the table. For
     columnar formats like Parquet, this dramatically reduces I/O.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 扫描现在只读取表中的四个列而不是所有列。对于像Parquet这样的列式格式，这大大减少了I/O。
 - en: '[Predicate Push-Down](#predicate-push-down)'
+  id: totrans-29
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[谓词下推](#predicate-push-down)'
 - en: Predicate push-down moves filters closer to the data source, reducing the number
     of rows processed by later operators.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 谓词下推将过滤器移得更接近数据源，减少了后续操作符处理的行数。
 - en: 'Consider:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑：
 - en: '[PRE7]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'The filter references only `employee` columns, so it can move below the join:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 过滤器只引用`employee`列，因此它可以移动到连接下面：
 - en: '[PRE8]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Now the join processes fewer rows. This optimization becomes more important
     with larger tables and more selective predicates.
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在连接处理的行数更少。这种优化在更大的表和更选择性的谓词中变得更加重要。
 - en: The implementation must analyze which tables each predicate references and only
     push predicates that reference a single table below joins. Predicates referencing
     both sides of a join cannot be pushed below it.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 实现必须分析每个谓词引用哪些表，并且只推送引用单个表的谓词到连接下面。引用连接两边的谓词不能推到它下面。
 - en: 'KQuery does not currently implement predicate push-down, but the pattern is
     similar to projection push-down: walk the tree, identify opportunities, rebuild
     with filters moved down.'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery目前不实现谓词下推，但其模式与投影下推相似：遍历树，识别机会，将过滤器向下移动重建。
 - en: '[Eliminate Common Subexpressions](#eliminate-common-subexpressions)'
+  id: totrans-38
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[消除公共子表达式](#eliminate-common-subexpressions)'
 - en: 'When the same expression appears multiple times, we can compute it once and
     reuse the result:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 当相同的表达式出现多次时，我们可以计算一次并重用结果：
 - en: '[PRE9]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'The expression `price * qty` appears in both aggregates. Rather than compute
     it twice per row, we can add an intermediate projection:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 表达式`price * qty`出现在两个聚合中。我们不必每行计算两次，可以添加一个中间投影：
 - en: 'Original:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 原始：
 - en: '[PRE10]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Optimized:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 优化后：
 - en: '[PRE11]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: This trades one multiplication per row (in the projection) against two multiplications
     per row (in the original aggregates). For large datasets, this adds up.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是在投影中每行进行一次乘法（与原始聚合中的每行两次乘法）之间的权衡。对于大型数据集，这会累积起来。
 - en: 'KQuery does not implement this optimization, but the approach involves:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery不实现此优化，但方法涉及：
 - en: Finding expressions that appear multiple times
+  id: totrans-48
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 寻找多次出现的表达式
 - en: Creating a projection that computes them once with generated names
+  id: totrans-49
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 创建一个投影，一次计算并使用生成的名称
 - en: Rewriting later operators to reference the computed columns
+  id: totrans-50
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 重新编写后续操作符以引用计算出的列
 - en: '[Cost-Based Optimization](#cost-based-optimization)'
+  id: totrans-51
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[基于成本的优化](#cost-based-optimization)'
 - en: Rule-based optimization applies transformations unconditionally. Cost-based
     optimization estimates the cost of different plans and chooses the cheapest.
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于规则的优化无条件地应用转换。基于成本的优化估计不同计划的成本并选择最便宜的。
 - en: 'Consider join ordering. For three tables A, B, C:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑连接顺序。对于三个表A、B、C：
 - en: (A JOIN B) JOIN C
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (A JOIN B) JOIN C
 - en: (A JOIN C) JOIN B
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (A JOIN C) JOIN B
 - en: (B JOIN C) JOIN A
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (B JOIN C) JOIN A
 - en: All produce the same result, but performance varies dramatically based on table
     sizes and join selectivity. If A has 1 million rows, B has 100 rows, and C has
     10,000 rows, joining B and C first (100 × 10,000 = 1 million intermediate rows
     at most) then joining A is likely faster than starting with A.
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有这些都会产生相同的结果，但性能会根据表大小和连接选择性而有很大差异。如果A有100万行，B有100行，C有1万行，先连接B和C（最多1百万个中间行）然后再连接A可能比先从A开始连接要快。
 - en: 'Cost-based optimizers need statistics:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于成本的优化器需要统计信息：
 - en: Table row counts
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 表行数
 - en: Column cardinality (number of distinct values)
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 列基数（不同值的数量）
 - en: Value distributions (histograms)
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值分布（直方图）
 - en: Min/max values per column
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每列的最小/最大值
 - en: 'With statistics, the optimizer can estimate:'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 有统计信息，优化器可以估计：
 - en: How many rows a filter will produce (selectivity)
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 过滤器将产生多少行（选择性）
 - en: How many rows a join will produce
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 连接将产生多少行
 - en: Memory requirements for hash tables
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 哈希表的内存需求
 - en: The optimizer generates candidate plans, estimates cost for each, and picks
     the cheapest.
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 优化器生成候选计划，为每个计划估计成本，并选择最便宜的。
 - en: '[The Statistics Challenge](#the-statistics-challenge)'
+  id: totrans-68
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[统计挑战](#the-statistics-challenge)'
 - en: 'Cost-based optimization sounds great but has practical challenges:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于成本的优化听起来很棒，但存在实际挑战：
 - en: Gathering statistics is expensive. Scanning terabytes of data to build histograms
     takes time. For ad-hoc queries, this overhead may exceed the optimization benefit.
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 收集统计信息是昂贵的。扫描数以TB计的数据来构建直方图需要时间。对于即席查询，这种开销可能超过优化收益。
 - en: Statistics become stale. As data changes, statistics drift from reality. Stale
     statistics lead to bad plans.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 统计信息会过时。随着数据的变化，统计信息会偏离现实。过时的统计信息会导致糟糕的计划。
 - en: Estimation errors compound. Each estimate has error. In a complex plan with
     many operators, errors multiply, potentially leading to catastrophically bad plans.
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 估计误差会累积。每个估计都有误差。在一个包含许多操作符的复杂计划中，误差会相乘，可能导致灾难性的糟糕计划。
 - en: Some formats provide partial statistics. Parquet and ORC files include min/max
     values and row counts per column chunk. This helps but is not enough for accurate
     cardinality estimation.
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些格式提供部分统计信息。Parquet和ORC文件包括每列数据块的最小/最大值和行数。这有所帮助，但不足以进行准确的基数估计。
 - en: KQuery uses only rule-based optimization. Production systems like Spark, Presto,
     and traditional databases invest heavily in cost-based optimization, but it remains
     an area of active research and engineering.
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery仅使用基于规则的优化。像Spark、Presto和传统数据库这样的生产系统在基于成本的优化上投入了大量资金，但这仍然是一个活跃的研究和工程领域。
 - en: '[Other Optimizations](#other-optimizations)'
+  id: totrans-75
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[其他优化](#other-optimizations)'
 - en: 'Query engines implement many other optimizations:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询引擎实现了许多其他优化：
 - en: 'Constant folding: Evaluate constant expressions at planning time. `WHERE date
     > ''2024-01-01'' AND 1 = 1` becomes `WHERE date > ''2024-01-01''`.'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 常量折叠：在计划时评估常量表达式。`WHERE date > '2024-01-01' AND 1 = 1`变为`WHERE date > '2024-01-01'`。
 - en: 'Dead column elimination: Remove columns from intermediate results when they
     are not needed downstream.'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 去除死列：当下游不需要时，从中间结果中移除列。
 - en: 'Join reordering: Choose the order of joins to minimize intermediate result
     sizes.'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接重排序：选择连接的顺序以最小化中间结果的大小。
 - en: 'Limit push-down: Push LIMIT operators down to reduce work. If we only need
     10 rows, stop early.'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 限制后推：将LIMIT操作符后推以减少工作量。如果我们只需要10行，就提前停止。
 - en: 'Partition pruning: Skip reading partitions that cannot contain matching data
     based on partition keys.'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 分区剪枝：根据分区键跳过无法包含匹配数据的分区读取。
 - en: The right set of optimizations depends on the workload and data characteristics.
     Simple rule-based optimizations provide significant benefits with minimal complexity.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 正确的优化组合取决于工作负载和数据特征。基于规则的简单优化提供了显著的好处，同时复杂性最小。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以ePub、MOBI和PDF格式提供购买，详情请访问[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

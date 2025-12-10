@@ -1,687 +1,984 @@
 - en: Distributed Query Execution
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 分布式查询执行
 - en: 原文：[https://howqueryengineswork.com/15-distributed-query.html](https://howqueryengineswork.com/15-distributed-query.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/15-distributed-query.html](https://howqueryengineswork.com/15-distributed-query.html)
 - en: The previous chapter covered parallel query execution on a single machine. Distributing
     queries across multiple machines takes these ideas further, enabling us to process
     datasets too large for any single machine and to scale compute resources independently
     of storage.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 上一章介绍了单机上的并行查询执行。将查询分布到多台机器上进一步发展了这些思想，使我们能够处理任何单台机器都无法处理的庞大数据集，并且能够独立于存储扩展计算资源。
 - en: The fundamental challenge of distributed execution is coordination. When operators
     run on different machines, they cannot share memory. Data must be explicitly transferred
     over the network, query plans must be serialised and sent to remote executors,
     and failures on any machine must be detected and handled. These overheads mean
     distributed execution only makes sense when the benefits outweigh the costs.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 分布式执行的基本挑战是协调。当操作员在不同的机器上运行时，它们无法共享内存。数据必须显式地通过网络传输，查询计划必须序列化并发送到远程执行器，任何机器上的故障都必须被检测和处理。这些开销意味着只有当收益超过成本时，分布式执行才有意义。
 - en: '[When to Go Distributed](#when-to-go-distributed)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[何时采用分布式](#when-to-go-distributed)'
 - en: Distributed execution adds complexity and overhead. Before building or using
     a distributed query engine, it is worth understanding when the overhead is justified.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 分布式执行增加了复杂性和开销。在构建或使用分布式查询引擎之前，了解何时这些开销是合理的很有价值。
 - en: 'Dataset size: If your data fits comfortably on one machine, parallel execution
     on that machine will almost always be faster than distributing across a cluster.
     Network transfer is orders of magnitude slower than memory access. The break-even
     point depends on your hardware, but datasets under a few hundred gigabytes rarely
     benefit from distribution.'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据集大小：如果你的数据可以舒适地放在一台机器上，那么在该机器上并行执行几乎总是比在集群中分布执行要快。网络传输比内存访问慢得多。盈亏平衡点取决于你的硬件，但几百GB以下的数据集很少能从分布中受益。
 - en: 'Compute requirements: Some queries are compute-intensive enough that a single
     machine cannot process them fast enough. Machine learning training, complex simulations,
     or queries with expensive user-defined functions may need more CPU cores than
     any single machine provides.'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 计算需求：有些查询的计算密集度足够高，以至于单台机器无法快速处理。机器学习训练、复杂模拟或具有昂贵用户定义函数的查询可能需要比任何单台机器提供的更多CPU核心。
 - en: 'Storage location: If data already lives in a distributed file system like HDFS
     or an object store like S3, it may be more efficient to move computation to where
     the data lives rather than pulling all data to a single machine.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 存储位置：如果数据已经存在于分布式文件系统（如HDFS）或对象存储（如S3）中，那么将计算移动到数据所在的位置可能比将所有数据拉到一台机器上更有效率。
 - en: 'Fault tolerance: For long-running queries (hours or days), the probability
     of a single machine failing becomes significant. Distributed execution can checkpoint
     progress and recover from failures, while a single-machine query would have to
     restart from scratch.'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 容错性：对于长时间运行的查询（数小时或数天），单台机器发生故障的概率变得显著。分布式执行可以检查点进度并从故障中恢复，而单机查询将不得不从头开始重新启动。
 - en: For typical analytical queries on datasets under a terabyte, a single well-configured
     machine with parallel execution often outperforms a distributed cluster. The paper
     “Scalability! But at what COST?” by McSherry et al. provides interesting perspective
     on this, showing that many distributed systems are slower than a laptop for medium-sized
     datasets.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于小于千兆字节的数据集的典型分析查询，单台配置良好的机器上的并行执行通常优于分布式集群。McSherry等人撰写的论文“可扩展性！但代价是什么？”提供了对这个问题的有趣观点，表明许多分布式系统对于中等规模的数据集比笔记本电脑还要慢。
 - en: '[Architecture Overview](#architecture-overview)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[架构概述](#architecture-overview)'
 - en: A distributed query engine typically consists of a coordinator (sometimes called
     a scheduler or driver) and multiple executors (sometimes called workers).
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 分布式查询引擎通常由一个协调器（有时称为调度器或驱动器）和多个执行器（有时称为工作者）组成。
 - en: The coordinator receives queries from clients, plans how to distribute the work,
     assigns tasks to executors, monitors progress, handles failures, and returns results.
     There is usually one coordinator, though it may be replicated for high availability.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 协调器从客户端接收查询，规划如何分配工作，将任务分配给执行器，监控进度，处理故障，并返回结果。通常有一个协调器，尽管它可能被复制以提高可用性。
 - en: Executors perform the actual computation. Each executor runs a portion of the
     query plan on its assigned data partitions and streams results to wherever they
     are needed (other executors, the coordinator, or storage). A cluster might have
     dozens or hundreds of executors.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 执行器执行实际计算。每个执行器在其分配的数据分区上运行查询计划的一部分，并将结果流式传输到所需的位置（其他执行器、协调器或存储）。一个集群可能有数十个或数百个执行器。
 - en: The coordinator and executors communicate over the network using some RPC protocol.
     The coordinator sends query plan fragments to executors. Executors send status
     updates and results back. For data exchange between executors (shuffles), executors
     may communicate directly with each other or write to shared storage.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 协调器和执行器通过网络使用某些RPC协议进行通信。协调器向执行器发送查询计划片段。执行器发送状态更新和结果。对于执行器之间的数据交换（洗牌），执行器可以直接相互通信或将数据写入共享存储。
 - en: '[Embarrassingly Parallel Operators](#embarrassingly-parallel-operators)'
+  id: totrans-16
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[令人尴尬的并行运算符](#embarrassingly-parallel-operators)'
 - en: Some operators can run independently on each partition with no coordination
     between executors. Projection and filter are the clearest examples. Each executor
     applies the same transformation to its input partitions and produces output partitions.
     No data needs to move between executors.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些运算符可以在每个分区上独立运行，无需执行器之间的协调。投影和过滤是最明显的例子。每个执行器对其输入分区应用相同的转换，并产生输出分区。无需在执行器之间移动数据。
 - en: '![](../Images/44037ecb74a26f684b2c567653037243.png)'
+  id: totrans-18
   prefs: []
   type: TYPE_IMG
+  zh: '![图片](../Images/44037ecb74a26f684b2c567653037243.png)'
 - en: These operators are called “embarrassingly parallel” because parallelising them
     requires no special handling. The distributed plan looks just like the single-node
     plan, except different executors process different partitions. The partitioning
     scheme of the data does not change.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些运算符被称为“令人尴尬的并行”，因为并行化它们不需要特殊处理。分布式计划看起来就像单节点计划一样，只是不同的执行器处理不同的分区。数据的分区方案没有改变。
 - en: '[Distributed Aggregates](#distributed-aggregates)'
+  id: totrans-20
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[分布式聚合](#distributed-aggregates)'
 - en: 'Aggregates require special handling in distributed execution. As discussed
     in the previous chapter, we split aggregation into two phases: a partial aggregate
     on each partition and a final aggregate that combines the partial results.'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在分布式执行中，聚合需要特殊处理。如前一章所述，我们将聚合分为两个阶段：每个分区的部分聚合和最终聚合，该聚合结合部分结果。
 - en: 'In distributed execution, the partial aggregates run on executors close to
     the data. The Exchange operator then moves partial results to where the final
     aggregation happens. For a query like:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 在分布式执行中，部分聚合在靠近数据的位置的执行器上运行。然后，`Exchange`运算符将部分结果移动到最终聚合发生的地方。对于如下查询：
 - en: '[PRE0]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The distributed plan looks like:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 分布式计划看起来像：
 - en: '[PRE1]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Each executor runs the inner `HashAggregate` on its assigned partitions of `tripdata`.
     This produces partial results with far fewer rows than the input (one row per
     distinct `passenger_count` value per partition). The `Exchange` operator collects
     these partial results, and the outer `HashAggregate` combines them into the final
     answer.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个执行器在其分配的`tripdata`分区上运行内部`HashAggregate`。这产生了比输入行数少得多的部分结果（每个分区中每个不同的`passenger_count`值一行）。`Exchange`运算符收集这些部分结果，外部的`HashAggregate`将它们组合成最终答案。
 - en: '![](../Images/7c76fa496b6155cf4bc399f3aeee6e39.png)'
+  id: totrans-27
   prefs: []
   type: TYPE_IMG
+  zh: '![图片](../Images/7c76fa496b6155cf4bc399f3aeee6e39.png)'
 - en: The exchange is the expensive part. Even though partial aggregation dramatically
     reduces data volume, we still need to transfer data over the network. For this
     query, we might reduce billions of input rows to thousands of partial aggregate
     rows, but those rows still need to reach whichever executor performs the final
     aggregation.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 交换是昂贵的部分。尽管部分聚合大大减少了数据量，但我们仍然需要在网络上传输数据。对于这个查询，我们可能将数十亿输入行减少到数千个部分聚合行，但这些行仍然需要到达执行最终聚合的任何执行器。
 - en: For aggregates grouped by high-cardinality columns (columns with many distinct
     values), the partial results may not be much smaller than the input. In extreme
     cases, the distributed overhead outweighs the benefit of distributing the initial
     scan.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于按高基数列（具有许多不同值的列）分组的聚合，部分结果可能不会比输入小很多。在极端情况下，分布式开销超过了分布式初始扫描的好处。
 - en: '[Distributed Joins](#distributed-joins)'
+  id: totrans-30
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[分布式连接](#distributed-joins)'
 - en: Joins are often the most expensive operation in distributed query execution
     because they typically require shuffling large amounts of data across the network.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接通常是分布式查询执行中最昂贵的操作，因为它们通常需要在网络上跨网络传输大量数据。
 - en: The challenge is that rows from both tables can only be joined if they are on
     the same executor. If we are joining `customer` to `orders` on `customer.id =
     order.customer_id`, then all orders for customer 12345 must be processed by the
     same executor that has customer 12345’s details.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 挑战在于，只有当两个表中的行位于同一个执行器上时，它们才能进行连接。如果我们正在根据`customer.id = order.customer_id`将`customer`与`orders`连接，那么客户12345的所有订单必须由拥有客户12345详细信息的同一个执行器来处理。
 - en: '[Shuffle Join](#shuffle-join)'
+  id: totrans-33
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[洗牌连接](#shuffle-join)'
 - en: When both tables are large, we use a shuffle join (also called a partitioned
     hash join). Both tables are repartitioned by the join key, ensuring that matching
     rows end up on the same executor.
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 当两个表都很大时，我们使用洗牌连接（也称为分区散列连接）。两个表都根据连接键重新分区，确保匹配的行最终落在同一个执行器上。
 - en: 'The process has two stages:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 该过程分为两个阶段：
 - en: 'Shuffle stage: Read both tables and redistribute rows based on a hash of the
     join key. All rows with the same join key value go to the same partition, and
     thus the same executor. This requires transferring potentially large amounts of
     data across the network.'
+  id: totrans-36
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 洗牌阶段：读取两个表，并根据连接键的散列重新分配行。具有相同连接键值的行都进入同一个分区，因此同一个执行器。这需要在网络上传输可能大量数据。
 - en: 'Join stage: Each executor performs a local hash join on its partitions. Since
     all matching rows are now local, no further network communication is needed.'
+  id: totrans-37
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 连接阶段：每个执行器在其分区上执行本地散列连接。由于所有匹配的行现在都是本地的，因此不需要进一步的网络通信。
 - en: '![](../Images/c068f4aa9f37b237ec63f2ba97bbdc8e.png)'
+  id: totrans-38
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/c068f4aa9f37b237ec63f2ba97bbdc8e.png)'
 - en: The shuffle is expensive. Every row from both tables must be sent over the network
     to its destination executor. For a join between two billion-row tables, this could
     mean transferring terabytes of data, even if the final result is small.
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 洗牌很昂贵。两个表中的每一行都必须通过网络发送到其目标执行器。对于两个十亿行表的连接，这可能意味着即使最终结果很小，也需要传输太字节的数据。
 - en: '[Broadcast Join](#broadcast-join)'
+  id: totrans-40
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[广播连接](#broadcast-join)'
 - en: When one side of a join is small enough to fit in memory on each executor, we
     can avoid the shuffle entirely. The coordinator sends a copy of the small table
     to every executor. Each executor then joins its partitions of the large table
     against the local copy of the small table.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 当连接的一侧足够小，以至于可以在每个执行器上放入内存中时，我们可以完全避免洗牌。协调器将小表的副本发送到每个执行器。然后，每个执行器将其大表的部分与本地小表的副本进行连接。
 - en: This trades network bandwidth (sending the small table everywhere) for avoiding
     the much larger cost of shuffling the big table. It only works when the small
     table is genuinely small, typically under a few gigabytes.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是以网络带宽（将小表发送到每个地方）为代价，避免了洗牌大表的大得多成本。它仅在真正的小表时才有效，通常在几个吉字节以下。
 - en: The query planner decides between shuffle and broadcast joins based on table
     size estimates. If statistics are available, it can make this decision automatically.
     Otherwise, users may need to provide hints.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询规划器根据表大小的估计来决定使用洗牌（shuffle）连接还是广播（broadcast）连接。如果可用统计信息，它可以自动做出这个决定。否则，用户可能需要提供提示。
 - en: '[Co-located Joins](#co-located-joins)'
+  id: totrans-44
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[本地连接](#co-located-joins)'
 - en: If both tables are already partitioned by the join key (perhaps because they
     were written that way, or because a previous operation partitioned them), we can
     skip the shuffle entirely. Each executor joins its local partitions from both
     tables.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果两个表已经根据连接键分区（可能是因为它们就是这样编写的，或者因为之前的操作对它们进行了分区），我们可以完全跳过洗牌。每个执行器将其来自两个表的本地分区进行连接。
 - en: This is the fastest distributed join because no data moves. It requires careful
     data layout and is common in data warehouses where tables are deliberately partitioned
     by frequently-joined keys.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是速度最快的分布式连接，因为没有数据移动。它需要仔细的数据布局，在数据仓库中很常见，其中表被故意按频繁连接的键分区。
 - en: '[Query Stages](#query-stages)'
+  id: totrans-47
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[查询阶段](#query-stages)'
 - en: A distributed query cannot be executed as a single unit. The coordinator must
     break it into stages that can be executed independently, schedule those stages
     in the right order, and coordinate data flow between them.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 分布式查询不能作为一个单一单元执行。协调器必须将其分解为可以独立执行的阶段，按正确的顺序安排这些阶段，并协调它们之间的数据流。
 - en: 'A query stage is a portion of the query plan that can run to completion without
     waiting for other stages. Stages are separated by exchange operators, which represent
     points where data must be shuffled between executors. Within a stage, operators
     can be pipelined: data flows from one operator to the next without materialisation.'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询阶段是查询计划的一部分，可以在不等待其他阶段的情况下运行到完成。阶段由交换操作符分隔，这些操作符代表数据必须在执行器之间打乱的位置。在一个阶段内，操作符可以流水线化：数据从操作符流向下一个操作符，而不需要物化。
 - en: 'Consider the aggregate query from earlier:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑之前的聚合查询：
 - en: '[PRE2]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'This plan has two stages:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 此计划有两个阶段：
 - en: 'Stage 1: Scan the data and compute partial aggregates. This runs in parallel
     across all executors that have data partitions. Each executor reads its partitions,
     aggregates locally, and writes results to shuffle files.'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 阶段 1：扫描数据并计算部分聚合。这将在所有具有数据分区的执行器上并行运行。每个执行器读取其分区，本地聚合，并将结果写入打乱文件。
 - en: 'Stage 2: Read the shuffle outputs from Stage 1 and compute the final aggregate.
     This might run on a single executor (for queries that need a single result) or
     on multiple executors (if the result is partitioned).'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 阶段 2：读取阶段 1 的打乱输出并计算最终聚合。这可能在一个执行器上运行（对于需要单个结果的查询）或在多个执行器上运行（如果结果是分区的）。
 - en: Stage 2 cannot start until Stage 1 completes because it reads Stage 1’s output.
     The coordinator tracks stage dependencies and schedules stages as their inputs
     become available.
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 阶段 2 必须在阶段 1 完成后才能开始，因为它读取阶段 1 的输出。协调器跟踪阶段依赖关系，并在输入可用时安排阶段。
 - en: '[Producing a Distributed Query Plan](#producing-a-distributed-query-plan)'
+  id: totrans-56
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[生成分布式查询计划](#producing-a-distributed-query-plan)'
 - en: Converting a logical plan into a distributed execution plan involves identifying
     where exchanges must occur and grouping operators into stages. The boundaries
     between stages occur where data must be repartitioned.
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 将逻辑计划转换为分布式执行计划涉及确定必须发生交换的位置并将操作符分组到阶段中。阶段之间的边界发生在必须重新分区数据的地方。
 - en: 'Consider this query joining customers with their orders:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑这个查询，它将客户与其订单连接起来：
 - en: '[PRE3]'
+  id: totrans-59
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The single-node physical plan looks like:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 单节点物理计划看起来如下：
 - en: '[PRE4]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: To distribute this, we need to identify where exchanges occur. Assuming the
     tables are not already partitioned by customer id, the join requires shuffling
     both tables. The aggregate can run partially on each executor, but needs a final
     aggregation.
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了分发这个计划，我们需要确定交换发生的位置。假设表尚未按客户 ID 分区，连接需要打乱两个表。聚合可以在每个执行器上部分运行，但需要一个最终的聚合。
 - en: 'Stage 1 and 2 (run in parallel): Read and shuffle the input tables.'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 阶段 1 和 2（并行运行）：读取和打乱输入表。
 - en: '[PRE5]'
+  id: totrans-64
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Stage 3: Join the shuffled data and compute partial aggregates. Since the data
     is now partitioned by customer id, matching rows from both tables are on the same
     executor.'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 第 3 阶段：将打乱的数据合并并计算部分聚合。由于数据现在按客户 ID 分区，因此两个表中的匹配行都在同一个执行器上。
 - en: '[PRE6]'
+  id: totrans-66
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Stage 4: Combine partial aggregates and project the final result.'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 阶段 4：合并部分聚合并投影最终结果。
 - en: '[PRE7]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'The execution order is: Stages 1 and 2 run in parallel, then Stage 3, then
     Stage 4\. Each stage boundary is an exchange where data is either shuffled (for
     the join) or gathered (for the final aggregation).'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 执行顺序是：阶段 1 和 2 并行运行，然后是阶段 3，然后是阶段 4。每个阶段边界都是一个交换点，其中数据要么被打乱（用于连接）要么被收集（用于最终聚合）。
 - en: '[Serializing a Query Plan](#serializing-a-query-plan)'
+  id: totrans-70
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[序列化查询计划](#serializing-a-query-plan)'
 - en: The query scheduler needs to send fragments of the overall query plan to executors
     for execution.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询调度器需要将整体查询计划的部分发送到执行器以执行。
 - en: There are a number of options for serializing a query plan so that it can be
     passed between processes. Many query engines choose the strategy of using the
     programming languages native serialization support, which is a suitable choice
     if there is no requirement to be able to exchange query plans between different
     programming languages and this is usually the simplest mechanism to implement.
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 有多种序列化查询计划的方法，以便可以在进程之间传递。许多查询引擎选择使用编程语言本地的序列化支持作为策略，如果没有要求能够在不同的编程语言之间交换查询计划，这是一个合适的选择，因为这通常是实现起来最简单的机制。
 - en: However, there are advantages in using a serialization format that is programming
     language-agnostic. Ballista uses Google’s [Protocol Buffers](https://developers.google.com/protocol-buffers)
     format to define query plans. The project is typically abbreviated as “protobuf”.
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，使用一种与编程语言无关的序列化格式有一些优势。Ballista 使用 Google 的 [Protocol Buffers](https://developers.google.com/protocol-buffers)
+    格式来定义查询计划。该项目通常缩写为“protobuf”。
 - en: Here is a subset of the Ballista protocol buffer definition of a query plan.
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是Ballista协议缓冲区查询计划定义的一个子集。
 - en: '*Full source code can be found at `proto/ballista.proto` in the Ballista github
     repository.*'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: '*完整的源代码可以在Ballista的GitHub仓库中的`proto/ballista.proto`文件中找到。*'
 - en: '[PRE8]'
+  id: totrans-76
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: The protobuf project provides tools for generating language-specific source
     code for serializing and de-serializing data.
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: protobuf项目提供了生成特定语言源代码的工具，用于序列化和反序列化数据。
 - en: '[Serializing Data](#serializing-data)'
+  id: totrans-78
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[序列化数据](#serializing-data)'
 - en: Data must also be serialized as it is streamed between clients and executors
     and between executors.
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据在客户端和执行器之间以及执行器之间传输时也必须进行序列化。
 - en: Apache Arrow provides an IPC (Inter-process Communication) format for exchanging
     data between processes. Because of the standardized memory layout provided by
     Arrow, the raw bytes can be transferred directly between memory and an input/output
     device (disk, network, etc) without the overhead typically associated with serialization.
     This is effectively a zero copy operation because the data does not have to be
     transformed from its in-memory format to a separate serialization format.
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: Apache Arrow提供了一种进程间通信（IPC）格式，用于在进程之间交换数据。由于Arrow提供的标准化内存布局，原始字节可以直接在内存和输入/输出设备（磁盘、网络等）之间传输，而不需要与序列化相关的典型开销。这实际上是一个零拷贝操作，因为数据不需要从内存格式转换为单独的序列化格式。
 - en: However, the metadata about the data, such as the schema (column names and data
     types) does need to be encoded using [Google Flatbuffers](https://google.github.io/flatbuffers/).
     This metadata is small and is typically serialized once per result set or per
     batch so the overhead is small.
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，关于数据的元数据，例如模式（列名和数据类型），确实需要使用[Google Flatbuffers](https://google.github.io/flatbuffers/)进行编码。这些元数据很小，通常每个结果集或每批数据只序列化一次，因此开销很小。
 - en: Another advantage of using Arrow is that it provides very efficient exchange
     of data between different programming languages.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用Arrow的另一个优点是它提供了不同编程语言之间非常高效的数据交换。
 - en: Apache Arrow IPC defines the data encoding format but not the mechanism for
     exchanging it. Arrow IPC could be used to transfer data from a JVM language to
     C or Rust via JNI for example.
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: Apache Arrow IPC定义了数据编码格式，但没有定义交换它的机制。例如，Arrow IPC可以用于通过JNI将数据从JVM语言传输到C或Rust。
 - en: '[Choosing a Protocol](#choosing-a-protocol)'
+  id: totrans-84
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[选择协议](#choosing-a-protocol)'
 - en: Now that we have chosen serialization formats for query plans and data, the
     next question is how do we exchange this data between distributed processes.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们已经选择了查询计划和数据的序列化格式，下一个问题是我们在分布式进程之间如何交换这些数据。
 - en: Apache Arrow provides a [Flight protocol](https://arrow.apache.org/blog/2019/10/13/introducing-arrow-flight/)
     which is intended for this exact purpose. Flight is a new general-purpose client-server
     framework to simplify high performance transport of large datasets over network
     interfaces.
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: Apache Arrow提供了一个[Flight协议](https://arrow.apache.org/blog/2019/10/13/introducing-arrow-flight/)，旨在实现这一目的。Flight是一个新的通用客户端-服务器框架，用于简化在网络上传输大量数据集的高性能传输。
 - en: 'The Arrow Flight libraries provide a development framework for implementing
     a service that can send and receive data streams. A Flight server supports several
     basic kinds of requests:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: Arrow Flight库提供了一个开发框架，用于实现可以发送和接收数据流的服务的实现。Flight服务器支持几种基本类型的请求：
 - en: 'Handshake: a simple request to determine whether the client is authorized and,
     in some cases, to establish an implementation-defined session token to use for
     future requests'
+  id: totrans-88
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Handshake：一个简单的请求，用于确定客户端是否被授权，在某些情况下，用于建立用于未来请求的实现定义的会话令牌。
 - en: 'ListFlights: return a list of available data streams'
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: ListFlights：返回可用的数据流列表
 - en: 'GetSchema: return the schema for a data stream'
+  id: totrans-90
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: GetSchema：返回数据流的模式
 - en: 'GetFlightInfo: return an “access plan” for a dataset of interest, possibly
     requiring consuming multiple data streams. This request can accept custom serialized
     commands containing, for example, your specific application parameters.'
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: GetFlightInfo：返回一个感兴趣数据集的“访问计划”，可能需要消耗多个数据流。此请求可以接受包含自定义序列化命令的请求，例如，您的特定应用程序参数。
 - en: 'DoGet: send a data stream to a client'
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: DoGet：向客户端发送数据流
 - en: 'DoPut: receive a data stream from a client'
+  id: totrans-93
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: DoPut：从客户端接收数据流
 - en: 'DoAction: perform an implementation-specific action and return any results,
     i.e. a generalized function call'
+  id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: DoAction：执行特定实现的动作并返回任何结果，即一个通用的函数调用
 - en: 'ListActions: return a list of available action types'
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: ListActions：返回可用的动作类型列表
 - en: The `GetFlightInfo` method could be used to compile a query plan and return
     the necessary information for receiving the results, for example, followed by
     calls to `DoGet` on each executor to start receiving the results from the query.
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: '`GetFlightInfo`方法可以用来编译查询计划并返回接收结果所需的信息，例如，随后在每个执行器上调用`DoGet`以开始接收查询结果。'
 - en: '[Streaming vs Blocking Operators](#streaming-vs-blocking-operators)'
+  id: totrans-97
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[流式操作符与阻塞操作符](#streaming-vs-blocking-operators)'
 - en: Operators differ in whether they can stream results incrementally or must wait
     for all input before producing output.
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 操作符在是否可以增量地流式传输结果或必须在产生输出之前等待所有输入方面有所不同。
 - en: 'Streaming operators produce output as soon as they receive input. Filter and
     projection are streaming: each input batch produces an output batch immediately.
     A pipeline of streaming operators can begin returning results while still reading
     input, reducing latency and memory usage.'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 流操作符在接收到输入后立即产生输出。过滤和投影是流式的：每个输入批次立即产生一个输出批次。流操作符的管道可以在读取输入的同时开始返回结果，从而减少延迟和内存使用。
 - en: 'Blocking operators must receive all input before producing any output. Sort
     is the clearest example: you cannot know which row comes first until you have
     seen all rows. Global aggregates (without GROUP BY) are similar: you cannot return
     the final SUM until all rows are processed.'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 阻塞操作符必须在产生任何输出之前接收所有输入。排序是最明显的例子：在你看到所有行之前，你无法知道哪一行是第一行。全局聚合（没有GROUP BY）类似：在你处理完所有行之前，你不能返回最终的SUM。
 - en: Partially blocking operators fall in between. Hash join builds a hash table
     from one input (blocking on that side) but then streams through the other input.
     Hash aggregate accumulates results but can output partial aggregates incrementally
     when using two-phase aggregation.
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 部分阻塞操作符介于两者之间。散列连接从一个输入（在该侧阻塞）构建散列表，但随后通过另一个输入流式传输。散列聚合累积结果，但在使用两阶段聚合时可以增量地输出部分聚合。
 - en: In distributed execution, blocking operators create natural stage boundaries.
     All upstream work must complete before the blocking operator can produce its first
     output. This affects both latency (how long until results start appearing) and
     resource usage (intermediate data must be materialised).
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 在分布式执行中，阻塞操作符创建了自然的阶段边界。所有上游工作必须完成，阻塞操作符才能产生其第一个输出。这影响了延迟（结果开始出现需要多长时间）和资源使用（中间数据必须被实体化）。
 - en: Increasing the number of partitions helps reduce blocking time. Instead of one
     executor sorting a billion rows, we have a thousand executors each sorting a million
     rows. The merge step at the end is still necessary, but it operates on pre-sorted
     streams and can begin producing output immediately.
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 增加分区数量有助于减少阻塞时间。不再是单个执行器对十亿行数据进行排序，而是有千个执行器各自对百万行数据进行排序。最后的合并步骤仍然是必要的，但它操作的是预先排序的流，并且可以立即开始产生输出。
 - en: '[Data Locality](#data-locality)'
+  id: totrans-104
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[数据局部性](#data-locality)'
 - en: A key optimisation in distributed execution is moving computation to data rather
     than data to computation. Reading a terabyte over the network takes far longer
     than running a query locally on a terabyte of data.
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 分布式执行中的一个关键优化是将计算移动到数据而不是将数据移动到计算。在网络中读取一个TB的数据比在本地对TB数据运行查询要花费更长的时间。
 - en: When data lives in a distributed file system like HDFS, the coordinator knows
     which machines have local copies of each data block. It can assign tasks to executors
     that have the data locally, avoiding network transfer for the initial scan. This
     is called data locality or data affinity.
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 当数据存在于像HDFS这样的分布式文件系统中时，协调器知道哪些机器有每个数据块的本地副本。它可以分配任务给具有本地数据的执行器，从而避免初始扫描的网络传输。这被称为数据局部性或数据亲和性。
 - en: With cloud object stores like S3, data locality is less relevant because data
     must be fetched over the network regardless. However, executors in the same region
     as the storage will have lower latency and higher bandwidth than executors in
     different regions.
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于像S3这样的云对象存储，数据局部性不太相关，因为数据必须通过网络获取。然而，与存储在同一区域的执行器相比，不同区域的执行器将具有更低的延迟和更高的带宽。
 - en: The shuffle operation between stages necessarily moves data across the network,
     so data locality only helps with the initial scan. For queries that are dominated
     by shuffles (complex joins, high-cardinality aggregates), locality provides less
     benefit.
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 阶段之间的洗牌操作必然会将数据移动到网络上，因此数据局部性仅有助于初始扫描。对于受洗牌（复杂的连接，高基数聚合）主导的查询，局部性提供的益处较少。
 - en: '[Fault Tolerance](#fault-tolerance)'
+  id: totrans-109
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[容错性](#fault-tolerance)'
 - en: 'Long-running distributed queries face a significant risk: with hundreds of
     machines running for hours, the probability that at least one fails becomes high.
     Without fault tolerance, any failure means restarting the entire query from scratch.'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 长运行分布式查询面临重大风险：数百台机器运行数小时，至少有一台机器失败的概率很高。如果没有容错机制，任何故障都意味着需要从头开始重新启动整个查询。
 - en: 'There are several approaches to fault tolerance:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 有几种容错方法：
 - en: 'Checkpointing: Periodically save intermediate state to durable storage. If
     a failure occurs, restart from the most recent checkpoint rather than from the
     beginning. The trade-off is the overhead of writing checkpoints.'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 检查点：定期将中间状态保存到持久存储中。如果发生故障，则从最近的检查点而不是从头开始重新启动。权衡是写入检查点的开销。
 - en: 'Lineage-based recovery: Instead of saving intermediate data, save the computation
     graph (lineage) that produced it. If data is lost, recompute it from its inputs.
     This is the approach used by Apache Spark. It works well when the lineage is not
     too long and recomputation is cheap.'
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于血缘的恢复：而不是保存中间数据，保存产生它的计算图（血缘）。如果数据丢失，则从其输入重新计算它。这是Apache Spark使用的方法。当血缘不是太长且重新计算成本低时，这种方法效果很好。
 - en: 'Replication: Run multiple copies of each task on different machines. If one
     fails, use the results from another. This trades resource efficiency for reliability
     and is typically used for critical stages.'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 复制：在多台不同的机器上运行每个任务的多个副本。如果一个任务失败，则使用另一个任务的结果。这种做法以资源效率换取可靠性，通常用于关键阶段。
 - en: 'Task retry: If a task fails, simply re-run it (possibly on a different executor).
     This works for transient failures but requires the input data to still be available.'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 任务重试：如果一个任务失败，只需简单地重新运行它（可能在不同的执行器上）。这适用于暂时性故障，但需要输入数据仍然可用。
 - en: Most production systems combine these approaches. Early stages use lineage-based
     recovery (input data is durable on disk, so lost results can be recomputed). Expensive
     shuffle data may be replicated or checkpointed. Failed tasks are retried a few
     times before escalating to stage-level recovery.
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数生产系统结合了这些方法。早期阶段使用基于血缘的恢复（输入数据持久存储在磁盘上，因此丢失的结果可以重新计算）。昂贵的shuffle数据可能被复制或检查点。失败的任务在升级到阶段级恢复之前会重试几次。
 - en: '[Custom Code](#custom-code)'
+  id: totrans-117
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[自定义代码](#custom-code)'
 - en: It is often necessary to run user-defined functions as part of a distributed
     query. Serializing and shipping code to executors raises practical challenges.
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常有必要将用户定义的函数作为分布式查询的一部分运行。将代码序列化和发送到执行器会带来实际挑战。
 - en: For single-language systems, the language’s built-in serialization often works.
     Java can serialize lambda functions, Python can pickle functions (with caveats).
     The coordinator sends the serialized code along with the query plan.
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于单语言系统，该语言的内置序列化通常有效。Java可以序列化lambda函数，Python可以pickle函数（但有注意事项）。协调器将序列化代码与查询计划一起发送。
 - en: For production systems, code is typically pre-deployed to executors. JVM systems
     might use Maven coordinates to download JARs. Container-based systems package
     dependencies into Docker images. The query plan then references the code by name
     rather than including it inline.
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于生产系统，代码通常预先部署到执行器。JVM系统可能使用Maven坐标来下载JAR文件。基于容器的系统将依赖项打包到Docker镜像中。查询计划随后通过名称引用代码而不是内联包含它。
 - en: The user code must implement a known interface so the executor can invoke it.
     Type mismatches between the expected and actual interfaces cause runtime failures
     that can be hard to debug in a distributed setting.
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: 用户代码必须实现一个已知接口，以便执行器可以调用它。预期接口和实际接口之间的类型不匹配会导致在分布式环境中难以调试的运行时失败。
 - en: '[Distributed Query Optimizations](#distributed-query-optimizations)'
+  id: totrans-122
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[分布式查询优化](#distributed-query-optimizations)'
 - en: The same query can be distributed in many ways. Choosing the best distribution
     requires estimating costs and making trade-offs.
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 同一个查询可以以多种方式分发。选择最佳分发方式需要估算成本和权衡利弊。
 - en: '[Cost Factors](#cost-factors)'
+  id: totrans-124
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[成本因素](#cost-factors)'
 - en: 'Distributed execution involves multiple scarce resources:'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 分布式执行涉及多个稀缺资源：
 - en: 'Network bandwidth: Shuffles transfer data between machines. Network is often
     the bottleneck, especially for join-heavy queries. Minimising shuffle size is
     usually the highest priority.'
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: 网络带宽：Shuffles在机器之间传输数据。网络通常是瓶颈，尤其是在对join操作要求高的查询中。最小化shuffle大小通常是最高优先级。
 - en: 'Memory: Each executor has limited memory. Hash tables for joins and aggregates
     must fit, or spill to disk at a severe performance cost. More executors means
     more aggregate memory, but also more coordination overhead.'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 内存：每个执行器都有有限的内存。用于连接和聚合的哈希表必须适合，否则会以严重的性能成本溢出到磁盘。更多的执行器意味着更多的聚合内存，但也增加了更多的协调开销。
 - en: 'CPU: Computation itself is parallelisable, but the benefit diminishes if the
     query is bottlenecked on I/O or network.'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: CPU：计算本身是可并行的，但如果查询在I/O或网络上成为瓶颈，则好处会减少。
 - en: 'Disk I/O: Reading source data, writing shuffle files, and spilling all compete
     for disk bandwidth. SSDs help but have limits.'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 磁盘I/O：读取源数据、写入洗牌文件和溢出都竞争磁盘带宽。SSD有帮助，但有限。
 - en: 'Monetary cost: In cloud environments, more executors means higher cost. A query
     that runs in 10 minutes on 100 executors might run in 15 minutes on 50 executors
     at half the price.'
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 货币成本：在云环境中，更多的执行器意味着更高的成本。在100个执行器上运行10分钟的查询可能在50个执行器上运行15分钟，成本减半。
 - en: '[Optimisation Strategies](#optimisation-strategies)'
+  id: totrans-131
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[优化策略](#optimisation-strategies)'
 - en: 'Shuffle minimisation: Choose join strategies that minimise data movement. Use
     broadcast joins when one side is small. Leverage co-located data when available.
     Filter early to reduce the data that reaches shuffles.'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: 优化洗牌：选择最小化数据移动的连接策略。当一边较小时使用广播连接。当可用时利用本地数据。尽早过滤以减少达到洗牌的数据量。
 - en: 'Predicate pushdown: Push filters as close to the data source as possible. If
     the storage system supports predicate pushdown (like Parquet with column statistics),
     even less data is read from disk.'
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 谓词下推：尽可能将过滤器推送到数据源附近。如果存储系统支持谓词下推（如带有列统计信息的Parquet），则从磁盘读取的数据更少。
 - en: 'Partition pruning: Skip partitions that cannot contain matching rows. Time-partitioned
     data benefits enormously when queries filter on time.'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 分区修剪：跳过不可能包含匹配行的分区。当查询基于时间过滤时，时间分区数据受益极大。
 - en: 'Statistics-based planning: With accurate statistics (row counts, column cardinalities,
     value distributions), the planner can estimate costs and choose better strategies.
     Without statistics, it must guess or use conservative defaults.'
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于统计的计划：有了准确的统计信息（行数、列基数、值分布），规划者可以估计成本并选择更好的策略。没有统计信息时，它必须猜测或使用保守的默认值。
 - en: '[Adaptive Execution](#adaptive-execution)'
+  id: totrans-136
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[自适应执行](#adaptive-execution)'
 - en: 'An alternative to upfront cost estimation is adaptive execution: start running
     the query and adjust the plan based on observed data characteristics.'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 前置成本估计的替代方法是自适应执行：开始运行查询并根据观察到的数据特征调整计划。
 - en: 'Apache Spark’s Adaptive Query Execution dynamically:'
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: Apache Spark的自适应查询执行动态地：
 - en: Coalesces small shuffle partitions to reduce overhead
+  id: totrans-139
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 合并小的洗牌分区以减少开销
 - en: Switches join strategies based on actual data sizes
+  id: totrans-140
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 根据实际数据大小切换连接策略
 - en: Optimises skewed joins by splitting hot partitions
+  id: totrans-141
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过拆分热分区优化倾斜连接
 - en: Adaptive execution is particularly valuable when statistics are unavailable
     or stale, which is common in data lake environments where new data arrives continuously.
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 当统计数据不可用或过时时，自适应执行特别有价值，这在数据湖环境中很常见，因为新数据持续到达。
 - en: '[The COST of Distribution](#the-cost-of-distribution)'
+  id: totrans-143
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[分布的成本](#the-cost-of-distribution)'
 - en: 'It bears repeating: distributed execution has overhead. The paper “Scalability!
     But at what COST?” (Configuration that Outperforms a Single Thread) demonstrates
     that many distributed systems are slower than a single well-optimised machine
     for medium-sized datasets.'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 值得重复的是：分布式执行有开销。论文“可扩展性！但代价是什么？”（优于单线程的配置）表明，许多分布式系统对于中等规模的数据集来说比单个优化良好的机器要慢。
 - en: Before scaling out to a cluster, ensure you have actually hit the limits of
     a single machine. Modern servers with hundreds of gigabytes of RAM and fast NVMe
     storage can process surprisingly large datasets. The complexity and operational
     overhead of distributed systems is only justified when the data truly exceeds
     single-machine capacity.
+  id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 在扩展到集群之前，确保你已经达到了单台机器的极限。具有数百GB RAM和快速NVMe存储的现代服务器可以处理令人惊讶的大型数据集。只有当数据真正超过单机容量时，分布式系统的复杂性和运营开销才是合理的。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-146
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以ePub、MOBI和PDF格式提供购买，请访问[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

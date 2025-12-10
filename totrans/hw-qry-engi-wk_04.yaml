@@ -1,122 +1,192 @@
 - en: The KQuery Project
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: KQuery项目
 - en: 原文：[https://howqueryengineswork.com/00-source-code.html](https://howqueryengineswork.com/00-source-code.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/00-source-code.html](https://howqueryengineswork.com/00-source-code.html)
 - en: 'This book is accompanied by a fully functional query engine called KQuery (for
     Kotlin Query). The source code is available on GitHub:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 本书附有一个名为KQuery（代表Kotlin查询）的完整功能的查询引擎。源代码可在GitHub上找到：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Each chapter references specific modules in this repository. Reading the book
     alongside the code will deepen your understanding. The book explains the design
     decisions, while the code shows the complete implementation.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 每一章都引用了此仓库中的特定模块。边读代码边读书将加深你的理解。书中解释了设计决策，而代码展示了完整的实现。
 - en: '[Why Kotlin?](#why-kotlin)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[为什么选择Kotlin？](#why-kotlin)'
 - en: The examples use Kotlin because it is concise and readable. If you know Java,
     Python, or any C-family language, you will follow along easily. Kotlin runs on
     the JVM and interoperates seamlessly with Java libraries like Apache Arrow.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 示例使用Kotlin，因为它简洁易读。如果你知道Java、Python或任何C系列语言，你将很容易跟上。Kotlin运行在JVM上，与Apache Arrow等Java库无缝交互。
 - en: Query engine concepts are language-agnostic. The Apache Arrow DataFusion project
     implements similar ideas in Rust, and you could apply these patterns in any language.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询引擎的概念是语言无关的。Apache Arrow DataFusion项目在Rust中实现了类似的想法，你可以在任何语言中应用这些模式。
 - en: '[Repository Structure](#repository-structure)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[仓库结构](#repository-structure)'
 - en: 'The repository is organized into Gradle modules, each corresponding to a layer
     of the query engine:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 仓库组织成Gradle模块，每个模块对应查询引擎的一层：
 - en: '| Module | Description |'
+  id: totrans-10
   prefs: []
   type: TYPE_TB
+  zh: '| 模块 | 描述 |'
 - en: '| --- | --- |'
+  id: totrans-11
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| `datatypes` | Type system built on Apache Arrow |'
+  id: totrans-12
   prefs: []
   type: TYPE_TB
+  zh: '| `datatypes` | 建立在Apache Arrow之上的类型系统 |'
 - en: '| `datasource` | Data source abstractions and CSV/Parquet readers |'
+  id: totrans-13
   prefs: []
   type: TYPE_TB
+  zh: '| `datasource` | 数据源抽象和CSV/Parquet读取器 |'
 - en: '| `logical-plan` | Logical plans and expressions |'
+  id: totrans-14
   prefs: []
   type: TYPE_TB
+  zh: '| `logical-plan` | 逻辑计划和表达式 |'
 - en: '| `physical-plan` | Physical plans and expression evaluation |'
+  id: totrans-15
   prefs: []
   type: TYPE_TB
+  zh: '| `physical-plan` | 物理计划和表达式评估 |'
 - en: '| `query-planner` | Translation from logical to physical plans |'
+  id: totrans-16
   prefs: []
   type: TYPE_TB
+  zh: '| `query-planner` | 从逻辑计划到物理计划的转换 |'
 - en: '| `optimizer` | Query optimization rules |'
+  id: totrans-17
   prefs: []
   type: TYPE_TB
+  zh: '| `optimizer` | 查询优化规则 |'
 - en: '| `sql` | SQL tokenizer, parser, and planner |'
+  id: totrans-18
   prefs: []
   type: TYPE_TB
+  zh: '| `sql` | SQL分词器、解析器和规划器 |'
 - en: '| `execution` | Query execution engine |'
+  id: totrans-19
   prefs: []
   type: TYPE_TB
+  zh: '| `execution` | 查询执行引擎 |'
 - en: '| `examples` | Example queries and benchmarks |'
+  id: totrans-20
   prefs: []
   type: TYPE_TB
+  zh: '| `examples` | 示例查询和基准测试 |'
 - en: '[Building the Project](#building-the-project)'
+  id: totrans-21
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[构建项目](#building-the-project)'
 - en: 'Prerequisites:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 先决条件：
 - en: JDK 11 or later
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JDK 11或更高版本
 - en: Gradle (or use the included Gradle wrapper)
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Gradle（或使用包含的Gradle包装器）
 - en: 'To build and run tests:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 构建和运行测试：
 - en: '[PRE1]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'To run a specific test:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 要运行特定的测试：
 - en: '[PRE2]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Running Examples](#running-examples)'
+  id: totrans-29
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[运行示例](#running-examples)'
 - en: 'The `examples` module contains sample queries you can run:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: '`examples`模块包含你可以运行的示例查询：'
 - en: '[PRE3]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: See the README in the repository for the latest instructions and any additional
     setup required.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 请参阅仓库中的README以获取最新说明和任何其他所需设置。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以ePub、MOBI和PDF格式提供购买，请访问[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

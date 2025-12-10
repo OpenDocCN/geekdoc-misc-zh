@@ -1,110 +1,160 @@
 - en: Further Resources
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 进一步资源
 - en: 原文：[https://howqueryengineswork.com/18-further-resources.html](https://howqueryengineswork.com/18-further-resources.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/18-further-resources.html](https://howqueryengineswork.com/18-further-resources.html)
 - en: I hope that you found this book useful and that you now have a better understanding
     of the internals of query engines. If there are topics that you feel haven’t been
     covered adequately, or at all, I would love to hear about it so I can consider
     adding additional content in a future revision of this book.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我希望您觉得这本书有用，并且现在对查询引擎的内部结构有了更好的理解。如果您觉得某些主题没有得到充分或完全的覆盖，我很乐意听到您的意见，这样我可以在本书的将来修订版中考虑添加更多内容。
 - en: Feedback can be posted on the public forum on the [Leanpub site](https://community.leanpub.com/t/feedback/2160),
     or you can message me directly via twitter at [@andygrove_io](https://twitter.com/andygrove_io).
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 可以在[Leanpub网站上的公共论坛](https://community.leanpub.com/t/feedback/2160)上发布反馈，或者您可以直接通过twitter在[@andygrove_io](https://twitter.com/andygrove_io)上给我发消息。
 - en: '[Open-Source Projects](#open-source-projects)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[开源项目](#open-source-projects)'
 - en: There are numerous open-source projects that contain query engines and working
     with these projects is a great way to learn more about the topic. Here are just
     a few examples of popular open-source query engines.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 有许多包含查询引擎的开源项目，与这些项目合作是学习更多关于这个主题的好方法。以下是一些流行的开源查询引擎的例子。
 - en: Apache Arrow
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Apache Arrow
 - en: Apache Calcite
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Apache Calcite
 - en: Apache Drill
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Apache Drill
 - en: Apache Hadoop
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Apache Hadoop
 - en: Apache Hive
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Apache Hive
 - en: Apache Impala
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Apache Impala
 - en: Apache Spark
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Apache Spark
 - en: Facebook Presto
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Facebook Presto
 - en: NVIDIA RAPIDS Accelerator for Apache Spark
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: NVIDIA RAPIDS加速器用于Apache Spark
 - en: '[YouTube](#youtube)'
+  id: totrans-15
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[YouTube](#youtube)'
 - en: I only recently discovered Andy Pavlo’s lecture series, which is available on
     YouTube ([here](https://www.youtube.com/playlist?list=PLSE8ODhjZXjasmrEd2_Yi1deeE360zv5O)).
     This covers much more than just query engines, but there is extensive content
     on query optimization and execution. I highly recommend watching these videos.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 我最近发现了Andy Pavlo的讲座系列，这些讲座可在YouTube上找到([这里](https://www.youtube.com/playlist?list=PLSE8ODhjZXjasmrEd2_Yi1deeE360zv5O))。这不仅仅涵盖了查询引擎，还包括了大量的查询优化和执行内容。我强烈推荐观看这些视频。
 - en: '[Sample Data](#sample-data)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[示例数据](#sample-data)'
 - en: Earlier chapters reference the [New York City Taxi & Limousine Commission Trip
     Record Data](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page) data
     set. The yellow and green taxi trip records include fields capturing pick-up and
     drop-off dates/times, pick-up and drop-off locations, trip distances, itemized
     fares, rate types, payment types, and driver-reported passenger counts.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 早期章节引用了[纽约市出租车和豪华轿车委员会行程记录数据集](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page)。黄色和绿色出租车的行程记录包括捕获接车和送车日期/时间、接车和送车地点、行程距离、详细费用、费率类型、支付类型和司机报告的乘客数量。
 - en: 'When this book was first published, the data was provided in CSV format, but
     has now been converted to Parquet format. It is still possible to find the CSV
     versions of these files online. As of December 2025, the following locations contain
     this data:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 当本书首次出版时，数据是以CSV格式提供的，但现在已转换为Parquet格式。仍然可以在网上找到这些文件的CSV版本。截至2025年12月，以下位置包含这些数据：
 - en: https://github.com/DataTalksClub/nyc-tlc-data/releases
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: https://github.com/DataTalksClub/nyc-tlc-data/releases
 - en: https://catalog.data.gov/dataset/2019-yellow-taxi-trip-data
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: https://catalog.data.gov/dataset/2019-yellow-taxi-trip-data
 - en: https://www.kaggle.com/code/haydenbailey/newyork-yellow-taxi
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: https://www.kaggle.com/code/haydenbailey/newyork-yellow-taxi
 - en: The [KQuery project](https://github.com/andygrove/how-query-engines-work) contains
     source code for converting these CSV files into Parquet format. *This book is
     also available for purchase in ePub, MOBI, and PDF format from [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '[KQuery项目](https://github.com/andygrove/how-query-engines-work)包含了将这些CSV文件转换为Parquet格式的源代码。*本书也以ePub、MOBI和PDF格式在[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)上提供购买。*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格罗夫。保留所有权利。**'

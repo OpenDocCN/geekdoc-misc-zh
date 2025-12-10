@@ -1,244 +1,378 @@
 - en: Subqueries
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 子查询
 - en: 原文：[https://howqueryengineswork.com/11-subqueries.html](https://howqueryengineswork.com/11-subqueries.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/11-subqueries.html](https://howqueryengineswork.com/11-subqueries.html)
 - en: Subqueries are queries nested within other queries. They appear in SELECT lists,
     FROM clauses, and WHERE clauses. Supporting subqueries requires both parsing them
     correctly and planning them efficiently.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 子查询是嵌套在其他查询中的查询。它们出现在 SELECT 列表、FROM 子句和 WHERE 子句中。支持子查询需要正确解析它们并有效地规划它们。
 - en: '[Types of Subqueries](#types-of-subqueries)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[子查询类型](#types-of-subqueries)'
 - en: '[Scalar Subqueries](#scalar-subqueries)'
+  id: totrans-4
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[标量子查询](#scalar-subqueries)'
 - en: 'A scalar subquery returns a single value and can appear wherever a scalar expression
     is valid:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 标量子查询返回单个值，可以在任何标量表达式有效的地方出现：
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The subquery `(SELECT AVG(salary) FROM employees)` returns one value that applies
     to every row. If a scalar subquery returns more than one row, that is an error.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 子查询 `(SELECT AVG(salary) FROM employees)` 返回一个适用于每一行的值。如果标量子查询返回多行，则是一个错误。
 - en: '[Correlated Subqueries](#correlated-subqueries)'
+  id: totrans-8
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[相关子查询](#correlated-subqueries)'
 - en: 'A correlated subquery references columns from the outer query:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 相关子查询引用外部查询的列：
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'The inner query references `customers.id` from the outer query. This correlation
     creates a dependency: conceptually, the inner query runs once per row of the outer
     query.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 内部查询引用外部查询的 `customers.id`。这种相关性创建了一个依赖关系：概念上，内部查询对于外部查询的每一行运行一次。
 - en: '[Uncorrelated Subqueries](#uncorrelated-subqueries)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[非相关子查询](#uncorrelated-subqueries)'
 - en: 'An uncorrelated subquery is self-contained:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 非相关子查询是自包含的：
 - en: '[PRE2]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The subquery does not reference the outer query, so it can be evaluated once
     and the result substituted.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 子查询不引用外部查询，因此它可以一次性评估并替换结果。
 - en: '[EXISTS and IN Subqueries](#exists-and-in-subqueries)'
+  id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[EXISTS 和 IN 子查询](#exists-and-in-subqueries)'
 - en: 'The `EXISTS` predicate tests whether a subquery returns any rows:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '`EXISTS` 谓词测试子查询是否返回任何行：'
 - en: '[PRE3]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: This returns customers who have at least one order.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 这返回至少有一个订单的客户。
 - en: 'The `IN` predicate tests membership in a set:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: '`IN` 谓词测试集合中的成员资格：'
 - en: '[PRE4]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Both `NOT EXISTS` and `NOT IN` provide the negated forms.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '`NOT EXISTS` 和 `NOT IN` 都提供了否定形式。'
 - en: '[Planning Subqueries](#planning-subqueries)'
+  id: totrans-23
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[子查询规划](#planning-subqueries)'
 - en: '[Uncorrelated Subqueries](#uncorrelated-subqueries-1)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[非相关子查询](#uncorrelated-subqueries-1)'
 - en: 'Uncorrelated scalar subqueries are straightforward: execute them once during
     planning (or once at the start of execution) and substitute the result as a literal
     value.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 非相关标量子查询很简单：在规划期间（或在执行开始时）执行一次，并将结果作为文字值替换。
 - en: '[PRE5]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Becomes:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 变为：
 - en: '[PRE6]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[Correlated Subqueries: The Naive Approach](#correlated-subqueries-the-naive-approach)'
+  id: totrans-29
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[相关子查询：简单方法](#correlated-subqueries-the-naive-approach)'
 - en: 'A naive implementation executes the correlated subquery once per row of the
     outer query. For the order count example:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 一种简单的实现方式是对于外部查询的每一行执行一次相关子查询。对于订单计数示例：
 - en: '[PRE7]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: If `customers` has 100,000 rows, we run 100,000 separate queries against `orders`.
     This is extremely slow.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果 `customers` 有 100,000 行，我们将对 `orders` 运行 100,000 个单独的查询。这非常慢。
 - en: '[Decorrelation: Converting Subqueries to Joins](#decorrelation-converting-subqueries-to-joins)'
+  id: totrans-33
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[去相关：将子查询转换为连接](#decorrelation-converting-subqueries-to-joins)'
 - en: 'The solution is decorrelation: rewriting correlated subqueries as joins. The
     query above becomes:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 解决方案是去相关：将相关子查询重写为连接。上面的查询变为：
 - en: '[PRE8]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Now we scan `orders` once, aggregate, and join, which is much faster.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们只需扫描一次 `orders`，进行聚合和连接，这要快得多。
 - en: '[EXISTS to Semi Join](#exists-to-semi-join)'
+  id: totrans-37
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[EXISTS 转半连接](#exists-to-semi-join)'
 - en: An `EXISTS` subquery becomes a semi join. A semi join returns rows from the
     left side where at least one match exists on the right, without duplicating left
     rows when multiple matches exist.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个 `EXISTS` 子查询变为半连接。半连接返回左边的行，其中至少存在一个与右边的匹配，当存在多个匹配时不会重复左边的行。
 - en: '[PRE9]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Becomes:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 变为：
 - en: '[PRE10]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[NOT EXISTS to Anti Join](#not-exists-to-anti-join)'
+  id: totrans-42
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[NOT EXISTS 转反连接](#not-exists-to-anti-join)'
 - en: '`NOT EXISTS` becomes an anti join, which returns rows from the left side where
     no match exists on the right:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: '`NOT EXISTS` 变为反连接，它返回左边没有在右边匹配的行：'
 - en: '[PRE11]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'Becomes:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 变为：
 - en: '[PRE12]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '[IN to Semi Join](#in-to-semi-join)'
+  id: totrans-47
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[IN 转半连接](#in-to-semi-join)'
 - en: '`IN` subqueries also become semi joins:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: '`IN` 子查询也变为半连接：'
 - en: '[PRE13]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Becomes:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 变为：
 - en: '[PRE14]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '[Implementation Complexity](#implementation-complexity)'
+  id: totrans-52
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[实现复杂性](#implementation-complexity)'
 - en: 'Subquery decorrelation is one of the more complex parts of a query engine.
     Challenges include:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 子查询去相关是查询引擎中较为复杂的一部分。挑战包括：
 - en: 'Identifying correlation: The planner must determine which columns in the subquery
     reference the outer query.'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 识别相关性：规划器必须确定子查询中哪些列引用了外部查询。
 - en: 'Choosing the right join type: EXISTS maps to semi join, NOT EXISTS to anti
     join, scalar subqueries to left outer joins with aggregation.'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 选择正确的连接类型：EXISTS映射到半连接，NOT EXISTS映射到反连接，标量子查询映射到带有聚合的左外连接。
 - en: 'Handling multiple correlations: A subquery might reference multiple outer tables
     in a complex query.'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 处理多个相关性：子查询可能在一个复杂查询中引用多个外部表。
 - en: 'Preserving semantics: The rewritten query must produce exactly the same results,
     including handling of NULLs.'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 保留语义：重写的查询必须产生完全相同的结果，包括对NULL的处理。
 - en: 'Nested subqueries: Subqueries can contain subqueries, requiring recursive decorrelation.'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 嵌套子查询：子查询可以包含子查询，需要递归去相关。
 - en: KQuery does not currently implement subqueries. Production query engines spend
     significant effort on subquery support since it is essential for SQL compatibility.
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery目前未实现子查询。生产查询引擎在子查询支持上投入了大量努力，因为这对于SQL兼容性至关重要。
 - en: '[When Decorrelation Is Not Possible](#when-decorrelation-is-not-possible)'
+  id: totrans-60
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[当去相关不可行时](#when-decorrelation-is-not-possible)'
 - en: 'Some correlated subqueries cannot be decorrelated into standard joins. These
     “lateral” or “dependent” subqueries must be evaluated per-row. Modern databases
     support `LATERAL` joins for this case:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些相关子查询不能去相关为标准连接。这些“横向”或“依赖”子查询必须逐行评估。现代数据库支持`LATERAL`连接来处理这种情况：
 - en: '[PRE15]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: This returns each customer with their three most recent orders. The `LIMIT 3`
     depends on which customer we are processing, so it cannot be rewritten as a simple
     join.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 这返回每个客户及其最近的三张订单。`LIMIT 3`取决于我们正在处理的客户，因此不能简单地重写为连接。
 - en: Handling lateral joins requires either per-row evaluation (slow) or specialized
     operators that combine joining with limiting.
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 处理横向连接需要逐行评估（慢）或结合连接与限制的特殊操作符。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以ePub、MOBI和PDF格式可供购买，详情请访问[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权 © 2020-2025 安迪·格鲁夫。版权所有。**'

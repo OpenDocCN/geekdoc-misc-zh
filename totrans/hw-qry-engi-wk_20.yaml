@@ -1,466 +1,700 @@
 - en: Testing
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 测试
 - en: 原文：[https://howqueryengineswork.com/16-testing.html](https://howqueryengineswork.com/16-testing.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[https://howqueryengineswork.com/16-testing.html](https://howqueryengineswork.com/16-testing.html)'
 - en: '*The source code discussed in this chapter can be found in the test directories
     throughout the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在[KQuery项目](https://github.com/andygrove/how-query-engines-work)的测试目录中找到。*'
 - en: Query engines are complex systems where subtle bugs can cause queries to return
     incorrect results. Unlike a crash or obvious error, a query that silently returns
     wrong data is particularly dangerous because users may make decisions based on
     faulty information. Rigorous testing is essential.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询引擎是复杂的系统，细微的bug可能导致查询返回错误的结果。与崩溃或明显错误不同，一个静默返回错误数据的查询尤其危险，因为用户可能会基于错误信息做出决策。严格的测试是必不可少的。
 - en: '[Why Query Engines Are Hard to Test](#why-query-engines-are-hard-to-test)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[为什么查询引擎难以测试](#why-query-engines-are-hard-to-test)'
 - en: 'Several factors make testing query engines challenging:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 几个因素使得测试查询引擎具有挑战性：
 - en: The combinatorial explosion of operators and expressions means there are infinite
     ways to combine them. A simple query with three operators and two expressions
     per operator already has many possible combinations. Hand-written tests cannot
     cover them all.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 操作符和表达式的组合爆炸意味着有无限种组合方式。一个包含三个操作符，每个操作符有两个表达式的简单查询就已经有众多可能的组合。手写的测试无法涵盖所有这些。
 - en: Type coercion adds another dimension. An expression like `a > b` must work correctly
     for integers, floats, strings, dates, and more. Each comparison operator multiplied
     by each type combination multiplied by null handling creates many test cases.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型转换增加了另一个维度。像`a > b`这样的表达式必须对整数、浮点数、字符串、日期等正确工作。每个比较运算符乘以每种类型组合乘以null处理创建了许多测试用例。
 - en: 'Edge cases abound: empty tables, single-row tables, tables with all nulls,
     extremely large values, NaN for floating point, and Unicode strings with special
     characters. Production data will eventually exercise all of these.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 边缘情况很多：空表、单行表、全为null的表、极大的值、浮点数的NaN，以及包含特殊字符的Unicode字符串。生产数据最终会测试到所有这些。
 - en: Query optimizers can introduce bugs. A query might work correctly without optimization
     but fail after the optimizer rewrites it. Or the optimizer might produce a plan
     that is semantically different from the original.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询优化器可能会引入bug。一个查询可能在未优化时工作正确，但在优化器重写后失败。或者优化器可能会生成一个与原始查询在语义上不同的计划。
 - en: '[Unit Testing](#unit-testing)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[单元测试](#unit-testing)'
 - en: Unit tests verify that individual components work correctly in isolation. For
     a query engine, this means testing expressions, operators, and data sources independently
     before testing them in combination.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 单元测试验证单个组件在独立情况下是否工作正确。对于一个查询引擎，这意味着在组合测试之前，独立测试表达式、操作符和数据源。
 - en: '[Testing Expressions](#testing-expressions)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[测试表达式](#testing-expressions)'
 - en: Expression tests should verify that each expression produces correct results
     for valid inputs and handles edge cases appropriately.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 表达式测试应验证每个表达式对于有效输入产生正确的结果，并且适当地处理边缘情况。
 - en: 'Here is a test for the greater-than-or-equals expression across different numeric
     types:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是一个针对不同数值类型的大于等于表达式的测试：
 - en: '[PRE0]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: This test includes MIN_VALUE and MAX_VALUE to verify boundary behavior. Similar
     tests should exist for bytes, shorts, integers, floats, doubles, and strings.
     Each numeric type can have different overflow or comparison semantics.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个测试包括MIN_VALUE和MAX_VALUE来验证边界行为。类似的测试应该存在于bytes、shorts、integers、floats、doubles和strings中。每种数值类型都可以有不同的溢出或比较语义。
 - en: 'For floating point types, testing NaN behavior is critical:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于浮点类型，测试NaN行为至关重要：
 - en: '[PRE1]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: NaN comparisons follow IEEE 754 semantics where NaN compared to anything (including
     itself) returns false. This surprises many developers, so explicit tests catch
     implementations that handle NaN incorrectly.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: NaN比较遵循IEEE 754语义，其中NaN与任何东西（包括它自己）比较都返回false。这让许多开发者感到惊讶，因此显式测试可以捕捉到处理NaN不正确的实现。
 - en: '[Creating Test Data](#creating-test-data)'
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[创建测试数据](#creating-test-data)'
 - en: 'Tests need a convenient way to create record batches with arbitrary data. A
     helper method that takes a schema and column values makes tests cleaner:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 测试需要一个方便的方式来创建具有任意数据的记录批次。一个接受模式列值的辅助方法可以使测试更简洁：
 - en: '[PRE2]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'With this helper, tests become declarative: define the schema, provide the
     data, and verify the result.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用这个辅助工具，测试变得声明性：定义模式，提供数据，并验证结果。
 - en: '[What to Test](#what-to-test)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[要测试的内容](#what-to-test)'
 - en: 'Here are categories of unit tests that every query engine should have:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是每个查询引擎都应该有的单元测试类别：
 - en: 'Type handling: What happens when an expression receives an unexpected type?
     For example, computing SUM on strings should produce a clear error.'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型处理：当表达式接收到意外的类型时会发生什么？例如，对字符串计算SUM应该产生一个清晰的错误。
 - en: 'Boundary values: Test minimum and maximum values for each numeric type. Test
     empty strings and very long strings.'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 边界值：测试每种数值类型的最大和最小值。测试空字符串和非常长的字符串。
 - en: 'Null handling: Every expression must handle null inputs correctly. Typically,
     any operation involving null produces null (SQL three-valued logic).'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 空值处理：每个表达式都必须正确处理空输入。通常，任何涉及空的操作都会产生空值（SQL三值逻辑）。
 - en: 'Overflow and underflow: What happens when multiplying two large integers overflows?
     The behavior should be documented and tested.'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 溢出和下溢：当两个大整数相乘导致溢出时会发生什么？这种行为应该被记录和测试。
 - en: 'Special floating point values: Test positive and negative infinity, NaN, positive
     and negative zero.'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 特殊浮点值：测试正负无穷大、NaN、正负零。
 - en: '[Testing SQL Parsing](#testing-sql-parsing)'
+  id: totrans-31
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[测试SQL解析](#testing-sql-parsing)'
 - en: SQL parsing deserves dedicated tests because the parser is a critical component
     that interprets user queries. Parser bugs can cause queries to be misinterpreted,
     potentially with serious consequences.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: SQL解析值得专门的测试，因为解析器是一个关键组件，它解释用户查询。解析器错误可能导致查询被误解，可能产生严重后果。
 - en: '[Testing Operator Precedence](#testing-operator-precedence)'
+  id: totrans-33
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[测试运算符优先级](#testing-operator-precedence)'
 - en: 'Mathematical expressions must respect operator precedence. These tests verify
     that multiplication binds tighter than addition:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 数学表达式必须尊重运算符优先级。这些测试验证乘法绑定比加法更紧密：
 - en: '[PRE3]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: The tree structure of the parsed expression reveals which operations bind first.
     In `1 + 2 * 3`, the `2 * 3` forms a subtree because multiplication has higher
     precedence.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 解析表达式的树结构揭示了哪些操作先绑定。在`1 + 2 * 3`中，`2 * 3`形成一个子树，因为乘法有更高的优先级。
 - en: '[Testing Query Structure](#testing-query-structure)'
+  id: totrans-37
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[测试查询结构](#testing-query-structure)'
 - en: 'Tests should verify that each SQL clause is parsed correctly:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 测试应验证每个SQL子句是否正确解析：
 - en: '[PRE4]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Integration Testing](#integration-testing)'
+  id: totrans-40
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[集成测试](#integration-testing)'
 - en: Integration tests verify that components work together correctly. For a query
     engine, this means executing complete queries and verifying the results.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 集成测试验证组件是否正确协同工作。对于一个查询引擎来说，这意味着执行完整的查询并验证结果。
 - en: '[End-to-End Query Tests](#end-to-end-query-tests)'
+  id: totrans-42
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[端到端查询测试](#end-to-end-query-tests)'
 - en: 'These tests exercise the full query path from parsing through execution:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些测试从解析到执行的全查询路径进行测试：
 - en: '[PRE5]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: These tests use a small, static test file so the expected results are known.
     The CSV output format makes assertions readable and diff-friendly when tests fail.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些测试使用一个小型静态测试文件，因此预期的结果已知。CSV输出格式使得测试失败时的断言可读且易于比较。
 - en: '[Testing Complex Operations](#testing-complex-operations)'
+  id: totrans-46
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[测试复杂操作](#testing-complex-operations)'
 - en: 'Aggregation, joins, and other complex operations need thorough integration
     testing:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 聚合、连接和其他复杂操作需要彻底的集成测试：
 - en: '[PRE6]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: The join test creates in-memory data sources to have precise control over the
     input data. This makes the expected output predictable and the test deterministic.
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接测试创建内存中的数据源，以便精确控制输入数据。这使得预期的输出可预测，测试具有确定性。
 - en: '[Comparative Testing](#comparative-testing)'
+  id: totrans-50
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[比较测试](#comparative-testing)'
 - en: Comparative testing executes the same query against a trusted reference implementation
     and verifies that both produce the same results. This is particularly valuable
     for catching subtle bugs.
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 比较测试对受信任的参考实现执行相同的查询，并验证两者产生相同的结果。这对于捕捉细微的错误特别有价值。
 - en: 'Common approaches include:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 常见的方法包括：
 - en: Running queries against PostgreSQL, DuckDB, or another established database
     and comparing results
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在PostgreSQL、DuckDB或其他已建立的数据库上运行查询并比较结果
 - en: Comparing DataFrame API queries against equivalent SQL queries within the same
     engine
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 比较DataFrame API查询与同一引擎内的等效SQL查询
 - en: Running optimized queries against unoptimized versions to verify the optimizer
     preserves semantics
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对未优化的版本运行优化查询以验证优化器是否保留了语义
 - en: The challenge with comparative testing is handling differences in null ordering,
     floating point precision, and result ordering when ORDER BY is not specified.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 比较测试的挑战在于处理空值排序、浮点精度和未指定ORDER BY时的结果排序的差异。
 - en: '[Fuzzing](#fuzzing)'
+  id: totrans-57
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[模糊测试](#fuzzing)'
 - en: Hand-written tests inevitably miss edge cases. Fuzzing generates random inputs
     to discover bugs that humans would not think to test.
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 手写测试不可避免地会错过边缘情况。模糊测试生成随机输入以发现人类不会想到测试的漏洞。
 - en: '[Random Expression Generation](#random-expression-generation)'
+  id: totrans-59
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[随机表达式生成](#random-expression-generation)'
 - en: 'The fuzzer creates random expression trees by recursively building either leaf
     nodes (columns, literals) or binary expressions:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 模糊器通过递归构建叶节点（列、文字）或二进制表达式来创建随机的表达式树：
 - en: '[PRE7]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: A depth limit prevents unbounded recursion. The random seed should be fixed
     for reproducibility.
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 深度限制防止无界递归。随机种子应固定以实现可重复性。
 - en: '[Random Plan Generation](#random-plan-generation)'
+  id: totrans-63
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[随机计划生成](#random-plan-generation)'
 - en: 'Similarly, the fuzzer can generate random query plans:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 类似地，模糊器可以生成随机的查询计划：
 - en: '[PRE8]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Here is an example of a generated plan:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是一个生成的计划的例子：
 - en: '[PRE9]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[Enhanced Random Values](#enhanced-random-values)'
+  id: totrans-68
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[增强随机值](#enhanced-random-values)'
 - en: 'Naive random number generation misses interesting edge cases. An enhanced random
     generator deliberately produces boundary values:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 天真的随机数生成会错过有趣的边缘情况。增强的随机生成器故意产生边界值：
 - en: '[PRE10]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: By weighting the distribution toward edge cases, the fuzzer finds bugs faster
     than pure random generation.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过将分布权重偏向边缘情况，模糊器比纯随机生成更快地发现错误。
 - en: '[Handling Invalid Plans](#handling-invalid-plans)'
+  id: totrans-72
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[处理无效计划](#handling-invalid-plans)'
 - en: 'Most randomly generated plans are invalid. This is actually useful because
     it tests error handling. However, if you want to test execution specifically,
     the fuzzer can be made “smarter” by:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数随机生成的计划都是无效的。这实际上是有用的，因为它测试了错误处理。然而，如果您想特别测试执行，可以通过以下方式使模糊器“更智能”：
 - en: Generating type-aware expressions (e.g., only compare compatible types)
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 生成类型感知表达式（例如，仅比较兼容类型）
 - en: Generating AND/OR expressions with Boolean operands
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 生成具有布尔操作数的AND/OR表达式
 - en: Ensuring aggregate expressions use aggregate functions
+  id: totrans-76
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 确保聚合表达式使用聚合函数
 - en: The trade-off is that smarter fuzzers may miss bugs in error paths.
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 代价是，更智能的模糊器可能会错过错误路径中的错误。
 - en: '[Using Fuzzing Effectively](#using-fuzzing-effectively)'
+  id: totrans-78
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[有效使用模糊测试](#using-fuzzing-effectively)'
 - en: 'Some practical tips for fuzzing:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 模糊测试的一些实用技巧：
 - en: 'Fix the random seed: Use a constant seed so failures are reproducible. Log
     the seed if using system time.'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 固定随机种子：使用常数种子以便失败可重复。如果使用系统时间，请记录种子。
 - en: 'Run many iterations: Fuzzing finds bugs probabilistically. Run thousands or
     millions of iterations.'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 运行多次迭代：模糊测试以概率发现错误。运行数千或数百万次迭代。
 - en: 'Shrink failing cases: When fuzzing finds a bug, try to reduce the failing input
     to a minimal reproduction.'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 缩小失败案例：当模糊测试发现错误时，尝试将失败的输入减少到最小重现。
 - en: 'Keep regression tests: When fuzzing finds a bug, add the simplified case as
     a permanent test.'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 保持回归测试：当模糊测试发现一个错误时，将简化的案例添加为永久性测试。
 - en: '[Golden Testing](#golden-testing)'
+  id: totrans-84
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[金色测试](#golden-testing)'
 - en: Golden testing (also called snapshot testing) captures the output of a query
     and stores it as the expected result. Future runs compare against this “golden”
     output.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 金色测试（也称为快照测试）捕获查询的输出并将其存储为预期结果。未来的运行将与此“金色”输出进行比较。
 - en: 'This approach works well for:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法适用于：
 - en: Query plan pretty-printing (verifying plan structure)
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 查询计划美化打印（验证计划结构）
 - en: Explain output format
+  id: totrans-88
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 解释输出格式
 - en: Error messages
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 错误信息
 - en: The downside is that golden tests can be brittle. Any change to output formatting
     breaks the tests, even if the underlying behavior is correct.
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 金色测试的缺点是可能很脆弱。任何对输出格式的更改都会破坏测试，即使底层行为是正确的。
 - en: '[Testing Optimizations](#testing-optimizations)'
+  id: totrans-91
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[测试优化](#testing-optimizations)'
 - en: 'Optimizer bugs are particularly insidious because the unoptimized query works
     correctly. Test optimizations by:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 优化器错误尤其狡猾，因为未优化的查询是正确的。通过以下方式测试优化：
 - en: Verifying that optimized and unoptimized plans produce identical results
+  id: totrans-93
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 验证优化和非优化计划产生相同的结果
 - en: Verifying that specific optimizations fire when expected
+  id: totrans-94
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 验证特定优化在预期时触发
 - en: Testing that invalid optimizations do not fire
+  id: totrans-95
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 测试无效优化不会触发
 - en: 'For example, to test projection push-down:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，为了测试投影下推：
 - en: '[PRE11]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[Debugging Test Failures](#debugging-test-failures)'
+  id: totrans-98
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[调试测试失败](#debugging-test-failures)'
 - en: When a test fails, the key is reproducing and understanding the failure.
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 当测试失败时，关键是重现和理解失败。
 - en: 'Pretty-print plans: Implement a `pretty()` method on logical and physical plans.
     When a test fails, print the plan to understand what query was executed.'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 美化打印计划：在逻辑和物理计划上实现`pretty()`方法。当测试失败时，打印计划以了解执行了哪个查询。
 - en: 'Log intermediate results: For debugging, add logging that shows data flowing
     through each operator.'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 记录中间结果：对于调试，添加显示通过每个操作符流动的数据的日志。
 - en: 'Minimize the reproduction: Start with a failing query and systematically simplify
     it while keeping the failure. Remove unnecessary columns, filters, and joins until
     you have the smallest query that exhibits the bug.'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 最小化重现：从一个失败的查询开始，系统地简化它同时保持失败。移除不必要的列、筛选和连接，直到你得到最小的显示错误的查询。
 - en: 'Check boundary conditions: Many bugs occur at boundaries. If a test with 100
     rows fails, try 0, 1, and 2 rows.'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 检查边界条件：许多错误发生在边界处。如果一个包含100行的测试失败，尝试0、1和2行。
 - en: 'Verify test data: Sometimes the test itself is wrong. Double-check that the
     test data and expected results are correct.'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 验证测试数据：有时测试本身是错误的。请确保测试数据和预期结果都是正确的。
 - en: '[Continuous Integration](#continuous-integration)'
+  id: totrans-105
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[持续集成](#continuous-integration)'
 - en: 'Automated testing in CI catches regressions before they reach users. A good
     CI setup for a query engine includes:'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: CI中的自动化测试在回归到达用户之前捕捉到它们。一个查询引擎的良好CI设置包括：
 - en: Run all unit tests on every commit
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在每次提交时运行所有单元测试
 - en: Run integration tests on every pull request
+  id: totrans-108
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在每次拉取请求时运行集成测试
 - en: Run longer fuzzing sessions nightly or weekly
+  id: totrans-109
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每天或每周运行较长的模糊测试会话
 - en: Track test execution time to catch performance regressions
+  id: totrans-110
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 跟踪测试执行时间以捕捉性能回归
 - en: Test failures should block merging. Flaky tests (tests that sometimes pass and
     sometimes fail) must be fixed immediately because they train developers to ignore
     failures.
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 测试失败应阻止合并。不稳定的测试（有时通过有时失败的测试）必须立即修复，因为它们会训练开发者忽略失败。
 - en: '[Summary](#summary)'
+  id: totrans-112
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: Testing query engines requires multiple complementary approaches. Unit tests
     verify individual components. Integration tests verify components work together.
     Fuzzing discovers edge cases that humans miss. Comparative testing catches semantic
     bugs by checking against a reference implementation.
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 测试查询引擎需要多种互补的方法。单元测试验证单个组件。集成测试验证组件协同工作。模糊测试发现人类可能遗漏的边缘情况。比较测试通过检查参考实现来捕捉语义错误。
 - en: Invest in testing infrastructure early. Good test utilities (for creating test
     data, comparing results, pretty-printing plans) make writing tests easier, which
     means more tests get written. A well-tested query engine gives users confidence
     that their query results are correct.
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 早期投资于测试基础设施。良好的测试工具（用于创建测试数据、比较结果、美化打印计划）使编写测试更容易，这意味着可以编写更多的测试。一个经过良好测试的查询引擎让用户对其查询结果正确性充满信心。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也以ePub、MOBI和PDF格式在[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)上出售。*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

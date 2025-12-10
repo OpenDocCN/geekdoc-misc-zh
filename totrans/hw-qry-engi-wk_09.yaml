@@ -1,423 +1,650 @@
 - en: Logical Plans and Expressions
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 逻辑计划与表达式
 - en: 原文：[https://howqueryengineswork.com/05-logical-plan.html](https://howqueryengineswork.com/05-logical-plan.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/05-logical-plan.html](https://howqueryengineswork.com/05-logical-plan.html)
 - en: '*The source code discussed in this chapter can be found in the `logical-plan`
     module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在 [KQuery 项目](https://github.com/andygrove/how-query-engines-work)
+    的 `logical-plan` 模块中找到。*'
 - en: 'When you write a SQL query, you describe what data you want. The query engine
     must figure out how to get it. The first step is building a logical plan: a tree
     structure that represents the computation without specifying exactly how to execute
     it.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你编写一个 SQL 查询时，你描述了你想要的数据。查询引擎必须找出如何获取它。第一步是构建一个逻辑计划：一个表示计算但不指定确切执行方式的树结构。
 - en: 'Consider this query:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑这个查询：
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Before we can execute this, we need a structured representation. The logical
     plan captures:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们执行此操作之前，我们需要一个结构化的表示。逻辑计划捕获：
 - en: Read from the `employees` table
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从 `employees` 表读取
 - en: Keep only rows where `department = 'Engineering'`
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 仅保留 `department = 'Engineering'` 的行
 - en: Compute `name` and `salary * 1.1` for each remaining row
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为每一行剩余的行计算 `name` 和 `salary * 1.1`
 - en: This chapter covers how to represent these operations as a tree of logical plans
     and expressions.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章介绍如何将这些操作表示为逻辑计划和表达式的树。
 - en: '[Why Separate Logical from Physical?](#why-separate-logical-from-physical)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Why Separate Logical from Physical?](#why-separate-logical-from-physical)'
 - en: 'We could jump straight from SQL to execution, but separating logical and physical
     planning has advantages:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以直接从 SQL 跳到执行，但将逻辑规划和物理规划分开有优势：
 - en: 'Validation: We can check that columns exist and types are compatible before
     doing any work'
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 验证：在进行任何工作之前，我们可以检查列是否存在以及类型是否兼容
 - en: 'Optimization: We can transform the logical plan to make it more efficient'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 优化：我们可以转换逻辑计划以使其更高效
 - en: 'Flexibility: The same logical plan might execute differently depending on data
     size or available resources'
+  id: totrans-15
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 灵活性：相同的逻辑计划可能会根据数据大小或可用资源以不同的方式执行
 - en: A logical plan says “filter rows where X” without specifying whether to use
     an index, a hash table, or a sequential scan. Those are physical execution details
     decided later.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 逻辑计划说“过滤行 X”，但没有指定是否使用索引、散列表或顺序扫描。这些是稍后决定的物理执行细节。
 - en: '[The LogicalPlan Interface](#the-logicalplan-interface)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[The LogicalPlan Interface](#the-logicalplan-interface)'
 - en: 'A logical plan represents a relation: a set of rows with a known schema. Each
     plan can have child plans as inputs, forming a tree.'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 逻辑计划表示一个关系：一组具有已知模式的行。每个计划可以作为输入有子计划，形成一个树。
 - en: '[PRE1]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: schema() returns the output schema, the columns and their types that this plan
     produces. This is essential for validation. If a later plan references a column,
     we can check that it exists in the input schema.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: schema() 返回输出模式，即此计划产生的列及其类型。这对于验证是必不可少的。如果后续计划引用了一个列，我们可以检查它是否存在于输入模式中。
 - en: children() returns the input plans. A scan has no children (it reads from a
     data source). A filter has one child (its input). A join has two children (left
     and right inputs). This method enables walking the plan tree.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: children() 返回输入计划。扫描没有子计划（它从数据源读取）。一个过滤计划有一个子计划（它的输入）。一个连接有两个子计划（左输入和右输入）。此方法使遍历计划树成为可能。
 - en: '[Printing Logical Plans](#printing-logical-plans)'
+  id: totrans-22
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Printing Logical Plans](#printing-logical-plans)'
 - en: 'Debugging query engines requires seeing what the plan looks like. We print
     plans as indented trees where children are nested under parents:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 调试查询引擎需要看到计划的样子。我们将计划打印为缩进的树，其中子节点嵌套在父节点下：
 - en: '[PRE2]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Our example query might print as:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的示例查询可能打印如下：
 - en: '[PRE3]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Read this bottom-up: scan the employees table, filter to Engineering, project
     the columns we want.'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 从下往上阅读：扫描员工表，筛选到工程部门，投影我们想要的列。
 - en: '[Logical Expressions](#logical-expressions)'
+  id: totrans-28
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Logical Expressions](#logical-expressions)'
 - en: Plans describe data flow. Expressions describe computations within a plan. A
     filter plan contains an expression that evaluates to true or false for each row.
     A projection plan contains expressions that compute output columns.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 计划描述数据流。表达式描述计划内的计算。一个过滤计划包含一个对每一行评估为真或假的表达式。一个投影计划包含计算输出列的表达式。
 - en: 'Expressions can be simple (a column reference, a literal value) or complex
     (nested arithmetic, function calls). Here are common expression types:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 表达式可以是简单的（列引用、文字值）或复杂的（嵌套算术、函数调用）。以下是常见的表达式类型：
 - en: '| Expression Type | Examples |'
+  id: totrans-31
   prefs: []
   type: TYPE_TB
+  zh: '| 表达式类型 | 示例 |'
 - en: '| --- | --- |'
+  id: totrans-32
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| Literal Value | `"hello"`, `12.34`, `true` |'
+  id: totrans-33
   prefs: []
   type: TYPE_TB
+  zh: '| 文字值 | `"hello"`, `12.34`, `true` |'
 - en: '| Column Reference | `user_id`, `first_name`, `salary` |'
+  id: totrans-34
   prefs: []
   type: TYPE_TB
+  zh: '| 列引用 | `user_id`, `first_name`, `salary` |'
 - en: '| Math Expression | `salary * 0.1`, `price + tax` |'
+  id: totrans-35
   prefs: []
   type: TYPE_TB
+  zh: '| 数学表达式 | `salary * 0.1`, `price + tax` |'
 - en: '| Comparison Expression | `age >= 21`, `status != ''inactive''` |'
+  id: totrans-36
   prefs: []
   type: TYPE_TB
+  zh: '| 比较表达式 | `age >= 21`, `status != ''inactive''` |'
 - en: '| Boolean Expression | `age >= 21 AND country = ''US''` |'
+  id: totrans-37
   prefs: []
   type: TYPE_TB
+  zh: '| 布尔表达式 | `age >= 21 AND country = ''US''` |'
 - en: '| Aggregate Expression | `MIN(salary)`, `MAX(salary)`, `SUM(amount)`, `COUNT(*)`
     |'
+  id: totrans-38
   prefs: []
   type: TYPE_TB
+  zh: '| 聚合表达式 | `MIN(salary)`, `MAX(salary)`, `SUM(amount)`, `COUNT(*)` |'
 - en: '| Scalar Function | `UPPER(name)`, `CONCAT(first_name, '' '', last_name)` |'
+  id: totrans-39
   prefs: []
   type: TYPE_TB
+  zh: '| 标量函数 | `UPPER(name)`, `CONCAT(first_name, '' '', last_name)` |'
 - en: '| Aliased Expression | `salary * 1.1 AS new_salary` |'
+  id: totrans-40
   prefs: []
   type: TYPE_TB
+  zh: '| 别名表达式 | `salary * 1.1 AS new_salary` |'
 - en: 'Expressions form trees. The expression `(a + b) * c` has a multiply at the
     root with two children: an add expression (with children `a` and `b`) and a column
     reference `c`.'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 表达式形成树。表达式 `(a + b) * c` 在根处有一个乘法操作，有两个子节点：一个加法表达式（子节点为 `a` 和 `b`）和一个列引用 `c`。
 - en: '[The LogicalExpr Interface](#the-logicalexpr-interface)'
+  id: totrans-42
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[LogicalExpr 接口](#the-logicalexpr-interface)'
 - en: 'During planning, we need to know what type of value an expression produces.
     If you write `a + b`, that is only valid if both columns are numeric. The interface
     captures this:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 在规划期间，我们需要知道表达式产生的值类型。如果你写 `a + b`，那么只有当两个列都是数值时才是有效的。接口捕捉这一点：
 - en: '[PRE4]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: The `toField` method returns the name and data type of the expression’s output.
     It takes the input plan because some expressions depend on the input schema. A
     column reference has the type of whatever column it references. A comparison expression
     always returns boolean regardless of its inputs.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: '`toField` 方法返回表达式的输出名称和数据类型。它接受输入计划，因为某些表达式依赖于输入模式。列引用的类型是它引用的列的类型。比较表达式总是返回布尔值，无论其输入如何。'
 - en: '[Column Expressions](#column-expressions)'
+  id: totrans-46
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[列表达式](#column-expressions)'
 - en: 'The simplest expression references a column by name:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 最简单的表达式通过名称引用一个列：
 - en: '[PRE5]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: The `toField` implementation looks up the column in the input schema. If it
     does not exist, that is an error, which we catch during planning rather than execution.
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: '`toField` 实现会在输入模式中查找列。如果不存在，则是一个错误，我们会在规划阶段而不是执行阶段捕获它。'
 - en: The `#` prefix in `toString` is a convention to distinguish column references
     from literal strings when printing plans.
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: '`toString` 中的 `#` 前缀是一种约定，用于在打印计划时区分列引用和文字字符串。'
 - en: '[Literal Expressions](#literal-expressions)'
+  id: totrans-51
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[文字表达式](#literal-expressions)'
 - en: 'Expressions like `salary * 1.1` need to represent the literal value `1.1`.
     We need literal expressions for each data type:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 类似于 `salary * 1.1` 的表达式需要表示文字值 `1.1`。我们需要为每种数据类型提供文字表达式：
 - en: '[PRE6]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Literal expressions do not depend on the input plan since their type is fixed.
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 文字表达式不依赖于输入计划，因为它们的类型是固定的。
 - en: '[Binary Expressions](#binary-expressions)'
+  id: totrans-55
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[二进制表达式](#binary-expressions)'
 - en: 'Most operators take two inputs: comparison (`=`, `<`, `>`), boolean logic (`AND`,
     `OR`), and arithmetic (`+`, `-`, `*`, `/`). We can share structure across these:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数操作符接受两个输入：比较（`=`, `<`, `>`）、布尔逻辑（`AND`, `OR`）和算术（`+`, `-`, `*`, `/`）。我们可以在这之间共享结构：
 - en: '[PRE7]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: The `name` identifies the expression type. The `op` is the operator symbol for
     printing. The `l` and `r` are the left and right operands.
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: '`name` 用来标识表达式类型。`op` 是打印时的操作符符号。`l` 和 `r` 分别是左操作数和右操作数。'
 - en: '[Comparison and Boolean Expressions](#comparison-and-boolean-expressions)'
+  id: totrans-59
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[比较和布尔表达式](#comparison-and-boolean-expressions)'
 - en: 'Comparisons and boolean operators always produce boolean results:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 比较和布尔运算符总是产生布尔结果：
 - en: '[PRE8]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[Math Expressions](#math-expressions)'
+  id: totrans-62
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[数学表达式](#math-expressions)'
 - en: 'In KQuery, arithmetic expressions preserve the type of the left operand. This
     is a simplified approach. A production system would handle type promotion):'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 KQuery 中，算术表达式保留左操作数的类型。这是一个简化的方法。一个生产系统会处理类型提升）：
 - en: '[PRE9]'
+  id: totrans-64
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[Aggregate Expressions](#aggregate-expressions)'
+  id: totrans-65
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[聚合表达式](#aggregate-expressions)'
 - en: 'Aggregates reduce multiple rows to a single value: `SUM`, `MIN`, `MAX`, `AVG`,
     `COUNT`. They appear in aggregate plans (covered later) and have special semantics.'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 聚合函数将多行减少到单个值：`SUM`, `MIN`, `MAX`, `AVG`, `COUNT`。它们出现在聚合计划中（稍后介绍）并具有特殊语义。
 - en: '[PRE10]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Most aggregates return the same type as their input. `COUNT` is different since
     it always returns an integer:'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数聚合函数返回与输入相同的类型。`COUNT` 不同，因为它总是返回一个整数：
 - en: '[PRE11]'
+  id: totrans-69
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[Aliased Expressions](#aliased-expressions)'
+  id: totrans-70
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[别名表达式](#aliased-expressions)'
 - en: 'SQL’s `AS` keyword renames an expression’s output:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: SQL 的 `AS` 关键字用于重命名表达式的输出：
 - en: '[PRE12]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: The alias changes the name but preserves the type.
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 别名改变名称但保留类型。
 - en: '[Logical Plans](#logical-plans)'
+  id: totrans-74
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[逻辑计划](#logical-plans)'
 - en: With expressions defined, we can build the plans that use them.
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 定义了表达式后，我们可以构建使用它们的计划。
 - en: '[Scan](#scan)'
+  id: totrans-76
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[Scan](#scan)'
 - en: '`Scan` reads from a data source. It is the leaf node in every query tree, the
     place where data enters the plan.'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Scan` 从数据源读取。它是每个查询树的叶子节点，数据进入计划的地方。'
 - en: '[PRE13]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: The `projection` parameter lists which columns to read. If empty, read all columns.
     This optimization matters because reading fewer columns means less I/O and less
     memory.
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: '`projection` 参数列出了要读取的列。如果为空，则读取所有列。这种优化很重要，因为读取较少的列意味着更少的 I/O 和更少的内存。'
 - en: '[Selection (Filter)](#selection-filter)'
+  id: totrans-80
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[Selection (Filter)](#selection-filter)'
 - en: '`Selection` keeps only rows where an expression evaluates to true. This corresponds
     to SQL’s `WHERE` clause.'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Selection` 仅保留表达式评估为真的行。这对应于 SQL 的 `WHERE` 子句。'
 - en: '[PRE14]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: The schema passes through unchanged since filtering only removes rows, not columns.
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 架构保持不变，因为过滤只删除行，不删除列。
 - en: '[Projection](#projection)'
+  id: totrans-84
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[Projection](#projection)'
 - en: '`Projection` computes new columns from expressions. This corresponds to SQL’s
     `SELECT` list.'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Projection` 通过表达式计算新的列。这对应于 SQL 的 `SELECT` 列。'
 - en: '[PRE15]'
+  id: totrans-86
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: The output schema comes from the expressions. If you project `name` and `salary
     * 1.1 AS bonus`, the output schema has two columns with those names and appropriate
     types.
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出架构来自表达式。如果您投影 `name` 和 `salary * 1.1 AS bonus`，输出架构有两个具有这些名称和适当类型的列。
 - en: '[Aggregate](#aggregate)'
+  id: totrans-88
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[Aggregate](#aggregate)'
 - en: '`Aggregate` groups rows and computes aggregate functions. This corresponds
     to SQL’s `GROUP BY` with aggregate functions.'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Aggregate` 对行进行分组并计算聚合函数。这对应于 SQL 的 `GROUP BY` 与聚合函数。'
 - en: '[PRE16]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'The output schema has the grouping columns first, followed by the aggregate
     results. For `SELECT department, AVG(salary) FROM employees GROUP BY department`,
     the output has two columns: `department` and `AVG(salary)`.'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出架构首先包含分组列，然后是聚合结果。对于 `SELECT department, AVG(salary) FROM employees GROUP
+    BY department`，输出有两列：`department` 和 `AVG(salary)`。
 - en: '[Join](#join)'
+  id: totrans-92
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[Join](#join)'
 - en: '`Join` combines rows from two inputs based on a condition. Unlike the plans
     we have seen so far, joins have two children: a left input and a right input.'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Join` 根据条件结合两个输入的行。与迄今为止我们所看到的计划不同，连接有两个子节点：左输入和右输入。'
 - en: '[PRE17]'
+  id: totrans-94
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'The output schema combines columns from both inputs. The join type determines
     which rows appear in the output: inner joins return only matching rows, outer
     joins include unmatched rows with nulls, and so on.'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出架构结合了两个输入的列。连接类型决定了输出中出现的行：内连接只返回匹配的行，外连接包括未匹配的行并用 null 填充，等等。
 - en: 'Joins are fundamental to relational queries but come with significant complexity:
     multiple join types, various join algorithms with different performance characteristics,
     and optimization challenges. The Joins chapter covers these topics in depth.'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接是关系查询的基本，但伴随着显著的复杂性：多种连接类型、具有不同性能特性的各种连接算法以及优化挑战。连接章节深入探讨了这些主题。
 - en: '[Putting It Together](#putting-it-together)'
+  id: totrans-97
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Putting It Together](#putting-it-together)'
 - en: 'Here is how our example query becomes a logical plan:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下是如何将我们的示例查询转换为逻辑计划：
 - en: '[PRE18]'
+  id: totrans-99
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'Building bottom-up:'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 自下而上构建：
 - en: '[PRE19]'
+  id: totrans-101
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'Printed:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 打印：
 - en: '[PRE20]'
+  id: totrans-103
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: This logical plan can now be validated (do the columns exist?), optimized (can
     we push the projection into the scan?), and eventually converted to a physical
     plan for execution.
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 此逻辑计划现在可以验证（列是否存在？），优化（能否将投影推入扫描？），并最终转换为执行物理计划。
 - en: '[Serialization](#serialization)'
+  id: totrans-105
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Serialization](#serialization)'
 - en: 'Query plans sometimes need to be serialized: sent across a network, stored
     for later, or passed between systems in different languages.'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询计划有时需要序列化：通过网络发送，存储以供以后使用，或在不同语言的系统之间传递。
 - en: Options include language-specific serialization (JSON with Jackson in Java,
     kotlinx.serialization in Kotlin) or language-agnostic formats like Protocol Buffers
     or Avro.
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 选项包括特定语言的序列化（Java 中的 Jackson JSON，Kotlin 中的 kotlinx.serialization）或语言无关的格式，如
+    Protocol Buffers 或 Avro。
 - en: 'A newer standard called [Substrait](https://substrait.io/) aims to provide
     cross-language serialization for relational algebra. This is exciting because
     it enables mixing components: use Apache Calcite for query planning in Java, serialize
     to Substrait, execute in a Rust or C++ engine. If you are building a query engine
     today, Substrait is worth investigating.'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个名为 [Substrait](https://substrait.io/) 的新标准旨在为关系代数提供跨语言序列化。这很令人兴奋，因为它使得混合组件成为可能：使用
+    Apache Calcite 在 Java 中进行查询规划，序列化为 Substrait，在 Rust 或 C++ 引擎中执行。如果您今天正在构建查询引擎，Substrait
+    值得调查。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本书也提供ePub、MOBI和PDF格式的购买，详情请访问[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权所有 © 2020-2025 安迪·格鲁夫。保留所有权利。**'

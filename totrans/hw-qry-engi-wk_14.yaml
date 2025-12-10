@@ -1,470 +1,720 @@
 - en: Joins
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 连接
 - en: 原文：[https://howqueryengineswork.com/10-joins.html](https://howqueryengineswork.com/10-joins.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://howqueryengineswork.com/10-joins.html](https://howqueryengineswork.com/10-joins.html)
 - en: '*The source code discussed in this chapter can be found in the `logical-plan`
     and `physical-plan` modules of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*本章讨论的源代码可以在[KQuery项目](https://github.com/andygrove/how-query-engines-work)的`logical-plan`和`physical-plan`模块中找到。*'
 - en: Joins combine rows from two tables based on a condition. They are fundamental
     to relational databases and often the most expensive operation in a query. This
     chapter covers join types and algorithms, with a focus on hash joins.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接基于条件组合两个表的行。它们是关系数据库的基本操作，通常是查询中最昂贵的操作。本章涵盖了连接类型和算法，重点关注哈希连接。
 - en: '[Join Types](#join-types)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[连接类型](#join-types)'
 - en: '[Inner Join](#inner-join)'
+  id: totrans-5
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[内连接](#inner-join)'
 - en: 'An inner join returns rows where the join condition matches in both tables:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 内连接返回两个表中连接条件匹配的行：
 - en: '[PRE0]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: If an employee has no matching department, that employee is excluded from the
     results. If a department has no employees, it is also excluded.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果员工没有匹配的部门，该员工将不包括在结果中。如果部门没有员工，它也将被排除。
 - en: '[Left Outer Join](#left-outer-join)'
+  id: totrans-9
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[左外连接](#left-outer-join)'
 - en: 'A left outer join returns all rows from the left table, with matching rows
     from the right table where available:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 左外连接返回左表的所有行，如果有的话，与右表匹配的行：
 - en: '[PRE1]'
+  id: totrans-11
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Employees without a matching department still appear in the results, with NULL
     for `dept_name`.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有匹配部门的员工仍然出现在结果中，`dept_name`为NULL。
 - en: '[Right Outer Join](#right-outer-join)'
+  id: totrans-13
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[右外连接](#right-outer-join)'
 - en: 'A right outer join is the mirror of left join: all rows from the right table,
     with matches from the left:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 右外连接是左连接的镜像：所有来自右表的行，与左表匹配：
 - en: '[PRE2]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Departments without employees appear with NULL for employee columns.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有员工的部门在员工列中显示为NULL。
 - en: '[Full Outer Join](#full-outer-join)'
+  id: totrans-17
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[全外连接](#full-outer-join)'
 - en: 'A full outer join returns all rows from both tables, matching where possible:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 全外连接返回两个表的所有行，在可能的情况下进行匹配：
 - en: '[PRE3]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Both unmatched employees and unmatched departments appear, with NULLs for missing
     columns.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 未匹配的员工和未匹配的部门都出现，缺失的列用NULL表示。
 - en: '[Cross Join](#cross-join)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[交叉连接](#cross-join)'
 - en: 'A cross join returns every combination of rows from both tables (the Cartesian
     product):'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 交叉连接返回两个表的所有行的组合（笛卡尔积）：
 - en: '[PRE4]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: If employees has 100 rows and departments has 10 rows, the result has 1,000
     rows. Cross joins are rarely useful on their own but sometimes appear in query
     plans as intermediate steps.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果员工表有100行，部门表有10行，结果将有1,000行。交叉连接本身很少单独使用，但有时会出现在查询计划中的中间步骤。
 - en: '[Semi Join](#semi-join)'
+  id: totrans-25
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[半连接](#semi-join)'
 - en: 'A semi join returns rows from the left table where at least one match exists
     in the right table, but does not include columns from the right table:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 半连接返回左表中至少有一个匹配右表行的行，但不包括右表中的列：
 - en: '[PRE5]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Semi joins are not directly expressible in standard SQL syntax but arise from
     EXISTS subqueries. The Subqueries chapter covers this in detail.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 半连接不能直接用标准SQL语法表示，但由EXISTS子查询引起。子查询章节详细介绍了这一点。
 - en: '[Anti Join](#anti-join)'
+  id: totrans-29
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[反连接](#anti-join)'
 - en: 'An anti join returns rows from the left table where no match exists in the
     right table:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 反连接返回左表中不存在右表匹配的行：
 - en: '[PRE6]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Anti joins arise from NOT EXISTS or NOT IN subqueries.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 反连接由NOT EXISTS或NOT IN子查询引起。
 - en: '[Join Conditions](#join-conditions)'
+  id: totrans-33
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[连接条件](#join-conditions)'
 - en: '[Equi-joins](#equi-joins)'
+  id: totrans-34
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[等值连接](#equi-joins)'
 - en: 'Most joins use equality conditions:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数连接使用相等条件：
 - en: '[PRE7]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: These are called equi-joins. Query engines optimize heavily for equi-joins because
     hash-based algorithms work well with equality comparisons.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些被称为等值连接。查询引擎对等值连接进行了大量优化，因为基于哈希的算法与相等比较工作得很好。
 - en: '[Non-equi Joins](#non-equi-joins)'
+  id: totrans-38
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[非等值连接](#non-equi-joins)'
 - en: 'Some joins use inequality or range conditions:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些连接使用不等式或范围条件：
 - en: '[PRE8]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Non-equi joins cannot use hash-based algorithms and typically require nested
     loop or specialized range join implementations.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 非等值连接不能使用基于哈希的算法，通常需要嵌套循环或专门的区间连接实现。
 - en: '[Join Algorithms](#join-algorithms)'
+  id: totrans-42
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[连接算法](#join-algorithms)'
 - en: The choice of join algorithm dramatically affects performance. The three main
     approaches are nested loop join, sort-merge join, and hash join.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接算法的选择极大地影响了性能。三种主要方法为嵌套循环连接、排序合并连接和哈希连接。
 - en: '[Nested Loop Join](#nested-loop-join)'
+  id: totrans-44
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[嵌套循环连接](#nested-loop-join)'
 - en: 'The simplest algorithm: for each row in the left table, scan the entire right
     table looking for matches.'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 最简单的算法：对于左表中的每一行，扫描整个右表以查找匹配项。
 - en: '[PRE9]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Time complexity: O(n × m) where n and m are the table sizes.'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 时间复杂度：O(n × m)，其中n和m是表的大小。
 - en: 'Nested loop join is simple but slow for large tables. It is useful when:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 嵌套循环连接对于大型表简单但慢。它在以下情况下很有用：
 - en: One table is very small
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个表非常小
 - en: An index exists on the join column of the inner table
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 内表连接列上存在索引
 - en: The join condition is not an equality (non-equi join)
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 连接条件不是相等（非等值连接）
 - en: With an index, the inner loop becomes an index lookup rather than a full scan,
     dramatically improving performance.
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用索引，内循环变为索引查找而不是全表扫描，从而显著提高性能。
 - en: '[Sort-Merge Join](#sort-merge-join)'
+  id: totrans-53
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[排序-合并连接](#sort-merge-join)'
 - en: 'Sort both tables by the join key, then merge them:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 按连接键对两个表进行排序，然后合并它们：
 - en: '[PRE10]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Time complexity: O(n log n + m log m) for sorting, plus O(n + m) for merging.'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 时间复杂度：排序为O(n log n + m log m)，合并为O(n + m)。
 - en: 'Sort-merge join is efficient when:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 当以下条件成立时，排序-合并连接是高效的：
 - en: Data is already sorted by the join key
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数据已经按连接键排序
 - en: The result of the join needs to be sorted anyway
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 连接的结果无论如何都需要排序
 - en: Memory is limited (external sort can spill to disk)
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 内存有限（外部排序可以溢出到磁盘）
 - en: '[Hash Join](#hash-join)'
+  id: totrans-61
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[哈希连接](#hash-join)'
 - en: 'Build a hash table from one table, then probe it with the other:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 从一个表构建哈希表，然后用另一个表探测它：
 - en: '[PRE11]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'Time complexity: O(n + m) assuming good hash distribution.'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 时间复杂度：O(n + m)，假设有良好的哈希分布。
 - en: 'Hash join is usually the fastest algorithm for equi-joins when:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 当以下条件成立时，哈希连接通常是等值连接最快的算法：
 - en: The smaller table fits in memory
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 较小的表可以放入内存
 - en: The join condition uses equality
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 连接条件使用相等性
 - en: '[Hash Join in Detail](#hash-join-in-detail)'
+  id: totrans-68
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[哈希连接详细](#hash-join-in-detail)'
 - en: Hash join is the workhorse of modern query engines. Let us examine it more closely.
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 哈希连接是现代查询引擎的工作马。让我们更仔细地研究它。
 - en: '[Choosing the Build Side](#choosing-the-build-side)'
+  id: totrans-70
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[选择构建方](#choosing-the-build-side)'
 - en: The build side should be the smaller table. Building a hash table from 1,000
     rows and probing with 1,000,000 rows is much faster than the reverse.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 构建方应该是较小的表。从1,000行构建哈希表并用1,000,000行探测要快得多。
 - en: 'The query optimizer estimates table sizes and chooses the build side. With
     statistics, it can account for filters that reduce table sizes:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 查询优化器估计表大小并选择构建方。使用统计信息，它可以考虑到减少表大小的过滤器：
 - en: '[PRE12]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: Even if `small_table` has more rows than `large_table`, after filtering it might
     be smaller.
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使`small_table`的行数多于`large_table`，过滤后可能更小。
 - en: '[Hash Table Structure](#hash-table-structure)'
+  id: totrans-75
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[哈希表结构](#hash-table-structure)'
 - en: 'For each unique join key, the hash table stores all rows from the build side
     with that key. The simplest structure is a hash map from key to list of rows:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于每个唯一的连接键，哈希表存储构建方具有该键的所有行。最简单的结构是从键到行列表的哈希映射：
 - en: '[PRE13]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: In practice, implementations optimize memory layout for cache efficiency.
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 实际上，实现会优化内存布局以提高缓存效率。
 - en: '[Handling Hash Collisions](#handling-hash-collisions)'
+  id: totrans-79
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[处理哈希冲突](#handling-hash-collisions)'
 - en: 'When different keys hash to the same bucket, we must compare actual key values
     during the probe phase:'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 当不同的键哈希到同一个桶时，我们必须在探测阶段比较实际键值：
 - en: '[PRE14]'
+  id: totrans-81
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: Good hash functions minimize collisions, but the probe must always verify equality.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 良好的哈希函数最小化冲突，但探测必须始终验证相等性。
 - en: '[KQuery’s Hash Join Implementation](#kquerys-hash-join-implementation)'
+  id: totrans-83
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[KQuery的哈希连接实现](#kquerys-hash-join-implementation)'
 - en: 'KQuery implements hash join in `HashJoinExec`. The implementation supports
     inner, left, and right joins:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery在`HashJoinExec`中实现了哈希连接。该实现支持内连接、左连接和右连接：
 - en: '[PRE15]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'Key aspects of this implementation:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 该实现的关键方面：
 - en: The build phase loads the entire right table into a hash table keyed by the
     join columns. Each key maps to a list of rows (to handle duplicate keys).
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 构建阶段将整个右表加载到以连接列为键的哈希表中。每个键映射到一个行列表（以处理重复键）。
 - en: The probe phase iterates through the left table, looking up each row’s key in
     the hash table. For inner joins, rows without matches are skipped. For left joins,
     unmatched rows are emitted with NULLs for the right columns.
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 探测阶段遍历左表，在哈希表中查找每行的键。对于内连接，跳过没有匹配的行。对于左连接，未匹配的行会输出，右列使用NULL。
 - en: The `rightColumnsToExclude` parameter handles the common case where join keys
     have the same name on both sides. Without this, the output would have duplicate
     columns.
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: '`rightColumnsToExclude`参数处理了连接键在两侧具有相同名称的常见情况。如果没有这个参数，输出将会有重复的列。'
 - en: '[Outer Joins](#outer-joins)'
+  id: totrans-90
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[外连接](#outer-joins)'
 - en: 'KQuery’s implementation handles left and right outer joins:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery的实现处理左外连接和右外连接：
 - en: For left outer join, when a probe row has no match in the hash table, we emit
     the left row combined with NULLs for all right columns. This happens inline during
     the probe phase.
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于左外连接，当探测行在哈希表中没有匹配时，我们输出左行，所有右列使用NULL。这发生在探测阶段内联。
 - en: For right outer join, we need to track which build (right) rows were matched.
     After the probe phase completes, we emit unmatched right rows with NULLs for the
     left columns. This requires either a second pass or tracking matched keys during
     the probe.
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于右外连接，我们需要跟踪哪些构建（右）行被匹配。在探测阶段完成后，我们输出未匹配的右行，对于左列使用NULL。这需要第二次遍历或在探测期间跟踪匹配的键。
 - en: 'Full outer join combines both approaches: emit unmatched left rows during probing,
     then emit unmatched right rows after.'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 全外连接结合了两种方法：在探测期间输出未匹配的左行，然后输出未匹配的右行。
 - en: '[Memory Considerations](#memory-considerations)'
+  id: totrans-95
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[内存考虑事项](#memory-considerations)'
 - en: 'The build side must fit in memory for a simple hash join. For large tables,
     query engines use techniques like:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于简单的哈希连接，构建侧必须适合内存。对于大型表，查询引擎使用诸如：
 - en: 'Grace hash join: Partition both tables by hash value, then join matching partitions.
     Each partition is smaller and more likely to fit in memory.'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 优雅的哈希连接：通过哈希值对两个表进行分区，然后连接匹配的分区。每个分区更小，更有可能适合内存。
 - en: 'Hybrid hash join: Keep as much of the build side in memory as possible, spill
     the rest to disk, then process spilled partitions separately.'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 混合哈希连接：尽可能将构建侧保留在内存中，将剩余部分溢出到磁盘，然后单独处理溢出分区。
 - en: 'Adaptive execution: Start with hash join, switch to sort-merge if memory pressure
     is detected.'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 自适应执行：从哈希连接开始，如果检测到内存压力，则切换到排序合并。
 - en: '[Join Ordering](#join-ordering)'
+  id: totrans-100
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[连接顺序](#join-ordering)'
 - en: 'For queries joining multiple tables, the order matters enormously:'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于连接多个表的查询，顺序至关重要：
 - en: '[PRE16]'
+  id: totrans-102
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'This could execute as:'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 这可能执行如下：
 - en: (orders JOIN customers) JOIN products
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (orders JOIN customers) JOIN products
 - en: (orders JOIN products) JOIN customers
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (orders JOIN products) JOIN customers
 - en: (customers JOIN products) JOIN orders (usually bad)
+  id: totrans-106
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (customers JOIN products) JOIN orders（通常不好）
 - en: The optimizer evaluates costs and chooses the best order. Generally, joins that
     produce smaller intermediate results should happen first.
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 优化器评估成本并选择最佳顺序。通常，产生较小中间结果的连接应该首先发生。
 - en: '[Bloom Filters](#bloom-filters)'
+  id: totrans-108
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[布隆过滤器](#bloom-filters)'
 - en: 'A Bloom filter is a probabilistic data structure that can quickly test whether
     an element might be in a set. Query engines use Bloom filters to speed up joins:'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 布隆过滤器是一种概率数据结构，可以快速测试一个元素是否可能在集合中。查询引擎使用布隆过滤器来加速连接：
 - en: Build a Bloom filter from the build side keys
+  id: totrans-110
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 从构建侧键构建布隆过滤器
 - en: Before probing, check if the probe key might exist
+  id: totrans-111
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 在探测之前，检查探测键是否可能存在
 - en: Skip rows that definitely have no match
+  id: totrans-112
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 跳过肯定没有匹配的行
 - en: Bloom filters have false positives (might say “yes” when the answer is “no”)
     but no false negatives. This means some unnecessary probes happen, but no matches
     are missed.
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 布隆过滤器有误报（可能会说“是”，而答案是“否”）但没有误报。这意味着会发生一些不必要的探测，但不会错过任何匹配。
 - en: For selective joins where most probe rows have no match, Bloom filters significantly
     reduce work.
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于选择性连接，其中大多数探测行没有匹配，布隆过滤器可以显著减少工作量。
 - en: '[Summary](#summary)'
+  id: totrans-115
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: 'Joins are complex and performance-critical. Key points:'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接复杂且性能关键。要点：
 - en: Hash join is typically fastest for equi-joins
+  id: totrans-117
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 哈希连接对于等值连接通常是速度最快的
 - en: The build side should be the smaller table
+  id: totrans-118
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 构建侧应该是较小的表
 - en: Join ordering affects performance dramatically
+  id: totrans-119
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 连接顺序对性能影响巨大
 - en: Memory constraints may require spilling to disk
+  id: totrans-120
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 内存限制可能需要将数据溢出到磁盘
 - en: Query optimizers use statistics to make good choices
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 查询优化器使用统计数据来做出明智的选择
 - en: 'KQuery implements hash join for inner, left, and right joins. The implementation
     demonstrates the core algorithm: build a hash table from one side, probe with
     the other. Production systems add optimizations like spilling to disk and Bloom
     filters, but the fundamental approach remains the same.'
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: KQuery实现了内连接、左连接和右连接的哈希连接。该实现展示了核心算法：从一边构建哈希表，用另一边进行探测。生产系统添加了诸如溢出到磁盘和布隆过滤器之类的优化，但基本方法保持不变。
 - en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
     [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: '*这本书也以ePub、MOBI和PDF格式从[https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)提供购买*'
 - en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: '**版权 © 2020-2025 安迪·格鲁夫。保留所有权利。**'
