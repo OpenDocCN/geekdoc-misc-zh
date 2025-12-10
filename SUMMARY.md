@@ -11,6 +11,7 @@
 +   [F# 有趣又有利的电子书](docs/fs-fun-prof/README.md)
 +   [C/C++迁移到 Rust 的指南](docs/gd-port-ccpp-rust/README.md)
 +   [Golang 101 秘籍](docs/go-101-hack/README.md)
++   [查询引擎是如何工作的](docs/hw-qry-engi-wk/README.md)
 +   [使用 LLVM 实现语言](docs/impl-lang-llvm/README.md)
 +   [Elm 入门指南](docs/intro-elm/README.md)
 +   [**物联网 101**](docs/iot-intel-edison/README.md)

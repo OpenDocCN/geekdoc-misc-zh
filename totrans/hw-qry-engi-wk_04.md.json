@@ -1,1 +1,0 @@
-["```rs\nhttps://github.com/andygrove/how-query-engines-work \n```", "```rs\ncd jvm\n./gradlew build \n```", "```rs\n./gradlew :sql:test --tests \"SqlParserTest\" \n```", "```rs\n./gradlew :examples:run \n```"]
