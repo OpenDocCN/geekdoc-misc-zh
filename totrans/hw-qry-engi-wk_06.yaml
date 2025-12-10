@@ -1,0 +1,276 @@
+- en: Apache Arrow
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/02-apache-arrow.html](https://howqueryengineswork.com/02-apache-arrow.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Before we start building our query engine, we need to choose how to represent
+    data in memory. This choice affects everything: how we read files, how we pass
+    data between operators, and how fast our computations run. We will use Apache
+    Arrow, which has become the standard for in-memory columnar data.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Why Columnar?](#why-columnar)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Traditional databases and programming languages typically store data row by
+    row. If you have a table of employees, each employee record sits together in memory:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This layout is intuitive and works well when you need to access entire records.
+    But query engines often process just a few columns at a time. Consider:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: This query only needs the `department` and `salary` columns. With row-based
+    storage, we would load entire rows into memory just to access two fields.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Columnar storage flips this around. Each column is stored contiguously:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Now reading `salary` means reading one contiguous block of memory, with no
+    jumping around to skip unwanted fields. This matters enormously for performance:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Modern CPUs load memory in cache lines (typically 64 bytes). Columnar data packs
+    more useful values per cache line.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Similar values grouped together compress much better. A column of departments
+    might compress to just a few distinct values.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: CPUs can apply the same operation to multiple values simultaneously (Single
+    Instruction, Multiple Data). Columnar layout enables this.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[What Is Apache Arrow?](#what-is-apache-arrow)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Apache Arrow is a specification for how to represent columnar data in memory,
+    plus libraries implementing that specification in many languages. Think of it
+    as a universal format that different systems can share.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The key insight behind Arrow is that data analytics involves many tools: Python
+    for exploration, Spark for distributed processing, databases for storage, visualization
+    tools for presentation. Traditionally, each tool has its own internal format,
+    so moving data between tools means serializing and deserializing, converting formats
+    repeatedly.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Arrow eliminates this overhead. If your Python code and your Java code both
+    use Arrow format, they can share memory directly. A pointer to Arrow data is meaningful
+    to any Arrow-aware system.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Arrow Memory Layout](#arrow-memory-layout)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'An Arrow column (called a “vector” or “array”) consists of:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A data buffer containing the actual values, packed contiguously
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: A validity buffer, which is a bitmap indicating which values are null
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: An optional offset buffer for variable-length types like strings
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'For a column of 32-bit integers `[1, null, 3, 4]`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'For strings, we need offsets because strings vary in length:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To get string at index 1: read from offset[1]=5 to offset[2]=10, giving “world”.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This layout is simple but powerful. Fixed-width types like integers require
+    just one memory access per value. The validity bitmap uses just one bit per value,
+    so checking for nulls is cheap.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Record Batches](#record-batches)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'A single column is not very useful on its own. We need multiple columns together.
+    Query engines typically group columns into record batches: a collection of equal-length
+    columns with a schema describing their names and types. KQuery defines its own
+    `RecordBatch` class for this purpose.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Query engines process data in batches rather than row by row or all at once.
+    Batch processing hits the sweet spot:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Small enough to fit in CPU cache
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Large enough to amortize per-batch overhead
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Enables streaming (process data as it arrives)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Typical batch sizes range from 1,000 to 100,000 rows depending on the workload.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Schemas and Types](#schemas-and-types)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Arrow defines a rich type system covering:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Integers: Int8, Int16, Int32, Int64 (signed and unsigned)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Floating point: Float32 (single), Float64 (double)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Binary: Variable-length byte arrays'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Strings: UTF-8 encoded text'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Temporal: Date, Time, Timestamp, Duration, Interval'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Nested: List, Struct, Map, Union'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A schema names and types the columns:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: Having explicit nullability in the schema lets the query engine optimize. If
+    a column cannot be null, we can skip null checks entirely.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Language Implementations](#language-implementations)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Arrow has official implementations in C++, Java, Python, Rust, Go, JavaScript,
+    C#, Ruby, and more. For this book, we will use the Java implementation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The Java API provides:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'FieldVector: Base class for column vectors (IntVector, VarCharVector, etc.)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'VectorSchemaRoot: Container for a record batch'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'ArrowType: Represents data types'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Schema/Field: Describes the structure of data'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Here is a simple example creating an Arrow vector in Java:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Why Arrow for Our Query Engine?](#why-arrow-for-our-query-engine)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'We will use Arrow as the foundation of our query engine for several reasons:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It is a standard format, so we can easily read/write Parquet files and integrate
+    with other tools
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The Java library is mature and well-tested
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The columnar layout enables efficient query processing
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Understanding Arrow helps you understand other data systems
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The next chapter builds our type system on top of Arrow, adding the abstractions
+    our query engine needs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Further Reading](#further-reading)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The [Arrow specification](https://arrow.apache.org/docs/format/Columnar.html)
+    describes the memory format in detail. The [Arrow website](https://arrow.apache.org/)
+    has documentation for each language implementation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Arrow also provides protocols for transferring data over networks (Arrow Flight)
+    and file formats (Arrow IPC, Feather), but we will not use those directly in this
+    book. The core value for us is the in-memory columnar format.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

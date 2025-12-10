@@ -1,0 +1,137 @@
+- en: Introduction
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/00-introduction.html](https://howqueryengineswork.com/00-introduction.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Query engines are the invisible workhorses powering modern data infrastructure.
+    Every time you run a SQL query against a database, execute a Spark job, or query
+    a data lake, a query engine is transforming your high-level request into an efficient
+    execution plan. Understanding how query engines work gives you insight into one
+    of the most important abstractions in computing.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This book takes a hands-on approach to demystifying query engines. Rather than
+    surveying existing systems, we will build a fully functional query engine from
+    scratch, covering each component in enough depth that you could implement your
+    own.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Who This Book Is For](#who-this-book-is-for)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'This book is for software engineers who want to understand the internals of
+    query engines. You might be:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A data engineer who wants to understand why queries perform the way they do
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A database developer looking to learn foundational concepts
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A software engineer curious about compiler-like systems
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Someone building tooling that needs to parse or analyze SQL
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Basic programming knowledge is assumed. The examples use Kotlin, chosen for
+    its conciseness, but the concepts apply to any language.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[What You Will Learn](#what-you-will-learn)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'By the end of this book, you will understand how to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Design a columnar type system using Apache Arrow
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Build data source connectors for CSV and Parquet files
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Represent queries as logical and physical plans
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Create a DataFrame API for building queries programmatically
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Translate logical plans into executable physical plans
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Implement query optimizations like projection and predicate push-down
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Parse SQL and convert it to query plans
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Execute queries in parallel across multiple CPU cores
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Design distributed query execution across a cluster
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[How This Book Is Organized](#how-this-book-is-organized)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The book follows the natural architecture of a query engine, building each layer
+    on top of the previous.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Chapters 1 through 4 cover the foundations. We start with what a query engine
+    is, then establish our foundation with Apache Arrow for the memory model, a type
+    system for representing data, and data source abstractions for reading files.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Chapters 5 through 7 cover query representation. We define logical plans and
+    expressions to represent queries abstractly, build a DataFrame API for constructing
+    plans programmatically, and add SQL support so queries can be written in the familiar
+    query language.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Chapters 8 through 10 cover execution. We translate logical plans into physical
+    plans containing executable code, then cover joins and subqueries, two of the
+    most complex operations in query processing.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Chapters 11 through 13 cover planning and optimization. We implement a query
+    planner to automate the translation from logical to physical plans, build optimizer
+    rules to transform plans into more efficient forms, and execute queries to compare
+    performance.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Chapters 14 and 15 cover scaling. We extend the engine to execute queries in
+    parallel across CPU cores, then across distributed clusters.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Chapters 16 and 17 cover quality. We cover testing strategies including fuzzing,
+    and benchmarking approaches for measuring performance.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

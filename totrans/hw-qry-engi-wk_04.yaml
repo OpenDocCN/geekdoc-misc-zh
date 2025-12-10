@@ -1,0 +1,122 @@
+- en: The KQuery Project
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/00-source-code.html](https://howqueryengineswork.com/00-source-code.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'This book is accompanied by a fully functional query engine called KQuery (for
+    Kotlin Query). The source code is available on GitHub:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: Each chapter references specific modules in this repository. Reading the book
+    alongside the code will deepen your understanding. The book explains the design
+    decisions, while the code shows the complete implementation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Why Kotlin?](#why-kotlin)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The examples use Kotlin because it is concise and readable. If you know Java,
+    Python, or any C-family language, you will follow along easily. Kotlin runs on
+    the JVM and interoperates seamlessly with Java libraries like Apache Arrow.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Query engine concepts are language-agnostic. The Apache Arrow DataFusion project
+    implements similar ideas in Rust, and you could apply these patterns in any language.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Repository Structure](#repository-structure)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The repository is organized into Gradle modules, each corresponding to a layer
+    of the query engine:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Module | Description |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `datatypes` | Type system built on Apache Arrow |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `datasource` | Data source abstractions and CSV/Parquet readers |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `logical-plan` | Logical plans and expressions |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `physical-plan` | Physical plans and expression evaluation |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `query-planner` | Translation from logical to physical plans |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `optimizer` | Query optimization rules |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `sql` | SQL tokenizer, parser, and planner |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `execution` | Query execution engine |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `examples` | Example queries and benchmarks |'
+  prefs: []
+  type: TYPE_TB
+- en: '[Building the Project](#building-the-project)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Prerequisites:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: JDK 11 or later
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Gradle (or use the included Gradle wrapper)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'To build and run tests:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To run a specific test:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Running Examples](#running-examples)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The `examples` module contains sample queries you can run:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: See the README in the repository for the latest instructions and any additional
+    setup required.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

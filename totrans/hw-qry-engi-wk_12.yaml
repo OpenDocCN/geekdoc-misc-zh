@@ -1,0 +1,282 @@
+- en: Physical Plans and Expressions
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/08-physical-plan.html](https://howqueryengineswork.com/08-physical-plan.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the `physical-plan`
+    module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Logical plans describe what computation to perform. Physical plans describe
+    how to perform it. This chapter covers the physical plan layer, where abstract
+    operations become executable code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Why Separate Physical from Logical?](#why-separate-physical-from-logical)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'A logical plan says “aggregate this data by department.” A physical plan specifies
+    which algorithm to use. There might be several valid choices:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Hash Aggregate: Build a hash map keyed by grouping columns, update accumulators
+    as rows arrive. Works well for unsorted data with moderate cardinality.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Sort Aggregate: Requires data sorted by grouping columns, but uses less memory
+    since it only tracks one group at a time.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Similarly for joins:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Hash Join: Build a hash table from one side, probe with the other. Fast for
+    equi-joins.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Sort-Merge Join: Sort both sides, merge them. Good when data is already sorted.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Nested Loop Join: For each row on the left, scan the entire right side. Simple
+    but slow; necessary for non-equi joins.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The logical plan does not care which algorithm runs. The query planner chooses
+    based on data characteristics, available indexes, and cost estimates. Keeping
+    logical and physical separate enables this flexibility.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Physical plans might also vary by execution environment:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Single-threaded vs parallel execution
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: CPU vs GPU computation
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Local vs distributed processing
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[The PhysicalPlan Interface](#the-physicalplan-interface)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Physical plans produce data. The interface reflects this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The key method is `execute()`, which returns a sequence of record batches.
+    This is the pull-based execution model: the caller pulls batches as needed rather
+    than having batches pushed to it. Kotlin’s `Sequence` is lazy, so computation
+    happens only when batches are consumed.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Physical Expressions](#physical-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Logical expressions reference columns by name. Physical expressions reference
+    columns by index for efficiency. At execution time, we do not want to search for
+    column names.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: A physical expression takes a record batch and produces a column vector. The
+    output has one value per row in the input batch.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Column Expression](#column-expression)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The simplest expression retrieves a column from the input:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: No computation, just a lookup by index.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Literal Expression](#literal-expression)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Literal values produce a column where every row has the same value. Rather
+    than allocating storage for identical values, we use a `LiteralValueVector` that
+    returns the same value for any index:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: This optimization matters because expressions like `salary * 1.1` would otherwise
+    allocate a column of 1.1 values just to multiply element-wise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Binary Expressions](#binary-expressions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Binary expressions evaluate two sub-expressions and combine them. A base class
+    handles the common logic:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Comparison expressions produce boolean results:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Math expressions produce numeric results:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Aggregate Expressions](#aggregate-expressions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Aggregate expressions work differently. Rather than producing one output value
+    per input row, they reduce many rows to one value. This requires accumulators
+    that maintain state across batches:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Each aggregate type creates its own accumulator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Physical Plans](#physical-plans)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: With expressions defined, we can implement the physical plan operators.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Scan](#scan)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Scan reads from a data source. It is the simplest operator, delegating entirely
+    to the data source:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: The projection list tells the data source which columns to read. For columnar
+    formats like Parquet, this avoids reading unnecessary data.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Projection](#projection)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Projection evaluates expressions to produce new columns:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: For each input batch, evaluate each expression to produce output columns. When
+    an expression is just a column reference, the output column is the same object
+    as the input column; no data is copied.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Selection (Filter)](#selection-filter)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Selection keeps rows where a predicate is true:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: The predicate expression produces a bit vector (one bit per row). We then copy
+    values where the bit is set. This is a straightforward implementation; production
+    systems optimize cases where all or no rows match.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Hash Aggregate](#hash-aggregate)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Hash aggregation groups rows by key and computes aggregates. It processes all
+    input before producing output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: The hash map keys are lists of grouping column values. Each entry holds accumulators
+    for that group. After processing all input, we iterate the map to build the output
+    batch.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This is the “hash” aggregate because we use a hash map. For sorted data, a “sort”
+    aggregate would be more efficient since we could emit results as soon as the grouping
+    key changes, without storing all groups in memory.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Execution Model](#execution-model)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'KQuery uses pull-based execution: the root operator calls `execute()` on its
+    children, which call their children, and so on. Data flows up as batches are requested.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The alternative is push-based execution, where operators push batches to their
+    parents. Both models work; the choice affects how backpressure and parallelism
+    are handled.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Returning `Sequence<RecordBatch>` enables lazy evaluation. If the root only
+    needs the first batch (for a `LIMIT 1` query), we avoid computing subsequent batches.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Next Steps](#next-steps)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Physical plans are executable, but we still need something to create them from
+    logical plans. The next chapter covers the query planner that performs this translation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

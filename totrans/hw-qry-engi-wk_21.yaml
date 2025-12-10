@@ -1,0 +1,322 @@
+- en: Benchmarks
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/17-benchmarks.html](https://howqueryengineswork.com/17-benchmarks.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Each query engine is unique in terms of performance, scalability, and resource
+    requirements, often with different trade-offs. Benchmarks help us understand these
+    characteristics and make informed decisions about which query engine to use for
+    a particular workload. They also help query engine developers identify performance
+    regressions and track improvements over time.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Measuring Performance](#measuring-performance)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Performance is often the simplest characteristic to measure and usually refers
+    to the time it takes to perform a particular operation. For example, benchmarks
+    can be built to measure the performance of specific queries or categories of query.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Performance tests typically involve executing a query multiple times and measuring
+    elapsed time.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Measuring Scalability](#measuring-scalability)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Scalability can be an overloaded term and there are many different types of
+    scalability. The term scalability generally refers to how performance varies with
+    different values for some variable that affects performance.
+  prefs: []
+  type: TYPE_NORMAL
+- en: One example would be measuring scalability as total data size increases to discover
+    how performance is impacted, when querying 10 GB of data versus 100 GB or 1 TB.
+    A common goal is to demonstrate linear scalability, meaning that querying 100
+    GB of data should take 10 times as long as querying 10 GB of data. Linear scalability
+    makes it easy for users to reason about expected behavior.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Other examples of variables that affect performance are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Number of concurrent users, requests, or queries.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Number of data partitions.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Number of physical disks.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Number of cores.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Number of nodes.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Amount of RAM available.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Type of hardware (Raspberry Pi versus Desktop, for example).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Concurrency](#concurrency)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: When measuring scalability based on number of concurrent requests, we are often
+    more interested in throughput (total number of queries executed per period of
+    time) rather than the duration of individual queries, although we typically would
+    collect that information as well.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Automation](#automation)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Benchmarks are often very time-consuming to run and automation is essential
+    so that the benchmarks can be run often, perhaps once per day or once per week,
+    so that any performance regressions can be caught early.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Automation is also important for ensuring that benchmarks are executed consistently
+    and that results are collected with all relevant details that might be needed
+    when analyzing the results.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Here are some examples of the type of data that should be collected when executing
+    benchmarks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Hardware Configuration](#hardware-configuration)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Type of hardware
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Number of CPU cores
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Available memory and disk space
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Operating system name and version
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Environment](#environment)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Environment variables (being careful not to leak secrets)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Benchmark Configuration](#benchmark-configuration)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Version of benchmark software used
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Version of software under test
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Any configuration parameters or files
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Filenames of any data files being queried
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Data sizes and checksums for the data files
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Details about the query that was executed
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Benchmark Results](#benchmark-results)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Date/time benchmark was started
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Start time and end time for each query
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Error information for any failed queries
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comparing Benchmarks](#comparing-benchmarks)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: It is important to compare benchmarks between releases of the software so that
+    changes in performance characteristics are apparent and can be investigated further.
+    Benchmarks produce a lot of data that is often hard to compare manually, so it
+    can be beneficial to build tooling to help with this process.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Rather than comparing two sets of performance data directly, tooling can perform
+    a “diff” of the data and show percentage differences between two or more runs
+    of the same benchmark. It is also useful to be able to produce charts showing
+    multiple benchmark runs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Visualising Benchmark Results](#visualising-benchmark-results)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Raw benchmark data in tabular form can be difficult to interpret. Charts and
+    graphs make it much easier to see patterns, identify anomalies, and communicate
+    results to others.
+  prefs: []
+  type: TYPE_NORMAL
+- en: When visualising performance data, consider charting throughput rather than
+    raw execution times. Throughput, often expressed as queries per minute or queries
+    per second, provides a more intuitive measure of system capacity. If a query takes
+    5 seconds to execute, then the system can handle 12 queries per minute on a single
+    thread. This framing makes it easier to understand real-world capacity.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Line charts work well for showing how performance scales with increasing resources
+    such as CPU cores or memory, or with increasing data sizes. Bar charts are useful
+    for comparing different configurations or different query engines side by side.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Be careful when creating visualisations to use appropriate scales. Starting
+    a y-axis at zero rather than at some arbitrary value gives a more honest representation
+    of differences between data points. Using logarithmic scales can be appropriate
+    when dealing with data that spans several orders of magnitude.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Transaction Processing Council (TPC) Benchmarks](#transaction-processing-council-tpc-benchmarks)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The Transaction Processing Council is a consortium of database vendors that
+    collaborate on creating and maintaining various database benchmark suites to allow
+    for fair comparisons between vendor’s systems. Current TPC member companies include
+    Microsoft, Oracle, IBM, Hewlett Packard Enterprise, AMD, Intel, and NVIDIA.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The first benchmark, TPC-A, was published in 1989 and other benchmarks have
+    been created since then. TPC-C is a well known OLTP benchmark used when comparing
+    traditional RDBMS databases, and TPC-H (discontinued) and TPC-DS are often used
+    for measuring performance of “Big Data” query engines.
+  prefs: []
+  type: TYPE_NORMAL
+- en: TPC benchmarks are seen as the “gold standard” in the industry and are complex
+    and time consuming to implement fully. Also, results for these benchmarks can
+    only be published by TPC members and only after the benchmarks have been audited
+    by the TPC. Taking TPC-DS as an example, the only companies to have ever published
+    official results at the time of writing are Alibaba.com, H2C, SuperMicro, and
+    Databricks.
+  prefs: []
+  type: TYPE_NORMAL
+- en: However, the TPC has a Fair Use policy that allows non-members to create unofficial
+    benchmarks based on TPC benchmarks, as long as certain conditions are followed,
+    such as prefixing any use of the term TPC with “derived from TPC”. For example,
+    “Performance of Query derived from TPC-DS Query 14”. TPC Copyright Notice and
+    License Agreements must also be maintained. There are also limitations on the
+    types of metrics that can be published.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Many open source projects simply measure the time to execute individual queries
+    from the TPC benchmark suites and use this as a way to track performance over
+    time and for comparison with other query engines.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Common Pitfalls](#common-pitfalls)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: There are several common mistakes to avoid when designing and running benchmarks.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The first run of a query is often slower than subsequent runs due to JIT compilation,
+    cache population, and other startup effects. Running several warm-up iterations
+    before collecting measurements helps ensure that results reflect steady-state
+    performance rather than cold-start behaviour.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Running benchmarks on a machine that is also doing other work can introduce
+    significant variability. Dedicated benchmark environments, or at least ensuring
+    minimal background activity, produce more reliable results.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Running a query once and reporting that single result tells you very little.
+    Running multiple iterations and reporting statistics such as mean, median, and
+    standard deviation gives a much better picture of typical performance and its
+    variability.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Benchmarks that use tiny datasets or trivially simple queries may not reveal
+    performance characteristics that matter for real workloads. Using realistic data
+    sizes and query complexity is important for meaningful results.
+  prefs: []
+  type: TYPE_NORMAL
+- en: It can be tempting to only show results that make your query engine look good,
+    but publishing complete results, including queries where performance is poor,
+    builds credibility and helps identify areas for improvement.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Building Your Own Benchmarks](#building-your-own-benchmarks)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: While industry-standard benchmarks like TPC-DS are valuable for comparing different
+    systems, they may not reflect your specific workload. Building custom benchmarks
+    based on real queries from your application can provide more relevant insights.
+  prefs: []
+  type: TYPE_NORMAL
+- en: When building custom benchmarks, start by identifying the queries that matter
+    most to your users. These might be the most frequently executed queries, or the
+    queries that are most sensitive to latency. Instrument your application to collect
+    query logs, then select representative queries for benchmarking.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Create datasets that match your production data in terms of size, distribution,
+    and schema complexity. Synthetic data generators can help create large datasets
+    with controlled characteristics, but be aware that randomly generated data may
+    have different statistical properties than real data.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Document your benchmark methodology thoroughly so that results can be reproduced.
+    This includes not just the queries and data, but also the hardware, operating
+    system, and any configuration settings that might affect performance.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

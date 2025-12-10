@@ -1,0 +1,287 @@
+- en: Type System
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/03-type-system.html](https://howqueryengineswork.com/03-type-system.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the `datatypes`
+    module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Every query engine needs a type system—a way to represent and reason about data
+    types. When you write `SELECT price * quantity`, the engine must know that `price`
+    and `quantity` are numbers that can be multiplied, and what type the result will
+    be. This chapter builds KQuery’s type system on top of Apache Arrow.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Why Types Matter](#why-types-matter)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Consider this query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Before executing, the query engine must answer:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Is `salary` a numeric type that supports multiplication?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What’s the result type of `salary * 1.1`? (If salary is an integer, should the
+    result be integer or floating point?)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Is `department` a string type that supports equality comparison?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What columns and types does the result have?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: These questions arise during query planning, before we touch any data. A well-designed
+    type system catches errors early (“you can’t multiply a string by a number”) and
+    enables optimizations (“this column is never null, so skip null checks”).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Building on Arrow](#building-on-arrow)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Rather than invent our own type system, we’ll use Apache Arrow’s types directly.
+    This gives us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A rich set of standard types (integers, floats, strings, dates, etc.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Efficient in-memory representation (as covered in the previous chapter)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Compatibility with Arrow-based tools and file formats
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Arrow’s type system includes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Category | Types |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Boolean | Bool |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Integers | Int8, Int16, Int32, Int64 (signed and unsigned) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Floating point | Float32, Float64 |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Text | Utf8 (variable-length strings) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Binary | Binary (variable-length bytes) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Temporal | Date32, Date64, Timestamp, Time32, Time64, Duration |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Nested | List, Struct, Map |'
+  prefs: []
+  type: TYPE_TB
+- en: 'For KQuery, we’ll focus on the common types: booleans, integers, floating point
+    numbers, and strings. We define convenient constants for these:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Schemas and Fields](#schemas-and-fields)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'A schema describes the structure of a dataset: what columns exist and what
+    type each has. Schemas are essential metadata that flows through the entire query
+    engine.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Arrow represents schemas as a list of fields, where each field has:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A name (string)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A data type (ArrowType)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A nullable flag (can this column contain nulls?)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For example, an employee table might have this schema:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Schemas serve multiple purposes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Validation: Reject queries that reference non-existent columns or misuse types'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Planning: Determine output types for expressions'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Optimization: Skip null checks for non-nullable columns'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Execution: Allocate correctly-typed storage for results'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[Column Vectors](#column-vectors)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Arrow stores column data in vectors (also called arrays). Each vector type
+    has its own class: `IntVector`, `Float8Vector`, `VarCharVector`, etc. This is
+    efficient but inconvenient—code that processes columns would need type-specific
+    branches everywhere.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'KQuery introduces a `ColumnVector` interface to abstract over the underlying
+    Arrow vectors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: This interface lets us write generic code that works with any column type. The
+    `getValue` method returns `Any?` (Kotlin’s equivalent of Java’s `Object`), which
+    isn’t ideal for performance but keeps our code simple.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can wrap an Arrow `FieldVector` in this interface:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Literal Values](#literal-values)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Sometimes we need a “column” that contains the same value repeated. For example,
+    when evaluating `salary * 1.1`, the literal `1.1` needs to act like a column of
+    1.1 values (one per row in the batch).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Rather than allocate memory for thousands of identical values, we create a
+    virtual column:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: This returns the same value for any valid index, using constant memory regardless
+    of how many rows we’re processing.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Record Batches](#record-batches)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: A record batch groups multiple columns together with a schema. This is the fundamental
+    unit of data that flows through our query engine.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Record batches enable batch processing: rather than processing one row at a
+    time (slow due to function call overhead) or loading entire datasets into memory
+    (impractical for large data), we process chunks of typically 1,000 to 100,000
+    rows.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Type Coercion](#type-coercion)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Real query engines need type coercion: automatically converting types when
+    necessary. For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`5 + 3.14` should promote the integer `5` to a float'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Comparing `Int32` to `Int64` should work without explicit casts
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: String-to-date conversion for predicates like `date > '2024-01-01'`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: KQuery keeps things simple and requires explicit types in most cases. A production
+    query engine would implement coercion rules, typically promoting to the “wider”
+    type (Int32 → Int64 → Float64).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Putting It Together](#putting-it-together)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Here’s how these pieces fit together. When processing a query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Data sources provide schemas describing available columns
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Query planning uses schemas to validate expressions and determine result types
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Execution passes record batches between operators
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Each operator produces output batches with a known schema
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The type system is the foundation that makes this possible. Without it, we couldn’t
+    validate queries, plan efficiently, or allocate storage correctly.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The next chapter builds on this foundation to create abstractions for reading
+    data from files.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

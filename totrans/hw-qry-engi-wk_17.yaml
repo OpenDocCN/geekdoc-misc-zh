@@ -1,0 +1,292 @@
+- en: Query Execution
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/13-execution.html](https://howqueryengineswork.com/13-execution.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the `execution`
+    module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We have built all the pieces: data sources, logical plans, physical plans,
+    a query planner, and an optimizer. This chapter ties them together into a working
+    query engine.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The Execution Context](#the-execution-context)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The `ExecutionContext` is the entry point for running queries. It manages registered
+    tables and coordinates the execution pipeline:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Users interact with the context to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Register data sources as named tables
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Build queries using SQL or the DataFrame API
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Execute queries and consume results
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[The Execution Pipeline](#the-execution-pipeline)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'When you execute a query, it flows through several stages:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: For DataFrame queries, the pipeline starts at the logical plan stage since the
+    DataFrame API builds logical plans directly.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Stage 1: Parsing (SQL only)](#stage-1-parsing-sql-only)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'SQL text becomes tokens, then a syntax tree:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Stage 2: Logical Planning](#stage-2-logical-planning)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The SQL AST (or DataFrame) becomes a logical plan:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Stage 3: Optimization](#stage-3-optimization)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The optimizer transforms the logical plan:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Stage 4: Physical Planning](#stage-4-physical-planning)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The query planner creates an executable physical plan:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Stage 5: Execution](#stage-5-execution)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The physical plan executes, producing record batches:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Running a Query](#running-a-query)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Here is a complete example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Or using the DataFrame API:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Both approaches produce the same physical plan and results.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Lazy Evaluation](#lazy-evaluation)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Notice that building a DataFrame does not execute anything. The DataFrame just
+    holds a logical plan. Execution happens only when you call `execute()` and consume
+    the resulting sequence.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This lazy evaluation has benefits:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The optimizer sees the complete query before execution
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Errors in the plan are caught before processing starts
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Resources are not allocated until needed
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Consuming Results](#consuming-results)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The `execute()` method returns `Sequence<RecordBatch>`. You can process results
+    in several ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Iterate batches:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Collect all results:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Take only what you need:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: Because `Sequence` is lazy, taking only the first batch avoids computing subsequent
+    batches. This matters for queries with `LIMIT`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Example: NYC Taxi Data](#example-nyc-taxi-data)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Let us run a real query against the NYC Taxi dataset, a common benchmark dataset
+    with millions of rows.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[The Impact of Optimization](#the-impact-of-optimization)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'To see how much the optimizer helps, we can bypass it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The unoptimized query takes about five times longer. The difference comes from
+    projection push-down: the optimized plan reads only the columns it needs (`passenger_count`,
+    `fare_amount`), while the unoptimized plan reads all 17 columns from the CSV file.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: For wider tables or more selective filters, the optimization impact would be
+    even greater.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comparison with Apache Spark](#comparison-with-apache-spark)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'For reference, here is the same query in Apache Spark:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: KQuery’s performance is competitive for this query. Spark has more overhead
+    for small-to-medium datasets but scales better to very large datasets through
+    its distributed execution capabilities.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Error Handling](#error-handling)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Errors can occur at any stage:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Parsing: Syntax errors in SQL'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Planning: Unknown table or column names, type mismatches'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Execution: Runtime errors like division by zero, file not found'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: KQuery currently throws exceptions for errors. A production system would provide
+    structured error types with source locations and helpful messages.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[What We Have Built](#what-we-have-built)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'At this point, we have a working query engine that can:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Read CSV files
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Execute SQL queries
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Execute DataFrame queries
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Optimize query plans
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Process data in batches
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The remaining chapters cover more advanced topics: parallel execution within
+    a single machine, and distributed execution across a cluster.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

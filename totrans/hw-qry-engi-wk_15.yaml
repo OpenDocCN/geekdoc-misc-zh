@@ -1,0 +1,244 @@
+- en: Subqueries
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/11-subqueries.html](https://howqueryengineswork.com/11-subqueries.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Subqueries are queries nested within other queries. They appear in SELECT lists,
+    FROM clauses, and WHERE clauses. Supporting subqueries requires both parsing them
+    correctly and planning them efficiently.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Types of Subqueries](#types-of-subqueries)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[Scalar Subqueries](#scalar-subqueries)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A scalar subquery returns a single value and can appear wherever a scalar expression
+    is valid:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: The subquery `(SELECT AVG(salary) FROM employees)` returns one value that applies
+    to every row. If a scalar subquery returns more than one row, that is an error.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Correlated Subqueries](#correlated-subqueries)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A correlated subquery references columns from the outer query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The inner query references `customers.id` from the outer query. This correlation
+    creates a dependency: conceptually, the inner query runs once per row of the outer
+    query.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Uncorrelated Subqueries](#uncorrelated-subqueries)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'An uncorrelated subquery is self-contained:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: The subquery does not reference the outer query, so it can be evaluated once
+    and the result substituted.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[EXISTS and IN Subqueries](#exists-and-in-subqueries)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The `EXISTS` predicate tests whether a subquery returns any rows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: This returns customers who have at least one order.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The `IN` predicate tests membership in a set:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: Both `NOT EXISTS` and `NOT IN` provide the negated forms.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Planning Subqueries](#planning-subqueries)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[Uncorrelated Subqueries](#uncorrelated-subqueries-1)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Uncorrelated scalar subqueries are straightforward: execute them once during
+    planning (or once at the start of execution) and substitute the result as a literal
+    value.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Becomes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Correlated Subqueries: The Naive Approach](#correlated-subqueries-the-naive-approach)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A naive implementation executes the correlated subquery once per row of the
+    outer query. For the order count example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: If `customers` has 100,000 rows, we run 100,000 separate queries against `orders`.
+    This is extremely slow.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Decorrelation: Converting Subqueries to Joins](#decorrelation-converting-subqueries-to-joins)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The solution is decorrelation: rewriting correlated subqueries as joins. The
+    query above becomes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Now we scan `orders` once, aggregate, and join, which is much faster.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[EXISTS to Semi Join](#exists-to-semi-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: An `EXISTS` subquery becomes a semi join. A semi join returns rows from the
+    left side where at least one match exists on the right, without duplicating left
+    rows when multiple matches exist.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Becomes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[NOT EXISTS to Anti Join](#not-exists-to-anti-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`NOT EXISTS` becomes an anti join, which returns rows from the left side where
+    no match exists on the right:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Becomes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[IN to Semi Join](#in-to-semi-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`IN` subqueries also become semi joins:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Becomes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Implementation Complexity](#implementation-complexity)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Subquery decorrelation is one of the more complex parts of a query engine.
+    Challenges include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Identifying correlation: The planner must determine which columns in the subquery
+    reference the outer query.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Choosing the right join type: EXISTS maps to semi join, NOT EXISTS to anti
+    join, scalar subqueries to left outer joins with aggregation.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Handling multiple correlations: A subquery might reference multiple outer tables
+    in a complex query.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Preserving semantics: The rewritten query must produce exactly the same results,
+    including handling of NULLs.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Nested subqueries: Subqueries can contain subqueries, requiring recursive decorrelation.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: KQuery does not currently implement subqueries. Production query engines spend
+    significant effort on subquery support since it is essential for SQL compatibility.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[When Decorrelation Is Not Possible](#when-decorrelation-is-not-possible)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Some correlated subqueries cannot be decorrelated into standard joins. These
+    “lateral” or “dependent” subqueries must be evaluated per-row. Modern databases
+    support `LATERAL` joins for this case:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: This returns each customer with their three most recent orders. The `LIMIT 3`
+    depends on which customer we are processing, so it cannot be rewritten as a simple
+    join.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Handling lateral joins requires either per-row evaluation (slow) or specialized
+    operators that combine joining with limiting.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

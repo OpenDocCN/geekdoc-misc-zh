@@ -1,0 +1,466 @@
+- en: Testing
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/16-testing.html](https://howqueryengineswork.com/16-testing.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the test directories
+    throughout the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Query engines are complex systems where subtle bugs can cause queries to return
+    incorrect results. Unlike a crash or obvious error, a query that silently returns
+    wrong data is particularly dangerous because users may make decisions based on
+    faulty information. Rigorous testing is essential.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Why Query Engines Are Hard to Test](#why-query-engines-are-hard-to-test)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Several factors make testing query engines challenging:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The combinatorial explosion of operators and expressions means there are infinite
+    ways to combine them. A simple query with three operators and two expressions
+    per operator already has many possible combinations. Hand-written tests cannot
+    cover them all.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Type coercion adds another dimension. An expression like `a > b` must work correctly
+    for integers, floats, strings, dates, and more. Each comparison operator multiplied
+    by each type combination multiplied by null handling creates many test cases.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Edge cases abound: empty tables, single-row tables, tables with all nulls,
+    extremely large values, NaN for floating point, and Unicode strings with special
+    characters. Production data will eventually exercise all of these.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Query optimizers can introduce bugs. A query might work correctly without optimization
+    but fail after the optimizer rewrites it. Or the optimizer might produce a plan
+    that is semantically different from the original.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Unit Testing](#unit-testing)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Unit tests verify that individual components work correctly in isolation. For
+    a query engine, this means testing expressions, operators, and data sources independently
+    before testing them in combination.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Testing Expressions](#testing-expressions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Expression tests should verify that each expression produces correct results
+    for valid inputs and handles edge cases appropriately.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Here is a test for the greater-than-or-equals expression across different numeric
+    types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: This test includes MIN_VALUE and MAX_VALUE to verify boundary behavior. Similar
+    tests should exist for bytes, shorts, integers, floats, doubles, and strings.
+    Each numeric type can have different overflow or comparison semantics.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For floating point types, testing NaN behavior is critical:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: NaN comparisons follow IEEE 754 semantics where NaN compared to anything (including
+    itself) returns false. This surprises many developers, so explicit tests catch
+    implementations that handle NaN incorrectly.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Creating Test Data](#creating-test-data)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Tests need a convenient way to create record batches with arbitrary data. A
+    helper method that takes a schema and column values makes tests cleaner:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With this helper, tests become declarative: define the schema, provide the
+    data, and verify the result.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[What to Test](#what-to-test)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Here are categories of unit tests that every query engine should have:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Type handling: What happens when an expression receives an unexpected type?
+    For example, computing SUM on strings should produce a clear error.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Boundary values: Test minimum and maximum values for each numeric type. Test
+    empty strings and very long strings.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Null handling: Every expression must handle null inputs correctly. Typically,
+    any operation involving null produces null (SQL three-valued logic).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Overflow and underflow: What happens when multiplying two large integers overflows?
+    The behavior should be documented and tested.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Special floating point values: Test positive and negative infinity, NaN, positive
+    and negative zero.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Testing SQL Parsing](#testing-sql-parsing)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: SQL parsing deserves dedicated tests because the parser is a critical component
+    that interprets user queries. Parser bugs can cause queries to be misinterpreted,
+    potentially with serious consequences.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Testing Operator Precedence](#testing-operator-precedence)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Mathematical expressions must respect operator precedence. These tests verify
+    that multiplication binds tighter than addition:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: The tree structure of the parsed expression reveals which operations bind first.
+    In `1 + 2 * 3`, the `2 * 3` forms a subtree because multiplication has higher
+    precedence.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Testing Query Structure](#testing-query-structure)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Tests should verify that each SQL clause is parsed correctly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Integration Testing](#integration-testing)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Integration tests verify that components work together correctly. For a query
+    engine, this means executing complete queries and verifying the results.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[End-to-End Query Tests](#end-to-end-query-tests)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'These tests exercise the full query path from parsing through execution:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: These tests use a small, static test file so the expected results are known.
+    The CSV output format makes assertions readable and diff-friendly when tests fail.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Testing Complex Operations](#testing-complex-operations)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Aggregation, joins, and other complex operations need thorough integration
+    testing:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: The join test creates in-memory data sources to have precise control over the
+    input data. This makes the expected output predictable and the test deterministic.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comparative Testing](#comparative-testing)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Comparative testing executes the same query against a trusted reference implementation
+    and verifies that both produce the same results. This is particularly valuable
+    for catching subtle bugs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Common approaches include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Running queries against PostgreSQL, DuckDB, or another established database
+    and comparing results
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Comparing DataFrame API queries against equivalent SQL queries within the same
+    engine
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Running optimized queries against unoptimized versions to verify the optimizer
+    preserves semantics
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The challenge with comparative testing is handling differences in null ordering,
+    floating point precision, and result ordering when ORDER BY is not specified.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Fuzzing](#fuzzing)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Hand-written tests inevitably miss edge cases. Fuzzing generates random inputs
+    to discover bugs that humans would not think to test.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Random Expression Generation](#random-expression-generation)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The fuzzer creates random expression trees by recursively building either leaf
+    nodes (columns, literals) or binary expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: A depth limit prevents unbounded recursion. The random seed should be fixed
+    for reproducibility.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Random Plan Generation](#random-plan-generation)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Similarly, the fuzzer can generate random query plans:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Here is an example of a generated plan:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Enhanced Random Values](#enhanced-random-values)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Naive random number generation misses interesting edge cases. An enhanced random
+    generator deliberately produces boundary values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: By weighting the distribution toward edge cases, the fuzzer finds bugs faster
+    than pure random generation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Handling Invalid Plans](#handling-invalid-plans)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Most randomly generated plans are invalid. This is actually useful because
+    it tests error handling. However, if you want to test execution specifically,
+    the fuzzer can be made “smarter” by:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Generating type-aware expressions (e.g., only compare compatible types)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Generating AND/OR expressions with Boolean operands
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Ensuring aggregate expressions use aggregate functions
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The trade-off is that smarter fuzzers may miss bugs in error paths.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Using Fuzzing Effectively](#using-fuzzing-effectively)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Some practical tips for fuzzing:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Fix the random seed: Use a constant seed so failures are reproducible. Log
+    the seed if using system time.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Run many iterations: Fuzzing finds bugs probabilistically. Run thousands or
+    millions of iterations.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Shrink failing cases: When fuzzing finds a bug, try to reduce the failing input
+    to a minimal reproduction.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Keep regression tests: When fuzzing finds a bug, add the simplified case as
+    a permanent test.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Golden Testing](#golden-testing)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Golden testing (also called snapshot testing) captures the output of a query
+    and stores it as the expected result. Future runs compare against this “golden”
+    output.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This approach works well for:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Query plan pretty-printing (verifying plan structure)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Explain output format
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Error messages
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The downside is that golden tests can be brittle. Any change to output formatting
+    breaks the tests, even if the underlying behavior is correct.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Testing Optimizations](#testing-optimizations)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Optimizer bugs are particularly insidious because the unoptimized query works
+    correctly. Test optimizations by:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Verifying that optimized and unoptimized plans produce identical results
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Verifying that specific optimizations fire when expected
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Testing that invalid optimizations do not fire
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'For example, to test projection push-down:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Debugging Test Failures](#debugging-test-failures)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: When a test fails, the key is reproducing and understanding the failure.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pretty-print plans: Implement a `pretty()` method on logical and physical plans.
+    When a test fails, print the plan to understand what query was executed.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Log intermediate results: For debugging, add logging that shows data flowing
+    through each operator.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Minimize the reproduction: Start with a failing query and systematically simplify
+    it while keeping the failure. Remove unnecessary columns, filters, and joins until
+    you have the smallest query that exhibits the bug.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Check boundary conditions: Many bugs occur at boundaries. If a test with 100
+    rows fails, try 0, 1, and 2 rows.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Verify test data: Sometimes the test itself is wrong. Double-check that the
+    test data and expected results are correct.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Continuous Integration](#continuous-integration)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Automated testing in CI catches regressions before they reach users. A good
+    CI setup for a query engine includes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Run all unit tests on every commit
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Run integration tests on every pull request
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Run longer fuzzing sessions nightly or weekly
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Track test execution time to catch performance regressions
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Test failures should block merging. Flaky tests (tests that sometimes pass and
+    sometimes fail) must be fixed immediately because they train developers to ignore
+    failures.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Summary](#summary)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Testing query engines requires multiple complementary approaches. Unit tests
+    verify individual components. Integration tests verify components work together.
+    Fuzzing discovers edge cases that humans miss. Comparative testing catches semantic
+    bugs by checking against a reference implementation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Invest in testing infrastructure early. Good test utilities (for creating test
+    data, comparing results, pretty-printing plans) make writing tests easier, which
+    means more tests get written. A well-tested query engine gives users confidence
+    that their query results are correct.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

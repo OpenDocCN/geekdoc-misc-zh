@@ -1,0 +1,110 @@
+- en: Further Resources
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/18-further-resources.html](https://howqueryengineswork.com/18-further-resources.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: I hope that you found this book useful and that you now have a better understanding
+    of the internals of query engines. If there are topics that you feel haven’t been
+    covered adequately, or at all, I would love to hear about it so I can consider
+    adding additional content in a future revision of this book.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Feedback can be posted on the public forum on the [Leanpub site](https://community.leanpub.com/t/feedback/2160),
+    or you can message me directly via twitter at [@andygrove_io](https://twitter.com/andygrove_io).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Open-Source Projects](#open-source-projects)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: There are numerous open-source projects that contain query engines and working
+    with these projects is a great way to learn more about the topic. Here are just
+    a few examples of popular open-source query engines.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Apache Arrow
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Apache Calcite
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Apache Drill
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Apache Hadoop
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Apache Hive
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Apache Impala
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Apache Spark
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Facebook Presto
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: NVIDIA RAPIDS Accelerator for Apache Spark
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[YouTube](#youtube)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: I only recently discovered Andy Pavlo’s lecture series, which is available on
+    YouTube ([here](https://www.youtube.com/playlist?list=PLSE8ODhjZXjasmrEd2_Yi1deeE360zv5O)).
+    This covers much more than just query engines, but there is extensive content
+    on query optimization and execution. I highly recommend watching these videos.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Sample Data](#sample-data)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Earlier chapters reference the [New York City Taxi & Limousine Commission Trip
+    Record Data](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page) data
+    set. The yellow and green taxi trip records include fields capturing pick-up and
+    drop-off dates/times, pick-up and drop-off locations, trip distances, itemized
+    fares, rate types, payment types, and driver-reported passenger counts.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'When this book was first published, the data was provided in CSV format, but
+    has now been converted to Parquet format. It is still possible to find the CSV
+    versions of these files online. As of December 2025, the following locations contain
+    this data:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: https://github.com/DataTalksClub/nyc-tlc-data/releases
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: https://catalog.data.gov/dataset/2019-yellow-taxi-trip-data
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: https://www.kaggle.com/code/haydenbailey/newyork-yellow-taxi
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The [KQuery project](https://github.com/andygrove/how-query-engines-work) contains
+    source code for converting these CSV files into Parquet format. *This book is
+    also available for purchase in ePub, MOBI, and PDF format from [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

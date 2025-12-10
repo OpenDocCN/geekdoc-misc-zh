@@ -1,0 +1,40 @@
+- en: Preface
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/00-preface.html](https://howqueryengineswork.com/00-preface.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: The first edition of this book was written in a one week break between jobs
+    and improved during COVID lockdown in 2020\. I honestly wasn’t sure how many people
+    wanted to read a book about building a query engine from scratch. It turns out
+    that there are quite a few.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This second edition is a significant revision with clearer explanations, better
+    code organization, and expanded coverage of topics like joins, subqueries, and
+    distributed query execution.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This book is not academic in nature. It aims to be a practical, straightforward
+    guide. The feedback from readers has been encouraging, so thank you to everyone
+    who provided suggestions and corrections. I hope this edition serves as an even
+    better foundation for understanding query engines.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Feedback](#feedback)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: I welcome feedback on this book. You can contact me on [LinkedIn](https://www.linkedin.com/in/andygrove/)
+    or through the [Leanpub forum](https://community.leanpub.com/t/feedback/2160).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

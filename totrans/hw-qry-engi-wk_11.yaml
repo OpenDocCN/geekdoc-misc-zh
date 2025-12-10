@@ -1,0 +1,407 @@
+- en: SQL Support
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/07-sql-support.html](https://howqueryengineswork.com/07-sql-support.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the `sql` module
+    of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The previous chapter showed how to build queries using the DataFrame API. But
+    most users expect to write SQL. This chapter covers parsing SQL text into a logical
+    plan, which involves two steps: parsing (text to syntax tree) and planning (syntax
+    tree to logical plan).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The Journey from SQL to Logical Plan](#the-journey-from-sql-to-logical-plan)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Consider this query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To execute this, we need to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Tokenize: Break the text into tokens (keywords, identifiers, literals, operators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Parse: Build a syntax tree that represents the query structure'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Plan: Convert the syntax tree into a logical plan'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The result is the same logical plan we could build with the DataFrame API, but
+    constructed from SQL text instead of code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Tokenizing](#tokenizing)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The tokenizer (or lexer) converts a string into a sequence of tokens. Each token
+    has a type and a value.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Token types include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Keywords: `SELECT`, `FROM`, `WHERE`, `AND`, `OR`, etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Identifiers: table names, column names'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Literals: strings (`''hello''`), numbers (`42`, `3.14`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Symbols: operators and punctuation (`+`, `-`, `*`, `/`, `=`, `<`, `>`, `(`,
+    `)`, `,`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For the query `SELECT a + b FROM c`, tokenizing produces:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: The tokenizer handles details like recognizing that `SELECT` is a keyword but
+    `employee` is an identifier, parsing string literals with their quotes, and recognizing
+    multi-character operators like `<=` and `!=`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Parsing with Pratt Parsers](#parsing-with-pratt-parsers)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Parsing turns tokens into a tree structure. The challenge is handling operator
+    precedence correctly. In `1 + 2 * 3`, multiplication binds tighter than addition,
+    so the result should be `1 + (2 * 3)`, not `(1 + 2) * 3`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: KQuery uses a Pratt parser, based on Vaughan Pratt’s 1973 paper “Top Down Operator
+    Precedence”. Pratt parsers handle precedence elegantly and produce clear, debuggable
+    code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The core algorithm is remarkably simple:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The algorithm:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Parse a “prefix” expression (a literal, identifier, or unary operator)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: While the next operator has higher precedence than what we started with, parse
+    it as an “infix” expression (binary operator) with the current expression as the
+    left side
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Return when we hit a lower-precedence operator
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The magic is in `parseInfix`, which recursively calls `parse` with the new operator’s
+    precedence. This naturally groups higher-precedence operations first.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[SQL Expressions](#sql-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The parser builds a syntax tree using SQL expression types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: These mirror logical expressions but stay closer to SQL syntax. We use a generic
+    `SqlBinaryExpr` with a string operator rather than separate classes for each operator
+    since the distinctions matter more in the logical plan.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Precedence in Action](#precedence-in-action)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Consider parsing `1 + 2 * 3`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Addition has precedence 50, multiplication has 60\. Walking through:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Parse prefix: `SqlLong(1)`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Next token `+` has precedence 50 > 0, so parse infix
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In `parseInfix`, consume `+`, then recursively call `parse(50)`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Parse prefix: `SqlLong(2)`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Next token `*` has precedence 60 > 50, so parse infix
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Consume `*`, recursively call `parse(60)`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Parse prefix: `SqlLong(3)`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: No more tokens, return `SqlLong(3)`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Return `SqlBinaryExpr(SqlLong(2), "*", SqlLong(3))`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Next precedence is 0 < 50, so return
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Return `SqlBinaryExpr(SqlLong(1), "+", SqlBinaryExpr(...))`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Result: `1 + (2 * 3)`, as expected.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Compare with `1 * 2 + 3`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Parse prefix: `SqlLong(1)`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`*` has precedence 60 > 0, parse infix'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Consume `*`, call `parse(60)`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Parse prefix: `SqlLong(2)`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`+` has precedence 50 < 60, so return `SqlLong(2)`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Return `SqlBinaryExpr(SqlLong(1), "*", SqlLong(2))`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`+` has precedence 50 > 0, parse infix'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Consume `+`, call `parse(50)`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Parse prefix: `SqlLong(3)`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: No more tokens, return
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Return `SqlBinaryExpr(SqlBinaryExpr(...), "+", SqlLong(3))`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Result: `(1 * 2) + 3`, correct again.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Parsing SELECT Statements](#parsing-select-statements)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Beyond expressions, we need to parse complete SQL statements. A SELECT statement
+    has the following structure:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Parsing a SELECT statement is straightforward procedural code: expect `SELECT`,
+    parse a comma-separated list of expressions, expect `FROM`, parse the table name,
+    optionally parse `WHERE` and its expression, and so on.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[SQL Planning: The Hard Part](#sql-planning-the-hard-part)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Parsing is mechanical. Planning is where things get interesting.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Consider this query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The WHERE clause references both `state` (a column from the table) and `monthly_salary`
+    (an alias defined in the SELECT list). This is natural for humans but creates
+    a problem: the filter needs columns that exist at different points in the plan.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we filter before projecting, `monthly_salary` does not exist yet. If we filter
+    after projecting, `state` may no longer be available.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Solution: Intermediate Projections](#solution-intermediate-projections)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'One approach adds columns to an intermediate projection:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: The inner projection computes all needed columns including `state`. The filter
+    can then reference everything. The outer projection removes `state` from the final
+    output.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Translation Logic](#translation-logic)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The planner walks the SQL expression tree and builds logical expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Finding Column References](#finding-column-references)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'To determine which columns the filter needs, we walk the expression tree:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: With this, the planner can compare columns in the filter against columns in
+    the projection and add any missing ones to the intermediate projection.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Aggregate Queries](#aggregate-queries)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Aggregate queries add more complexity. Consider:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The planner must:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Identify aggregate functions (`AVG`)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Separate grouping expressions (`department`) from aggregates
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Handle HAVING, which filters after aggregation
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Ensure columns in SELECT are either in GROUP BY or inside aggregates
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The full implementation handles these cases but the code is involved. See the
+    source repository for details.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Why Build Your Own Parser?](#why-build-your-own-parser)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: You might wonder why we build a parser instead of using a parser generator like
+    ANTLR or a library like Apache Calcite.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Building a hand-written parser has advantages:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Control: You decide exactly what SQL features to support'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Error messages: You can produce clear, context-specific errors'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Simplicity: No external dependencies or generated code'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Learning: Understanding parsing deepens your understanding of the whole system'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For a production system, using an existing SQL parser is often sensible. But
+    for learning how query engines work, building a parser reveals how SQL’s apparent
+    flexibility maps to structured operations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,30 @@
+- en: Acknowledgments
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/00-acknowledgments.html](https://howqueryengineswork.com/00-acknowledgments.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: This book would not have been possible without the support of my family, who
+    are incredibly patient with me when I get absorbed with yet another side project.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Special thanks go to Matthew Powers, a.k.a. Mr. Powers, for inspiring me to
+    write this book in the first place. Matthew is the author of the book “Writing
+    Beautiful Apache Spark Code” which is also available on Leanpub.
+  prefs: []
+  type: TYPE_NORMAL
+- en: I also need to thank the countless people who have interacted with me over the
+    past six years as I worked on the DataFusion project, especially the Apache Arrow
+    and Apache DataFusion PMC members, committers, and contributors. This book would
+    not have been possible without you.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,470 @@
+- en: Joins
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/10-joins.html](https://howqueryengineswork.com/10-joins.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the `logical-plan`
+    and `physical-plan` modules of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Joins combine rows from two tables based on a condition. They are fundamental
+    to relational databases and often the most expensive operation in a query. This
+    chapter covers join types and algorithms, with a focus on hash joins.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Join Types](#join-types)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[Inner Join](#inner-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'An inner join returns rows where the join condition matches in both tables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: If an employee has no matching department, that employee is excluded from the
+    results. If a department has no employees, it is also excluded.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Left Outer Join](#left-outer-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A left outer join returns all rows from the left table, with matching rows
+    from the right table where available:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: Employees without a matching department still appear in the results, with NULL
+    for `dept_name`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Right Outer Join](#right-outer-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A right outer join is the mirror of left join: all rows from the right table,
+    with matches from the left:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: Departments without employees appear with NULL for employee columns.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Full Outer Join](#full-outer-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A full outer join returns all rows from both tables, matching where possible:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: Both unmatched employees and unmatched departments appear, with NULLs for missing
+    columns.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Cross Join](#cross-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A cross join returns every combination of rows from both tables (the Cartesian
+    product):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: If employees has 100 rows and departments has 10 rows, the result has 1,000
+    rows. Cross joins are rarely useful on their own but sometimes appear in query
+    plans as intermediate steps.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Semi Join](#semi-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A semi join returns rows from the left table where at least one match exists
+    in the right table, but does not include columns from the right table:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: Semi joins are not directly expressible in standard SQL syntax but arise from
+    EXISTS subqueries. The Subqueries chapter covers this in detail.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Anti Join](#anti-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'An anti join returns rows from the left table where no match exists in the
+    right table:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: Anti joins arise from NOT EXISTS or NOT IN subqueries.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Join Conditions](#join-conditions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[Equi-joins](#equi-joins)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Most joins use equality conditions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: These are called equi-joins. Query engines optimize heavily for equi-joins because
+    hash-based algorithms work well with equality comparisons.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Non-equi Joins](#non-equi-joins)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Some joins use inequality or range conditions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Non-equi joins cannot use hash-based algorithms and typically require nested
+    loop or specialized range join implementations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Join Algorithms](#join-algorithms)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The choice of join algorithm dramatically affects performance. The three main
+    approaches are nested loop join, sort-merge join, and hash join.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Nested Loop Join](#nested-loop-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The simplest algorithm: for each row in the left table, scan the entire right
+    table looking for matches.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Time complexity: O(n × m) where n and m are the table sizes.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Nested loop join is simple but slow for large tables. It is useful when:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: One table is very small
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An index exists on the join column of the inner table
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The join condition is not an equality (non-equi join)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: With an index, the inner loop becomes an index lookup rather than a full scan,
+    dramatically improving performance.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Sort-Merge Join](#sort-merge-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Sort both tables by the join key, then merge them:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Time complexity: O(n log n + m log m) for sorting, plus O(n + m) for merging.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Sort-merge join is efficient when:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Data is already sorted by the join key
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The result of the join needs to be sorted anyway
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Memory is limited (external sort can spill to disk)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Hash Join](#hash-join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Build a hash table from one table, then probe it with the other:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Time complexity: O(n + m) assuming good hash distribution.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Hash join is usually the fastest algorithm for equi-joins when:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The smaller table fits in memory
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The join condition uses equality
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Hash Join in Detail](#hash-join-in-detail)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Hash join is the workhorse of modern query engines. Let us examine it more closely.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Choosing the Build Side](#choosing-the-build-side)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The build side should be the smaller table. Building a hash table from 1,000
+    rows and probing with 1,000,000 rows is much faster than the reverse.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The query optimizer estimates table sizes and chooses the build side. With
+    statistics, it can account for filters that reduce table sizes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: Even if `small_table` has more rows than `large_table`, after filtering it might
+    be smaller.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Hash Table Structure](#hash-table-structure)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'For each unique join key, the hash table stores all rows from the build side
+    with that key. The simplest structure is a hash map from key to list of rows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: In practice, implementations optimize memory layout for cache efficiency.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Handling Hash Collisions](#handling-hash-collisions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'When different keys hash to the same bucket, we must compare actual key values
+    during the probe phase:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: Good hash functions minimize collisions, but the probe must always verify equality.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[KQuery’s Hash Join Implementation](#kquerys-hash-join-implementation)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'KQuery implements hash join in `HashJoinExec`. The implementation supports
+    inner, left, and right joins:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Key aspects of this implementation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The build phase loads the entire right table into a hash table keyed by the
+    join columns. Each key maps to a list of rows (to handle duplicate keys).
+  prefs: []
+  type: TYPE_NORMAL
+- en: The probe phase iterates through the left table, looking up each row’s key in
+    the hash table. For inner joins, rows without matches are skipped. For left joins,
+    unmatched rows are emitted with NULLs for the right columns.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The `rightColumnsToExclude` parameter handles the common case where join keys
+    have the same name on both sides. Without this, the output would have duplicate
+    columns.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Outer Joins](#outer-joins)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'KQuery’s implementation handles left and right outer joins:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: For left outer join, when a probe row has no match in the hash table, we emit
+    the left row combined with NULLs for all right columns. This happens inline during
+    the probe phase.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For right outer join, we need to track which build (right) rows were matched.
+    After the probe phase completes, we emit unmatched right rows with NULLs for the
+    left columns. This requires either a second pass or tracking matched keys during
+    the probe.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Full outer join combines both approaches: emit unmatched left rows during probing,
+    then emit unmatched right rows after.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Memory Considerations](#memory-considerations)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The build side must fit in memory for a simple hash join. For large tables,
+    query engines use techniques like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Grace hash join: Partition both tables by hash value, then join matching partitions.
+    Each partition is smaller and more likely to fit in memory.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Hybrid hash join: Keep as much of the build side in memory as possible, spill
+    the rest to disk, then process spilled partitions separately.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Adaptive execution: Start with hash join, switch to sort-merge if memory pressure
+    is detected.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Join Ordering](#join-ordering)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'For queries joining multiple tables, the order matters enormously:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This could execute as:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (orders JOIN customers) JOIN products
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (orders JOIN products) JOIN customers
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (customers JOIN products) JOIN orders (usually bad)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The optimizer evaluates costs and chooses the best order. Generally, joins that
+    produce smaller intermediate results should happen first.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Bloom Filters](#bloom-filters)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'A Bloom filter is a probabilistic data structure that can quickly test whether
+    an element might be in a set. Query engines use Bloom filters to speed up joins:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Build a Bloom filter from the build side keys
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Before probing, check if the probe key might exist
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Skip rows that definitely have no match
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Bloom filters have false positives (might say “yes” when the answer is “no”)
+    but no false negatives. This means some unnecessary probes happen, but no matches
+    are missed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For selective joins where most probe rows have no match, Bloom filters significantly
+    reduce work.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Summary](#summary)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Joins are complex and performance-critical. Key points:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Hash join is typically fastest for equi-joins
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The build side should be the smaller table
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Join ordering affects performance dramatically
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Memory constraints may require spilling to disk
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Query optimizers use statistics to make good choices
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'KQuery implements hash join for inner, left, and right joins. The implementation
+    demonstrates the core algorithm: build a hash table from one side, probe with
+    the other. Production systems add optimizations like spilling to disk and Bloom
+    filters, but the fundamental approach remains the same.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

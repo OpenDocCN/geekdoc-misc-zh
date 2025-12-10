@@ -1,0 +1,304 @@
+- en: Query Planner
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/09-query-planner.html](https://howqueryengineswork.com/09-query-planner.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the `query-planner`
+    module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We now have logical plans that describe what to compute and physical plans
+    that describe how to compute it. The query planner bridges these: it takes a logical
+    plan and produces a physical plan that can be executed.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[What the Query Planner Does](#what-the-query-planner-does)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The query planner walks the logical plan tree and creates a corresponding physical
+    plan tree. For each logical operator, it creates the appropriate physical operator.
+    For each logical expression, it creates the corresponding physical expression.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Some translations are straightforward. A logical `Scan` becomes a physical `ScanExec`.
+    A logical `Add` expression becomes a physical `AddExpression`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Other translations involve choices. A logical `Aggregate` could become a `HashAggregateExec`
+    or a `SortAggregateExec` depending on whether the input is sorted. A logical `Join`
+    could become a hash join, sort-merge join, or nested loop join. These decisions
+    affect performance significantly.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'KQuery’s query planner is simple: it makes fixed choices (always hash aggregate,
+    for example). Production query planners use cost-based optimization to estimate
+    which physical plan will be fastest.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The QueryPlanner Class](#the-queryplanner-class)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The planner has two main methods: one for plans, one for expressions.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Both methods use pattern matching to dispatch on the type. Both are recursive:
+    translating a `Projection` requires translating its input plan, and translating
+    a `BinaryExpr` requires translating its child expressions.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Translating Expressions](#translating-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[Column References](#column-references)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Logical expressions reference columns by name. Physical expressions use column
+    indices for efficiency. The planner performs this lookup:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: If the column does not exist in the input schema, we throw an error. This should
+    not happen if the logical plan was validated, but the check provides a safety
+    net.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Literals](#literals)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Literal translations are trivial since we just copy the value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Binary Expressions](#binary-expressions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Binary expressions require recursively translating both operands, then creating
+    the appropriate physical operator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Aliases](#aliases)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Aliases are interesting: they have no physical representation. An alias just
+    gives a name to an expression for use in planning. At execution time, we evaluate
+    the underlying expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Translating Plans](#translating-plans)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[Scan](#scan)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Scan is the simplest translation. We pass the data source and projection through:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Selection (Filter)](#selection-filter)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Selection translates the input plan and the filter expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that `createPhysicalExpr` receives `plan.input` (the logical input), not
+    `input` (the physical input). We need the logical schema to resolve column names
+    to indices.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Projection](#projection)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Projection translates the input and each projection expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: We derive the output schema from the logical expressions since they know their
+    output types.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Aggregate](#aggregate)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Aggregate translation involves grouping expressions and aggregate functions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Notice that we always create `HashAggregateExec`. A more sophisticated planner
+    might choose `SortAggregateExec` when the input is already sorted by the grouping
+    columns.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[A Complete Example](#a-complete-example)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Consider this query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The logical plan:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The query planner walks this top-down:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Aggregate: Create physical plan for input, translate expressions'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Recurse to translate Selection
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Selection: Create physical plan for input, translate filter expression'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Recurse to translate Scan
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Scan: Create ScanExec directly'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Building physical plans bottom-up:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ScanExec(employeesDataSource, [])`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`SelectionExec(scanExec, EqExpression(ColumnExpression(2), LiteralStringExpression("CO")))`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`HashAggregateExec(selectionExec, [ColumnExpression(0)], [AvgExpression(ColumnExpression(3))],
+    schema)`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The result is an executable physical plan.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Where Optimization Fits](#where-optimization-fits)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The query planner shown here does direct translation. Each logical operator
+    becomes exactly one physical operator.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In practice, optimization happens between logical planning and physical planning:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Parse SQL to logical plan
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Optimize the logical plan (reorder joins, push down predicates, etc.)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Translate optimized logical plan to physical plan
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Alternatively, some systems perform physical optimization:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Parse SQL to logical plan
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Generate multiple candidate physical plans
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Estimate cost of each
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Choose the cheapest
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: KQuery uses the first approach with a simple optimizer (covered in the next
+    chapter after Joins and Subqueries). The planner here assumes it receives an already-optimized
+    logical plan.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Error Handling](#error-handling)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The query planner should catch errors that slip past logical plan validation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Unknown column names
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Unsupported expression types
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Type mismatches
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In KQuery, these throw exceptions. Production systems would produce structured
+    error messages with source locations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

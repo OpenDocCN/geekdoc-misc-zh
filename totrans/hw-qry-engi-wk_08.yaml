@@ -1,0 +1,305 @@
+- en: Data Sources
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/04-data-sources.html](https://howqueryengineswork.com/04-data-sources.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the `datasource`
+    module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A query engine needs data to query. The data might come from CSV files, Parquet
+    files, databases, or even data that already exists in memory. We want our query
+    engine to work with any of these without caring about the details. This chapter
+    introduces the data source abstraction that makes this possible.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Why Abstract Data Sources?](#why-abstract-data-sources)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Consider a simple query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'From the query engine’s perspective, it needs to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Know what columns exist (to validate that `name`, `salary`, and `department`
+    are real)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Know the types of those columns (to validate that comparing `department` to
+    a string makes sense)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Read the actual data, preferably just the columns it needs
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Whether `employees` is a CSV file, a Parquet file, or an in-memory table, these
+    requirements are the same. By defining a common interface, we can write query
+    planning and execution logic once and have it work with any data source.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The DataSource Interface](#the-datasource-interface)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'KQuery defines a simple interface that all data sources must implement:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: schema() returns the schema of the data, the column names and their types. The
+    query planner uses this during planning to validate queries. If you reference
+    a column that does not exist, the planner can report an error before execution
+    begins.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'scan(projection) reads the data and returns it as a sequence of record batches.
+    The `projection` parameter lists which columns to read. This is important for
+    efficiency: if a query only uses three columns from a table with fifty columns,
+    we should only read those three. Some file formats like Parquet support this natively.
+    For others like CSV, we might read everything but only build vectors for the requested
+    columns.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The return type `Sequence<RecordBatch>` enables streaming. Rather than loading
+    an entire file into memory, we can process it batch by batch. This matters when
+    data is larger than available memory.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[CSV Data Source](#csv-data-source)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: CSV is the simplest format to understand but has some awkward properties. The
+    file is just text with values separated by commas (or tabs, or semicolons). There
+    is no schema embedded in the file, only optional column names in the first row.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Here is what a CSV file might look like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To read this, we need to handle several things:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Parse column names from the header row (if present)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Infer or accept a schema (what types are these columns?)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Parse text values into typed values
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Handle missing or malformed values
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'KQuery’s `CsvDataSource` accepts an optional schema. If provided, it uses that
+    schema. If not, it infers one by reading the header row and treating all columns
+    as strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The `scan` method streams through the file, parsing rows into batches. For
+    each batch, it creates Arrow vectors and populates them with parsed values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `ReaderAsSequence` class implements Kotlin’s `Sequence` interface, reading
+    rows on demand and grouping them into batches. Each batch converts string values
+    to the appropriate Arrow vector type based on the schema.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Type Conversion](#type-conversion)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'CSV files are text, but our schema might specify that a column is an integer
+    or a float. The CSV reader must parse these strings into typed values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: Empty values become nulls. Invalid values (like “abc” in an integer column)
+    will throw an exception, which is the right behaviour since the data does not
+    match the declared schema.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Parquet Data Source](#parquet-data-source)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Parquet is a binary columnar format designed for analytics. Unlike CSV, Parquet
+    files contain:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Schema information (column names, types, nullability)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Data organized in column chunks within row groups
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Compression (snappy, gzip, etc.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Optional statistics (min/max values per column chunk)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This makes Parquet much more efficient for query engines. Reading a single column
+    means reading just that column’s data, not the entire file. The schema is known
+    without inference. And compression reduces both storage and I/O.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'KQuery’s `ParquetDataSource` is simpler than the CSV version because the Parquet
+    library provides much of what we need:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: The schema comes directly from the file’s metadata. The scan reads row groups
+    one at a time, converting Parquet’s columnar format to Arrow vectors.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Projection Pushdown](#projection-pushdown)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Parquet’s columnar organization means projection pushdown is efficient. When
+    we request only certain columns, the Parquet reader only decompresses and reads
+    those column chunks. For wide tables (hundreds of columns) where queries touch
+    only a few, this can be orders of magnitude faster than reading everything.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[In-Memory Data Source](#in-memory-data-source)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Sometimes data is already in memory, perhaps loaded from another source or
+    generated by a previous query. The `InMemoryDataSource` wraps existing record
+    batches:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: This is useful for testing and for queries that build on other queries. Projection
+    here just selects which columns to include in the output batches.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Other Data Sources](#other-data-sources)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Real query engines support many more data sources. Some common ones:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'JSON: Structured but schema-less. Each line might be a JSON object. Schema
+    inference is possible but complex since nested structures must be flattened or
+    represented as Arrow’s nested types.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'ORC: Similar to Parquet, another columnar format popular in the Hadoop ecosystem.
+    Data is stored in columnar “stripes” with schema and statistics.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Databases: Query engines can read from other databases via JDBC or native protocols.
+    The schema comes from the database’s catalog. Pushing predicates down to the source
+    database can dramatically reduce data transfer.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Object Storage: Cloud systems like S3 or GCS can serve as data sources. The
+    query engine lists files matching a pattern and reads them, often in parallel.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Streaming Sources: Kafka, Kinesis, or other message queues. These require different
+    handling since data arrives continuously rather than being read from a file.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Schema-less Sources](#schema-less-sources)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Some data sources do not have fixed schemas. JSON documents can have different
+    fields in each record. Schema-on-read systems defer schema decisions until query
+    time.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Handling schema-less sources adds complexity. Options include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Require users to declare a schema explicitly
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Infer a schema from a sample of the data
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Use a flexible representation like a map of string to value
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Reject queries that reference non-existent fields at runtime rather than planning
+    time
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: KQuery requires schemas at planning time, so schema-less sources must provide
+    or infer a schema somehow.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Connecting Data Sources to the Query Engine](#connecting-data-sources-to-the-query-engine)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Data sources plug into the query engine through the execution context. In KQuery,
+    you register data sources with names:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: The query planner resolves table names to data sources, retrieves schemas for
+    validation, and creates scan operations in the query plan. The details of CSV
+    versus Parquet versus anything else are hidden behind the `DataSource` interface.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This separation is powerful. Adding support for a new file format means implementing
+    two methods. The rest of the query engine, from planning through optimization
+    to execution, works without modification.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,423 @@
+- en: Logical Plans and Expressions
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/05-logical-plan.html](https://howqueryengineswork.com/05-logical-plan.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the `logical-plan`
+    module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'When you write a SQL query, you describe what data you want. The query engine
+    must figure out how to get it. The first step is building a logical plan: a tree
+    structure that represents the computation without specifying exactly how to execute
+    it.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Consider this query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Before we can execute this, we need a structured representation. The logical
+    plan captures:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Read from the `employees` table
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Keep only rows where `department = 'Engineering'`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Compute `name` and `salary * 1.1` for each remaining row
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This chapter covers how to represent these operations as a tree of logical plans
+    and expressions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Why Separate Logical from Physical?](#why-separate-logical-from-physical)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'We could jump straight from SQL to execution, but separating logical and physical
+    planning has advantages:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Validation: We can check that columns exist and types are compatible before
+    doing any work'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Optimization: We can transform the logical plan to make it more efficient'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Flexibility: The same logical plan might execute differently depending on data
+    size or available resources'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: A logical plan says “filter rows where X” without specifying whether to use
+    an index, a hash table, or a sequential scan. Those are physical execution details
+    decided later.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The LogicalPlan Interface](#the-logicalplan-interface)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'A logical plan represents a relation: a set of rows with a known schema. Each
+    plan can have child plans as inputs, forming a tree.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: schema() returns the output schema, the columns and their types that this plan
+    produces. This is essential for validation. If a later plan references a column,
+    we can check that it exists in the input schema.
+  prefs: []
+  type: TYPE_NORMAL
+- en: children() returns the input plans. A scan has no children (it reads from a
+    data source). A filter has one child (its input). A join has two children (left
+    and right inputs). This method enables walking the plan tree.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Printing Logical Plans](#printing-logical-plans)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Debugging query engines requires seeing what the plan looks like. We print
+    plans as indented trees where children are nested under parents:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Our example query might print as:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Read this bottom-up: scan the employees table, filter to Engineering, project
+    the columns we want.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Logical Expressions](#logical-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Plans describe data flow. Expressions describe computations within a plan. A
+    filter plan contains an expression that evaluates to true or false for each row.
+    A projection plan contains expressions that compute output columns.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Expressions can be simple (a column reference, a literal value) or complex
+    (nested arithmetic, function calls). Here are common expression types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Expression Type | Examples |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Literal Value | `"hello"`, `12.34`, `true` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Column Reference | `user_id`, `first_name`, `salary` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Math Expression | `salary * 0.1`, `price + tax` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Comparison Expression | `age >= 21`, `status != ''inactive''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Boolean Expression | `age >= 21 AND country = ''US''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Aggregate Expression | `MIN(salary)`, `MAX(salary)`, `SUM(amount)`, `COUNT(*)`
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Scalar Function | `UPPER(name)`, `CONCAT(first_name, '' '', last_name)` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Aliased Expression | `salary * 1.1 AS new_salary` |'
+  prefs: []
+  type: TYPE_TB
+- en: 'Expressions form trees. The expression `(a + b) * c` has a multiply at the
+    root with two children: an add expression (with children `a` and `b`) and a column
+    reference `c`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The LogicalExpr Interface](#the-logicalexpr-interface)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'During planning, we need to know what type of value an expression produces.
+    If you write `a + b`, that is only valid if both columns are numeric. The interface
+    captures this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `toField` method returns the name and data type of the expression’s output.
+    It takes the input plan because some expressions depend on the input schema. A
+    column reference has the type of whatever column it references. A comparison expression
+    always returns boolean regardless of its inputs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Column Expressions](#column-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The simplest expression references a column by name:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `toField` implementation looks up the column in the input schema. If it
+    does not exist, that is an error, which we catch during planning rather than execution.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The `#` prefix in `toString` is a convention to distinguish column references
+    from literal strings when printing plans.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Literal Expressions](#literal-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Expressions like `salary * 1.1` need to represent the literal value `1.1`.
+    We need literal expressions for each data type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: Literal expressions do not depend on the input plan since their type is fixed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Binary Expressions](#binary-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Most operators take two inputs: comparison (`=`, `<`, `>`), boolean logic (`AND`,
+    `OR`), and arithmetic (`+`, `-`, `*`, `/`). We can share structure across these:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `name` identifies the expression type. The `op` is the operator symbol for
+    printing. The `l` and `r` are the left and right operands.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comparison and Boolean Expressions](#comparison-and-boolean-expressions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Comparisons and boolean operators always produce boolean results:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Math Expressions](#math-expressions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In KQuery, arithmetic expressions preserve the type of the left operand. This
+    is a simplified approach. A production system would handle type promotion):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Aggregate Expressions](#aggregate-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Aggregates reduce multiple rows to a single value: `SUM`, `MIN`, `MAX`, `AVG`,
+    `COUNT`. They appear in aggregate plans (covered later) and have special semantics.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Most aggregates return the same type as their input. `COUNT` is different since
+    it always returns an integer:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Aliased Expressions](#aliased-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'SQL’s `AS` keyword renames an expression’s output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: The alias changes the name but preserves the type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Logical Plans](#logical-plans)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: With expressions defined, we can build the plans that use them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Scan](#scan)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`Scan` reads from a data source. It is the leaf node in every query tree, the
+    place where data enters the plan.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `projection` parameter lists which columns to read. If empty, read all columns.
+    This optimization matters because reading fewer columns means less I/O and less
+    memory.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Selection (Filter)](#selection-filter)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`Selection` keeps only rows where an expression evaluates to true. This corresponds
+    to SQL’s `WHERE` clause.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: The schema passes through unchanged since filtering only removes rows, not columns.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Projection](#projection)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`Projection` computes new columns from expressions. This corresponds to SQL’s
+    `SELECT` list.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: The output schema comes from the expressions. If you project `name` and `salary
+    * 1.1 AS bonus`, the output schema has two columns with those names and appropriate
+    types.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Aggregate](#aggregate)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`Aggregate` groups rows and computes aggregate functions. This corresponds
+    to SQL’s `GROUP BY` with aggregate functions.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The output schema has the grouping columns first, followed by the aggregate
+    results. For `SELECT department, AVG(salary) FROM employees GROUP BY department`,
+    the output has two columns: `department` and `AVG(salary)`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Join](#join)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`Join` combines rows from two inputs based on a condition. Unlike the plans
+    we have seen so far, joins have two children: a left input and a right input.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The output schema combines columns from both inputs. The join type determines
+    which rows appear in the output: inner joins return only matching rows, outer
+    joins include unmatched rows with nulls, and so on.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Joins are fundamental to relational queries but come with significant complexity:
+    multiple join types, various join algorithms with different performance characteristics,
+    and optimization challenges. The Joins chapter covers these topics in depth.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Putting It Together](#putting-it-together)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Here is how our example query becomes a logical plan:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Building bottom-up:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Printed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: This logical plan can now be validated (do the columns exist?), optimized (can
+    we push the projection into the scan?), and eventually converted to a physical
+    plan for execution.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Serialization](#serialization)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Query plans sometimes need to be serialized: sent across a network, stored
+    for later, or passed between systems in different languages.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Options include language-specific serialization (JSON with Jackson in Java,
+    kotlinx.serialization in Kotlin) or language-agnostic formats like Protocol Buffers
+    or Avro.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A newer standard called [Substrait](https://substrait.io/) aims to provide
+    cross-language serialization for relational algebra. This is exciting because
+    it enables mixing components: use Apache Calcite for query planning in Java, serialize
+    to Substrait, execute in a Rust or C++ engine. If you are building a query engine
+    today, Substrait is worth investigating.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL

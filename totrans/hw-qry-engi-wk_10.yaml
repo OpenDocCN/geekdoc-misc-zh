@@ -1,0 +1,203 @@
+- en: DataFrame API
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://howqueryengineswork.com/06-dataframe.html](https://howqueryengineswork.com/06-dataframe.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The source code discussed in this chapter can be found in the `logical-plan`
+    module of the [KQuery project](https://github.com/andygrove/how-query-engines-work).*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The previous chapter showed how to represent queries as logical plans. But constructing
+    those plans by hand is tedious. This chapter introduces the DataFrame API, a fluent
+    interface that makes building logical plans natural and readable.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Building Plans The Hard Way](#building-plans-the-hard-way)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Consider this query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To build this as a logical plan, we construct each piece separately and then
+    wire them together:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This works, but it is verbose and the code structure does not mirror the query
+    structure. We can improve this slightly by nesting the constructors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: This is more compact, but harder to read. The nesting goes from inside out,
+    opposite to how we think about query execution (scan first, then filter, then
+    project).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The DataFrame Approach](#the-dataframe-approach)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'A DataFrame wraps a logical plan and provides methods that return new DataFrames.
+    Each method call adds a node to the plan. This creates a fluent API where code
+    reads top-to-bottom in execution order:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Read this as: start with the CSV file, filter to Colorado, project the columns
+    we want. The code structure matches the mental model.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The DataFrame Interface](#the-dataframe-interface)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The interface is simple:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: Each transformation method (`project`, `filter`, `aggregate`, `join`) returns
+    a new DataFrame. This enables method chaining. The `schema` method exposes the
+    output schema for inspection. The `logicalPlan` method retrieves the underlying
+    plan when we need it for optimization or execution.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Implementation](#implementation)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The implementation wraps a logical plan and creates new plan nodes on each
+    method call:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Each method constructs a new logical plan node with the current plan as input,
+    then wraps it in a new DataFrame. The original DataFrame is unchanged (DataFrames
+    are immutable), so you can branch from any point:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Joins combine two DataFrames based on a condition:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: The Joins chapter covers join types and algorithms in detail.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Execution Context](#execution-context)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'We need a starting point for building DataFrames. The execution context creates
+    initial DataFrames from data sources:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Later chapters expand this context to handle query execution. For now, it just
+    creates DataFrames.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Convenience Methods](#convenience-methods)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The basic API works but is still verbose. Kotlin’s features let us make it more
+    expressive.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Helper functions create expressions concisely:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Infix operators let us write expressions naturally:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Now we can write queries that read almost like SQL:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This reads: take the CSV, keep rows where state equals CO, compute id, names,
+    salary, and a 10% bonus column, then keep only rows where bonus exceeds 1000.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[DataFrames vs SQL](#dataframes-vs-sql)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Both DataFrames and SQL describe what data you want. Why offer both?
+  prefs: []
+  type: TYPE_NORMAL
+- en: SQL is familiar to analysts and can be embedded in applications as strings.
+    But SQL strings are opaque to the compiler. Typos and type errors only appear
+    at runtime.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'DataFrames integrate with the programming language. The compiler catches method
+    name typos. IDEs provide autocomplete. You can build queries dynamically using
+    normal programming constructs:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: Most modern query engines support both interfaces. Users choose based on their
+    needs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The Underlying Plan](#the-underlying-plan)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'However we build it, the result is a logical plan. Our example query:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Produces this plan:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: The DataFrame is just a convenient way to construct this tree. Once built, the
+    plan goes through optimization and physical planning regardless of how it was
+    created.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*This book is also available for purchase in ePub, MOBI, and PDF format from
+    [https://leanpub.com/how-query-engines-work](https://leanpub.com/how-query-engines-work)*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copyright © 2020-2025 Andy Grove. All rights reserved.**'
+  prefs: []
+  type: TYPE_NORMAL
