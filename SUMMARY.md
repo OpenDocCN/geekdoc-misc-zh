@@ -1,3 +1,4 @@
++   [100 个学习 Rust 的练习](docs/100-ex-lrn-rs/README.md)
 +   [97 件每位程序员都应该知道的事情](docs/97thing-prog-shld-know/README.md)
 +   [抽象解释](docs/abs-interp/README.md)
 +   [Android 101 实验](docs/andr-101lab/README.md)
