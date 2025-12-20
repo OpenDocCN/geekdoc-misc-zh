@@ -1,1 +1,0 @@
-["```rs\n[dependencies]\nthiserror = \"1\" \n```", "```rs\n[dependencies]\nmy-library = { path = \"../my-library\" } \n```", "```rs\n[dev-dependencies]\nstatic_assertions = \"1.1.0\" \n```"]
