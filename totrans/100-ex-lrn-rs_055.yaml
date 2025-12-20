@@ -1,67 +1,104 @@
 - en: TryFrom and TryInto
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: TryFrom 和 TryInto
 - en: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/13_try_from.html](https://rust-exercises.com/100-exercises/05_ticket_v2/13_try_from.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/13_try_from.html](https://rust-exercises.com/100-exercises/05_ticket_v2/13_try_from.html)
 - en: In the previous chapter we looked at the [`From` and `Into` traits](/100-exercises/04_traits/09_from),
     Rust's idiomatic interfaces for **infallible** type conversions.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上一章中，我们探讨了 `From` 和 `Into` 特性（[From 和 Into 特性](/100-exercises/04_traits/09_from)），这是
+    Rust 中用于**不可靠**类型转换的惯用接口。
 - en: But what if the conversion is not guaranteed to succeed?
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 但如果转换不能保证成功怎么办？
 - en: 'We now know enough about errors to discuss the **fallible** counterparts of
     `From` and `Into`: `TryFrom` and `TryInto`.'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们现在对错误有了足够的了解，可以讨论 `From` 和 `Into` 的**可失败**对应物：`TryFrom` 和 `TryInto`。
 - en: '[`TryFrom` and `TryInto`](#tryfrom-and-tryinto-1)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[TryFrom 和 TryInto](#tryfrom-and-tryinto-1)'
 - en: Both `TryFrom` and `TryInto` are defined in the `std::convert` module, just
     like `From` and `Into`.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: '`TryFrom` 和 `TryInto` 都定义在 `std::convert` 模块中，就像 `From` 和 `Into` 一样。'
 - en: '[PRE0]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The main difference between `From`/`Into` and `TryFrom`/`TryInto` is that the
     latter return a `Result` type.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '`From`/`Into` 和 `TryFrom`/`TryInto` 之间的主要区别在于后者返回一个 `Result` 类型。'
 - en: This allows the conversion to fail, returning an error instead of panicking.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这允许转换失败，返回错误而不是恐慌。
 - en: '[`Self::Error`](#selferror)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Self::Error](#selferror)'
 - en: Both `TryFrom` and `TryInto` have an associated `Error` type. This allows each
     implementation to specify its own error type, ideally the most appropriate for
     the conversion being attempted.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '`TryFrom` 和 `TryInto` 都有一个关联的 `Error` 类型。这允许每个实现指定自己的错误类型，理想情况下是最适合尝试的转换。'
 - en: '`Self::Error` is a way to refer to the `Error` associated type defined in the
     trait itself.'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Self::Error` 是引用在特性本身中定义的 `Error` 关联类型的一种方式。'
 - en: '[Duality](#duality)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[对偶性](#duality)'
 - en: Just like `From` and `Into`, `TryFrom` and `TryInto` are dual traits.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 就像 `From` 和 `Into` 一样，`TryFrom` 和 `TryInto` 是成对出现的特性。
 - en: If you implement `TryFrom` for a type, you get `TryInto` for free.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你为某个类型实现了 `TryFrom`，你将免费获得 `TryInto`。
 - en: '[Exercise](#exercise)'
+  id: totrans-16
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`05_ticket_v2/13_try_from`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/13_try_from)
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于（[05_ticket_v2/13_try_from](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/13_try_from)）

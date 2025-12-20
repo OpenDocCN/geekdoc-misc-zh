@@ -1,106 +1,162 @@
 - en: Fallibility
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 可靠性
 - en: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/06_fallibility.html](https://rust-exercises.com/100-exercises/05_ticket_v2/06_fallibility.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/06_fallibility.html](https://rust-exercises.com/100-exercises/05_ticket_v2/06_fallibility.html)
 - en: 'Let''s revisit the `Ticket::new` function from the previous exercise:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们回顾一下之前练习中的`Ticket::new`函数：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: As soon as one of the checks fails, the function panics. This is not ideal,
     as it doesn't give the caller a chance to **handle the error**.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 一旦其中一个检查失败，函数就会恐慌。这并不理想，因为它没有给调用者处理错误的机会。
 - en: It's time to introduce the `Result` type, Rust's primary mechanism for error
     handling.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 是时候介绍`Result`类型了，这是Rust处理错误的主要机制。
 - en: '[The `Result` type](#the-result-type)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Result`类型](#the-result-type)'
 - en: 'The `Result` type is an enum defined in the standard library:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Result`类型是在标准库中定义的一个枚举：'
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'It has two variants:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 它有两个变体：
 - en: '`Ok(T)`: represents a successful operation. It holds `T`, the output of the
     operation.'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Ok(T)`: 表示一个成功的运算。它包含`T`，即运算的输出。'
 - en: '`Err(E)`: represents a failed operation. It holds `E`, the error that occurred.'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Err(E)`: 表示一个失败的运算。它包含`E`，即发生的错误。'
 - en: Both `Ok` and `Err` are generic, allowing you to specify your own types for
     the success and error cases.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Ok`和`Err`都是泛型，允许你为成功和错误情况指定自己的类型。'
 - en: '[No exceptions](#no-exceptions)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[无异常](#no-exceptions)'
 - en: Recoverable errors in Rust are **represented as values**.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust中的可恢复错误**表示为值**。
 - en: They're just an instance of a type, being passed around and manipulated like
     any other value. This is a significant difference from other languages, such as
     Python or C#, where **exceptions** are used to signal errors.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 它们只是类型的一个实例，像任何其他值一样被传递和处理。这与Python或C#等其他语言不同，在这些语言中，**异常**用于表示错误。
 - en: Exceptions create a separate control flow path that can be hard to reason about.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 异常创建了一个单独的控制流路径，这可能很难理解。
 - en: You don't know, just by looking at a function's signature, if it can throw an
     exception or not. You don't know, just by looking at a function's signature, **which**
     exception types it can throw.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 仅通过查看函数的签名，你不知道它是否会抛出异常。你也不知道，仅通过查看函数的签名，**它**可以抛出哪些异常类型。
 - en: You must either read the function's documentation or look at its implementation
     to find out.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 你必须阅读函数的文档或查看其实现，才能找出答案。
 - en: 'Exception handling logic has very poor locality: the code that throws the exception
     is far removed from the code that catches it, and there''s no direct link between
     the two.'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 异常处理逻辑的局部性非常差：抛出异常的代码与捕获它的代码相距甚远，两者之间没有直接的联系。
 - en: '[Fallibility is encoded in the type system](#fallibility-is-encoded-in-the-type-system)'
+  id: totrans-20
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[可靠性编码在类型系统中](#fallibility-is-encoded-in-the-type-system)'
 - en: Rust, with `Result`, forces you to **encode fallibility in the function's signature**.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust通过`Result`强制你在函数的签名中**编码可靠性**。
 - en: If a function can fail (and you want the caller to have a shot at handling the
     error), it must return a `Result`.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个函数可能会失败（并且你希望调用者有机会处理错误），它必须返回一个`Result`。
 - en: '[PRE2]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'That''s the big advantage of `Result`: it makes fallibility explicit.'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是`Result`的大优点：它使可靠性明确。
 - en: Keep in mind, though, that panics exist. They aren't tracked by the type system,
     just like exceptions in other languages. But they're meant for **unrecoverable
     errors** and should be used sparingly.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 请记住，恐慌确实存在。它们不像其他语言中的异常那样由类型系统跟踪。但它们是为了**不可恢复的错误**而设计的，应该谨慎使用。
 - en: '[Exercise](#exercise)'
+  id: totrans-26
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`05_ticket_v2/06_fallibility`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/06_fallibility)
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`05_ticket_v2/06_fallibility`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/06_fallibility)

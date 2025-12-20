@@ -1,132 +1,205 @@
 - en: Deref trait
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: Deref 特质
 - en: 原文：[https://rust-exercises.com/100-exercises/04_traits/07_deref.html](https://rust-exercises.com/100-exercises/04_traits/07_deref.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/04_traits/07_deref.html](https://rust-exercises.com/100-exercises/04_traits/07_deref.html)
 - en: In the previous exercise you didn't have to do much, did you?
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上一个练习中，你不需要做太多，对吧？
 - en: Changing
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 改变
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: to
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: to
 - en: '[PRE1]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: was all you needed to do to get the code to compile and the tests to pass. Some
     alarm bells should be ringing in your head though.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 是你为了让代码编译并通过测试所需要做的全部。不过，你心里可能应该响起一些警钟。
 - en: '[It shouldn''t work, but it does](#it-shouldnt-work-but-it-does)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[它不应该工作，但它确实工作了](#it-shouldnt-work-but-it-does)'
 - en: 'Let''s review the facts:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们回顾一下事实：
 - en: '`self.title` is a `String`'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`self.title` 是一个 `String`'
 - en: '`&self.title` is, therefore, a `&String`'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 因此，`&self.title` 是一个 `&String`
 - en: The output of the (modified) `title` method is `&str`
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （修改后的）`title` 方法的输出是 `&str`
 - en: You would expect a compiler error, wouldn't you? `Expected &String, found &str`
     or something similar. Instead, it just works. **Why**?
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 你会期望编译器错误，不是吗？`Expected &String, found &str` 或类似的内容。然而，它只是正常工作。**为什么**？
 - en: '[`Deref` to the rescue](#deref-to-the-rescue)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Deref` to the rescue](#deref-to-the-rescue)'
 - en: The `Deref` trait is the mechanism behind the language feature known as [**deref
     coercion**](https://doc.rust-lang.org/std/ops/trait.Deref.html#deref-coercion).
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Deref` 特质是语言特性 [**deref coercion**](https://doc.rust-lang.org/std/ops/trait.Deref.html#deref-coercion)
+    背后的机制。'
 - en: 'The trait is defined in the standard library, in the `std::ops` module:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 特质是在标准库中定义的，位于 `std::ops` 模块中：
 - en: '[PRE2]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`type Target` is an **associated type**.'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '`type Target` 是一个 **关联类型**。'
 - en: It's a placeholder for a concrete type that must be specified when the trait
     is implemented.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 它是一个占位符，用于在实现特质时必须指定的具体类型。
 - en: '[Deref coercion](#deref-coercion)'
+  id: totrans-20
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Deref coercion](#deref-coercion)'
 - en: By implementing `Deref<Target = U>` for a type `T` you're telling the compiler
     that `&T` and `&U` are somewhat interchangeable.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过为类型 `T` 实现 `Deref<Target = U>`，你告诉编译器 `&T` 和 `&U` 在某种程度上是可以互换的。
 - en: 'In particular, you get the following behavior:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 尤其是你将获得以下行为：
 - en: References to `T` are implicitly converted into references to `U` (i.e. `&T`
     becomes `&U`)
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对 `T` 的引用会隐式转换为对 `U` 的引用（即 `&T` 变为 `&U`）
 - en: You can call on `&T` all the methods defined on `U` that take `&self` as input.
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 你可以调用 `&T` 上定义的所有接受 `&self` 作为输入的方法。
 - en: There is one more thing around the dereference operator, `*`, but we don't need
     it yet (see `std`'s docs if you're curious).
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于解引用运算符 `*`，还有一件事，但我们现在还不需要它（如果你好奇，请参阅 `std` 的文档）。
 - en: '[`String` implements `Deref`](#string-implements-deref)'
+  id: totrans-26
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`String` 实现 `Deref`](#string-implements-deref)'
 - en: '`String` implements `Deref` with `Target = str`:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: '`String` 使用 `Target = str` 实现 `Deref`。'
 - en: '[PRE3]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Thanks to this implementation and deref coercion, a `&String` is automatically
     converted into a `&str` when needed.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 多亏了这个实现和 deref coercion，当需要时，`&String` 会自动转换为 `&str`。
 - en: '[Don''t abuse deref coercion](#dont-abuse-deref-coercion)'
+  id: totrans-30
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[不要滥用 deref coercion](#dont-abuse-deref-coercion)'
 - en: Deref coercion is a powerful feature, but it can lead to confusion.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: Deref coercion 是一个强大的功能，但它可能导致混淆。
 - en: Automatically converting types can make the code harder to read and understand.
     If a method with the same name is defined on both `T` and `U`, which one will
     be called?
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 自动转换类型可能会使代码更难阅读和理解。如果 `T` 和 `U` 上都定义了具有相同名称的方法，哪个会被调用？
 - en: 'We''ll examine later in the course the "safest" use cases for deref coercion:
     smart pointers.'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将在课程中稍后探讨 deref coercion 的“最安全”的使用案例：智能指针。
 - en: '[Exercise](#exercise)'
+  id: totrans-34
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`04_traits/07_deref`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/07_deref)
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于[`04_traits/07_deref`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/07_deref)

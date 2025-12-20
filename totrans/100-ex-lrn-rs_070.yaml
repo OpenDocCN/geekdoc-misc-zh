@@ -1,77 +1,121 @@
 - en: Ticket ids
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 票据id
 - en: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/12_two_states.html](https://rust-exercises.com/100-exercises/06_ticket_management/12_two_states.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/12_two_states.html](https://rust-exercises.com/100-exercises/06_ticket_management/12_two_states.html)
 - en: Let's think again about our ticket management system.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们再次思考我们的票据管理系统。
 - en: 'Our ticket model right now looks like this:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们现在的票据模型看起来是这样的：
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'One thing is missing here: an **identifier** to uniquely identify a ticket.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里缺少一件事：一个**标识符**来唯一标识一个票据。
 - en: That identifier should be unique for each ticket. That can be guaranteed by
     generating it automatically when a new ticket is created.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 该标识符对于每个票据应该是唯一的。这可以通过在创建新票据时自动生成来保证。
 - en: '[Refining the model](#refining-the-model)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[细化模型](#refining-the-model)'
 - en: Where should the id be stored?
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: id应该存储在哪里？
 - en: 'We could add a new field to the `Ticket` struct:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以在`Ticket`结构体中添加一个新的字段：
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: But we don't know the id before creating the ticket. So it can't be there from
     the get-go.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 但在创建票据之前我们并不知道id。所以它不能从一开始就存在。
 - en: 'It''d have to be optional:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 它必须是可选的：
 - en: '[PRE2]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: That's also not ideal—we'd have to handle the `None` case every single time
     we retrieve a ticket from the store, even though we know that the id should always
     be there once the ticket has been created.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 这也不是理想的——我们每次从存储中检索票据时都必须处理`None`情况，尽管我们知道一旦票据被创建，id应该始终存在。
 - en: 'The best solution is to have two different ticket **states**, represented by
     two separate types: a `TicketDraft` and a `Ticket`:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 最佳方案是拥有两种不同的票据**状态**，分别由两种不同的类型表示：一个`TicketDraft`和一个`Ticket`：
 - en: '[PRE3]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: A `TicketDraft` is a ticket that hasn't been created yet. It doesn't have an
     id, and it doesn't have a status.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '`TicketDraft`是一个尚未创建的票据。它没有id，也没有状态。'
 - en: A `Ticket` is a ticket that has been created. It has an id and a status.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Ticket`是一个已经创建的票据。它有一个id和一个状态。'
 - en: Since each field in `TicketDraft` and `Ticket` embeds its own constraints, we
     don't have to duplicate logic across the two types.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于`TicketDraft`和`Ticket`字段各自嵌入了自己的约束，我们不需要在两种类型之间重复逻辑。
 - en: '[Exercise](#exercise)'
+  id: totrans-20
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`06_ticket_management/12_two_states`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/12_two_states)
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`06_ticket_management/12_two_states`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/12_two_states)

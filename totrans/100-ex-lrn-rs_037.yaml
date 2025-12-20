@@ -1,171 +1,264 @@
 - en: Generics and associated types
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 泛型和关联类型
 - en: 原文：[https://rust-exercises.com/100-exercises/04_traits/10_assoc_vs_generic.html](https://rust-exercises.com/100-exercises/04_traits/10_assoc_vs_generic.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/04_traits/10_assoc_vs_generic.html](https://rust-exercises.com/100-exercises/04_traits/10_assoc_vs_generic.html)
 - en: 'Let''s re-examine the definition for two of the traits we studied so far, `From`
     and `Deref`:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们重新审视我们之前研究的两个特性的定义，`From` 和 `Deref`：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: They both feature type parameters.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 它们都具有类型参数。
 - en: In the case of `From`, it's a generic parameter, `T`.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `From` 的情况下，它是一个泛型参数，`T`。
 - en: In the case of `Deref`, it's an associated type, `Target`.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `Deref` 的情况下，它是一个关联类型，`Target`。
 - en: What's the difference? Why use one over the other?
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 它们有什么区别？为什么使用一个而不是另一个？
 - en: '[At most one implementation](#at-most-one-implementation)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[最多一个实现](#at-most-one-implementation)'
 - en: 'Due to how deref coercion works, there can only be one "target" type for a
     given type. E.g. `String` can only deref to `str`. It''s about avoiding ambiguity:
     if you could implement `Deref` multiple times for a type, which `Target` type
     should the compiler choose when you call a `&self` method?'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于解引用强制转换的工作方式，给定类型只能有一个“目标”类型。例如，`String` 只能解引用到 `str`。这是为了避免歧义：如果你可以为类型实现多次
+    `Deref`，当你调用一个 `&self` 方法时，编译器应该选择哪个 `Target` 类型？
 - en: That's why `Deref` uses an associated type, `Target`.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 正因如此，`Deref` 使用了一个关联类型，`Target`。
 - en: An associated type is uniquely determined **by the trait implementation**. Since
     you can't implement `Deref` more than once, you'll only be able to specify one
     `Target` for a given type and there won't be any ambiguity.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 关联类型是由 **特性实现** 唯一确定的。由于你不能为 `Deref` 实现多次，因此你只能为给定类型指定一个 `Target`，并且不会存在任何歧义。
 - en: '[Generic traits](#generic-traits)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[泛型特性](#generic-traits)'
 - en: 'On the other hand, you can implement `From` multiple times for a type, **as
     long as the input type `T` is different**. For example, you can implement `From`
     for `WrappingU32` using both `u32` and `u16` as input types:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，你可以为一个类型实现多次 `From`，**只要输入类型 `T` 是不同的**。例如，你可以使用 `u32` 和 `u16` 作为输入类型为
+    `WrappingU32` 实现 `From`：
 - en: '[PRE1]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: This works because `From<u16>` and `From<u32>` are considered **different traits**.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 这之所以有效，是因为 `From<u16>` 和 `From<u32>` 被视为 **不同的特性**。
 - en: 'There is no ambiguity: the compiler can determine which implementation to use
     based on type of the value being converted.'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有歧义：编译器可以根据要转换的值的类型确定使用哪个实现。
 - en: '[Case study: `Add`](#case-study-add)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[案例研究：`Add`](#case-study-add)'
 - en: 'As a closing example, consider the `Add` trait from the standard library:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为结束示例，考虑标准库中的 `Add` 特性：
 - en: '[PRE2]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'It uses both mechanisms:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 它使用了两种机制：
 - en: it has a generic parameter, `RHS` (right-hand side), which defaults to `Self`
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它有一个泛型参数，`RHS`（右侧），默认为 `Self`
 - en: it has an associated type, `Output`, the type of the result of the addition
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它有一个关联类型，`Output`，表示加法的结果类型
 - en: '[`RHS`](#rhs)'
+  id: totrans-23
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`RHS`](#rhs)'
 - en: '`RHS` is a generic parameter to allow for different types to be added together.'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: '`RHS` 是一个泛型参数，允许添加不同类型的值。'
 - en: 'For example, you''ll find these two implementations in the standard library:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，你将在标准库中找到以下两个实现：
 - en: '[PRE3]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'This allows the following code to compile:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 这允许以下代码编译：
 - en: '[PRE4]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: because `u32` implements `Add<&u32>` *as well as* `Add<u32>`.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为 `u32` 实现了 `Add<&u32>` 以及 `Add<u32>`。
 - en: '[`Output`](#output)'
+  id: totrans-30
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`输出`](#output)'
 - en: '`Output` represents the type of the result of the addition.'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Output` 表示加法的结果类型。'
 - en: 'Why do we need `Output` in the first place? Can''t we just use `Self` as output,
     the type implementing `Add`? We could, but it would limit the flexibility of the
     trait. In the standard library, for example, you''ll find this implementation:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们为什么需要 `Output`？我们不能只使用 `Self` 作为输出，即实现 `Add` 的类型吗？我们可以，但这将限制特性的灵活性。例如，在标准库中，你会找到以下实现：
 - en: '[PRE5]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: The type they're implementing the trait for is `&u32`, but the result of the
     addition is `u32`.
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 它们实现特性的是 `&u32` 类型，但加法的结果是 `u32`。
 - en: It would be impossible^([1](#footnote-flexible)) to provide this implementation
     if `add` had to return `Self`, i.e. `&u32` in this case. `Output` lets `std` decouple
     the implementor from the return type, thus supporting this case.
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果 `add` 必须返回 `Self`，即在这种情况下返回 `&u32`，则提供此实现将是不可能的^([1](#footnote-flexible))。`Output`
+    允许 `std` 将实现者与返回类型解耦，从而支持这种情况。
 - en: 'On the other hand, `Output` can''t be a generic parameter. The output type
     of the operation **must** be uniquely determined once the types of the operands
     are known. That''s why it''s an associated type: for a given combination of implementor
     and generic parameters, there is only one `Output` type.'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，`Output`不能是一个泛型参数。一旦知道了操作数的类型，操作的结果类型**必须**是唯一确定的。这就是为什么它是关联类型的原因：对于给定的实现者和泛型参数的组合，只有一个`Output`类型。
 - en: '[Conclusion](#conclusion)'
+  id: totrans-37
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[结论](#conclusion)'
 - en: 'To recap:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 总结一下：
 - en: Use an **associated type** when the type must be uniquely determined for a given
     trait implementation.
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当必须为特定的特性实现唯一确定类型时，使用**关联类型**。
 - en: Use a **generic parameter** when you want to allow multiple implementations
     of the trait for the same type, with different input types.
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当你想允许对同一类型的不同输入类型有多个特性实现时，使用**泛型参数**。
 - en: '[Exercise](#exercise)'
+  id: totrans-41
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`04_traits/10_assoc_vs_generic`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/10_assoc_vs_generic)
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于[`04_traits/10_assoc_vs_generic`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/10_assoc_vs_generic)
 - en: '* * *'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'Flexibility is rarely free: the trait definition is more complex due to `Output`,
     and implementors have to reason about what they want to return. The trade-off
     is only justified if that flexibility is actually needed. Keep that in mind when
     designing your own traits. [↩](#fr-flexible-1)'
+  id: totrans-44
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 灵活性通常不是免费的：由于`Output`的存在，特性定义变得更加复杂，实现者必须思考他们想要返回的内容。只有在真正需要这种灵活性时，这种权衡才是合理的。在设计自己的特性时，请记住这一点。[↩](#fr-flexible-1)

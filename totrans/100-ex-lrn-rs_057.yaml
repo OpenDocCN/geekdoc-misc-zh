@@ -1,52 +1,79 @@
 - en: Wrapping up
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 总结
 - en: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/15_outro.html](https://rust-exercises.com/100-exercises/05_ticket_v2/15_outro.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/15_outro.html](https://rust-exercises.com/100-exercises/05_ticket_v2/15_outro.html)
 - en: When it comes to domain modelling, the devil is in the details.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 当涉及到领域建模时，魔鬼藏在细节中。
 - en: Rust offers a wide range of tools to help you represent the constraints of your
     domain directly in the type system, but it takes some practice to get it right
     and write code that looks idiomatic.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 提供了广泛的工具来帮助您直接在类型系统中表示您领域的约束，但这需要一些练习才能做到正确，并编写出符合习惯的代码。
 - en: Let's close the chapter with one final refinement of our `Ticket` model.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们以对 `Ticket` 模型的最后一次精炼来结束这一章。
 - en: We'll introduce a new type for each of the fields in `Ticket` to encapsulate
     the respective constraints.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将为 `Ticket` 中的每个字段引入一个新的类型，以封装相应的约束。
 - en: 'Every time someone accesses a `Ticket` field, they''ll get back a value that''s
     guaranteed to be valid—i.e. a `TicketTitle` instead of a `String`. They won''t
     have to worry about the title being empty elsewhere in the code: as long as they
     have a `TicketTitle`, they know it''s valid **by construction**.'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 每次有人访问 `Ticket` 字段时，他们都会得到一个保证有效的值——即 `TicketTitle` 而不是 `String`。他们不必担心标题在代码的其他地方为空：只要他们有一个
+    `TicketTitle`，他们就知道它是通过构造有效 **的**。
 - en: This is just an example of how you can use Rust's type system to make your code
     safer and more expressive.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 这只是一个例子，展示了您如何使用 Rust 的类型系统来使您的代码更安全、更具表现力。
 - en: '[Further reading](#further-reading)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步阅读](#further-reading)'
 - en: '[Parse, don''t validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)'
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[解析，而不是验证](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)'
 - en: '[Using types to guarantee domain invariants](https://www.lpalmieri.com/posts/2020-12-11-zero-to-production-6-domain-modelling/)'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[使用类型来保证领域不变性](https://www.lpalmieri.com/posts/2020-12-11-zero-to-production-6-domain-modelling/)'
 - en: '[Exercise](#exercise)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`05_ticket_v2/15_outro`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/15_outro)
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于[`05_ticket_v2/15_outro`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/15_outro)

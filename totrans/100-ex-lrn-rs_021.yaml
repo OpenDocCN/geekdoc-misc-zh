@@ -1,116 +1,178 @@
 - en: Mutable references
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 可变引用
 - en: 原文：[https://rust-exercises.com/100-exercises/03_ticket_v1/07_setters.html](https://rust-exercises.com/100-exercises/03_ticket_v1/07_setters.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/03_ticket_v1/07_setters.html](https://rust-exercises.com/100-exercises/03_ticket_v1/07_setters.html)
 - en: 'Your accessor methods should look like this now:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 你的访问器方法现在应该看起来像这样：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: A sprinkle of `&` here and there did the trick!
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里和那里撒一点`&`就完成了！
 - en: We now have a way to access the fields of a `Ticket` instance without consuming
     it in the process. Let's see how we can enhance our `Ticket` struct with **setter
     methods** next.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们有了一种方法可以在不消耗它的过程中访问`Ticket`实例的字段。接下来，让我们看看我们如何通过**设置器方法**来增强我们的`Ticket`结构体。
 - en: '[Setters](#setters)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[设置器](#setters)'
 - en: Setter methods allow users to change the values of `Ticket`'s private fields
     while making sure that its invariants are respected (i.e. you can't set a `Ticket`'s
     title to an empty string).
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 设置器方法允许用户更改`Ticket`的私有字段值，同时确保其不变性得到尊重（即你不能将`Ticket`的标题设置为空字符串）。
 - en: 'There are two common ways to implement setters in Rust:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Rust中实现设置器有两种常见的方法：
 - en: Taking `self` as input.
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 以`self`作为输入。
 - en: Taking `&mut self` as input.
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 以`&mut self`作为输入。
 - en: '[Taking `self` as input](#taking-self-as-input)'
+  id: totrans-11
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[以`self`作为输入](#taking-self-as-input)'
 - en: 'The first approach looks like this:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 第一种方法看起来是这样的：
 - en: '[PRE1]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: It takes ownership of `self`, changes the title, and returns the modified `Ticket`
     instance.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 它获取了`self`的所有权，更改了标题，并返回修改后的`Ticket`实例。
 - en: 'This is how you''d use it:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是它的用法：
 - en: '[PRE2]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Since `set_title` takes ownership of `self` (i.e. it **consumes it**), we need
     to reassign the result to a variable. In the example above we take advantage of
     **variable shadowing** to reuse the same variable name: when you declare a new
     variable with the same name as an existing one, the new variable **shadows** the
     old one. This is a common pattern in Rust code.'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于`set_title`获取了`self`的所有权（即它**消耗了它**），我们需要将结果重新分配给一个变量。在上面的例子中，我们利用**变量遮蔽**来重用相同的变量名：当你用与现有变量相同的名称声明一个新变量时，新变量**遮蔽**了旧变量。这是Rust代码中的常见模式。
 - en: '`self`-setters work quite nicely when you need to change multiple fields at
     once: you can chain multiple calls together!'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你需要一次性更改多个字段时，`self`-设置器工作得相当好：你可以将多个调用链接在一起！
 - en: '[PRE3]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[Taking `&mut self` as input](#taking-mut-self-as-input)'
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[以`&mut self`作为输入](#taking-mut-self-as-input)'
 - en: 'The second approach to setters, using `&mut self`, looks like this instead:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 设置器的第二种方法，使用`&mut self`，看起来是这样的：
 - en: '[PRE4]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: This time the method takes a mutable reference to `self` as input, changes the
     title, and that's it. Nothing is returned.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 这次方法以可变引用`self`作为输入，更改标题，然后就没有其他操作了。不返回任何内容。
 - en: 'You''d use it like this:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以这样使用它：
 - en: '[PRE5]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Ownership stays with the caller, so the original `ticket` variable is still
     valid. We don't need to reassign the result. We need to mark `ticket` as mutable
     though, because we're taking a mutable reference to it.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有权保留在调用者那里，因此原始的`ticket`变量仍然有效。我们不需要重新分配结果。但是，我们需要将`ticket`标记为可变的，因为我们正在获取它的可变引用。
 - en: '`&mut`-setters have a downside: you can''t chain multiple calls together. Since
     they don''t return the modified `Ticket` instance, you can''t call another setter
     on the result of the first one. You have to call each setter separately:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: '`&mut`-设置器有一个缺点：你不能将多个调用链接在一起。由于它们不返回修改后的`Ticket`实例，你不能在第一个设置器的结果上调用另一个设置器。你必须单独调用每个设置器：'
 - en: '[PRE6]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[Exercise](#exercise)'
+  id: totrans-29
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`03_ticket_v1/07_setters`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/03_ticket_v1/07_setters)
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`03_ticket_v1/07_setters`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/03_ticket_v1/07_setters)

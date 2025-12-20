@@ -1,69 +1,99 @@
 - en: Wrapping up
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 总结
 - en: 原文：[https://rust-exercises.com/100-exercises/04_traits/14_outro.html](https://rust-exercises.com/100-exercises/04_traits/14_outro.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/04_traits/14_outro.html](https://rust-exercises.com/100-exercises/04_traits/14_outro.html)
 - en: 'We''ve covered quite a few different traits in this chapter—and we''ve only
     scratched the surface! It may feel like you have a lot to remember, but don''t
     worry: you''ll bump into these traits so often when writing Rust code that they''ll
     soon become second nature.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们介绍了相当多的不同特性——我们只是触及了表面！可能感觉你需要记住很多东西，但不用担心：当你编写Rust代码时，你经常会遇到这些特性，它们很快就会变得自然而然。
 - en: '[Closing thoughts](#closing-thoughts)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[结束语](#closing-thoughts)'
 - en: Traits are powerful, but don't overuse them.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 特性功能强大，但不要过度使用它们。
 - en: 'A few guidelines to keep in mind:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些需要记住的指南：
 - en: Don't make a function generic if it is always invoked with a single type. It
     introduces indirection in your codebase, making it harder to understand and maintain.
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果一个函数总是用单一类型调用，不要使其泛化。这会在你的代码库中引入间接性，使其更难理解和维护。
 - en: Don't create a trait if you only have one implementation. It's a sign that the
     trait is not needed.
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果你只有一个实现，不要创建一个特性。这是特性不需要的标志。
 - en: Implement standard traits for your types (`Debug`, `PartialEq`, etc.) whenever
     it makes sense. It will make your types more idiomatic and easier to work with,
     unlocking a lot of functionality provided by the standard library and ecosystem
     crates.
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当有道理时，为你的类型实现标准特性（`Debug`、`PartialEq`等）。这将使你的类型更符合惯例，更容易处理，并解锁标准库和生态系统crate提供的大量功能。
 - en: Implement traits from third-party crates if you need the functionality they
     unlock within their ecosystem.
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果你需要第三方crate中它们生态系统中解锁的功能，请实现这些特性。
 - en: Beware of making code generic solely to use mocks in your tests. The maintainability
     cost of this approach can be high, and it's often better to use a different testing
     strategy. Check out the [testing masterclass](https://github.com/mainmatter/rust-advanced-testing-workshop)
     for details on high-fidelity testing.
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 小心仅为了在测试中使用模拟而使代码泛化。这种方法的维护成本可能很高，通常更好的做法是使用不同的测试策略。有关高保真测试的详细信息，请查看[测试大师班](https://github.com/mainmatter/rust-advanced-testing-workshop)。
 - en: '[Testing your knowledge](#testing-your-knowledge)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[测试你的知识](#testing-your-knowledge)'
 - en: Before moving on, let's go through one last exercise to consolidate what we've
     learned. You'll have minimal guidance this time—just the exercise description
     and the tests to guide you.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 在继续之前，让我们再进行一次练习，以巩固我们所学的知识。这次你将得到最少的指导——只有练习描述和测试来引导你。
 - en: '[Exercise](#exercise)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`04_traits/14_outro`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/14_outro)
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`04_traits/14_outro`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/14_outro)

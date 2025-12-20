@@ -1,162 +1,252 @@
 - en: Structs
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 结构体
 - en: 原文：[https://rust-exercises.com/100-exercises/03_ticket_v1/01_struct.html](https://rust-exercises.com/100-exercises/03_ticket_v1/01_struct.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/03_ticket_v1/01_struct.html](https://rust-exercises.com/100-exercises/03_ticket_v1/01_struct.html)
 - en: 'We need to keep track of three pieces of information for each ticket:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于每张票，我们需要跟踪三块信息：
 - en: A title
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个标题
 - en: A description
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个描述
 - en: A status
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个状态
 - en: We can start by using a [`String`](https://doc.rust-lang.org/std/string/struct.String.html)
     to represent them. `String` is the type defined in Rust's standard library to
     represent [UTF-8 encoded](https://en.wikipedia.org/wiki/UTF-8) text.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以开始使用一个[`String`](https://doc.rust-lang.org/std/string/struct.String.html)来表示它们。`String`是Rust标准库中定义的类型，用于表示[UTF-8编码](https://en.wikipedia.org/wiki/UTF-8)的文本。
 - en: But how do we **combine** these three pieces of information into a single entity?
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 但我们如何**结合**这三块信息成为一个单一实体呢？
 - en: '[Defining a `struct`](#defining-a-struct)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[定义结构体](#defining-a-struct)'
 - en: A `struct` defines a **new Rust type**.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 结构体定义了一个**新的Rust类型**。
 - en: '[PRE0]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: A struct is quite similar to what you would call a class or an object in other
     programming languages.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 结构体在其他编程语言中相当类似于你所说的类或对象。
 - en: '[Defining fields](#defining-fields)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[定义字段](#defining-fields)'
 - en: The new type is built by combining other types as **fields**.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 新类型是通过将其他类型作为**字段**组合而成的。
 - en: Each field must have a name and a type, separated by a colon, `:`. If there
     are multiple fields, they are separated by a comma, `,`.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个字段都必须有一个名称和一个类型，由冒号`:`分隔。如果有多个字段，它们由逗号`,`分隔。
 - en: 'Fields don''t have to be of the same type, as you can see in the `Configuration`
     struct below:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 字段不必是相同的类型，就像下面`Configuration`结构体中可以看到的那样：
 - en: '[PRE1]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[Instantiation](#instantiation)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[实例化](#instantiation)'
 - en: 'You can create an instance of a struct by specifying the values for each field:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以通过指定每个字段的值来创建结构体的实例：
 - en: '[PRE2]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Accessing fields](#accessing-fields)'
+  id: totrans-20
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[访问字段](#accessing-fields)'
 - en: 'You can access the fields of a struct using the `.` operator:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以使用`.`运算符来访问结构体的字段：
 - en: '[PRE3]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[Methods](#methods)'
+  id: totrans-23
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[方法](#methods)'
 - en: We can attach behaviour to our structs by defining **methods**.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过定义**方法**来给我们的结构体附加行为。
 - en: 'Using the `Ticket` struct as an example:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 以`Ticket`结构体为例：
 - en: '[PRE4]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Methods are pretty similar to functions, with two key differences:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 方法与函数非常相似，有两个关键区别：
 - en: methods must be defined inside an **`impl` block**
+  id: totrans-28
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 方法必须在**`impl`块**内定义
 - en: methods may use `self` as their first parameter. `self` is a keyword and represents
     the instance of the struct the method is being called on.
+  id: totrans-29
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 方法可以使用`self`作为它们的第一个参数。`self`是一个关键字，代表被调用的结构体实例。
 - en: '[`self`](#self)'
+  id: totrans-30
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[self](#self)'
 - en: 'If a method takes `self` as its first parameter, it can be called using the
     **method call syntax**:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个方法以`self`作为第一个参数，它可以使用**方法调用语法**来调用：
 - en: '[PRE5]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: This is the same calling syntax you used to perform saturating arithmetic operations
     on `u32` values in [the previous chapter](/100-exercises/02_basic_calculator/09_saturating).
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 这与你在[上一章](/100-exercises/02_basic_calculator/09_saturating)中用于对`u32`值执行饱和算术运算的调用语法相同。
 - en: '[Static methods](#static-methods)'
+  id: totrans-34
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[静态方法](#static-methods)'
 - en: If a method doesn't take `self` as its first parameter, it's a **static method**.
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个方法不以`self`作为其第一个参数，它就是一个**静态方法**。
 - en: '[PRE6]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'The only way to call a static method is by using the **function call syntax**:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 调用静态方法的唯一方法是使用**函数调用语法**：
 - en: '[PRE7]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '[Equivalence](#equivalence)'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[等价性](#equivalence)'
 - en: 'You can use the function call syntax even for methods that take `self` as their
     first parameter:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使对于以`self`作为第一个参数的方法，你也可以使用函数调用语法：
 - en: '[PRE8]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: The function call syntax makes it quite clear that `ticket` is being used as
     `self`, the first parameter of the method, but it's definitely more verbose. Prefer
     the method call syntax when possible.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数调用语法清楚地表明`ticket`被用作`self`，方法的第一个参数，但它确实更冗长。尽可能使用方法调用语法。
 - en: '[Exercise](#exercise)'
+  id: totrans-43
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`03_ticket_v1/01_struct`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/03_ticket_v1/01_struct)
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`03_ticket_v1/01_struct`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/03_ticket_v1/01_struct)

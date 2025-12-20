@@ -1,114 +1,170 @@
 - en: Runtime architecture
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 运行时架构
 - en: 原文：[https://rust-exercises.com/100-exercises/08_futures/03_runtime.html](https://rust-exercises.com/100-exercises/08_futures/03_runtime.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/08_futures/03_runtime.html](https://rust-exercises.com/100-exercises/08_futures/03_runtime.html)
 - en: So far we've been talking about async runtimes as an abstract concept. Let's
     dig a bit deeper into the way they are implemented—as you'll see soon enough,
     it has an impact on our code.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们一直在谈论异步运行时作为一个抽象概念。让我们更深入地了解一下它们的实现方式——正如你很快就会看到的，它对我们的代码有影响。
 - en: '[Flavors](#flavors)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[风味](#flavors)'
 - en: '`tokio` ships two different runtime *flavors*.'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: '`tokio`提供了两种不同的运行时**风味**。'
 - en: 'You can configure your runtime via `tokio::runtime::Builder`:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可以通过`tokio::runtime::Builder`配置您的运行时：
 - en: '`Builder::new_multi_thread` gives you a **multithreaded `tokio` runtime**'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Builder::new_multi_thread`为您提供一个**多线程`tokio`运行时**'
 - en: '`Builder::new_current_thread` will instead rely on the **current thread** for
     execution.'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Builder::new_current_thread`将依赖于**当前线程**进行执行。'
 - en: '`#[tokio::main]` returns a multithreaded runtime by default, while `#[tokio::test]`
     uses a current thread runtime out of the box.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '`#[tokio::main]`默认返回一个多线程运行时，而`#[tokio::test]`则使用当前线程运行时。'
 - en: '[Current thread runtime](#current-thread-runtime)'
+  id: totrans-9
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[当前线程运行时](#current-thread-runtime)'
 - en: The current-thread runtime, as the name implies, relies exclusively on the OS
     thread it was launched on to schedule and execute tasks.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 当前线程运行时，正如其名所示，完全依赖于它启动的操作系统线程来调度和执行任务。
 - en: 'When using the current-thread runtime, you have **concurrency** but no **parallelism**:
     asynchronous tasks will be interleaved, but there will always be at most one task
     running at any given time.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 当使用当前线程运行时，您有**并发性**但没有**并行性**：异步任务将被交错，但在任何给定时间最多只有一个任务在运行。
 - en: '[Multithreaded runtime](#multithreaded-runtime)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[多线程运行时](#multithreaded-runtime)'
 - en: When using the multithreaded runtime, instead, there can be up to `N` tasks
     running *in parallel* at any given time, where `N` is the number of threads used
     by the runtime. By default, `N` matches the number of available CPU cores.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 当使用多线程运行时，在任何给定时间可以有最多`N`个任务**并行**运行，其中`N`是运行时使用的线程数。默认情况下，`N`与可用的CPU核心数相匹配。
 - en: 'There''s more: `tokio` performs **work-stealing**.'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 还有更多：`tokio`执行**工作窃取**。
 - en: 'If a thread is idle, it won''t wait around: it''ll try to find a new task that''s
     ready for execution, either from a global queue or by stealing it from the local
     queue of another thread.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个线程处于空闲状态，它不会等待：它会尝试找到一个准备就绪的新任务，无论是来自全局队列还是从另一个线程的本地队列中窃取。
 - en: Work-stealing can have significant performance benefits, especially on tail
     latencies, whenever your application is dealing with workloads that are not perfectly
     balanced across threads.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 工作窃取可以带来显著的性能优势，尤其是在尾部延迟方面，当您的应用程序处理的工作负载在各个线程之间不平衡时。
 - en: '[Implications](#implications)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[影响](#implications)'
 - en: '`tokio::spawn` is flavor-agnostic: it''ll work no matter if you''re running
     on the multithreaded or current-thread runtime. The downside is that the signature
     assumes the worst case (i.e. multithreaded) and is constrained accordingly:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '`tokio::spawn`对风味不敏感：无论您是在多线程还是当前线程运行时上运行，它都会工作。缺点是签名假设了最坏的情况（即多线程）并相应地进行了约束：'
 - en: '[PRE0]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Let's ignore the `Future` trait for now to focus on the rest.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们暂时忽略`Future`特质，专注于其他部分。
 - en: '`spawn` is asking all its inputs to be `Send` and have a `''static` lifetime.'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '`spawn`要求所有输入都是`Send`并且具有`''static`生命周期。'
 - en: 'The `''static` constraint follows the same rationale of the `''static` constraint
     on `std::thread::spawn`: the spawned task may outlive the context it was spawned
     from, therefore it shouldn''t depend on any local data that may be de-allocated
     after the spawning context is destroyed.'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '`''static`约束遵循与`std::thread::spawn`上的`''static`约束相同的理由：生成的任务可能会比生成它的上下文存活得更久，因此它不应该依赖于任何可能在生成上下文被销毁后释放的本地数据。'
 - en: '[PRE1]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '`Send`, on the other hand, is a direct consequence of `tokio`''s work-stealing
     strategy: a task that was spawned on thread `A` may end up being moved to thread
     `B` if that''s idle, thus requiring a `Send` bound since we''re crossing thread
     boundaries.'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，`Send`是`tokio`的工作窃取策略的直接后果：如果线程`A`上生成的任务最终会被移动到空闲的线程`B`，那么它需要一个`Send`约束，因为我们正在跨越线程边界。
 - en: '[PRE2]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Exercise](#exercise)'
+  id: totrans-26
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`08_futures/03_runtime`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/03_runtime)
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`08_futures/03_runtime`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/03_runtime)

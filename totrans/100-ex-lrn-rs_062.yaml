@@ -1,127 +1,196 @@
 - en: Iteration
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 迭代
 - en: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/04_iterators.html](https://rust-exercises.com/100-exercises/06_ticket_management/04_iterators.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/04_iterators.html](https://rust-exercises.com/100-exercises/06_ticket_management/04_iterators.html)
 - en: During the very first exercises, you learned that Rust lets you iterate over
     collections using `for` loops. We were looking at ranges at that point (e.g. `0..5`),
     but the same holds true for collections like arrays and vectors.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在最初的练习中，你学习了 Rust 允许你使用 `for` 循环遍历集合。那时我们正在查看范围（例如 `0..5`），但对于数组、向量等集合也同样适用。
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: It's time to understand how this works under the hood.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 是时候了解这是如何在底层工作的了。
 - en: '[`for` desugaring](#for-desugaring)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`for` desugaring](#for-desugaring)'
 - en: 'Every time you write a `for` loop in Rust, the compiler *desugars* it into
     the following code:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 每次你在 Rust 中编写一个 `for` 循环时，编译器都会将其 `desugar` 成以下代码：
 - en: '[PRE1]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '`loop` is another looping construct, on top of `for` and `while`.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '`loop` 是另一种循环结构，位于 `for` 和 `while` 之上。'
 - en: A `loop` block will run forever, unless you explicitly `break` out of it.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个 `loop` 块将无限运行，除非你显式地 `break` 出来。
 - en: '[`Iterator` trait](#iterator-trait)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Iterator` 特性](#iterator-trait)'
 - en: 'The `next` method in the previous code snippet comes from the `Iterator` trait.
     The `Iterator` trait is defined in Rust''s standard library and provides a shared
     interface for types that can produce a sequence of values:'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 上一段代码片段中的 `next` 方法来自 `Iterator` 特性。`Iterator` 特性在 Rust 的标准库中定义，并为可以产生一系列值的类型提供了一个共享接口：
 - en: '[PRE2]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The `Item` associated type specifies the type of the values produced by the
     iterator.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 与 `Item` 关联的类型指定了迭代器产生的值的类型。
 - en: '`next` returns the next value in the sequence.'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '`next` 返回序列中的下一个值。'
 - en: It returns `Some(value)` if there's a value to return, and `None` when there
     isn't.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果有要返回的值，则返回 `Some(value)`，如果没有，则返回 `None`。
 - en: 'Be careful: there is no guarantee that an iterator is exhausted when it returns
     `None`. That''s only guaranteed if the iterator implements the (more restrictive)
     [`FusedIterator`](https://doc.rust-lang.org/std/iter/trait.FusedIterator.html)
     trait.'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 小心：当迭代器返回 `None` 时，并不能保证迭代器已经耗尽。只有当迭代器实现了（更严格的）[`FusedIterator`](https://doc.rust-lang.org/std/iter/trait.FusedIterator.html)
+    特性时，这一点才有保证。
 - en: '[`IntoIterator` trait](#intoiterator-trait)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`IntoIterator` 特性](#intoiterator-trait)'
 - en: Not all types implement `Iterator`, but many can be converted into a type that
     does.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 并非所有类型都实现了 `Iterator`，但许多类型可以被转换为实现了该接口的类型。
 - en: 'That''s where the `IntoIterator` trait comes in:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 正是 `IntoIterator` 特性在这里发挥作用：
 - en: '[PRE3]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: The `into_iter` method consumes the original value and returns an iterator over
     its elements.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '`into_iter` 方法会消耗原始值，并返回其元素的迭代器。'
 - en: 'A type can only have one implementation of `IntoIterator`: there can be no
     ambiguity as to what `for` should desugar to.'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个类型只能有一个 `IntoIterator` 的实现：不能有关于 `for` 应该 `desugar` 到什么的歧义。
 - en: 'One detail: every type that implements `Iterator` automatically implements
     `IntoIterator` as well. They just return themselves from `into_iter`!'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个细节：每个实现了 `Iterator` 的类型也会自动实现 `IntoIterator`，它们只是从 `into_iter` 返回自身！
 - en: '[Bounds checks](#bounds-checks)'
+  id: totrans-24
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[边界检查](#bounds-checks)'
 - en: 'Iterating over iterators has a nice side effect: you can''t go out of bounds,
     by design.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 遍历迭代器有一个很好的副作用：你无法越界，这是设计上的。
 - en: This allows Rust to remove bounds checks from the generated machine code, making
     iteration faster.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 这允许 Rust 从生成的机器代码中移除边界检查，从而加快迭代速度。
 - en: In other words,
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说，
 - en: '[PRE4]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: is usually faster than
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常比
 - en: '[PRE5]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'There are exceptions to this rule: the compiler can sometimes prove that you''re
     not going out of bounds even with manual indexing, thus removing the bounds checks
     anyway. But in general, prefer iteration to indexing where possible.'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 有例外：编译器有时可以证明你即使使用手动索引也不会越界，从而取消边界检查。但通常，在可能的情况下，更喜欢迭代而不是索引。
 - en: '[Exercise](#exercise)'
+  id: totrans-32
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`06_ticket_management/04_iterators`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/04_iterators)
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`06_ticket_management/04_iterators`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/04_iterators)

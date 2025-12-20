@@ -1,132 +1,202 @@
 - en: String slices
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 字符串切片
 - en: 原文：[https://rust-exercises.com/100-exercises/04_traits/06_str_slice.html](https://rust-exercises.com/100-exercises/04_traits/06_str_slice.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/04_traits/06_str_slice.html](https://rust-exercises.com/100-exercises/04_traits/06_str_slice.html)
 - en: Throughout the previous chapters you've seen quite a few **string literals**
     being used in the code, like `"To-Do"` or `"A ticket description"`. They were
     always followed by a call to `.to_string()` or `.into()`. It's time to understand
     why!
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在前面的章节中，你已经在代码中看到了很多**字符串字面量**的使用，比如`"To-Do"`或`"A ticket description"`。它们总是跟着`.to_string()`或`.into()`的调用。现在是时候理解为什么了！
 - en: '[String literals](#string-literals)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[字符串字面量](#string-literals)'
 - en: 'You define a string literal by enclosing the raw text in double quotes:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 你通过将原始文本放在双引号中来定义一个字符串字面量：
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The type of `s` is `&str`, a **reference to a string slice**.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: '`s`的类型是`&str`，是对字符串切片的**引用**。'
 - en: '[Memory layout](#memory-layout)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[内存布局](#memory-layout)'
 - en: '`&str` and `String` are different types—they''re not interchangeable.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '`&str`和`String`是不同的类型—they''re not interchangeable.'
 - en: 'Let''s recall the memory layout of a `String` from our [previous exploration](/100-exercises/03_ticket_v1/09_heap).
     If we run:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们回顾一下从我们之前的[探索](/100-exercises/03_ticket_v1/09_heap)中得到的`String`内存布局。如果我们运行：
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'we''ll get this scenario in memory:'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在内存中会得到这个场景：
 - en: '[PRE2]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'If you remember, we''ve [also examined](/100-exercises/03_ticket_v1/10_references_in_memory)
     how a `&String` is laid out in memory:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你记得，我们[也检查过](/100-exercises/03_ticket_v1/10_references_in_memory)一个`&String`在内存中的布局：
 - en: '[PRE3]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '`&String` points to the memory location where the `String`''s metadata is stored.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '`&String`指向存储`String`元数据的内存位置。'
 - en: If we follow the pointer, we get to the heap-allocated data. In particular,
     we get to the first byte of the string, `H`.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们跟随指针，我们会到达堆分配的数据。特别是，我们会到达字符串的第一个字节，`H`。
 - en: What if we wanted a type that represents a **substring** of `s`? E.g. `ello`
     in `Hello`?
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要一个表示`s`的**子字符串**的类型呢？例如，`ello`在`Hello`中？
 - en: '[String slices](#string-slices-1)'
+  id: totrans-18
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[字符串切片](#string-slices-1)'
 - en: 'A `&str` is a **view** into a string, a **reference** to a sequence of UTF-8
     bytes stored elsewhere. You can, for example, create a `&str` from a `String`
     like this:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个`&str`是对字符串的一个**视图**，是对存储在其他地方的UTF-8字节序列的**引用**。例如，你可以这样从一个`String`创建一个`&str`：
 - en: '[PRE4]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'In memory, it''d look like this:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在内存中，它看起来像这样：
 - en: '[PRE5]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '`slice` stores two pieces of information on the stack:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '`slice`在栈上存储了两条信息：'
 - en: A pointer to the first byte of the slice.
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 指向切片第一个字节的指针。
 - en: The length of the slice.
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 切片的长度。
 - en: '`slice` doesn''t own the data, it just points to it: it''s a **reference**
     to the `String`''s heap-allocated data.'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: '`slice`不拥有数据，它只是指向它：它是`String`的堆分配数据的**引用**。'
 - en: 'When `slice` is dropped, the heap-allocated data won''t be deallocated, because
     it''s still owned by `s`. That''s why `slice` doesn''t have a `capacity` field:
     it doesn''t own the data, so it doesn''t need to know how much space it was allocated
     for it; it only cares about the data it references.'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 当`slice`被丢弃时，堆分配的数据不会被释放，因为它们仍然由`s`拥有。这就是为什么`slice`没有`capacity`字段的原因：它不拥有数据，因此不需要知道为它分配了多少空间；它只关心它引用的数据。
 - en: '[`&str` vs `&String`](#str-vs-string)'
+  id: totrans-28
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`&str` vs `&String`](#str-vs-string)'
 - en: As a rule of thumb, use `&str` rather than `&String` whenever you need a reference
     to textual data.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为一条经验法则，当你需要一个文本数据的引用时，使用`&str`而不是`&String`。
 - en: '`&str` is more flexible and generally considered more idiomatic in Rust code.'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: '`&str`更灵活，通常被认为在Rust代码中更符合习惯用法。'
 - en: If a method returns a `&String`, you're promising that there is heap-allocated
     UTF-8 text somewhere that **matches exactly** the one you're returning a reference
     to.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个方法返回一个`&String`，你是在承诺某个地方有一个堆分配的UTF-8文本，它与你要返回的引用**完全匹配**。
 - en: 'If a method returns a `&str`, instead, you have a lot more freedom: you''re
     just saying that *somewhere* there''s a bunch of text data and that a subset of
     it matches what you need, therefore you''re returning a reference to it.'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个方法返回一个`&str`，那么你就有更多的自由：你只是在说某个地方有一堆文本数据，其中的一部分与你需要的内容匹配，因此你返回对它的引用。
 - en: '[Exercise](#exercise)'
+  id: totrans-33
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`04_traits/06_str_slice`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/06_str_slice)
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`04_traits/06_str_slice`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/06_str_slice)

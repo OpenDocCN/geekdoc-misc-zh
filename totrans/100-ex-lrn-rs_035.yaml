@@ -1,106 +1,162 @@
 - en: Sized
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: Sized
 - en: 原文：[https://rust-exercises.com/100-exercises/04_traits/08_sized.html](https://rust-exercises.com/100-exercises/04_traits/08_sized.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/04_traits/08_sized.html](https://rust-exercises.com/100-exercises/04_traits/08_sized.html)
 - en: There's more to `&str` than meets the eye, even after having investigated deref
     coercion.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使在调查了解引用强制转换之后，`&str`还有更多内容。它不仅仅是表面上的东西。
 - en: 'From our previous [discussion on memory layouts](/100-exercises/03_ticket_v1/10_references_in_memory),
     it would have been reasonable to expect `&str` to be represented as a single `usize`
     on the stack, a pointer. That''s not the case though. `&str` stores some **metadata**
     next to the pointer: the length of the slice it points to. Going back to the example
     from [a previous section](/100-exercises/04_traits/06_str_slice):'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 从我们之前关于内存布局的[讨论](/100-exercises/03_ticket_v1/10_references_in_memory)，我们合理地预期`&str`在栈上应该表示为一个单独的`usize`，即一个指针。但这并不是事实。`&str`在指针旁边存储了一些**元数据**：它指向的切片的长度。回到之前章节的例子：
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'In memory, we get:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 在内存中，我们得到：
 - en: '[PRE1]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: What's going on?
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 发生了什么？
 - en: '[Dynamically sized types](#dynamically-sized-types)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[动态大小类型](#dynamically-sized-types)'
 - en: '`str` is a **dynamically sized type** (DST).'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: '`str`是一个**动态大小类型**（DST）。'
 - en: A DST is a type whose size is not known at compile time. Whenever you have a
     reference to a DST, like `&str`, it has to include additional information about
     the data it points to. It is a **fat pointer**.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: DST是一种在编译时大小未知的数据类型。每当你有DST的引用，如`&str`，它必须包含关于它指向的数据的额外信息。它是一个**胖指针**。
 - en: In the case of `&str`, it stores the length of the slice it points to. We'll
     see more examples of DSTs in the rest of the course.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 在`&str`的情况下，它存储了它指向的切片的长度。我们将在课程剩余部分看到更多DST的例子。
 - en: '[The `Sized` trait](#the-sized-trait)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Sized`特性](#the-sized-trait)'
 - en: Rust's `std` library defines a trait called `Sized`.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust的`std`库定义了一个名为`Sized`的特性。
 - en: '[PRE2]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: A type is `Sized` if its size is known at compile time. In other words, it's
     not a DST.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个类型的大小在编译时已知，则该类型是`Sized`。换句话说，它不是一个DST。
 - en: '[Marker traits](#marker-traits)'
+  id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[标记特性](#marker-traits)'
 - en: '`Sized` is your first example of a **marker trait**.'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Sized`是**标记特性**的第一个例子。'
 - en: A marker trait is a trait that doesn't require any methods to be implemented.
     It doesn't define any behavior. It only serves to **mark** a type as having certain
     properties. The mark is then leveraged by the compiler to enable certain behaviors
     or optimizations.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 标记特性是一种不需要实现任何方法的特性。它不定义任何行为。它只用于**标记**一个类型具有某些属性。然后，标记被编译器利用以启用某些行为或优化。
 - en: '[Auto traits](#auto-traits)'
+  id: totrans-19
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[自动特性](#auto-traits)'
 - en: In particular, `Sized` is also an **auto trait**.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 特别是，`Sized`也是一个**自动特性**。
 - en: You don't need to implement it explicitly; the compiler implements it automatically
     for you based on the type's definition.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 你不需要显式实现它；编译器会根据类型的定义自动为你实现。
 - en: '[Examples](#examples)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[示例](#examples)'
 - en: 'All the types we''ve seen so far are `Sized`: `u32`, `String`, `bool`, etc.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们到目前为止看到的所有类型都是`Sized`：`u32`、`String`、`bool`等。
 - en: '`str`, as we just saw, is not `Sized`.'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: '`str`，正如我们刚才看到的，不是`Sized`。'
 - en: '`&str` is `Sized` though! We know its size at compile time: two `usize`s, one
     for the pointer and one for the length.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '`&str`虽然是`Sized`的！我们知道它在编译时的大小：两个`usize`，一个用于指针，一个用于长度。'
 - en: '[Exercise](#exercise)'
+  id: totrans-26
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`04_traits/08_sized`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/08_sized)
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于[`04_traits/08_sized`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/08_sized)

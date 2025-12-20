@@ -1,69 +1,109 @@
 - en: Mutable slices
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 可变切片
 - en: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/11_mutable_slices.html](https://rust-exercises.com/100-exercises/06_ticket_management/11_mutable_slices.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/11_mutable_slices.html](https://rust-exercises.com/100-exercises/06_ticket_management/11_mutable_slices.html)
 - en: Every time we've talked about slice types (like `str` and `[T]`), we've used
     their immutable borrow form (`&str` and `&[T]`).
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 每当我们讨论切片类型（如 `str` 和 `[T]`）时，我们都使用了它们的不可变借用形式（`&str` 和 `&[T]`）。
 - en: But slices can also be mutable!
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 但切片也可以是可变的！
 - en: 'Here''s how you create a mutable slice:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 下面是如何创建一个可变切片的方法：
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'You can then modify the elements in the slice:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，你可以修改切片中的元素：
 - en: '[PRE1]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: This will change the first element of the `Vec` to `42`.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 这将改变 `Vec` 的第一个元素为 `42`。
 - en: '[Limitations](#limitations)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[限制](#limitations)'
 - en: 'When working with immutable borrows, the recommendation was clear: prefer slice
     references over references to the owned type (e.g. `&[T]` over `&Vec<T>`).'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 当处理不可变借用时，建议是明确的：优先选择切片引用而不是对拥有类型的引用（例如，`&[T]` 而不是 `&Vec<T>`）。
 - en: That's **not** the case with mutable borrows.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于可变借用来说，情况并非如此。
 - en: 'Consider this scenario:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下场景：
 - en: '[PRE2]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: It won't compile!
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 这将无法编译！
 - en: '`push` is a method on `Vec`, not on slices. This is the manifestation of a
     more general principle: Rust won''t allow you to add or remove elements from a
     slice. You will only be able to modify/replace the elements that are already there.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '`push` 是 `Vec` 的一个方法，而不是切片的方法。这是更普遍原则的体现：Rust 不允许你从切片中添加或删除元素。你只能修改/替换已经存在的元素。'
 - en: In this regard, a `&mut Vec` or a `&mut String` are strictly more powerful than
     a `&mut [T]` or a `&mut str`.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这方面，`&mut Vec` 或 `&mut String` 与 `&mut [T]` 或 `&mut str` 相比，功能上更为强大。
 - en: Choose the type that best fits based on the operations you need to perform.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 根据你需要执行的操作选择最合适的类型。
 - en: '[Exercise](#exercise)'
+  id: totrans-18
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`06_ticket_management/11_mutable_slices`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/11_mutable_slices)
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`06_ticket_management/11_mutable_slices`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/11_mutable_slices)

@@ -1,59 +1,89 @@
 - en: Modelling A Ticket
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 建模一个工单
 - en: 原文：[https://rust-exercises.com/100-exercises/03_ticket_v1/00_intro.html](https://rust-exercises.com/100-exercises/03_ticket_v1/00_intro.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/03_ticket_v1/00_intro.html](https://rust-exercises.com/100-exercises/03_ticket_v1/00_intro.html)
 - en: The first chapter should have given you a good grasp over some of Rust's primitive
     types, operators and basic control flow constructs.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 第一章应该已经让你对Rust的一些原始类型、运算符和基本控制流结构有了很好的掌握。
 - en: 'In this chapter we''ll go one step further and cover what makes Rust truly
     unique: **ownership**.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将进一步探讨使Rust真正独特的东西：**所有权**。
 - en: Ownership is what enables Rust to be both memory-safe and performant, with no
     garbage collector.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有权是使Rust既内存安全又高效，且无需垃圾回收器的原因。
 - en: As our running example, we'll use a (JIRA-like) ticket, the kind you'd use to
     track bugs, features, or tasks in a software project.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为我们的运行示例，我们将使用一个（类似JIRA的）工单，这种工单通常用于跟踪软件项目中的错误、功能或任务。
 - en: We'll take a stab at modeling it in Rust. It'll be the first iteration—it won't
     be perfect nor very idiomatic by the end of the chapter. It'll be enough of a
     challenge though!
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将尝试用Rust来建模它。这将是我们第一次迭代——到章节结束时，它可能不会完美，也不会非常符合Rust的惯用风格。但这将是一个足够的挑战！
 - en: 'To move forward you''ll have to pick up several new Rust concepts, such as:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 要继续前进，你必须掌握几个新的Rust概念，例如：
 - en: '`struct`s, one of Rust''s ways to define custom types'
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`struct`s，Rust定义自定义类型的一种方式'
 - en: Ownership, references and borrowing
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有权、引用和借用
 - en: 'Memory management: stack, heap, pointers, data layout, destructors'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 内存管理：栈、堆、指针、数据布局、析构函数
 - en: Modules and visibility
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块和可见性
 - en: Strings
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串
 - en: '[Exercise](#exercise)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`03_ticket_v1/00_intro`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/03_ticket_v1/00_intro)
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`03_ticket_v1/00_intro`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/03_ticket_v1/00_intro)

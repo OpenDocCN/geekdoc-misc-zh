@@ -1,316 +1,472 @@
 - en: Locks, Send and Arc
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 锁、Send和Arc
 - en: 原文：[https://rust-exercises.com/100-exercises/07_threads/11_locks.html](https://rust-exercises.com/100-exercises/07_threads/11_locks.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/07_threads/11_locks.html](https://rust-exercises.com/100-exercises/07_threads/11_locks.html)
 - en: 'The patching strategy you just implemented has a major drawback: it''s racy.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 你刚才实现的补丁策略有一个主要的缺点：它是竞态的。
 - en: If two clients send patches for the same ticket roughly at same time, the server
     will apply them in an arbitrary order. Whoever enqueues their patch last will
     overwrite the changes made by the other client.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果两个客户端几乎同时为同一票据发送补丁，服务器将按任意顺序应用它们。最后入队的补丁将覆盖其他客户端所做的更改。
 - en: '[Version numbers](#version-numbers)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[版本号](#version-numbers)'
 - en: We could try to fix this by using a **version number**.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过使用**版本号**来尝试解决这个问题。
 - en: Each ticket gets assigned a version number upon creation, set to `0`.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个票据在创建时都会分配一个版本号，设置为`0`。
 - en: Whenever a client sends a patch, they must include the current version number
     of the ticket alongside the desired changes. The server will only apply the patch
     if the version number matches the one it has stored.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 每当客户端发送一个补丁时，他们必须包括票据的当前版本号以及期望的更改。服务器只有在版本号匹配它存储的版本号时才会应用补丁。
 - en: In the scenario described above, the server would reject the second patch, because
     the version number would have been incremented by the first patch and thus wouldn't
     match the one sent by the second client.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上述场景中，服务器将拒绝第二个补丁，因为版本号已经被第一个补丁递增，因此不会与第二个客户端发送的版本号匹配。
 - en: This approach is fairly common in distributed systems (e.g. when client and
     servers don't share memory), and it is known as **optimistic concurrency control**.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法在分布式系统中相当常见（例如，当客户端和服务器不共享内存时），并且被称为**乐观并发控制**。
 - en: The idea is that most of the time, conflicts won't happen, so we can optimize
     for the common case. You know enough about Rust by now to implement this strategy
     on your own as a bonus exercise, if you want to.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 理念是，大多数时候不会发生冲突，因此我们可以针对常见情况进行优化。现在你对Rust已经足够了解，如果你愿意，可以将这种策略作为附加练习自己实现。
 - en: '[Locking](#locking)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[锁定](#locking)'
 - en: We can also fix the race condition by introducing a **lock**.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以通过引入一个**锁**来修复竞争条件。
 - en: Whenever a client wants to update a ticket, they must first acquire a lock on
     it. While the lock is active, no other client can modify the ticket.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 每当客户端想要更新一个票据时，他们必须首先获取对该票据的锁。在锁处于活动状态时，其他客户端无法修改票据。
 - en: 'Rust''s standard library provides two different locking primitives: `Mutex<T>`
     and `RwLock<T>`.'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust的标准库提供了两种不同的锁定原语：`Mutex<T>`和`RwLock<T>`。
 - en: 'Let''s start with `Mutex<T>`. It stands for **mut**ual **ex**clusion, and it''s
     the simplest kind of lock: it allows only one thread to access the data, no matter
     if it''s for reading or writing.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们从`Mutex<T>`开始。它代表**mut**ual **ex**clusion，并且是最简单的锁类型：它只允许一个线程访问数据，无论它是读取还是写入。
 - en: '`Mutex<T>` wraps the data it protects, and it''s therefore generic over the
     type of the data.'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Mutex<T>`包裹它所保护的数据，因此它对数据类型是泛型的。'
 - en: 'You can''t access the data directly: the type system forces you to acquire
     a lock first using either `Mutex::lock` or `Mutex::try_lock`. The former blocks
     until the lock is acquired, the latter returns immediately with an error if the
     lock can''t be acquired.'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 你不能直接访问数据：类型系统强制你首先使用`Mutex::lock`或`Mutex::try_lock`获取锁。前者在获取锁之前会阻塞，后者如果无法获取锁，会立即返回错误。
 - en: Both methods return a guard object that dereferences to the data, allowing you
     to modify it. The lock is released when the guard is dropped.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 这两种方法都返回一个保护对象，该对象可以解引用到数据，允许你修改它。当保护对象被丢弃时，锁被释放。
 - en: '[PRE0]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[Locking granularity](#locking-granularity)'
+  id: totrans-20
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[锁定粒度](#locking-granularity)'
 - en: What should our `Mutex` wrap?
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们应该将`Mutex`包裹什么？
 - en: The simplest option would be to wrap the entire `TicketStore` in a single `Mutex`.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 最简单的方法是将整个`TicketStore`包裹在一个单独的`Mutex`中。
 - en: 'This would work, but it would severely limit the system''s performance: you
     wouldn''t be able to read tickets in parallel, because every read would have to
     wait for the lock to be released.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 这将有效，但会严重限制系统的性能：你将无法并行读取票据，因为每次读取都必须等待锁被释放。
 - en: This is known as **coarse-grained locking**.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 这被称为**粗粒度锁定**。
 - en: It would be better to use **fine-grained locking**, where each ticket is protected
     by its own lock. This way, clients can keep working with tickets in parallel,
     as long as they aren't trying to access the same ticket.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用**细粒度锁定**会更好，其中每个票据都由其自己的锁保护。这样，只要客户端没有尝试访问相同的票据，他们就可以并行地使用票据。
 - en: '[PRE1]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'This approach is more efficient, but it has a downside: `TicketStore` has to
     become **aware** of the multithreaded nature of the system; up until now, `TicketStore`
     has been blissfully ignoring the existence of threads.'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法更高效，但有一个缺点：`TicketStore`必须意识到系统的多线程特性；到目前为止，`TicketStore`一直幸福地忽略了线程的存在。
 - en: Let's go for it anyway.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们无论如何尝试一下。
 - en: '[Who holds the lock?](#who-holds-the-lock)'
+  id: totrans-29
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[谁持有锁？](#who-holds-the-lock)'
 - en: For the whole scheme to work, the lock must be passed to the client that wants
     to modify the ticket.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了使整个方案工作，锁必须传递给想要修改票据的客户端。
 - en: The client can then directly modify the ticket (as if they had a `&mut Ticket`)
     and release the lock when they're done.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 客户端可以直接修改票据（就像他们有一个`&mut Ticket`一样），并在完成后释放锁。
 - en: This is a bit tricky.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 这有点棘手。
 - en: We can't send a `Mutex<Ticket>` over a channel, because `Mutex` is not `Clone`
     and we can't move it out of the `TicketStore`. Could we send the `MutexGuard`
     instead?
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不能通过通道发送一个`Mutex<Ticket>`，因为`Mutex`不是`Clone`的，而且我们不能将它从`TicketStore`中移出。我们能否发送`MutexGuard`代替？
 - en: 'Let''s test the idea with a small example:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们用一个小的例子来测试这个想法：
 - en: '[PRE2]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'The compiler is not happy with this code:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器对这个代码不满意：
 - en: '[PRE3]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '`MutexGuard<''_, i32>` is not `Send`: what does it mean?'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: '`MutexGuard<''_, i32>`不是`Send`：这意味着什么？'
 - en: '[`Send`](#send)'
+  id: totrans-39
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Send`](#send)'
 - en: '`Send` is a marker trait that indicates that a type can be safely transferred
     from one thread to another.'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Send`是一个标记特质，表示一个类型可以安全地从一条线程转移到另一条线程。'
 - en: '`Send` is also an auto-trait, just like `Sized`; it''s automatically implemented
     (or not implemented) for your type by the compiler, based on its definition.'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Send`也是一个自动特质，就像`Sized`一样；编译器根据其定义自动实现（或不实现）你的类型的`Send`。'
 - en: You can also implement `Send` manually for your types, but it requires `unsafe`
     since you have to guarantee that the type is indeed safe to send between threads
     for reasons that the compiler can't automatically verify.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 你也可以为你的类型手动实现`Send`，但这需要`unsafe`，因为你必须保证类型确实可以在线程之间安全地发送，这是编译器无法自动验证的原因。
 - en: '[Channel requirements](#channel-requirements)'
+  id: totrans-43
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[通道要求](#channel-requirements)'
 - en: '`Sender<T>`, `SyncSender<T>` and `Receiver<T>` are `Send` if and only if `T`
     is `Send`.'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Sender<T>`, `SyncSender<T>`和`Receiver<T>`只有在`T`是`Send`时才是`Send`。'
 - en: That's because they are used to send values between threads, and if the value
     itself is not `Send`, it would be unsafe to send it between threads.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是因为它们被用来在线程之间发送值，如果值本身不是`Send`，那么在线程之间发送它是不安全的。
 - en: '[`MutexGuard`](#mutexguard)'
+  id: totrans-46
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`MutexGuard`](#mutexguard)'
 - en: '`MutexGuard` is not `Send` because the underlying operating system primitives
     that `Mutex` uses to implement the lock require (on some platforms) that the lock
     must be released by the same thread that acquired it.'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '`MutexGuard`不是`Send`，因为`Mutex`使用的底层操作系统原语来实现锁（在某些平台上）要求锁必须由获取它的同一个线程释放。'
 - en: If we were to send a `MutexGuard` to another thread, the lock would be released
     by a different thread, which would lead to undefined behavior.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将`MutexGuard`发送到另一个线程，锁将由不同的线程释放，这会导致未定义的行为。
 - en: '[Our challenges](#our-challenges)'
+  id: totrans-49
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[我们的挑战](#our-challenges)'
 - en: 'Summing it up:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 总结一下：
 - en: We can't send a `MutexGuard` over a channel. So we can't lock on the server-side
     and then modify the ticket on the client-side.
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们不能通过通道发送一个`MutexGuard`。因此，我们不能在服务器端加锁，然后在客户端修改票据。
 - en: We can send a `Mutex` over a channel because it's `Send` as long as the data
     it protects is `Send`, which is the case for `Ticket`. At the same time, we can't
     move the `Mutex` out of the `TicketStore` nor clone it.
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以发送一个`Mutex`通过通道，因为只要它保护的数据是`Send`，它就是`Send`，对于`Ticket`来说就是这样。同时，我们既不能将`Mutex`从`TicketStore`中移出，也不能克隆它。
 - en: How can we solve this conundrum?
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们如何解决这个问题？
 - en: 'We need to look at the problem from a different angle. To lock a `Mutex`, we
     don''t need an owned value. A shared reference is enough, since `Mutex` uses internal
     mutability:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们需要从不同的角度看待这个问题。要锁定`Mutex`，我们不需要拥有值。共享引用就足够了，因为`Mutex`使用内部可变性：
 - en: '[PRE4]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: It is therefore enough to send a shared reference to the client.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，发送给客户端的共享引用就足够了。
 - en: We can't do that directly, though, because the reference would have to be `'static`
     and that's not the case.
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不能直接这样做，因为引用必须是`'static`的，而这并不是情况。
 - en: 'In a way, we need an "owned shared reference". It turns out that Rust has a
     type that fits the bill: `Arc`.'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 从某种意义上说，我们需要一个“所有者共享引用”。结果发现，Rust有一个符合这个要求的类型：`Arc`。
 - en: '[`Arc` to the rescue](#arc-to-the-rescue)'
+  id: totrans-59
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[救命之`Arc`](#arc-to-the-rescue)'
 - en: '`Arc` stands for **atomic reference counting**.'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Arc`代表**原子引用计数**。'
 - en: '`Arc` wraps around a value and keeps track of how many references to the value
     exist. When the last reference is dropped, the value is deallocated.'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Arc`围绕一个值并跟踪该值存在的引用数量。当最后一个引用被丢弃时，该值将被释放。'
 - en: 'The value wrapped in an `Arc` is immutable: you can only get shared references
     to it.'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 被`Arc`包裹的值是不可变的：你只能获取对其的共享引用。
 - en: '[PRE5]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'If you''re having a déjà vu moment, you''re right: `Arc` sounds very similar
     to `Rc`, the reference-counted pointer we introduced when talking about interior
     mutability. The difference is thread-safety: `Rc` is not `Send`, while `Arc` is.
     It boils down to the way the reference count is implemented: `Rc` uses a "normal"
     integer, while `Arc` uses an **atomic** integer, which can be safely shared and
     modified across threads.'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你感到似曾相识，你是对的：`Arc`听起来非常类似于我们在讨论内部可变性时引入的引用计数指针`Rc`。区别在于线程安全性：`Rc`不是`Send`，而`Arc`是。这归结于引用计数实现的方式：`Rc`使用一个“普通”整数，而`Arc`使用一个**原子**整数，它可以在线程之间安全地共享和修改。
 - en: '[`Arc<Mutex<T>>`](#arcmutext)'
+  id: totrans-65
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Arc<Mutex<T>>](#arcmutext)'
 - en: 'If we pair `Arc` with `Mutex`, we finally get a type that:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将`Arc`与`Mutex`搭配使用，我们最终得到一个类型：
 - en: 'Can be sent between threads, because:'
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可以在线程之间传递，因为：
 - en: '`Arc` is `Send` if `T` is `Send`, and'
+  id: totrans-68
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`T`是`Send`，则`Arc`是`Send`，
 - en: '`Mutex` is `Send` if `T` is `Send`.'
+  id: totrans-69
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Mutex`是`Send`如果`T`是`Send`。'
 - en: '`T` is `Ticket`, which is `Send`.'
+  id: totrans-70
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`T`是`Ticket`，它是`Send`。'
 - en: Can be cloned, because `Arc` is `Clone` no matter what `T` is. Cloning an `Arc`
     increments the reference count, the data is not copied.
+  id: totrans-71
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可以被克隆，因为无论`T`是什么，`Arc`都是`Clone`。克隆一个`Arc`会增加引用计数，数据不会被复制。
 - en: Can be used to modify the data it wraps, because `Arc` lets you get a shared
     reference to `Mutex<T>` which can in turn be used to acquire a lock.
+  id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可以用来修改它所包裹的数据，因为`Arc`允许你获取对`Mutex<T>`的共享引用，这反过来又可以用来获取锁。
 - en: We have all the pieces we need to implement the locking strategy for our ticket
     store.
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经拥有了实现票务存储锁定策略所需的所有组件。
 - en: '[Further reading](#further-reading)'
+  id: totrans-74
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步阅读](#further-reading)'
 - en: We won't be covering the details of atomic operations in this course, but you
     can find more information [in the `std` documentation](https://doc.rust-lang.org/std/sync/atomic/index.html)
     as well as in the ["Rust atomics and locks" book](https://marabos.nl/atomics/).
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在本课程中，我们不会涵盖原子操作的细节，但你可以在[std文档](https://doc.rust-lang.org/std/sync/atomic/index.html)以及["Rust原子操作与锁"书籍](https://marabos.nl/atomics/)中找到更多信息。
 - en: '[Exercise](#exercise)'
+  id: totrans-76
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`07_threads/11_locks`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/11_locks)
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[07_threads/11_locks](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/11_locks)

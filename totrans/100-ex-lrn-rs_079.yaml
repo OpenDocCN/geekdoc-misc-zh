@@ -1,78 +1,120 @@
 - en: Scoped threads
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 作用域线程
 - en: 原文：[https://rust-exercises.com/100-exercises/07_threads/04_scoped_threads.html](https://rust-exercises.com/100-exercises/07_threads/04_scoped_threads.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/07_threads/04_scoped_threads.html](https://rust-exercises.com/100-exercises/07_threads/04_scoped_threads.html)
 - en: 'All the lifetime issues we discussed so far have a common source: the spawned
     thread can outlive its parent.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们迄今为止讨论的所有生命周期问题都有一个共同的原因：派生线程可能会比其父线程存活得更久。
 - en: We can sidestep this issue by using **scoped threads**.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过使用**作用域线程**来规避这个问题。
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Let's unpack what's happening.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们分析一下正在发生的事情。
 - en: '[`scope`](#scope)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`scope`](#scope)'
 - en: The `std::thread::scope` function creates a new **scope**.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '`std::thread::scope`函数创建一个新的**作用域**。'
 - en: '`std::thread::scope` takes a closure as input, with a single argument: a `Scope`
     instance.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '`std::thread::scope`接受一个闭包作为输入，它有一个单一参数：一个`Scope`实例。'
 - en: '[Scoped spawns](#scoped-spawns)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[作用域派生](#scoped-spawns)'
 - en: '`Scope` exposes a `spawn` method.'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Scope`暴露了一个`spawn`方法。'
 - en: Unlike `std::thread::spawn`, all threads spawned using a `Scope` will be **automatically
     joined** when the scope ends.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 与`std::thread::spawn`不同，使用`Scope`派生的所有线程在作用域结束时都会**自动连接**。
 - en: 'If we were to "translate" the previous example to `std::thread::spawn`, it''d
     look like this:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们要将前面的示例“翻译”成`std::thread::spawn`，它看起来会是这样：
 - en: '[PRE1]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[Borrowing from the environment](#borrowing-from-the-environment)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[从环境中借用](#borrowing-from-the-environment)'
 - en: 'The translated example wouldn''t compile, though: the compiler would complain
     that `&v` can''t be used from our spawned threads since its lifetime isn''t `''static`.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管翻译后的示例无法编译：编译器会抱怨`&v`不能从我们的派生线程中使用，因为它的生命周期不是`'static'`。
 - en: That's not an issue with `std::thread::scope`—you can **safely borrow from the
     environment**.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 这不是`std::thread::scope`的问题——你可以**安全地从环境中借用**。
 - en: In our example, `v` is created before the spawning points. It will only be dropped
     *after* `scope` returns. At the same time, all threads spawned inside `scope`
     are guaranteed to finish *before* `scope` returns, therefore there is no risk
     of having dangling references.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们的例子中，`v`是在派生点之前创建的。它只会在`scope`返回后才会被丢弃。同时，`scope`内部派生的所有线程都保证在`scope`返回之前完成，因此不存在悬垂引用的风险。
 - en: The compiler won't complain!
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器不会抱怨！
 - en: '[Exercise](#exercise)'
+  id: totrans-19
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`07_threads/04_scoped_threads`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/04_scoped_threads)
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`07_threads/04_scoped_threads`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/04_scoped_threads)

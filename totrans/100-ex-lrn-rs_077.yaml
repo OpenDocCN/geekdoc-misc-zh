@@ -1,142 +1,219 @@
 - en: '''static'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '''static'
 - en: 原文：[https://rust-exercises.com/100-exercises/07_threads/02_static.html](https://rust-exercises.com/100-exercises/07_threads/02_static.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/07_threads/02_static.html](https://rust-exercises.com/100-exercises/07_threads/02_static.html)
 - en: 'If you tried to borrow a slice from the vector in the previous exercise, you
     probably got a compiler error that looks something like this:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您尝试从上一个练习中的向量借用切片，您可能会得到一个类似以下内容的编译器错误：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '`argument requires that v is borrowed for ''static`, what does that mean?'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: '`argument requires that v is borrowed for ''static''，这是什么意思？'
 - en: The `'static` lifetime is a special lifetime in Rust.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: '`''static` 生命周期是 Rust 中的一个特殊生命周期。'
 - en: It means that the value will be valid for the entire duration of the program.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 这意味着该值将在整个程序运行期间有效。
 - en: '[Detached threads](#detached-threads)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[分离的线程](#detached-threads)'
 - en: A thread launched via `thread::spawn` can **outlive** the thread that spawned
     it.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过 `thread::spawn` 启动的线程可以**生存期超过**创建它的线程。
 - en: 'For example:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: In this example, the first spawned thread will in turn spawn a child thread
     that prints a message every second.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这个例子中，第一个创建的线程将转而创建一个子线程，该子线程每秒打印一条消息。
 - en: The first thread will then finish and exit. When that happens, its child thread
     will **continue running** for as long as the overall process is running.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，第一个线程将完成并退出。当发生这种情况时，其子线程将**继续运行**，直到整个进程运行。
 - en: In Rust's lingo, we say that the child thread has **outlived** its parent.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Rust 的术语中，我们说子线程已经**生存期超过**了其父线程。
 - en: '[`''static` lifetime](#static-lifetime)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[静态生命周期](#static-lifetime)'
 - en: 'Since a spawned thread can:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于创建的线程可以：
 - en: outlive the thread that spawned it (its parent thread)
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 生存期超过创建它的线程（其父线程）
 - en: run until the program exits
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 运行直到程序退出
 - en: it must not borrow any values that might be dropped before the program exits;
     violating this constraint would expose us to a use-after-free bug.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 它不得借用任何可能在程序退出之前被丢弃的值；违反此约束会导致使用后释放的漏洞。
 - en: 'That''s why `std::thread::spawn`''s signature requires that the closure passed
     to it has the `''static` lifetime:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 这也是为什么 `std::thread::spawn` 的签名要求传递给它的闭包具有 `'static` 生命周期：
 - en: '[PRE2]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[`''static` is not (just) about references](#static-is-not-just-about-references)'
+  id: totrans-21
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[静态不仅仅是关于引用](#static-is-not-just-about-references)'
 - en: All values in Rust have a lifetime, not just references.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 中的所有值都有生命周期，不仅仅是引用。
 - en: 'In particular, a type that owns its data (like a `Vec` or a `String`) satisfies
     the `''static` constraint: if you own it, you can keep working with it for as
     long as you want, even after the function that originally created it has returned.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 特别是，一个拥有其数据类型的类型（如 `Vec` 或 `String`）满足 `'static` 约束：如果您拥有它，您可以在返回创建它的函数后继续使用它，即使您想要的时间更长。
 - en: 'You can thus interpret `''static` as a way to say:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，您可以解释 `'static` 为一种表达方式：
 - en: Give me an owned value
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 给我一个拥有值的引用
 - en: Give me a reference that's valid for the entire duration of the program
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 给我一个在整个程序运行期间有效的引用
 - en: 'The first approach is how you solved the issue in the previous exercise: by
     allocating new vectors to hold the left and right parts of the original vector,
     which were then moved into the spawned threads.'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 第一种方法是你在上一个练习中解决问题的方法：通过分配新的向量来保存原始向量的左右部分，然后将它们移动到创建的线程中。
 - en: '[`''static` references](#static-references)'
+  id: totrans-28
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[静态引用](#static-references)'
 - en: Let's talk about the second case, references that are valid for the entire duration
     of the program.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们谈谈第二种情况，在整个程序运行期间有效的引用。
 - en: '[Static data](#static-data)'
+  id: totrans-30
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[静态数据](#static-data)'
 - en: 'The most common case is a reference to **static data**, such as string literals:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 最常见的情况是引用**静态数据**，例如字符串字面量：
 - en: '[PRE3]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Since string literals are known at compile-time, Rust stores them *inside* your
     executable, in a region known as **read-only data segment**. All references pointing
     to that region will therefore be valid for as long as the program runs; they satisfy
     the `'static` contract.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于字符串字面量在编译时已知，Rust 将它们存储在可执行文件中，称为**只读数据段**。因此，指向该区域的引用在程序运行期间始终有效；它们满足 `'static`
+    合同。
 - en: '[Further reading](#further-reading)'
+  id: totrans-34
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步阅读](#further-reading)'
 - en: '[The data segment](https://en.wikipedia.org/wiki/Data_segment)'
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[数据段](https://en.wikipedia.org/wiki/Data_segment)'
 - en: '[Exercise](#exercise)'
+  id: totrans-36
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`07_threads/02_static`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/02_static)
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[07_threads/02_static](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/02_static)

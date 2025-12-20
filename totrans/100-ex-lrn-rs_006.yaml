@@ -1,170 +1,266 @@
 - en: Control flow, part 1
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 控制流，第一部分
 - en: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/03_if_else.html](https://rust-exercises.com/100-exercises/02_basic_calculator/03_if_else.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/03_if_else.html](https://rust-exercises.com/100-exercises/02_basic_calculator/03_if_else.html)
 - en: All our programs so far have been pretty straightforward.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们编写的所有程序都很直接。
 - en: A sequence of instructions is executed from top to bottom, and that's it.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 一系列指令从上到下执行，就是这样。
 - en: It's time to introduce some **branching**.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 是时候介绍一些**分支**了。
 - en: '[`if` clauses](#if-clauses)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`if`子句](#if-clauses)'
 - en: The `if` keyword is used to execute a block of code only if a condition is true.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: '`if`关键字用于在条件为真时执行一个代码块。'
 - en: 'Here''s a simple example:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里有一个简单的例子：
 - en: '[PRE0]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: This program will print `number is smaller than 5` because the condition `number
     < 5` is true.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个程序将打印`number is smaller than 5`，因为条件`number < 5`为真。
 - en: '[`else` clauses](#else-clauses)'
+  id: totrans-10
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`else`子句](#else-clauses)'
 - en: Like most programming languages, Rust supports an optional `else` branch to
     execute a block of code when the condition in an `if` expression is false.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 和大多数编程语言一样，Rust支持可选的`else`分支，当`if`表达式的条件为假时执行一个代码块。
 - en: 'For example:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE1]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[`else if` clauses](#else-if-clauses)'
+  id: totrans-14
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`else if`子句](#else-if-clauses)'
 - en: Your code drifts more and more to the right when you have multiple `if` expressions,
     one nested inside the other.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你有多个`if`表达式，一个嵌套在另一个内部时，你的代码会越来越向右偏移。
 - en: '[PRE2]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'You can use the `else if` keyword to combine multiple `if` expressions into
     a single one:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以使用`else if`关键字将多个`if`表达式合并为一个：
 - en: '[PRE3]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[Booleans](#booleans)'
+  id: totrans-19
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[布尔值](#booleans)'
 - en: The condition in an `if` expression must be of type `bool`, a **boolean**.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: '`if`表达式中的条件必须是类型`bool`，即**布尔**类型。'
 - en: Booleans, just like integers, are a primitive type in Rust.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 布尔值，就像整数一样，是Rust中的原始类型。
 - en: 'A boolean can have one of two values: `true` or `false`.'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 布尔值有两种可能的值：`true`或`false`。
 - en: '[No truthy or falsy values](#no-truthy-or-falsy-values)'
+  id: totrans-23
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[没有真值或假值](#no-truthy-or-falsy-values)'
 - en: If the condition in an `if` expression is not a boolean, you'll get a compilation
     error.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果`if`表达式的条件不是布尔类型，你将得到一个编译错误。
 - en: 'For example, the following code will not compile:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，以下代码将无法编译：
 - en: '[PRE4]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'You''ll get the following compilation error:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 你将得到以下编译错误：
 - en: '[PRE5]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'This follows from Rust''s philosophy around type coercion: there''s no automatic
     conversion from non-boolean types to booleans. Rust doesn''t have the concept
     of **truthy** or **falsy** values, like JavaScript or Python.'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 这遵循Rust关于类型转换的哲学：没有从非布尔类型到布尔类型的自动转换。Rust没有JavaScript或Python中的**真值**或**假值**的概念。
 - en: You have to be explicit about the condition you want to check.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 你必须明确你想要检查的条件。
 - en: '[Comparison operators](#comparison-operators)'
+  id: totrans-31
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[比较运算符](#comparison-operators)'
 - en: It's quite common to use comparison operators to build conditions for `if` expressions.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用比较运算符为`if`表达式构建条件是很常见的。
 - en: 'Here are the comparison operators available in Rust when working with integers:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Rust中处理整数时，可用的比较运算符如下：
 - en: '`==`: equal to'
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`==`: 等于'
 - en: '`!=`: not equal to'
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`!=`: 不等于'
 - en: '`<`: less than'
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`<`: 小于'
 - en: '`>`: greater than'
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`>`: 大于'
 - en: '`<=`: less than or equal to'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`<=`: 小于或等于'
 - en: '`>=`: greater than or equal to'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`>=`: 大于或等于'
 - en: '[`if/else` is an expression](#ifelse-is-an-expression)'
+  id: totrans-40
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`if/else`是一个表达式](#ifelse-is-an-expression)'
 - en: 'In Rust, `if` expressions are **expressions**, not statements: they return
     a value.'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Rust中，`if`表达式是**表达式**，而不是**语句**：它们返回一个值。
 - en: 'That value can be assigned to a variable or used in other expressions. For
     example:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 那个值可以被分配给一个变量或用于其他表达式。例如：
 - en: '[PRE6]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: In the example above, each branch of the `if` evaluates to a string literal,
     which is then assigned to the `message` variable.
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上面的例子中，`if`语句的每个分支都评估为字符串字面量，然后被分配给`message`变量。
 - en: The only requirement is that both `if` branches return the same type.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 唯一的要求是`if`的两个分支返回相同类型。
 - en: '[Exercise](#exercise)'
+  id: totrans-46
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`02_basic_calculator/03_if_else`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/03_if_else)
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`02_basic_calculator/03_if_else`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/03_if_else)

@@ -1,124 +1,189 @@
 - en: Lifetimes
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 生命周期
 - en: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/06_lifetimes.html](https://rust-exercises.com/100-exercises/06_ticket_management/06_lifetimes.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/06_lifetimes.html](https://rust-exercises.com/100-exercises/06_ticket_management/06_lifetimes.html)
 - en: Let's try to complete the previous exercise by adding an implementation of `IntoIterator`
     for `&TicketStore`, for maximum convenience in `for` loops.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们通过为 `&TicketStore` 添加 `IntoIterator` 的实现来尝试完成之前的练习，以在 `for` 循环中获得最大便利。
 - en: 'Let''s start by filling in the most "obvious" parts of the implementation:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们从填写实现中最“明显”的部分开始：
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: What should `type IntoIter` be set to?
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: '`type IntoIter` 应该设置为哪种类型？'
 - en: Intuitively, it should be the type returned by `self.tickets.iter()`, i.e. the
     type returned by `Vec::iter()`.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 直观地看，它应该是 `self.tickets.iter()` 返回的类型，即 `Vec::iter()` 返回的类型。
 - en: 'If you check the standard library documentation, you''ll find that `Vec::iter()`
     returns an `std::slice::Iter`. The definition of `Iter` is:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你检查标准库文档，你会发现 `Vec::iter()` 返回一个 `std::slice::Iter`。`Iter` 的定义如下：
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '`''a` is a **lifetime parameter**.'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: '`''a` 是一个**生命周期参数**。'
 - en: '[Lifetime parameters](#lifetime-parameters)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[生命周期参数](#lifetime-parameters)'
 - en: Lifetimes are **labels** used by the Rust compiler to keep track of how long
     a reference (either mutable or immutable) is valid.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 生命周期是 Rust 编译器用来跟踪一个引用（无论是可变还是不可变）有效期的**标签**。
 - en: The lifetime of a reference is constrained by the scope of the value it refers
     to. Rust always makes sure, at compile-time, that references are not used after
     the value they refer to has been dropped, to avoid dangling pointers and use-after-free
     bugs.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 引用的生命周期受其所引用的值的范围约束。Rust 总是在编译时确保引用在它们所引用的值被丢弃后不会使用，以避免悬垂指针和使用后释放的漏洞。
 - en: 'This should sound familiar: we''ve already seen these concepts in action when
     we discussed ownership and borrowing. Lifetimes are just a way to **name** how
     long a specific reference is valid.'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 这听起来应该很熟悉：当我们讨论所有权和借用时，我们已经看到了这些概念的实际应用。生命周期只是命名一个特定引用有效期的**方式**。
 - en: 'Naming becomes important when you have multiple references and you need to
     clarify how they **relate to each other**. Let''s look at the signature of `Vec::iter()`:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你有多个引用并且需要明确它们如何**相互关联**时，命名变得很重要。让我们看看 `Vec::iter()` 的签名：
 - en: '[PRE2]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`Vec::iter()` is generic over a lifetime parameter, named `''a`.'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Vec::iter()` 是一个名为 `''a` 的生命周期参数的泛型。'
 - en: '`''a` is used to **tie together** the lifetime of the `Vec` and the lifetime
     of the `Iter` returned by `iter()`. In plain English: the `Iter` returned by `iter()`
     cannot outlive the `Vec` reference (`&self`) it was created from.'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '`''a` 用于**绑定** `Vec` 的生命周期和由 `iter()` 返回的 `Iter` 的生命周期。用简单的话来说：由 `iter()` 返回的
+    `Iter` 不能比它从其中创建的 `Vec` 引用 (`&self`) 活得更久。'
 - en: This is important because `Vec::iter`, as we discussed, returns an iterator
     over **references** to the `Vec`'s elements. If the `Vec` is dropped, the references
     returned by the iterator would be invalid. Rust must make sure this doesn't happen,
     and lifetimes are the tool it uses to enforce this rule.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 这很重要，因为，如我们所讨论的，`Vec::iter` 返回一个遍历 `Vec` 元素引用的迭代器。如果 `Vec` 被丢弃，迭代器返回的引用将变得无效。Rust
+    必须确保这种情况不会发生，生命周期是它用来强制执行此规则的工具。
 - en: '[Lifetime elision](#lifetime-elision)'
+  id: totrans-19
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[生命周期省略](#lifetime-elision)'
 - en: 'Rust has a set of rules, called **lifetime elision rules**, that allow you
     to omit explicit lifetime annotations in many cases. For example, `Vec::iter`''s
     definition looks like this in `std`''s source code:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 有一些称为**生命周期省略规则**的规则，允许你在许多情况下省略显式的生命周期注解。例如，`Vec::iter` 在 `std` 的源代码中的定义如下：
 - en: '[PRE3]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: No explicit lifetime parameter is present in the signature of `Vec::iter()`.
     Elision rules imply that the lifetime of the `Iter` returned by `iter()` is tied
     to the lifetime of the `&self` reference. You can think of `'_` as a **placeholder**
     for the lifetime of the `&self` reference.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Vec::iter()` 的签名中没有显式的生命周期参数。省略规则意味着由 `iter()` 返回的 `Iter` 的生命周期绑定到 `&self`
+    引用的生命周期。你可以将 `''_` 视为生命周期引用的**占位符**。'
 - en: See the [References](#references) section for a link to the official documentation
     on lifetime elision.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 请参阅 [参考文献](#references) 部分，以获取有关生命周期省略的官方文档链接。
 - en: In most cases, you can rely on the compiler telling you when you need to add
     explicit lifetime annotations.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 在大多数情况下，你可以依赖编译器告诉你何时需要添加显式的生命周期注解。
 - en: '[References](#references)'
+  id: totrans-25
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[参考文献](#references)'
 - en: '[std::vec::Vec::iter](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.iter)'
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[std::vec::Vec::iter](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.iter)'
 - en: '[std::slice::Iter](https://doc.rust-lang.org/std/slice/struct.Iter.html)'
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[std::slice::Iter](https://doc.rust-lang.org/std/slice/struct.Iter.html)'
 - en: '[Lifetime elision rules](https://doc.rust-lang.org/reference/lifetime-elision.html)'
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[生命周期省略规则](https://doc.rust-lang.org/reference/lifetime-elision.html)'
 - en: '[Exercise](#exercise)'
+  id: totrans-29
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`06_ticket_management/06_lifetimes`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/06_lifetimes)
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`06_ticket_management/06_lifetimes`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/06_lifetimes)

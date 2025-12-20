@@ -1,115 +1,173 @@
 - en: Libraries and binaries
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 库和二进制程序
 - en: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/10_packages.html](https://rust-exercises.com/100-exercises/05_ticket_v2/10_packages.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/10_packages.html](https://rust-exercises.com/100-exercises/05_ticket_v2/10_packages.html)
 - en: It took a bit of code to implement the `Error` trait for `TicketNewError`, didn't
     it?
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 实现对 `TicketNewError` 的 `Error` 特性确实需要一些代码，不是吗？
 - en: A manual `Display` implementation, plus an `Error` impl block.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个手动实现的 `Display` 和一个 `Error` 实现块。
 - en: We can remove some of the boilerplate by using [`thiserror`](https://docs.rs/thiserror/latest/thiserror/),
     a Rust crate that provides a **procedural macro** to simplify the creation of
     custom error types.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过使用提供简化自定义错误类型创建的 **过程宏** 的Rust crate `thiserror` 来移除一些样板代码。
 - en: 'But we''re getting ahead of ourselves: `thiserror` is a third-party crate,
     it''d be our first dependency!'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 但我们可能有些过于急躁了：`thiserror` 是一个第三方crate，这将是我们的第一个依赖项！
 - en: Let's take a step back to talk about Rust's packaging system before we dive
     into dependencies.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们深入研究依赖项之前，让我们退一步来谈谈Rust的打包系统。
 - en: '[What is a package?](#what-is-a-package)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[什么是包？](#what-is-a-package)'
 - en: A Rust package is defined by the `[package]` section in a `Cargo.toml` file,
     also known as its **manifest**. Within `[package]` you can set the package's metadata,
     such as its name and version.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust包由 `Cargo.toml` 文件中的 `[package]` 部分定义，也称为其 **清单**。在 `[package]` 中，你可以设置包的元数据，例如其名称和版本。
 - en: Go check the `Cargo.toml` file in the directory of this section's exercise!
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 去检查这个部分练习的目录下的 `Cargo.toml` 文件！
 - en: '[What is a crate?](#what-is-a-crate)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[什么是crate？](#what-is-a-crate)'
 - en: Inside a package, you can have one or more **crates**, also known as **targets**.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 在包内部，你可以有一个或多个 **crate**，也称为 **目标**。
 - en: The two most common crate types are **binary crates** and **library crates**.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 两种最常见的crate类型是 **二进制crate** 和 **库crate**。
 - en: '[Binaries](#binaries)'
+  id: totrans-13
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[二进制程序](#binaries)'
 - en: A binary is a program that can be compiled to an **executable file**.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 二进制程序是可以编译成 **可执行文件** 的程序。
 - en: It must include a function named `main`—the program's entry point. `main` is
     invoked when the program is executed.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 它必须包含一个名为 `main` 的函数——程序的入口点。当程序执行时，会调用 `main`。
 - en: '[Libraries](#libraries)'
+  id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[库](#libraries)'
 - en: Libraries, on the other hand, are not executable on their own. You can't *run*
     a library, but you can *import its code* from another package that depends on
     it.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，库本身是不可执行的。你不能 *运行* 一个库，但你可以从依赖于它的另一个包中 *导入* 其代码。
 - en: A library groups together code (i.e. functions, types, etc.) that can be leveraged
     by other packages as a **dependency**.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 库将代码（即函数、类型等）组合在一起，其他包可以作为 **依赖项** 利用。
 - en: All the exercises you've solved so far have been structured as libraries, with
     a test suite attached to them.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 你至今为止解决的所有练习都已被结构化为库，并且附带了测试套件。
 - en: '[Conventions](#conventions)'
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[约定](#conventions)'
 - en: 'There are some conventions around Rust packages that you need to keep in mind:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Rust包周围有一些约定，你需要记住：
 - en: The package's source code is usually located in the `src` directory.
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包的源代码通常位于 `src` 目录中。
 - en: If there's a `src/lib.rs` file, `cargo` will infer that the package contains
     a library crate.
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果有一个 `src/lib.rs` 文件，`cargo` 会推断出该包包含一个库crate。
 - en: If there's a `src/main.rs` file, `cargo` will infer that the package contains
     a binary crate.
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果有一个 `src/main.rs` 文件，`cargo` 会推断出该包包含一个二进制crate。
 - en: You can override these defaults by explicitly declaring your targets in the
     `Cargo.toml` file—see [`cargo`'s documentation](https://doc.rust-lang.org/cargo/reference/cargo-targets.html#cargo-targets)
     for more details.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以通过在 `Cargo.toml` 文件中明确声明你的目标来覆盖这些默认设置——有关更多详细信息，请参阅 [cargo 的文档](https://doc.rust-lang.org/cargo/reference/cargo-targets.html#cargo-targets)。
 - en: Keep in mind that while a package can contain multiple crates, it can only contain
     one library crate.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 请记住，虽然一个包可以包含多个crate，但它只能包含一个库crate。
 - en: '[Exercise](#exercise)'
+  id: totrans-27
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`05_ticket_v2/10_packages`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/10_packages)
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于 [05_ticket_v2/10_packages](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/10_packages)

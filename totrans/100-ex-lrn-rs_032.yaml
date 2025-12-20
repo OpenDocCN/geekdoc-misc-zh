@@ -1,181 +1,279 @@
 - en: Trait bounds
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 特性界限
 - en: 原文：[https://rust-exercises.com/100-exercises/04_traits/05_trait_bounds.html](https://rust-exercises.com/100-exercises/04_traits/05_trait_bounds.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/04_traits/05_trait_bounds.html](https://rust-exercises.com/100-exercises/04_traits/05_trait_bounds.html)
 - en: 'We''ve seen two use cases for traits so far:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们已经看到了特性的两种用法：
 - en: Unlocking "built-in" behaviour (e.g. operator overloading)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 解锁“内置”行为（例如，运算符重载）
 - en: Adding new behaviour to existing types (i.e. extension traits)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 向现有类型添加新行为（即扩展特性）
 - en: 'There''s a third use case: **generic programming**.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 还有一个第三种用法：**泛型编程**。
 - en: '[The problem](#the-problem)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[问题](#the-problem)'
 - en: All our functions and methods, so far, have been working with **concrete types**.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们到目前为止的所有函数和方法，都是与**具体类型**一起工作的。
 - en: Code that operates on concrete types is usually straightforward to write and
     understand. But it's also limited in its reusability.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 操作具体类型的代码通常易于编写和理解。但它也限制了其可重用性。
 - en: 'Let''s imagine, for example, that we want to write a function that returns
     `true` if an integer is even. Working with concrete types, we''d have to write
     a separate function for each integer type we want to support:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们假设，例如，我们想要编写一个函数，如果整数是偶数则返回`true`。使用具体类型，我们必须为每个我们想要支持的整数类型编写一个单独的函数：
 - en: '[PRE0]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Alternatively, we could write a single extension trait and then different implementations
     for each integer type:'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者，我们也可以编写一个单一的扩展特性，然后为每个整数类型编写不同的实现：
 - en: '[PRE1]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The duplication remains.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 重复仍然存在。
 - en: '[Generic programming](#generic-programming)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[泛型编程](#generic-programming)'
 - en: We can do better using **generics**.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用**泛型**做得更好。
 - en: 'Generics allow us to write code that works with a **type parameter** instead
     of a concrete type:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 泛型允许我们编写与**类型参数**一起工作的代码，而不是具体类型：
 - en: '[PRE2]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`print_if_even` is a **generic function**.'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '`print_if_even`是一个**泛型函数**。'
 - en: 'It isn''t tied to a specific input type. Instead, it works with any type `T`
     that:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 它与特定输入类型无关。相反，它与任何类型`T`一起工作，该类型：
 - en: Implements the `IsEven` trait.
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 实现`IsEven`特性。
 - en: Implements the `Debug` trait.
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 实现`Debug`特性。
 - en: 'This contract is expressed with a **trait bound**: `T: IsEven + Debug`.'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '此合同用**特性界限**表示：`T: IsEven + Debug`。'
 - en: 'The `+` symbol is used to require that `T` implements multiple traits. `T:
     IsEven + Debug` is equivalent to "where `T` implements `IsEven` **and** `Debug`".'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '`+`符号用于要求`T`实现多个特性。`T: IsEven + Debug`等价于“`T`实现`IsEven`**并且**`Debug`”。'
 - en: '[Trait bounds](#trait-bounds-1)'
+  id: totrans-24
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[特性界限](#trait-bounds-1)'
 - en: What purpose do trait bounds serve in `print_if_even`?
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 特性界限在`print_if_even`中有什么作用？
 - en: 'To find out, let''s try to remove them:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了找出原因，让我们尝试移除它们：
 - en: '[PRE3]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'This code won''t compile:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码无法编译：
 - en: '[PRE4]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Without trait bounds, the compiler doesn't know what `T` **can do**.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有特性界限，编译器不知道`T`**能做什么**。
 - en: It doesn't know that `T` has an `is_even` method, and it doesn't know how to
     format `T` for printing. From the compiler point of view, a bare `T` has no behaviour
     at all.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 它不知道`T`有一个`is_even`方法，也不知道如何格式化`T`以进行打印。从编译器的角度来看，裸`T`没有任何行为。
 - en: Trait bounds restrict the set of types that can be used by ensuring that the
     behaviour required by the function body is present.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 特性界限通过确保函数体所需的行为存在来限制可以使用的类型集。
 - en: '[Syntax: inlining trait bounds](#syntax-inlining-trait-bounds)'
+  id: totrans-33
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[语法：内联特性界限](#syntax-inlining-trait-bounds)'
 - en: 'All the examples above used a **`where` clause** to specify trait bounds:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 上述所有示例都使用了**`where`子句**来指定特性界限：
 - en: '[PRE5]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'If the trait bounds are simple, you can **inline** them directly next to the
     type parameter:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果特性界限简单，可以直接在类型参数旁边**内联**它们：
 - en: '[PRE6]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[Syntax: meaningful names](#syntax-meaningful-names)'
+  id: totrans-38
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[语法：有意义的名称](#syntax-meaningful-names)'
 - en: In the examples above, we used `T` as the type parameter name. This is a common
     convention when a function has only one type parameter.
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上述示例中，我们使用了`T`作为类型参数名称。当一个函数只有一个类型参数时，这是一个常见的约定。
 - en: 'Nothing stops you from using a more meaningful name, though:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 虽然没有阻止你使用更有意义的名称：
 - en: '[PRE7]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'It is actually **desirable** to use meaningful names when there are multiple
     type parameters at play or when the name `T` doesn''t convey enough information
     about the type''s role in the function. Maximize clarity and readability when
     naming type parameters, just as you would with variables or function parameters.
     Follow Rust''s conventions, though: use [upper camel case for type parameter names](https://rust-lang.github.io/api-guidelines/naming.html#casing-conforms-to-rfc-430-c-case).'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 实际上，当存在多个类型参数或名称`T`不足以传达类型在函数中的作用时，**使用有意义的名称**是**可取的**。在命名类型参数时，确保清晰和可读性，就像命名变量或函数参数一样。尽管如此，请遵循Rust的约定：使用[大驼峰命名法为类型参数命名](https://rust-lang.github.io/api-guidelines/naming.html#casing-conforms-to-rfc-430-c-case)。
 - en: '[The function signature is king](#the-function-signature-is-king)'
+  id: totrans-43
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[函数签名是王](#the-function-signature-is-king)'
 - en: You may wonder why we need trait bounds at all. Can't the compiler infer the
     required traits from the function's body?
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能会想知道为什么我们真的需要特性界限。编译器不能从函数体中推断出所需的特性吗？
 - en: It could, but it won't.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 它可以，但不会。
 - en: 'The rationale is the same as for [explicit type annotations on function parameters](/100-exercises/02_basic_calculator/02_variables#function-arguments-are-variables):
     each function signature is a contract between the caller and the callee, and the
     terms must be explicitly stated. This allows for better error messages, better
     documentation, less unintentional breakages across versions, and faster compilation
     times.'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 理由与[函数参数上的显式类型注解](/100-exercises/02_basic_calculator/02_variables#function-arguments-are-variables)相同：每个函数签名都是调用者和被调用者之间的合同，条款必须明确声明。这允许提供更好的错误信息、更好的文档、减少版本间的意外破坏，并加快编译时间。
 - en: '[Exercise](#exercise)'
+  id: totrans-47
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`04_traits/05_trait_bounds`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/05_trait_bounds)
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于[`04_traits/05_trait_bounds`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/05_trait_bounds)

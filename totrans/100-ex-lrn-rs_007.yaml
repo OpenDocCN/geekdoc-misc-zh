@@ -1,84 +1,131 @@
 - en: Panics
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 潘克
 - en: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/04_panics.html](https://rust-exercises.com/100-exercises/02_basic_calculator/04_panics.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/04_panics.html](https://rust-exercises.com/100-exercises/02_basic_calculator/04_panics.html)
 - en: 'Let''s go back to the `speed` function you wrote for the ["Variables" section](/100-exercises/02_basic_calculator/02_variables).
     It probably looked something like this:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们回到您为 ["变量" 部分](/100-exercises/02_basic_calculator/02_variables) 编写的 `speed`
+    函数。它可能看起来像这样：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'If you have a keen eye, you might have spotted one issue^([1](#footnote-one)):
     what happens if `time_elapsed` is zero?'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您有敏锐的观察力，您可能已经发现了一个问题^([1](#footnote-one))：如果 `time_elapsed` 为零会发生什么？
 - en: You can try it out [on the Rust playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=36e5ddbe3b3f741dfa9f74c956622bac)!
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可以在 [Rust playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=36e5ddbe3b3f741dfa9f74c956622bac)
+    上尝试它！
 - en: 'The program will exit with the following error message:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 程序将以以下错误信息退出：
 - en: '[PRE1]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: This is known as a **panic**.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 这被称为**恐慌**。
 - en: A panic is Rust's way to signal that something went so wrong that the program
     can't continue executing, it's an **unrecoverable error**^([2](#footnote-catching)).
     Division by zero classifies as such an error.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 潘克是 Rust 用来表示程序遇到严重错误，无法继续执行的一种方式，它是一个**不可恢复的错误**^([2](#footnote-catching))。除以零就属于这类错误。
 - en: '[The panic! macro](#the-panic-macro)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[panic! 宏](#the-panic-macro)'
 - en: 'You can intentionally trigger a panic by calling the `panic!` macro^([3](#footnote-macro)):'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '您可以通过调用 `panic!` 宏来有意地触发恐慌^([3](#footnote-macro)):'
 - en: '[PRE2]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: There are other mechanisms to work with recoverable errors in Rust, which [we'll
     cover later](/100-exercises/05_ticket_v2/06_fallibility). For the time being we'll
     stick with panics as a brutal but simple stopgap solution.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 中还有其他机制可以处理可恢复的错误，我们将在稍后的课程中介绍。[我们将在稍后](/100-exercises/05_ticket_v2/06_fallibility)
+    覆盖这些内容。目前，我们将坚持使用恐慌作为粗暴但简单的临时解决方案。
 - en: '[Further reading](#further-reading)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步阅读](#further-reading)'
 - en: '[The panic! macro documentation](https://doc.rust-lang.org/std/macro.panic.html)'
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[panic! 宏文档](https://doc.rust-lang.org/std/macro.panic.html)'
 - en: '[Exercise](#exercise)'
+  id: totrans-16
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`02_basic_calculator/04_panics`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/04_panics)
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于 `02_basic_calculator/04_panics` 中[https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/04_panics](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/04_panics)
 - en: '* * *'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: There's another issue with `speed` that we'll address soon enough. Can you spot
     it? [↩](#fr-one-1)
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 关于 `speed` 的问题我们很快就会解决。你能发现它吗？[↩](#fr-one-1)
 - en: You can try to catch a panic, but it should be a last resort attempt reserved
     for very specific circumstances. [↩](#fr-catching-1)
+  id: totrans-20
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 您可以尝试捕获一个恐慌，但这应该是一种最后的手段，仅限于非常特定的情况。[↩](#fr-catching-1)
 - en: If it's followed by a `!`, it's a macro invocation. Think of macros as spicy
     functions for now. We'll cover them in more detail later in the course. [↩](#fr-macro-1)
+  id: totrans-21
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 如果它后面跟着一个 `!`，则表示宏调用。现在，我们可以将宏视为带有香料的函数。我们将在课程中稍后更详细地介绍它们。[↩](#fr-macro-1)

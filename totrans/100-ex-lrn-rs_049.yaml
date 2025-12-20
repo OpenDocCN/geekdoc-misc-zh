@@ -1,61 +1,93 @@
 - en: Unwrapping
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 解包
 - en: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/07_unwrap.html](https://rust-exercises.com/100-exercises/05_ticket_v2/07_unwrap.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/07_unwrap.html](https://rust-exercises.com/100-exercises/05_ticket_v2/07_unwrap.html)
 - en: '`Ticket::new` now returns a `Result` instead of panicking on invalid inputs.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Ticket::new`现在返回一个`Result`而不是在无效输入时恐慌。'
 - en: What does this mean for the caller?
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 这对调用者意味着什么？
 - en: '[Failures can''t be (implicitly) ignored](#failures-cant-be-implicitly-ignored)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[失败不能（隐式地）被忽视](#failures-cant-be-implicitly-ignored)'
 - en: Unlike exceptions, Rust's `Result` forces you to **handle errors at the call
     site**.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 与异常不同，Rust的`Result`强制你在**调用位置处理错误**。
 - en: If you call a function that returns a `Result`, Rust won't allow you to implicitly
     ignore the error case.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你调用一个返回`Result`的函数，Rust不会允许你隐式忽略错误情况。
 - en: '[PRE0]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[You got a `Result`. Now what?](#you-got-a-result-now-what)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[你得到了一个`结果`. 现在怎么办？](#you-got-a-result-now-what)'
 - en: 'When you call a function that returns a `Result`, you have two key options:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你调用一个返回`Result`的函数时，你有两个关键选项：
 - en: Panic if the operation failed. This is done using either the `unwrap` or `expect`
     methods.
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果操作失败，则恐慌。这可以通过使用`unwrap`或`expect`方法来完成。
 - en: '[PRE1]'
+  id: totrans-11
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Destructure the `Result` using a `match` expression to deal with the error case
     explicitly.
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用`match`表达式解构`结果`以显式处理错误情况。
 - en: '[PRE2]'
+  id: totrans-13
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Exercise](#exercise)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`05_ticket_v2/07_unwrap`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/07_unwrap)
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`05_ticket_v2/07_unwrap`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/07_unwrap)

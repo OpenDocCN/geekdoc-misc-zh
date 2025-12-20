@@ -1,130 +1,206 @@
 - en: Vectors
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 向量
 - en: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/02_vec.html](https://rust-exercises.com/100-exercises/06_ticket_management/02_vec.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/02_vec.html](https://rust-exercises.com/100-exercises/06_ticket_management/02_vec.html)
 - en: 'Arrays'' strength is also their weakness: their size must be known upfront,
     at compile-time. If you try to create an array with a size that''s only known
     at runtime, you''ll get a compilation error:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组的优点也是其缺点：它们的尺寸必须在编译时预先知道。如果您尝试创建一个在运行时才知道大小的数组，您将得到编译错误：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[PRE1]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Arrays wouldn't work for our ticket management system—we don't know how many
     tickets we'll need to store at compile-time. This is where `Vec` comes in.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于我们的票务管理系统，数组不起作用——我们在编译时不知道需要存储多少张票。这就是`Vec`发挥作用的地方。
 - en: '[`Vec`](#vec)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Vec`](#vec)'
 - en: '`Vec` is a growable array type, provided by the standard library.'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Vec`是由标准库提供的一个可增长数组类型。'
 - en: 'You can create an empty array using the `Vec::new` function:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可以使用`Vec::new`函数创建一个空数组：
 - en: '[PRE2]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'You would then push elements into the vector using the `push` method:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后您可以使用`push`方法将元素推入向量：
 - en: '[PRE3]'
+  id: totrans-11
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: New values are added to the end of the vector.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 向量末尾添加新值。
 - en: 'You can also create an initialized vector using the `vec!` macro, if you know
     the values at creation time:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您在创建时知道值，您还可以使用`vec!`宏创建一个初始化的向量：
 - en: '[PRE4]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Accessing elements](#accessing-elements)'
+  id: totrans-15
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[访问元素](#accessing-elements)'
 - en: 'The syntax for accessing elements is the same as with arrays:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 访问元素的语法与数组相同：
 - en: '[PRE5]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: The index must be of type `usize`.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 索引必须是`usize`类型。
 - en: 'You can also use the `get` method, which returns an `Option<&T>`:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 您还可以使用`get`方法，它返回一个`Option<&T>`：
 - en: '[PRE6]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Access is bounds-checked, just like element access with arrays. It has O(1)
     complexity.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 访问是边界检查的，就像使用数组访问元素一样。它具有O(1)的复杂度。
 - en: '[Memory layout](#memory-layout)'
+  id: totrans-22
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[内存布局](#memory-layout)'
 - en: '`Vec` is a heap-allocated data structure.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Vec`是一个堆分配的数据结构。'
 - en: When you create a `Vec`, it allocates memory on the heap to store the elements.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 当您创建一个`Vec`时，它会在堆上分配内存以存储元素。
 - en: 'If you run the following code:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您运行以下代码：
 - en: '[PRE7]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'you''ll get the following memory layout:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 您将得到以下内存布局：
 - en: '[PRE8]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '`Vec` keeps track of three things:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Vec`跟踪三件事：'
 - en: The **pointer** to the heap region you reserved.
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 您在堆上预留区域的**指针**。
 - en: The **length** of the vector, i.e. how many elements are in the vector.
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 向量的**长度**，即向量中有多少个元素。
 - en: The **capacity** of the vector, i.e. the number of elements that can fit in
     the space reserved on the heap.
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 向量的**容量**，即可以放入在堆上预留空间中的元素数量。
 - en: 'This layout should look familiar: it''s exactly the same as `String`!'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种布局应该很熟悉：它与`String`完全相同！
 - en: 'That''s not a coincidence: `String` is defined as a vector of bytes, `Vec<u8>`,
     under the hood:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 这不是巧合：`String`在底层被定义为字节的向量，`Vec<u8>`：
 - en: '[PRE9]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[Exercise](#exercise)'
+  id: totrans-36
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`06_ticket_management/02_vec`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/02_vec)
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`06_ticket_management/02_vec`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/02_vec)

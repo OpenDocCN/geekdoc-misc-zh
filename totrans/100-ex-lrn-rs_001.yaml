@@ -1,192 +1,290 @@
 - en: Welcome
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 欢迎加入
 - en: 原文：[https://rust-exercises.com/100-exercises/01_intro/00_welcome.html](https://rust-exercises.com/100-exercises/01_intro/00_welcome.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/01_intro/00_welcome.html](https://rust-exercises.com/100-exercises/01_intro/00_welcome.html)
 - en: Welcome to **"100 Exercises To Learn Rust"**!
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 欢迎加入 **“100 练习学习 Rust”**！
 - en: This course will teach you Rust's core concepts, one exercise at a time.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 本课程将一次一个练习地教你 Rust 的核心概念。
 - en: You'll learn about Rust's syntax, its type system, its standard library, and
     its ecosystem.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 你将了解 Rust 的语法、其类型系统、其标准库以及其生态系统。
 - en: We don't assume any prior knowledge of Rust, but we assume you know at least
     another programming language. We also don't assume any prior knowledge of systems
     programming or memory management. Those topics will be covered in the course.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不假设你对 Rust 有任何先前的知识，但我们假设你至少了解另一种编程语言。我们也不假设你对系统编程或内存管理有任何先前的知识。这些主题将在课程中介绍。
 - en: In other words, we'll be starting from scratch!
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说，我们将从头开始！
 - en: You'll build up your Rust knowledge in small, manageable steps. By the end of
     the course, you will have solved ~100 exercises, enough to feel comfortable working
     on small to medium-sized Rust projects.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 你将通过小而可控的步骤逐步构建你的 Rust 知识。课程结束时，你将完成约 ~100 个练习，这足以让你在小型到中型 Rust 项目上感到舒适。
 - en: '[Methodology](#methodology)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[方法论](#methodology)'
 - en: This course is based on the "learn by doing" principle.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 本课程基于“实践学习”原则。
 - en: It has been designed to be interactive and hands-on.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 它被设计成互动和动手实践。
 - en: '[Mainmatter](https://mainmatter.com/rust-consulting/) developed this course
     to be delivered in a classroom setting, over 4 days: each attendee advances through
     the lessons at their own pace, with an experienced instructor providing guidance,
     answering questions and diving deeper into the topics as needed.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '[Mainmatter](https://mainmatter.com/rust-consulting/) 开发了这门课程，以便在教室环境中进行，为期
+    4 天：每位参与者根据自己的进度学习课程，有经验讲师提供指导，解答问题，并在需要时深入探讨主题。'
 - en: You can sign up for the next tutored session on [our website](https://ti.to/mainmatter/rust-from-scratch-jan-2025).
     If you'd like to organise a private session for your company, please [get in touch](https://mainmatter.com/contact/).
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以在我们的网站上注册下一次辅导课程（[我们的网站](https://ti.to/mainmatter/rust-from-scratch-jan-2025)）。如果你想为你的公司组织一个私人课程，请[联系我们](https://mainmatter.com/contact/)。
 - en: You can also take the courses on your own, but we recommend you find a friend
     or a mentor to help you along the way should you get stuck. You can find solutions
     for all exercises in the [`solutions` branch of the GitHub repository](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/solutions).
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 你也可以独立完成这些课程，但我们建议如果你遇到困难，可以找一个朋友或导师来帮助你。你可以在 GitHub 仓库的 `solutions` 分支中找到所有练习的解决方案（[GitHub
+    仓库的 solutions 分支](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/solutions)）。
 - en: '[Formats](#formats)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[格式](#formats)'
 - en: You can go through the course material [in the browser](https://rust-exercises.com/100-exercises/)
     or [download it as a PDF file](https://rust-exercises.com/100-exercises-to-learn-rust.pdf),
     for offline reading.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以通过浏览器浏览课程材料（[在浏览器中浏览课程材料](https://rust-exercises.com/100-exercises/)）或将其作为
+    PDF 文件下载（[下载 PDF 文件](https://rust-exercises.com/100-exercises-to-learn-rust.pdf)），进行离线阅读。
 - en: If you prefer to have the course material printed out, [buy a paperback copy
     on Amazon](https://www.amazon.com/dp/B0DJ14KQQG/).
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你希望打印课程材料，可以在 Amazon 上购买平装本（[在 Amazon 上购买平装本](https://www.amazon.com/dp/B0DJ14KQQG/)）。
 - en: '[Structure](#structure)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[结构](#structure)'
 - en: On the left side of the screen, you can see that the course is divided into
     sections. Each section introduces a new concept or feature of the Rust language.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 在屏幕左侧，你可以看到课程被分为几个部分。每个部分介绍 Rust 语言的一个新概念或特性。
 - en: To verify your understanding, each section is paired with an exercise that you
     need to solve.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了验证你的理解，每个部分都配有一个需要解决的练习。
 - en: You can find the exercises in the [companion GitHub repository](https://github.com/mainmatter/100-exercises-to-learn-rust).
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以在配套的 GitHub 仓库中找到练习（[配套 GitHub 仓库](https://github.com/mainmatter/100-exercises-to-learn-rust)）。
 - en: 'Before starting the course, make sure to clone the repository to your local
     machine:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在开始课程之前，请确保将仓库克隆到你的本地机器上：
 - en: '[PRE0]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'We also recommend you work on a branch, so you can easily track your progress
     and pull in updates from the main repository, if needed:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还建议你在分支上工作，这样你可以轻松跟踪你的进度，并在需要时从主仓库中拉取更新：
 - en: '[PRE1]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: All exercises are located in the `exercises` folder. Each exercise is structured
     as a Rust package. The package contains the exercise itself, instructions on what
     to do (in `src/lib.rs`), and a test suite to automatically verify your solution.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有练习都位于`exercises`文件夹中。每个练习都结构为一个Rust包。该包包含练习本身、操作说明（在`src/lib.rs`中），以及一个测试套件来自动验证你的解决方案。
 - en: '[Tools](#tools)'
+  id: totrans-26
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[工具](#tools)'
 - en: 'To work through this course, you''ll need:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了完成这门课程，你需要：
 - en: '[**Rust**](https://www.rust-lang.org/tools/install). If `rustup` is already
     installed on your system, run `rustup update` (or another appropriate command
     depending on how you installed Rust on your system) to ensure you''re running
     on the latest stable version.'
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[**Rust**](https://www.rust-lang.org/tools/install)。如果`rustup`已经安装在你的系统上，运行`rustup
+    update`（或根据你在系统上安装Rust的方式的其他适当命令）以确保你运行的是最新稳定版本。'
 - en: '*(Optional but recommended)* An IDE with Rust autocompletion support. We recommend
     one of the following:'
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*(可选但推荐)* 一个支持Rust自动补全的IDE。我们推荐以下之一：'
 - en: '[RustRover](https://www.jetbrains.com/rust/);'
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[RustRover](https://www.jetbrains.com/rust/)'
 - en: '[Visual Studio Code](https://code.visualstudio.com) with the [`rust-analyzer`](https://marketplace.visualstudio.com/items?itemName=matklad.rust-analyzer)
     extension.'
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Visual Studio Code](https://code.visualstudio.com) 配置了`rust-analyzer`扩展。'
 - en: '[Workshop runner, `wr`](#workshop-runner-wr)'
+  id: totrans-32
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[研讨会运行者，`wr`](#workshop-runner-wr)'
 - en: 'To verify your solutions, we''ve also provided a tool to guide you through
     the course: the `wr` CLI, short for "workshop runner". Install `wr` by following
     the instructions on [its website](https://mainmatter.github.io/rust-workshop-runner/).'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了验证你的解决方案，我们还提供了一个工具来引导你完成课程：`wr` CLI，即“研讨会运行者”。按照[其网站](https://mainmatter.github.io/rust-workshop-runner/)上的说明安装`wr`。
 - en: 'Once you have `wr` installed, open a new terminal and navigate to the top-level
     folder of the repository. Run the `wr` command to start the course:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 安装好`wr`后，打开一个新的终端并导航到存储库的顶级文件夹。运行`wr`命令以开始课程：
 - en: '[PRE2]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`wr` will verify the solution to the current exercise.'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: '`wr`将验证当前练习的解决方案。'
 - en: Don't move on to the next section until you've solved the exercise for the current
     one.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 在解决当前练习之前，不要进入下一节。
 - en: We recommend committing your solutions to Git as you progress through the course,
     so you can easily track your progress and "restart" from a known point if needed.
+  id: totrans-38
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 我们建议你在课程进展过程中将解决方案提交到Git，这样你可以轻松跟踪进度，并在需要时从已知点“重启”。
 - en: Enjoy the course!
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 享受这门课程吧！
 - en: '[Author](#author)'
+  id: totrans-40
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[作者](#author)'
 - en: This course was written by [Luca Palmieri](https://www.lpalmieri.com/), Principal
     Engineering Consultant at [Mainmatter](https://mainmatter.com/rust-consulting/).
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 本课程由[Luca Palmieri](https://www.lpalmieri.com/)编写，他是[Mainmatter](https://mainmatter.com/rust-consulting/)的首席工程顾问。
 - en: Luca has been working with Rust since 2018, initially at TrueLayer and then
     at AWS.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: Luca自2018年以来一直在使用Rust，最初在TrueLayer，后来在AWS。
 - en: Luca is the author of ["Zero to Production in Rust"](https://zero2prod.com),
     the go-to resource for learning how to build backend applications in Rust.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: Luca是《["从零开始学习Rust"](https://zero2prod.com)》的作者，这是学习如何在Rust中构建后端应用的必备资源。
 - en: He is also the author and maintainer of a variety of open-source Rust projects,
     including [`cargo-chef`](https://github.com/LukeMathWalker/cargo-chef), [Pavex](https://pavex.dev)
     and [`wiremock`](https://github.com/LukeMathWalker/wiremock-rs).
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 他也是各种开源Rust项目的作者和维护者，包括[`cargo-chef`](https://github.com/LukeMathWalker/cargo-chef)、[Pavex](https://pavex.dev)和[`wiremock`](https://github.com/LukeMathWalker/wiremock-rs)。
 - en: '[Exercise](#exercise)'
+  id: totrans-45
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`01_intro/00_welcome`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/01_intro/00_welcome)
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`01_intro/00_welcome`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/01_intro/00_welcome)

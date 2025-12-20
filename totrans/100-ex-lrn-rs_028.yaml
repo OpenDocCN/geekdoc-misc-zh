@@ -1,148 +1,232 @@
 - en: Traits
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 特性
 - en: 原文：[https://rust-exercises.com/100-exercises/04_traits/01_trait.html](https://rust-exercises.com/100-exercises/04_traits/01_trait.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/04_traits/01_trait.html](https://rust-exercises.com/100-exercises/04_traits/01_trait.html)
 - en: 'Let''s look again at our `Ticket` type:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们再次看看我们的 `Ticket` 类型：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: All our tests, so far, have been making assertions using `Ticket`'s fields.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们所有的测试都使用了 `Ticket` 的字段进行断言。
 - en: '[PRE1]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: What if we wanted to compare two `Ticket` instances directly?
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想直接比较两个 `Ticket` 实例呢？
 - en: '[PRE2]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'The compiler will stop us:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器会阻止我们：
 - en: '[PRE3]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '`Ticket` is a new type. Out of the box, there is **no behavior attached to
     it**.'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Ticket` 是一个新类型。默认情况下，它 **没有任何行为附加**。'
 - en: Rust doesn't magically infer how to compare two `Ticket` instances just because
     they contain `String`s.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 并不会神奇地推断如何比较两个包含 `String` 的 `Ticket` 实例。
 - en: 'The Rust compiler is nudging us in the right direction though: it''s suggesting
     that we might be missing an implementation of `PartialEq`. `PartialEq` is a **trait**!'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管如此，Rust 编译器正在引导我们走向正确的方向：它建议我们可能遗漏了 `PartialEq` 的实现。`PartialEq` 是一个 **特性**！
 - en: '[What are traits?](#what-are-traits)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[特性是什么？](#特性是什么)'
 - en: Traits are Rust's way of defining **interfaces**.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 特性是 Rust 定义 **接口** 的方式。
 - en: A trait defines a set of methods that a type must implement to satisfy the trait's
     contract.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 特性定义了一组方法，类型必须实现这些方法以满足特性的契约。
 - en: '[Defining a trait](#defining-a-trait)'
+  id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[定义特性](#定义特性)'
 - en: 'The syntax for a trait definition goes like this:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 特性定义的语法如下所示：
 - en: '[PRE4]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'We might, for example, define a trait named `MaybeZero` that requires its implementors
     to define an `is_zero` method:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，我们可以定义一个名为 `MaybeZero` 的特性，要求其实现者定义一个 `is_zero` 方法：
 - en: '[PRE5]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[Implementing a trait](#implementing-a-trait)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[实现特性](#实现特性)'
 - en: 'To implement a trait for a type we use the `impl` keyword, just like we do
     for regular^([1](#footnote-inherent)) methods, but the syntax is a bit different:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 要为类型实现特性，我们使用 `impl` 关键字，就像我们为常规方法做的那样，但语法略有不同：
 - en: '[PRE6]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'For example, to implement the `MaybeZero` trait for a custom number type, `WrappingU32`:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，为了为自定义数字类型 `WrappingU32` 实现 `MaybeZero` 特性：
 - en: '[PRE7]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '[Invoking a trait method](#invoking-a-trait-method)'
+  id: totrans-26
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[调用特性方法](#调用特性方法)'
 - en: 'To invoke a trait method, we use the `.` operator, just like we do with regular
     methods:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 要调用特性方法，我们使用 `.` 操作符，就像我们使用常规方法一样：
 - en: '[PRE8]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'To invoke a trait method, two things must be true:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 要调用特性方法，必须满足两个条件：
 - en: The type must implement the trait.
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型必须实现该特性。
 - en: The trait must be in scope.
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 特性必须在作用域内。
 - en: 'To satisfy the latter, you may have to add a `use` statement for the trait:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了满足后者，你可能需要添加一个 `use` 语句来引用特性：
 - en: '[PRE9]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'This is not necessary if:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果以下条件之一成立，则不需要这样做：
 - en: The trait is defined in the same module where the invocation occurs.
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 该特性定义在调用发生时的相同模块中。
 - en: The trait is defined in the standard library's **prelude**. The prelude is a
     set of traits and types that are automatically imported into every Rust program.
     It's as if `use std::prelude::*;` was added at the beginning of every Rust module.
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 特性定义在标准库的 **预置** 中。预置是一组特性类型，它们被自动导入到每个 Rust 程序中。这就像在每个 Rust 模块的开头添加了 `use std::prelude::*;`。
 - en: You can find the list of traits and types in the prelude in the [Rust documentation](https://doc.rust-lang.org/std/prelude/index.html).
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以在 [Rust 文档](https://doc.rust-lang.org/std/prelude/index.html) 中找到特性和类型的列表。
 - en: '[Exercise](#exercise)'
+  id: totrans-38
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#练习)'
 - en: The exercise for this section is located in [`04_traits/01_trait`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/01_trait)
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于 `04_traits/01_trait` 中 [练习](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/01_trait)
 - en: '* * *'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: A method defined directly on a type, without using a trait, is also known as
     an **inherent method**. [↩](#fr-inherent-1)
+  id: totrans-41
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 直接在类型上定义的方法，而不使用特性，也称为 **固有方法**。 [↩](#固有方法-1)

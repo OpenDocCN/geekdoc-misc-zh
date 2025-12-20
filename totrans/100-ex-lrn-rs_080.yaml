@@ -1,137 +1,215 @@
 - en: Channels
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 通道
 - en: 原文：[https://rust-exercises.com/100-exercises/07_threads/05_channels.html](https://rust-exercises.com/100-exercises/07_threads/05_channels.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/07_threads/05_channels.html](https://rust-exercises.com/100-exercises/07_threads/05_channels.html)
 - en: All our spawned threads have been fairly short-lived so far.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们生成的所有线程都相对较短命。
 - en: Get some input, run a computation, return the result, shut down.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 获取一些输入，运行计算，返回结果，然后关闭。
 - en: 'For our ticket management system, we want to do something different: a client-server
     architecture.'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于我们的票据管理系统，我们想要做些不同的事情：一个客户端-服务器架构。
 - en: We will have **one long-running server thread**, responsible for managing our
     state, the stored tickets.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将有一个**长时间运行的服务器线程**，负责管理我们的状态，即存储的票据。
 - en: We will then have **multiple client threads**.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，我们将有**多个客户端线程**。
 - en: Each client will be able to send **commands** and **queries** to the stateful
     thread, in order to change its state (e.g. add a new ticket) or retrieve information
     (e.g. get the status of a ticket).
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个客户端都将能够向状态线程发送**命令**和**查询**，以改变其状态（例如，添加新的票据）或检索信息（例如，获取票据的状态）。
 - en: Client threads will run concurrently.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 客户端线程将并发运行。
 - en: '[Communication](#communication)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[通信](#communication)'
 - en: 'So far we''ve only had very limited parent-child communication:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们只有非常有限的父子通信：
 - en: The spawned thread borrowed/consumed data from the parent context
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 生成的线程从父上下文中借用/消费了数据。
 - en: The spawned thread returned data to the parent when joined
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当生成的线程连接时，它将数据返回给父线程。
 - en: This isn't enough for a client-server design.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 这对于客户端-服务器设计来说还不够。
 - en: Clients need to be able to send and receive data from the server thread *after*
     it has been launched.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 客户端需要在启动后能够从服务器线程发送和接收数据。
 - en: We can solve the issue using **channels**.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用**通道**来解决这个问题。
 - en: '[Channels](#channels-1)'
+  id: totrans-16
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[通道](#channels-1)'
 - en: Rust's standard library provides **multi-producer, single-consumer** (mpsc)
     channels in its `std::sync::mpsc` module.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 的标准库在其 `std::sync::mpsc` 模块中提供了**多生产者，单消费者**（mpsc）通道。
 - en: 'There are two channel flavours: bounded and unbounded. We''ll stick to the
     unbounded version for now, but we''ll discuss the pros and cons later on.'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 有两种通道类型：有界和无界。我们现在将坚持使用无界版本，但稍后我们将讨论其优缺点。
 - en: 'Channel creation looks like this:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 通道创建看起来是这样的：
 - en: '[PRE0]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: You get a sender and a receiver.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 你得到一个发送者和一个接收者。
 - en: You call `send` on the sender to push data into the channel.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 你在发送者上调用 `send` 来将数据推入通道。
 - en: You call `recv` on the receiver to pull data from the channel.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 你在接收者上调用 `recv` 来从通道中拉取数据。
 - en: '[Multiple senders](#multiple-senders)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[多个发送者](#multiple-senders)'
 - en: '`Sender` is clonable: we can create multiple senders (e.g. one for each client
     thread) and they will all push data into the same channel.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Sender` 是可克隆的：我们可以创建多个发送者（例如，每个客户端线程一个），它们将数据推入同一个通道。'
 - en: '`Receiver`, instead, is not clonable: there can only be a single receiver for
     a given channel.'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，`Receiver` 不可克隆：对于给定的通道，只能有一个接收者。
 - en: That's what **mpsc** (multi-producer single-consumer) stands for!
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是 **mpsc**（多生产者单消费者）的含义！
 - en: '[Message type](#message-type)'
+  id: totrans-28
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[消息类型](#message-type)'
 - en: Both `Sender` and `Receiver` are generic over a type parameter `T`.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Sender` 和 `Receiver` 都是对类型参数 `T` 的泛型。'
 - en: That's the type of the *messages* that can travel on our channel.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们通道上可以传输的消息类型。
 - en: It could be a `u64`, a struct, an enum, etc.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 它可以是 `u64`、结构体、枚举等。
 - en: '[Errors](#errors)'
+  id: totrans-32
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[错误](#errors)'
 - en: Both `send` and `recv` can fail.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: '`send` 和 `recv` 都可能失败。'
 - en: '`send` returns an error if the receiver has been dropped.'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果接收者已断开连接，`send` 返回错误。
 - en: '`recv` returns an error if all senders have been dropped and the channel is
     empty.'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果所有发送者都已断开连接且通道为空，`recv` 返回错误。
 - en: In other words, `send` and `recv` error when the channel is effectively closed.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说，当通道实际上关闭时，`send` 和 `recv` 会返回错误。
 - en: '[Exercise](#exercise)'
+  id: totrans-37
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`07_threads/05_channels`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/05_channels)
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`07_threads/05_channels`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/05_channels)。

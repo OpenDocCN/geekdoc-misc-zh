@@ -1,266 +1,406 @@
 - en: Types, part 1
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 类型，第一部分
 - en: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/01_integers.html](https://rust-exercises.com/100-exercises/02_basic_calculator/01_integers.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/01_integers.html](https://rust-exercises.com/100-exercises/02_basic_calculator/01_integers.html)
 - en: In the ["Syntax" section](/100-exercises/01_intro/01_syntax) `compute`'s input
     parameters were of type `u32`.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在["语法"部分](/100-exercises/01_intro/01_syntax)中，`compute`的输入参数类型为 `u32`。
 - en: Let's unpack what that *means*.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们来解释一下这*意味着什么*。
 - en: '[Primitive types](#primitive-types)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[原始类型](#primitive-types)'
 - en: '`u32` is one of Rust''s **primitive types**. Primitive types are the most basic
     building blocks of a language. They''re built into the language itself—i.e. they
     are not defined in terms of other types.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: '`u32` 是 Rust 的**原始类型**之一。原始类型是语言的最基本构建块。它们是语言本身构建的——即它们不是基于其他类型定义的。'
 - en: You can combine these primitive types to create more complex types. We'll see
     how soon enough.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以将这些原始类型组合起来创建更复杂的类型。我们很快就会看到。
 - en: '[Integers](#integers)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[整数](#integers)'
 - en: '`u32`, in particular, is an **unsigned 32-bit integer**.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '`u32` 特别是一个**无符号 32 位整数**。'
 - en: An integer is a number that can be written without a fractional component. E.g.
     `1` is an integer, while `1.2` is not.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 整数是可以不带小数部分的数字。例如，`1` 是一个整数，而 `1.2` 不是。
 - en: '[Signed vs. unsigned](#signed-vs-unsigned)'
+  id: totrans-10
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[有符号与无符号](#signed-vs-unsigned)'
 - en: An integer can be **signed** or **unsigned**.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 整数可以是**有符号**或**无符号**。
 - en: An unsigned integer can only represent non-negative numbers (i.e. `0` or greater).
     A signed integer can represent both positive and negative numbers (e.g. `-1`,
     `12`, etc.).
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 无符号整数只能表示非负数（即 `0` 或更大）。有符号整数可以表示正数和负数（例如 `-1`、`12` 等）。
 - en: The `u` in `u32` stands for **unsigned**.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: '`u32` 中的 `u` 代表**无符号**。'
 - en: The equivalent type for signed integer is `i32`, where the `i` stands for integer
     (i.e. any integer, positive or negative).
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 有符号整数的等效类型是 `i32`，其中 `i` 代表整数（即任何整数，正数或负数）。
 - en: '[Bit width](#bit-width)'
+  id: totrans-15
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[位宽](#bit-width)'
 - en: The `32` in `u32` refers to the **number of bits^([1](#footnote-bit))** used
     to represent the number in memory.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: '`u32` 中的 `32` 指的是在内存中表示数字所使用的**比特数^([1](#footnote-bit))**。'
 - en: The more bits, the larger the range of numbers that can be represented.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 比特数越多，可以表示的数字范围就越大。
 - en: 'Rust supports multiple bit widths for integers: `8`, `16`, `32`, `64`, `128`.'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 支持多种整数位宽：`8`、`16`、`32`、`64`、`128`。
 - en: With 32 bits, `u32` can represent numbers from `0` to `2^32 - 1` (a.k.a. [`u32::MAX`](https://doc.rust-lang.org/std/primitive.u32.html#associatedconstant.MAX)).
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用 32 位，`u32` 可以表示从 `0` 到 `2^32 - 1`（即[`u32::MAX`](https://doc.rust-lang.org/std/primitive.u32.html#associatedconstant.MAX)）的数字。
 - en: With the same number of bits, a signed integer (`i32`) can represent numbers
     from `-2^31` to `2^31 - 1` (i.e. from [`i32::MIN`](https://doc.rust-lang.org/std/primitive.i32.html#associatedconstant.MIN)
     to [`i32::MAX`](https://doc.rust-lang.org/std/primitive.i32.html#associatedconstant.MAX)).
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 在相同的比特数下，有符号整数（`i32`）可以表示从 `-2^31` 到 `2^31 - 1`（即[`i32::MIN`](https://doc.rust-lang.org/std/primitive.i32.html#associatedconstant.MIN)
+    到[`i32::MAX`](https://doc.rust-lang.org/std/primitive.i32.html#associatedconstant.MAX)）的数字。
 - en: The maximum value for `i32` is smaller than the maximum value for `u32` because
     one bit is used to represent the sign of the number. Check out the [two's complement](https://en.wikipedia.org/wiki/Two%27s_complement)
     representation for more details on how signed integers are represented in memory.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '`i32` 的最大值小于 `u32` 的最大值，因为有一个比特用于表示数字的符号。有关有符号整数在内存中表示的更多详细信息，请查看[二进制补码](https://en.wikipedia.org/wiki/Two%27s_complement)表示。'
 - en: '[Summary](#summary)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: 'Combining the two variables (signed/unsigned and bit width), we get the following
     integer types:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 结合这两个变量（有符号/无符号和位宽），我们得到以下整数类型：
 - en: '| Bit width | Signed | Unsigned |'
+  id: totrans-24
   prefs: []
   type: TYPE_TB
+  zh: '| 位宽 | 有符号 | 无符号 |'
 - en: '| --- | --- | --- |'
+  id: totrans-25
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- |'
 - en: '| 8-bit | `i8` | `u8` |'
+  id: totrans-26
   prefs: []
   type: TYPE_TB
+  zh: '| 8位 | `i8` | `u8` |'
 - en: '| 16-bit | `i16` | `u16` |'
+  id: totrans-27
   prefs: []
   type: TYPE_TB
+  zh: '| 16位 | `i16` | `u16` |'
 - en: '| 32-bit | `i32` | `u32` |'
+  id: totrans-28
   prefs: []
   type: TYPE_TB
+  zh: '| 32位 | `i32` | `u32` |'
 - en: '| 64-bit | `i64` | `u64` |'
+  id: totrans-29
   prefs: []
   type: TYPE_TB
+  zh: '| 64位 | `i64` | `u64` |'
 - en: '| 128-bit | `i128` | `u128` |'
+  id: totrans-30
   prefs: []
   type: TYPE_TB
+  zh: '| 128位 | `i128` | `u128` |'
 - en: '[Literals](#literals)'
+  id: totrans-31
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[字面量](#literals)'
 - en: A **literal** is a notation for representing a fixed value in source code.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: '**字面量**是表示源代码中固定值的记法。'
 - en: For example, `42` is a Rust literal for the number forty-two.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，`42` 是 Rust 中表示数字四十二的字面量。
 - en: '[Type annotations for literals](#type-annotations-for-literals)'
+  id: totrans-34
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[字面量的类型注解](#type-annotations-for-literals)'
 - en: But all values in Rust have a type, so... what's the type of `42`?
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 但在 Rust 中，所有值都有类型，所以... `42` 的类型是什么？
 - en: The Rust compiler will try to infer the type of a literal based on how it's
     used.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 编译器会根据字面量的使用方式尝试推断其类型。
 - en: If you don't provide any context, the compiler will default to `i32` for integer
     literals.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您不提供任何上下文，编译器将默认为`i32`为整数字面量。
 - en: If you want to use a different type, you can add the desired integer type as
     a suffix—e.g. `2u64` is a 2 that's explicitly typed as a `u64`.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您想使用不同的类型，您可以在所需整数类型后添加后缀——例如，`2u64`是一个显式类型为`u64`的2。
 - en: '[Underscores in literals](#underscores-in-literals)'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[字面量中的下划线](#underscores-in-literals)'
 - en: You can use underscores `_` to improve the readability of large numbers.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可以使用下划线 `_` 来提高大数字的可读性。
 - en: For example, `1_000_000` is the same as `1000000`.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，`1_000_000` 与 `1000000` 相同。
 - en: '[Arithmetic operators](#arithmetic-operators)'
+  id: totrans-42
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[算术运算符](#arithmetic-operators)'
 - en: 'Rust supports the following arithmetic operators^([2](#footnote-traits)) for
     integers:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust支持以下整数运算符^([2](#footnote-traits))：
 - en: '`+` for addition'
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`+` 用于加法'
 - en: '`-` for subtraction'
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`-` 用于减法'
 - en: '`*` for multiplication'
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`*` 用于乘法'
 - en: '`/` for division'
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`/` 用于除法'
 - en: '`%` for remainder'
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`%` 用于余数'
 - en: Precedence and associativity rules for these operators are the same as in mathematics.
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些运算符的优先级和结合规则与数学中的相同。
 - en: You can use parentheses to override the default precedence. E.g. `2 * (3 + 4)`.
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可以使用括号来覆盖默认的优先级。例如：`2 * (3 + 4)`。
 - en: ⚠️ **Warning**
+  id: totrans-51
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: ⚠️ **警告**
 - en: ''
+  id: totrans-52
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: The division operator `/` performs integer division when used with integer types.
     I.e. the result is truncated towards zero. For example, `5 / 2` is `2`, not `2.5`.
+  id: totrans-53
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 除法运算符 `/` 在与整数类型一起使用时执行整数除法。即结果被截断到零。例如，`5 / 2` 是 `2`，而不是 `2.5`。
 - en: '[No automatic type coercion](#no-automatic-type-coercion)'
+  id: totrans-54
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[无自动类型转换](#no-automatic-type-coercion)'
 - en: As we discussed in the previous exercise, Rust is a statically typed language.
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 正如我们在上一个练习中讨论的，Rust是一种静态类型语言。
 - en: In particular, Rust is quite strict about type coercion. It won't automatically
     convert a value from one type to another^([3](#footnote-coercion)), even if the
     conversion is lossless. You have to do it explicitly.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 尤其是Rust对类型转换非常严格。它不会自动将一个值从一种类型转换为另一种类型^([3](#footnote-coercion))，即使转换是无损的。您必须显式地进行转换。
 - en: 'For example, you can''t assign a `u8` value to a variable with type `u32`,
     even though all `u8` values are valid `u32` values:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，您不能将`u8`类型的值赋给类型为`u32`的变量，尽管所有`u8`值都是有效的`u32`值：
 - en: '[PRE0]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'It''ll throw a compilation error:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 它将抛出一个编译错误：
 - en: '[PRE1]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: We'll see how to convert between types [later in this course](/100-exercises/04_traits/09_from).
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将在本课程的后续部分看到如何在不同类型之间进行转换[（稍后介绍）](/100-exercises/04_traits/09_from)。
 - en: '[Further reading](#further-reading)'
+  id: totrans-62
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步阅读](#further-reading)'
 - en: '[The integer types section](https://doc.rust-lang.org/book/ch03-02-data-types.html#integer-types)
     in the official Rust book'
+  id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[官方Rust书籍中的整数类型部分](https://doc.rust-lang.org/book/ch03-02-data-types.html#integer-types)'
 - en: '[Exercise](#exercise)'
+  id: totrans-64
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`02_basic_calculator/01_integers`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/01_integers)
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`02_basic_calculator/01_integers`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/01_integers)
 - en: '* * *'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'A bit is the smallest unit of data in a computer. It can only have two values:
     `0` or `1`. [↩](#fr-bit-1)'
+  id: totrans-67
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 位是计算机中最小的数据单位。它只能有两个值：`0` 或 `1`。[↩](#fr-bit-1)
 - en: Rust doesn't let you define custom operators, but it puts you in control of
     how the built-in operators behave. We'll talk about operator overloading [later
     in the course](/100-exercises/04_traits/03_operator_overloading), after we've
     covered traits. [↩](#fr-traits-1)
+  id: totrans-68
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: Rust不允许您定义自定义运算符，但它让您控制内置运算符的行为。我们将在介绍特质之后讨论运算符重载[（稍后介绍）](/100-exercises/04_traits/03_operator_overloading)。[↩](#fr-traits-1)
 - en: There are some exceptions to this rule, mostly related to references, smart
     pointers and ergonomics. We'll cover those [later on](/100-exercises/04_traits/07_deref).
     A mental model of "all conversions are explicit" will serve you well in the meantime.
     [↩](#fr-coercion-1)
+  id: totrans-69
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 此规则有一些例外，主要与引用、智能指针和人体工程学相关。我们将在稍后介绍这些内容[（稍后介绍）](/100-exercises/04_traits/07_deref)。在此期间，一个“所有转换都是显式的”的心理模型将为您服务。[↩](#fr-coercion-1)

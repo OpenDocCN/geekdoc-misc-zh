@@ -1,126 +1,194 @@
 - en: Threads
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 线程
 - en: 原文：[https://rust-exercises.com/100-exercises/07_threads/01_threads.html](https://rust-exercises.com/100-exercises/07_threads/01_threads.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/07_threads/01_threads.html](https://rust-exercises.com/100-exercises/07_threads/01_threads.html)
 - en: Before we start writing multithreaded code, let's take a step back and talk
     about what threads are and why we might want to use them.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们开始编写多线程代码之前，让我们退一步，谈谈线程是什么以及为什么我们可能想要使用它们。
 - en: '[What is a thread?](#what-is-a-thread)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[什么是线程？](#what-is-a-thread)'
 - en: A **thread** is an execution context managed by the underlying operating system.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: '**线程**是由底层操作系统管理的执行上下文。'
 - en: Each thread has its own stack and instruction pointer.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个线程都有自己的栈和指令指针。
 - en: A single **process** can manage multiple threads. These threads share the same
     memory space, which means they can access the same data.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个**进程**可以管理多个线程。这些线程共享相同的内存空间，这意味着它们可以访问相同的数据。
 - en: Threads are a **logical** construct. In the end, you can only run one set of
     instructions at a time on a CPU core, the **physical** execution unit.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 线程是一个**逻辑**结构。最终，你只能在CPU核心上同时运行一组指令，这是**物理**执行单元。
 - en: Since there can be many more threads than there are CPU cores, the operating
     system's **scheduler** is in charge of deciding which thread to run at any given
     time, partitioning CPU time among them to maximize throughput and responsiveness.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于线程的数量可能比CPU核心的数量多得多，因此操作系统的**调度器**负责在任何给定时间决定运行哪个线程，在它们之间分配CPU时间以最大化吞吐量和响应性。
 - en: '[`main`](#main)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`main`](#main)'
 - en: When a Rust program starts, it runs on a single thread, the **main thread**.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 当Rust程序启动时，它在一个单独的线程上运行，即**主线程**。
 - en: This thread is created by the operating system and is responsible for running
     the `main` function.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个线程是由操作系统创建的，负责运行`main`函数。
 - en: '[PRE0]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[`std::thread`](#stdthread)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`std::thread`](#stdthread)'
 - en: Rust's standard library provides a module, `std::thread`, that allows you to
     create and manage threads.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust的标准库提供了一个模块，`std::thread`，允许你创建和管理线程。
 - en: '[`spawn`](#spawn)'
+  id: totrans-15
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`spawn`](#spawn)'
 - en: You can use `std::thread::spawn` to create new threads and execute code on them.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以使用`std::thread::spawn`来创建新线程并在它们上执行代码。
 - en: 'For example:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE1]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: If you execute this program on the [Rust playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=afedf7062298ca8f5a248bc551062eaa)
     you'll see that the main thread and the spawned thread run concurrently.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你在这个程序上执行[Rust playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=afedf7062298ca8f5a248bc551062eaa)中，你会看到主线程和生成的线程是并发运行的。
 - en: Each thread makes progress independently of the other.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个线程独立于其他线程进行进度。
 - en: '[Process termination](#process-termination)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[进程终止](#process-termination)'
 - en: When the main thread finishes, the overall process will exit.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 当主线程完成时，整个进程将退出。
 - en: A spawned thread will continue running until it finishes or the main thread
     finishes.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 生成的线程将继续运行，直到完成或主线程完成。
 - en: '[PRE2]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: In the example above, you can expect to see the message "Hello from a thread!"
     printed roughly five times.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上面的例子中，你可以预期看到“Hello from a thread!”的消息大约打印五次。
 - en: Then the main thread will finish (when the `sleep` call returns), and the spawned
     thread will be terminated since the overall process exits.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，主线程将完成（当`sleep`调用返回时），生成的线程将被终止，因为整个进程退出。
 - en: '[`join`](#join)'
+  id: totrans-27
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`join`](#join)'
 - en: You can also wait for a spawned thread to finish by calling the `join` method
     on the `JoinHandle` that `spawn` returns.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 你也可以通过在`spawn`返回的`JoinHandle`上调用`join`方法来等待生成的线程完成。
 - en: '[PRE3]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: In this example, the main thread will wait for the spawned thread to finish
     before exiting.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这个例子中，主线程将在退出之前等待生成的线程完成。
 - en: 'This introduces a form of **synchronization** between the two threads: you''re
     guaranteed to see the message "Hello from a thread!" printed before the program
     exits, because the main thread won''t exit until the spawned thread has finished.'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 这在两个线程之间引入了一种**同步**形式：你保证在程序退出之前会看到“Hello from a thread!”的消息打印出来，因为主线程不会退出，直到生成的线程完成。
 - en: '[Exercise](#exercise)'
+  id: totrans-32
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`07_threads/01_threads`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/01_threads)
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`07_threads/01_threads`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/01_threads)

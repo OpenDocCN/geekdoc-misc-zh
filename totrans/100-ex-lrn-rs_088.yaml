@@ -1,114 +1,170 @@
 - en: Design review
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 设计回顾
 - en: 原文：[https://rust-exercises.com/100-exercises/07_threads/13_without_channels.html](https://rust-exercises.com/100-exercises/07_threads/13_without_channels.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/07_threads/13_without_channels.html](https://rust-exercises.com/100-exercises/07_threads/13_without_channels.html)
 - en: Let's take a moment to review the journey we've been through.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们花点时间回顾一下我们所走过的路。
 - en: '[Lockless with channel serialization](#lockless-with-channel-serialization)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[无锁的通道序列化](#lockless-with-channel-serialization)'
 - en: 'Our first implementation of a multithreaded ticket store used:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们对多线程票据存储的第一个实现使用了：
 - en: a single long-lived thread (server), to hold the shared state
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个单一的长生命线程（服务器），以持有共享状态
 - en: multiple clients sending requests to it via channels from their own threads.
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 多个客户端通过它们自己的线程中的通道向其发送请求。
 - en: 'No locking of the state was necessary, since the server was the only one modifying
     the state. That''s because the "inbox" channel naturally **serialized** incoming
     requests: the server would process them one by one.'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 无需锁定状态，因为服务器是唯一修改状态的实体。这是因为“收件箱”通道自然**序列化**了传入的请求：服务器会逐个处理它们。
 - en: 'We''ve already discussed the limitations of this approach when it comes to
     patching behaviour, but we didn''t discuss the performance implications of the
     original design: the server could only process one request at a time, including
     reads.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经讨论了这种方法在修补行为方面的局限性，但我们没有讨论原始设计的性能影响：服务器一次只能处理一个请求，包括读取。
 - en: '[Fine-grained locking](#fine-grained-locking)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[细粒度锁定](#fine-grained-locking)'
 - en: We then moved to a more sophisticated design, where each ticket was protected
     by its own lock and clients could independently decide if they wanted to read
     or atomically modify a ticket, acquiring the appropriate lock.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，我们转向了一个更复杂的设计，其中每个票据都由其自己的锁保护，并且客户端可以独立决定是否想要读取或原子性地修改一个票据，获取适当的锁。
 - en: 'This design allows for better parallelism (i.e. multiple clients can read tickets
     at the same time), but it is still fundamentally **serial**: the server processes
     commands one by one. In particular, it hands out locks to clients one by one.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种设计允许更好的并行性（即多个客户端可以同时读取票据），但它仍然是根本上的**序列化**：服务器逐个处理命令。特别是，它逐个向客户端发放锁。
 - en: Could we remove the channels entirely and allow clients to directly access the
     `TicketStore`, relying exclusively on locks to synchronize access?
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们能否完全移除通道，并允许客户端直接访问`TicketStore`，完全依赖锁来同步访问？
 - en: '[Removing channels](#removing-channels)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[移除通道](#removing-channels)'
 - en: 'We have two problems to solve:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们有两个问题需要解决：
 - en: Sharing `TicketStore` across threads
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在线程间共享`TicketStore`
 - en: Synchronizing access to the store
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 同步对存储的访问
 - en: '[Sharing `TicketStore` across threads](#sharing-ticketstore-across-threads)'
+  id: totrans-17
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[在线程间共享`TicketStore`](#sharing-ticketstore-across-threads)'
 - en: We want all threads to refer to the same state, otherwise we don't really have
     a multithreaded system—we're just running multiple single-threaded systems in
     parallel.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们希望所有线程都引用同一个状态，否则我们实际上并没有一个多线程系统——我们只是在并行运行多个单线程系统。
 - en: 'We''ve already encountered this problem when we tried to share a lock across
     threads: we can use an `Arc`.'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们尝试在多个线程间共享一个锁时，我们已经遇到了这个问题：我们可以使用`Arc`。
 - en: '[Synchronizing access to the store](#synchronizing-access-to-the-store)'
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[同步对存储的访问](#synchronizing-access-to-the-store)'
 - en: 'There is one interaction that''s still lockless thanks to the serialization
     provided by the channels: inserting (or removing) a ticket from the store.'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于通道提供的序列化，有一个交互仍然是无锁的：从存储中插入（或删除）一个票据。
 - en: If we remove the channels, we need to introduce (another) lock to synchronize
     access to the `TicketStore` itself.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们移除通道，我们需要引入（另一个）锁来同步对`TicketStore`本身的访问。
 - en: 'If we use a `Mutex`, then it makes no sense to use an additional `RwLock` for
     each ticket: the `Mutex` will already serialize access to the entire store, so
     we wouldn''t be able to read tickets in parallel anyway.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用`Mutex`，那么为每个票据使用额外的`RwLock`就没有意义了：`Mutex`将已经序列化对整个存储的访问，所以我们无论如何都无法并行读取票据。
 - en: If we use a `RwLock`, instead, we can read tickets in parallel. We just need
     to pause all reads while inserting or removing a ticket.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用`RwLock`，那么我们可以并行读取票据。我们只需要在插入或删除票据时暂停所有读取。
 - en: Let's go down this path and see where it leads us.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们沿着这条路径走下去，看看它将带我们走向何方。
 - en: '[Exercise](#exercise)'
+  id: totrans-26
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`07_threads/13_without_channels`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/13_without_channels)
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`07_threads/13_without_channels`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/13_without_channels)

@@ -1,79 +1,121 @@
 - en: thiserror
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: thiserror
 - en: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/12_thiserror.html](https://rust-exercises.com/100-exercises/05_ticket_v2/12_thiserror.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/12_thiserror.html](https://rust-exercises.com/100-exercises/05_ticket_v2/12_thiserror.html)
 - en: That was a bit of detour, wasn't it? But a necessary one!
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 这有点像是一个小插曲，不是吗？但这是必要的！
 - en: 'Let''s get back on track now: custom error types and `thiserror`.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们回到正题：自定义错误类型和 `thiserror`。
 - en: '[Custom error types](#custom-error-types)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[自定义错误类型](#custom-error-types)'
 - en: We've seen how to implement the `Error` trait "manually" for a custom error
     type.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经看到了如何为自定义错误类型“手动”实现 `Error` 特性。
 - en: Imagine that you have to do this for most error types in your codebase. That's
     a lot of boilerplate, isn't it?
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 想象一下，你可能需要在代码库中的大多数错误类型上执行此操作。这岂不是很多样板代码，对吧？
 - en: We can remove some of the boilerplate by using [`thiserror`](https://docs.rs/thiserror/latest/thiserror/),
     a Rust crate that provides a **procedural macro** to simplify the creation of
     custom error types.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过使用 [thiserror](https://docs.rs/thiserror/latest/thiserror/) 来移除一些样板代码，这是一个提供
+    **过程宏** 以简化自定义错误类型创建的 Rust 包。
 - en: '[PRE0]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[You can write your own macros](#you-can-write-your-own-macros)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[你可以编写自己的宏](#you-can-write-your-own-macros)'
 - en: All the `derive` macros we've seen so far were provided by the Rust standard
     library.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们到目前为止看到的所有 `derive` 宏都是由 Rust 标准库提供的。
 - en: '`thiserror::Error` is the first example of a **third-party** `derive` macro.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '`thiserror::Error` 是第一个 **第三方** `derive` 宏的例子。'
 - en: '`derive` macros are a subset of **procedural macros**, a way to generate Rust
     code at compile time. We won''t get into the details of how to write a procedural
     macro in this course, but it''s important to know that you can write your own!'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '`derive` 宏是 **过程宏** 的一个子集，一种在编译时生成 Rust 代码的方法。我们不会在本课程中深入探讨如何编写过程宏的细节，但重要的是要知道你可以编写自己的宏！'
 - en: A topic to approach in a more advanced Rust course.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个在更高级的 Rust 课程中需要探讨的主题。
 - en: '[Custom syntax](#custom-syntax)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[自定义语法](#custom-syntax)'
 - en: 'Each procedural macro can define its own syntax, which is usually explained
     in the crate''s documentation. In the case of `thiserror`, we have:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个过程宏都可以定义自己的语法，这通常在包的文档中解释。对于 `thiserror` 来说，我们有：
 - en: '`#[derive(thiserror::Error)]`: this is the syntax to derive the `Error` trait
     for a custom error type, helped by `thiserror`.'
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`#[derive(thiserror::Error)]`: 这是使用 `thiserror` 为自定义错误类型推导 `Error` 特性的语法。'
 - en: '`#[error("{0}")]`: this is the syntax to define a `Display` implementation
     for each variant of the custom error type. `{0}` is replaced by the zero-th field
     of the variant (`String`, in this case) when the error is displayed.'
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`#[error("{0}")]`: 这是为自定义错误类型的每个变体定义 `Display` 实现的语法。当错误显示时，`{0}` 被替换为变体的零索引字段（在这种情况下是
+    `String`）。'
 - en: '[Exercise](#exercise)'
+  id: totrans-18
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`05_ticket_v2/12_thiserror`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/12_thiserror)
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于 [05_ticket_v2/12_thiserror](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/12_thiserror)

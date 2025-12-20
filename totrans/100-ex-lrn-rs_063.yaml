@@ -1,62 +1,94 @@
 - en: .iter()
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: .iter()
 - en: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/05_iter.html](https://rust-exercises.com/100-exercises/06_ticket_management/05_iter.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/05_iter.html](https://rust-exercises.com/100-exercises/06_ticket_management/05_iter.html)
 - en: '`IntoIterator` **consumes** `self` to create an iterator.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '`IntoIterator`会**消耗**`self`来创建迭代器。'
 - en: 'This has its benefits: you get **owned** values from the iterator. For example:
     if you call `.into_iter()` on a `Vec<Ticket>` you''ll get an iterator that returns
     `Ticket` values.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 这有其好处：你可以从迭代器中获得**所有者**值。例如：如果你在`Vec<Ticket>`上调用`.into_iter()`，你会得到一个返回`Ticket`值的迭代器。
 - en: 'That''s also its downside: you can no longer use the original collection after
     calling `.into_iter()` on it. Quite often you want to iterate over a collection
     without consuming it, looking at **references** to the values instead. In the
     case of `Vec<Ticket>`, you''d want to iterate over `&Ticket` values.'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 这也是它的缺点：在调用`.into_iter()`之后，你不能再使用原始集合。很多时候，你想要遍历一个集合而不消耗它，查看**值的引用**。在`Vec<Ticket>`的情况下，你想要遍历`&Ticket`值。
 - en: 'Most collections expose a method called `.iter()` that returns an iterator
     over references to the collection''s elements. For example:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数集合都提供了一个名为`.iter()`的方法，它返回一个遍历集合元素引用的迭代器。例如：
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: This pattern can be simplified by implementing `IntoIterator` for a **reference
     to the collection**. In our example above, that would be `&Vec<Ticket>`.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过为**集合的引用**实现`IntoIterator`，可以简化这种模式。在我们的例子中，那将是`&Vec<Ticket>`。
 - en: 'The standard library does this, that''s why the following code works:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 标准库就是这样做的，这就是为什么以下代码可以工作：
 - en: '[PRE1]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'It''s idiomatic to provide both options:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 提供这两种选项是惯用的：
 - en: An implementation of `IntoIterator` for a reference to the collection.
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 集合引用的`IntoIterator`实现。
 - en: An `.iter()` method that returns an iterator over references to the collection's
     elements.
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.iter()`方法返回一个遍历集合元素的引用迭代器。'
 - en: The former is convenient in `for` loops, the latter is more explicit and can
     be used in other contexts.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 前者适用于`for`循环，后者更明确，可以在其他上下文中使用。
 - en: '[Exercise](#exercise)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`06_ticket_management/05_iter`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/05_iter)
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`06_ticket_management/05_iter`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/05_iter)

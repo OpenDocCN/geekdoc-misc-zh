@@ -1,57 +1,89 @@
 - en: Asynchronous functions
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 异步函数
 - en: 原文：[https://rust-exercises.com/100-exercises/08_futures/01_async_fn.html](https://rust-exercises.com/100-exercises/08_futures/01_async_fn.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/08_futures/01_async_fn.html](https://rust-exercises.com/100-exercises/08_futures/01_async_fn.html)
 - en: All the functions and methods you've written so far were eager.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 你迄今为止编写的所有函数和方法都是**急切的**。
 - en: 'Nothing happened until you invoked them. But once you did, they ran to completion:
     they did **all** their work, and then returned their output.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 除非你调用它们，否则什么都不会发生。但一旦你调用，它们就会运行到完成：它们完成了**所有**工作，然后返回它们的输出。
 - en: Sometimes that's undesirable.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时候这并不理想。
 - en: 'For example, if you''re writing an HTTP server, there might be a lot of **waiting**:
     waiting for the request body to arrive, waiting for the database to respond, waiting
     for a downstream service to reply, etc.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，如果你正在编写一个HTTP服务器，可能会有很多**等待**：等待请求体到达，等待数据库响应，等待下游服务回复等。
 - en: What if you could do something else while you're waiting?
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 你在等待的时候，如果能做些别的事情会怎么样呢？
 - en: What if you could choose to give up midway through a computation?
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你可以在计算中途放弃会怎么样？
 - en: What if you could choose to prioritise another task over the current one?
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你可以选择优先处理另一个任务而不是当前任务会怎么样？
 - en: That's where **asynchronous functions** come in.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是**异步函数**的用武之地。
 - en: '[`async fn`](#async-fn)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '`async fn`'
 - en: 'You use the `async` keyword to define an asynchronous function:'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 你使用 `async` 关键字来定义一个异步函数：
 - en: '[PRE0]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: What happens if you call `bind_random` as you would a regular function?
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你像调用常规函数一样调用 `bind_random` 会发生什么？
 - en: '[PRE1]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Nothing happens!
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有发生任何事情！
 - en: 'Rust doesn''t start executing `bind_random` when you call it, not even as a
     background task (as you might expect based on your experience with other languages).
     Asynchronous functions in Rust are **lazy**: they don''t do any work until you
@@ -59,116 +91,177 @@
     a **future**, a type that represents a computation that may complete later. They''re
     called futures because they implement the `Future` trait, an interface that we''ll
     examine in detail later on in this chapter.'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 不会在你调用它时开始执行 `bind_random`，甚至不是作为一个后台任务（根据你使用其他语言的经验，你可能会有这样的预期）。Rust 中的异步函数是**懒加载的**：它们不会在你明确要求之前做任何工作。使用
+    Rust 的术语，我们说 `bind_random` 返回一个**未来**，这是一个表示可能稍后完成的计算的类型。它们被称为未来，因为它们实现了 `Future`
+    特性，这是一个我们将在本章后面详细探讨的接口。
 - en: '[`.await`](#await)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '`[.await](#await)`'
 - en: 'The most common way to ask an asynchronous function to do some work is to use
     the `.await` keyword:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 向异步函数请求执行一些工作的最常见方法是使用 `.await` 关键字：
 - en: '[PRE2]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`.await` doesn''t return control to the caller until the asynchronous function
     has run to completion—e.g. until the `TcpListener` has been created in the example
     above.'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.await` 不会将控制权返回给调用者，直到异步函数运行完成——例如，在上面的例子中，直到 `TcpListener` 被创建。'
 - en: '[Runtimes](#runtimes)'
+  id: totrans-21
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '`[Runtimes](#runtimes)`'
 - en: If you're puzzled, you're right to be!
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你感到困惑，你是对的！
 - en: We've just said that the perk of asynchronous functions is that they don't do
     **all** their work at once. We then introduced `.await`, which doesn't return
     until the asynchronous function has run to completion. Haven't we just re-introduced
     the problem we were trying to solve? What's the point?
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们刚刚说过，异步函数的优点是它们不会一次性完成所有工作。然后我们介绍了 `.await`，它不会返回直到异步函数运行完成。我们不是刚刚重新引入了我们试图解决的问题吗？这有什么意义？
 - en: Not quite! A lot happens behind the scenes when you call `.await`!
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 不完全是！当你调用 `.await` 时，幕后会发生很多事情！
 - en: 'You''re yielding control to an **async runtime**, also known as an **async
     executor**. Executors are where the magic happens: they are in charge of managing
     all your ongoing asynchronous **tasks**. In particular, they balance two different
     goals:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 你正在将控制权交给一个**异步运行时**，也称为**异步执行器**。执行器是魔法发生的地方：它们负责管理你所有的正在进行中的异步**任务**。特别是，它们平衡两个不同的目标：
 - en: '**Progress**: they make sure that tasks make progress whenever they can.'
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**进度**：它们确保任务在可能的情况下取得进展。'
 - en: '**Efficiency**: if a task is waiting for something, they try to make sure that
     another task can run in the meantime, fully utilising the available resources.'
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**效率**：如果一个任务正在等待某件事，它们会尽力确保在此期间另一个任务可以运行，充分利用可用资源。'
 - en: '[No default runtime](#no-default-runtime)'
+  id: totrans-28
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '`[No default runtime](#no-default-runtime)`'
 - en: 'Rust is fairly unique in its approach to asynchronous programing: there is
     no default runtime. The standard library doesn''t ship with one. You need to bring
     your own!'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 在其异步编程方法上相当独特：它没有默认的运行时。标准库没有提供。你需要自己提供！
 - en: In most cases, you'll choose one of the options available in the ecosystem.
     Some runtimes are designed to be broadly applicable, a solid option for most applications.
     `tokio` and `async-std` belong to this category. Other runtimes are optimised
     for specific use cases—e.g. `embassy` for embedded systems.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 在大多数情况下，你会在生态系统提供的选项中选择一个。一些运行时被设计为广泛适用，对于大多数应用程序来说是一个不错的选择。`tokio` 和 `async-std`
+    属于这一类别。其他运行时针对特定用例进行了优化——例如，`embassy` 用于嵌入式系统。
 - en: Throughout this course we'll rely on `tokio`, the most popular runtime for general-purpose
     asynchronous programming in Rust.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本课程中，我们将依赖 `tokio`，这是 Rust 中用于通用异步编程最流行的运行时。
 - en: '[`#[tokio::main]`](#tokiomain)'
+  id: totrans-32
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`#[tokio::main]`](#tokiomain)'
 - en: The entrypoint of your executable, the `main` function, must be a synchronous
     function. That's where you're supposed to set up and launch your chosen async
     runtime.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 可执行文件的入口点，即 `main` 函数，必须是一个同步函数。这就是你设置并启动所选异步运行时的位置。
 - en: 'Most runtimes provide a macro to make this easier. For `tokio`, it''s `tokio::main`:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数运行时都提供了一个宏来简化这个过程。对于 `tokio`，它是 `tokio::main`：
 - en: '[PRE3]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'which expands to:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 它扩展为：
 - en: '[PRE4]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[`#[tokio::test]`](#tokiotest)'
+  id: totrans-38
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`#[tokio::test]`](#tokiotest)'
 - en: 'The same goes for tests: they must be synchronous functions.'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于测试也是如此：它们必须是同步函数。
 - en: Each test function is run in its own thread, and you're responsible for setting
     up and launching an async runtime if you need to run async code in your tests.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个测试函数都在自己的线程中运行，如果你需要在测试中运行异步代码，你需要负责设置和启动异步运行时。
 - en: '`tokio` provides a `#[tokio::test]` macro to make this easier:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '`tokio` 提供了一个 `#[tokio::test]` 宏来简化这个过程：'
 - en: '[PRE5]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[Exercise](#exercise)'
+  id: totrans-43
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`08_futures/01_async_fn`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/01_async_fn)
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于 `08_futures/01_async_fn`（[https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/01_async_fn](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/01_async_fn)）

@@ -1,117 +1,181 @@
 - en: Ordering
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 排序
 - en: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/16_btreemap.html](https://rust-exercises.com/100-exercises/06_ticket_management/16_btreemap.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/16_btreemap.html](https://rust-exercises.com/100-exercises/06_ticket_management/16_btreemap.html)
 - en: By moving from a `Vec` to a `HashMap` we have improved the performance of our
     ticket management system, and simplified our code in the process.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过从 `Vec` 移动到 `HashMap`，我们提高了我们的票务管理系统性能，并在过程中简化了代码。
 - en: It's not all roses, though. When iterating over a `Vec`-backed store, we could
     be sure that the tickets would be returned in the order they were added.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，并非一切尽善尽美。当遍历由 `Vec` 支持的存储时，我们可以确信票将按添加的顺序返回。
 - en: 'That''s not the case with a `HashMap`: you can iterate over the tickets, but
     the order is random.'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于 `HashMap` 来说并非如此：你可以遍历票，但顺序是随机的。
 - en: We can recover a consistent ordering by switching from a `HashMap` to a `BTreeMap`.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过从 `HashMap` 切换到 `BTreeMap`，我们可以恢复一致排序。
 - en: '[`BTreeMap`](#btreemap)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`BTreeMap`](#btreemap)'
 - en: A `BTreeMap` guarantees that entries are sorted by their keys.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '`BTreeMap` 保证条目按其键排序。'
 - en: This is useful when you need to iterate over the entries in a specific order,
     or if you need to perform range queries (e.g. "give me all tickets with an id
     between 10 and 20").
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你需要按特定顺序遍历条目或执行范围查询（例如，“给我所有ID在10到20之间的票”）时，这很有用。
 - en: 'Just like `HashMap`, you won''t find trait bounds on the definition of `BTreeMap`.
     But you''ll find trait bounds on its methods. Let''s look at `insert`:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 就像 `HashMap` 一样，你不会在 `BTreeMap` 的定义中找到特征界限。但你会找到其方法上的特征界限。让我们看看 `insert`：
 - en: '[PRE0]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '`Hash` is no longer required. Instead, the key type must implement the `Ord`
     trait.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 不再需要 `Hash`。相反，键类型必须实现 `Ord` 特征。
 - en: '[`Ord`](#ord)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Ord`](#ord)'
 - en: The `Ord` trait is used to compare values.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Ord` 特征用于比较值。'
 - en: While `PartialEq` is used to compare for equality, `Ord` is used to compare
     for ordering.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 虽然 `PartialEq` 用于比较相等性，但 `Ord` 用于比较排序。
 - en: 'It''s defined in `std::cmp`:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 它在 `std::cmp` 中定义：
 - en: '[PRE1]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The `cmp` method returns an `Ordering` enum, which can be one of `Less`, `Equal`,
     or `Greater`.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '`cmp` 方法返回一个 `Ordering` 枚举，可以是 `Less`、`Equal` 或 `Greater` 之一。'
 - en: '`Ord` requires that two other traits are implemented: `Eq` and `PartialOrd`.'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Ord` 需要实现另外两个特征：`Eq` 和 `PartialOrd`。'
 - en: '[`PartialOrd`](#partialord)'
+  id: totrans-19
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`PartialOrd`](#partialord)'
 - en: '`PartialOrd` is a weaker version of `Ord`, just like `PartialEq` is a weaker
     version of `Eq`. You can see why by looking at its definition:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: '`PartialOrd` 是 `Ord` 的弱版本，就像 `PartialEq` 是 `Eq` 的弱版本。你可以通过查看其定义来了解原因：'
 - en: '[PRE2]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`PartialOrd::partial_cmp` returns an `Option`—it is not guaranteed that two
     values can be compared.'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '`PartialOrd::partial_cmp` 返回一个 `Option`——不能保证两个值可以比较。'
 - en: For example, `f32` doesn't implement `Ord` because `NaN` values are not comparable,
     the same reason why `f32` doesn't implement `Eq`.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，`f32` 没有实现 `Ord`，因为 `NaN` 值是不可比较的，这与 `f32` 没有实现 `Eq` 的原因相同。
 - en: '[Implementing `Ord` and `PartialOrd`](#implementing-ord-and-partialord)'
+  id: totrans-24
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[实现 `Ord` 和 `PartialOrd`](#implementing-ord-and-partialord)'
 - en: 'Both `Ord` and `PartialOrd` can be derived for your types:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Ord` 和 `PartialOrd` 都可以为你的类型推导：'
 - en: '[PRE3]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'If you choose (or need) to implement them manually, be careful:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你选择（或需要）手动实现它们，请小心：
 - en: '`Ord` and `PartialOrd` must be consistent with `Eq` and `PartialEq`.'
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Ord` 和 `PartialOrd` 必须与 `Eq` 和 `PartialEq` 一致。'
 - en: '`Ord` and `PartialOrd` must be consistent with each other.'
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Ord` 和 `PartialOrd` 必须相互一致。'
 - en: '[Exercise](#exercise)'
+  id: totrans-30
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`06_ticket_management/16_btreemap`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/16_btreemap)
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`06_ticket_management/16_btreemap`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/16_btreemap)

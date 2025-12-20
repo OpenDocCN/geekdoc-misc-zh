@@ -1,69 +1,107 @@
 - en: Concise branching
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 简洁的分支
 - en: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/04_if_let.html](https://rust-exercises.com/100-exercises/05_ticket_v2/04_if_let.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/04_if_let.html](https://rust-exercises.com/100-exercises/05_ticket_v2/04_if_let.html)
 - en: 'Your solution to the previous exercise probably looks like this:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 你之前练习的解决方案可能看起来像这样：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: You only care about the `Status::InProgress` variant. Do you really need to
     match on all the other variants?
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 你只关心 `Status::InProgress` 变体。你真的需要匹配所有其他变体吗？
 - en: New constructs to the rescue!
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 新的构造函数来拯救！
 - en: '[`if let`](#if-let)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`if let`](#if-let)'
 - en: The `if let` construct allows you to match on a single variant of an enum, without
     having to handle all the other variants.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '`if let` 构造函数允许你匹配枚举的单个变体，而无需处理所有其他变体。'
 - en: 'Here''s how you can use `if let` to simplify the `assigned_to` method:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是你可以如何使用 `if let` 来简化 `assigned_to` 方法：
 - en: '[PRE1]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[`let/else`](#letelse)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`let/else`](#letelse)'
 - en: 'If the `else` branch is meant to return early (a panic counts as returning
     early!), you can use the `let/else` construct:'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果 `else` 分支旨在提前返回（恐慌也算作提前返回！），你可以使用 `let/else` 构造：
 - en: '[PRE2]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: It allows you to assign the destructured variable without incurring any "right
     drift", i.e. the variable is assigned at the same indentation level as the code
     that precedes it.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 它允许你在不产生任何“右偏移”的情况下分配解构变量，即变量被分配在与它之前的代码相同的缩进级别上。
 - en: '[Style](#style)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[风格](#style)'
 - en: Both `if let` and `let/else` are idiomatic Rust constructs.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '`if let` 和 `let/else` 都是 Rust 的惯用构造。'
 - en: 'Use them as you see fit to improve the readability of your code, but don''t
     overdo it: `match` is always there when you need it.'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 根据你的需要使用它们来提高代码的可读性，但不要过度使用：当你需要时，`match` 总是存在的。
 - en: '[Exercise](#exercise)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`05_ticket_v2/04_if_let`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/04_if_let)
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于[`05_ticket_v2/04_if_let`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/04_if_let)

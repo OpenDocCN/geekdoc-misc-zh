@@ -1,52 +1,82 @@
 - en: Enumerations
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 枚举
 - en: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/01_enum.html](https://rust-exercises.com/100-exercises/05_ticket_v2/01_enum.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/01_enum.html](https://rust-exercises.com/100-exercises/05_ticket_v2/01_enum.html)
 - en: 'Based on the validation logic you wrote [in a previous chapter](/100-exercises/03_ticket_v1/02_validation),
     there are only a few valid statuses for a ticket: `To-Do`, `InProgress` and `Done`.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于你在上一章中编写的验证逻辑 [in a previous chapter](/100-exercises/03_ticket_v1/02_validation)，票据的有效状态只有几个：`To-Do`、`InProgress`
+    和 `Done`。
 - en: 'This is not obvious if we look at the `status` field in the `Ticket` struct
     or at the type of the `status` parameter in the `new` method:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们查看 `Ticket` 结构体中的 `status` 字段或 `new` 方法中的 `status` 参数类型，这一点并不明显：
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: In both cases we're using `String` to represent the `status` field. `String`
     is a very general type—it doesn't immediately convey the information that the
     `status` field has a limited set of possible values. Even worse, the caller of
     `Ticket::new` will only find out **at runtime** if the status they provided is
     valid or not.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这两种情况下，我们使用 `String` 来表示 `status` 字段。`String` 是一个非常通用的类型——它不会立即传达 `status`
+    字段具有有限的可能值的信 息。更糟糕的是，调用 `Ticket::new` 的用户只有在 **运行时** 才能知道他们提供的状态是否有效。
 - en: We can do better than that with **enumerations**.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用 **枚举** 来做得更好。
 - en: '[`enum`](#enum)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '`enum`（枚举）'
 - en: An enumeration is a type that can have a fixed set of values, called **variants**.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 枚举是一种可以具有一组固定值的类型，称为 **变体**。
 - en: 'In Rust, you define an enumeration using the `enum` keyword:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Rust 中，你使用 `enum` 关键字来定义枚举：
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '`enum`, just like `struct`, defines **a new Rust type**.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '`enum`，就像 `struct` 一样，定义 **一个新的 Rust 类型**。'
 - en: '[Exercise](#exercise)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`05_ticket_v2/01_enum`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/01_enum)
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于 [`05_ticket_v2/01_enum`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/01_enum)

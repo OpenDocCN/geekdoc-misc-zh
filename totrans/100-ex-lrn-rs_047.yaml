@@ -1,113 +1,175 @@
 - en: Nullability
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 可空性
 - en: 原文：[https://rust-exercises.com/100-exercises/05_ticket_v2/05_nullability.html](https://rust-exercises.com/100-exercises/05_ticket_v2/05_nullability.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[原文链接](https://rust-exercises.com/100-exercises/05_ticket_v2/05_nullability.html)'
 - en: 'Our implementation of the `assigned` method is fairly blunt: panicking for
     to-do and done tickets is far from ideal.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们对`assigned`方法的实现相当直接：对于待办和已完成票据的恐慌处理远非理想。
 - en: We can do better using **Rust's `Option` type**.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用**Rust的`Option`类型**做得更好。
 - en: '[`Option`](#option)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Option`](#option)'
 - en: '`Option` is a Rust type that represents **nullable values**.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Option`是Rust类型，表示**可空值**。'
 - en: 'It is an enum, defined in Rust''s standard library:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 它是一个枚举，定义在Rust的标准库中：
 - en: '[PRE0]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '`Option` encodes the idea that a value might be present (`Some(T)`) or absent
     (`None`).'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Option`编码了值可能存在（`Some(T)`）或不存在（`None`）的想法。'
 - en: It also forces you to **explicitly handle both cases**. You'll get a compiler
     error if you are working with a nullable value and you forget to handle the `None`
     case.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 它还强制你**显式处理两种情况**。如果你在处理可空值时忘记了处理`None`情况，你会得到编译器错误。
 - en: This is a significant improvement over "implicit" nullability in other languages,
     where you can forget to check for `null` and thus trigger a runtime error.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 这在其他语言的“隐式”可空性方面是一个显著的改进，在其他语言中，你可能忘记检查`null`，从而触发运行时错误。
 - en: '[`Option`''s definition](#options-definition)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Option`的定义](#options-definition)'
 - en: '`Option`''s definition uses a Rust construct that you haven''t seen before:
     **tuple-like variants**.'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Option`的定义使用了你之前没有见过的Rust构造：**类似元组的变体**。'
 - en: '[Tuple-like variants](#tuple-like-variants)'
+  id: totrans-13
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[类似元组的变体](#tuple-like-variants)'
 - en: '`Option` has two variants: `Some(T)` and `None`.'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Option`有两个变体：`Some(T)`和`None`。'
 - en: '`Some` is a **tuple-like variant**: it''s a variant that holds **unnamed fields**.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Some`是一个**类似元组的变体**：它是一个包含**未命名字段**的变体。'
 - en: Tuple-like variants are often used when there is a single field to store, especially
     when we're looking at a "wrapper" type like `Option`.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 类似元组的变体通常在只有一个字段要存储时使用，尤其是在我们查看类似`Option`的“包装”类型时。
 - en: '[Tuple-like structs](#tuple-like-structs)'
+  id: totrans-17
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[类似元组的结构体](#tuple-like-structs)'
 - en: 'They''re not specific to enums—you can define tuple-like structs too:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 它们不仅限于枚举——你也可以定义类似元组的结构体：
 - en: '[PRE1]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'You can then access the two fields of a `Point` instance using their positional
     index:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以使用位置索引来访问`Point`实例的两个字段：
 - en: '[PRE2]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Tuples](#tuples)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[元组](#tuples)'
 - en: It's weird to say that something is tuple-like when we haven't seen tuples yet!
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们还没有看到元组时，说某物是类似元组的有点奇怪！
 - en: 'Tuples are another example of a primitive Rust type. They group together a
     fixed number of values with (potentially different) types:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 元组是Rust原始类型的另一个例子。它们将固定数量的值（可能具有不同的类型）组合在一起：
 - en: '[PRE3]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The syntax is simple: you list the types of the values between parentheses,
     separated by commas. You can access the fields of a tuple using the dot notation
     and the field index:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 语法很简单：你在括号内列出值的类型，用逗号分隔。你可以使用点符号和字段索引来访问元组的字段：
 - en: '[PRE4]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Tuples are a convenient way of grouping values together when you can't be bothered
     to define a dedicated struct type.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你懒得定义一个专门的`struct`类型来组合值时，元组是一个方便的组合值的方式。
 - en: '[Exercise](#exercise)'
+  id: totrans-29
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`05_ticket_v2/05_nullability`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/05_nullability)
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`05_ticket_v2/05_nullability`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/05_ticket_v2/05_nullability)

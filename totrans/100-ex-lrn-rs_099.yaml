@@ -1,92 +1,141 @@
 - en: Epilogue
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 后记
 - en: 原文：[https://rust-exercises.com/100-exercises/going_further.html](https://rust-exercises.com/100-exercises/going_further.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/going_further.html](https://rust-exercises.com/100-exercises/going_further.html)
 - en: Our tour of Rust ends here.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的 Rust 之旅到此结束。
 - en: 'It has been quite extensive, but by no means exhaustive: Rust is a language
     with a large surface area, and an even larger ecosystem!'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 这已经相当广泛了，但绝不是详尽的：Rust 是一个具有广阔表面区域和更大生态系统的语言！
 - en: 'Don''t let this scare you, though: there''s **no need to learn everything**.
     You''ll pick up whatever is necessary to be effective in the domain (backend,
     embedded, CLIs, GUIs, etc.) **while working on your projects**.'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管如此，不要害怕：**没有必要学习一切**。你将在项目开发过程中学习到在特定领域（后端、嵌入式、CLIs、GUIs等）中有效所需的任何内容。
 - en: 'In the end, there are no shortcuts: if you want to get good at something, you
     need to do it, over and over again. Throughout this course you wrote a fair amount
     of Rust, enough to get the language and its syntax flowing under your fingers.
     It''ll take many more lines of code to feel it "yours", but that moment will come
     without a doubt if you keep practicing.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，没有捷径：如果你想精通某件事，你需要反复去做。在整个课程中，你已经写了不少Rust代码，足以让语言及其语法在你的指尖流畅运行。但要真正感到这是“你的”，还需要更多的代码行数，但只要你继续练习，这一刻一定会到来。
 - en: '[Going further](#going-further)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步学习](#going-further)'
 - en: Let's close with some pointers to additional resources that you might find useful
     as you move forward in your journey with Rust.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们以一些指向你可能在你继续 Rust 之旅时发现有用的额外资源的指针来结束。
 - en: '[Exercises](#exercises)'
+  id: totrans-8
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[练习](#exercises)'
 - en: You can find more exercises to practice Rust in the [`rustlings`](https://github.com/rust-lang/rustlings)
     project and on [exercism.io](https://exercism.io)'s Rust track.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以在 `rustlings` 项目和 [exercism.io](https://exercism.io)'s Rust 轨道上找到更多练习 Rust
+    的练习。
 - en: '[Introductory material](#introductory-material)'
+  id: totrans-10
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[入门材料](#introductory-material)'
 - en: Check out [the Rust book](https://doc.rust-lang.org/book/title-page.html) and
     ["Programming Rust"](https://www.oreilly.com/library/view/programming-rust-2nd/9781492052586/)
     if you're looking for a different perspective on the same concepts we covered
     throughout this course. You'll certainly learn something new since they don't
     cover exactly the same topics; Rust has a lot of surface area!
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你想要从不同的角度了解我们在这门课程中涵盖的相同概念，请查看 [Rust 书籍](https://doc.rust-lang.org/book/title-page.html)
+    和 ["Programming Rust 第二版"](https://www.oreilly.com/library/view/programming-rust-2nd/9781492052586/)。你肯定会学到一些新东西，因为它们并没有涵盖完全相同的话题；Rust
+    有很多表面区域！
 - en: '[Advanced material](#advanced-material)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[高级材料](#advanced-material)'
 - en: If you want to dive deeper into the language, refer to the [Rustonomicon](https://doc.rust-lang.org/nomicon/)
     and ["Rust for Rustaceans"](https://nostarch.com/rust-rustaceans).
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你想更深入地了解这门语言，请参考 [Rustonomicon](https://doc.rust-lang.org/nomicon/) 和 ["Rust
+    for Rustaceans"](https://nostarch.com/rust-rustaceans)。
 - en: The ["Decrusted" series](https://www.youtube.com/playlist?list=PLqbS7AVVErFirH9armw8yXlE6dacF-A6z)
     is another excellent resource to learn more about the internals of many of the
     most popular Rust libraries.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '["去锈"系列](https://www.youtube.com/playlist?list=PLqbS7AVVErFirH9armw8yXlE6dacF-A6z)
+    是学习许多最受欢迎的 Rust 库内部结构的另一个优秀资源。'
 - en: '[Domain-specific material](#domain-specific-material)'
+  id: totrans-15
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[特定领域材料](#domain-specific-material)'
 - en: If you want to use Rust for backend development, check out ["Zero to Production
     in Rust"](https://zero2prod.com).
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你想要使用 Rust 进行后端开发，请查看 ["Rust 从零到生产"](https://zero2prod.com)。
 - en: If you want to use Rust for embedded development, check out the [Embedded Rust
     book](https://docs.rust-embedded.org/book/).
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你想要使用 Rust 进行嵌入式开发，请查看 [嵌入式 Rust 书籍](https://docs.rust-embedded.org/book/)。
 - en: '[Masterclasses](#masterclasses)'
+  id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[大师班](#masterclasses)'
 - en: You can then find resources on key topics that cut across domains.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以找到跨领域的关键主题资源。
 - en: For testing, check out ["Advanced testing, going beyond the basics"](https://rust-exercises.com/advanced-testing/).
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了测试，请查看 ["高级测试，超越基础"](https://rust-exercises.com/advanced-testing/)。
 - en: For telemetry, check out ["You can't fix what you can't see"](https://rust-exercises.com/telemetry/).
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于遥测，请查看 ["你无法修复你看不见的东西"](https://rust-exercises.com/telemetry/)。

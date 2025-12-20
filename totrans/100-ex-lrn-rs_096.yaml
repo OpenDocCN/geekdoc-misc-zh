@@ -1,126 +1,192 @@
 - en: Async-aware primitives
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 异步感知原语
 - en: 原文：[https://rust-exercises.com/100-exercises/08_futures/06_async_aware_primitives.html](https://rust-exercises.com/100-exercises/08_futures/06_async_aware_primitives.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/08_futures/06_async_aware_primitives.html](https://rust-exercises.com/100-exercises/08_futures/06_async_aware_primitives.html)
 - en: 'If you browse `tokio`''s documentation, you''ll notice that it provides a lot
     of types that "mirror" the ones in the standard library, but with an asynchronous
     twist: locks, channels, timers, and more.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您浏览 `tokio` 的文档，您会注意到它提供了许多与标准库中的类型“镜像”的类型，但具有异步特性：锁、通道、定时器等。
 - en: When working in an asynchronous context, you should prefer these asynchronous
     alternatives to their synchronous counterparts.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 在异步上下文中工作时应优先考虑这些异步替代方案，而不是它们的同步对应方案。
 - en: To understand why, let's take a look at `Mutex`, the mutually exclusive lock
     we explored in the previous chapter.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了理解原因，让我们看看 `Mutex`，这是我们在上一章中探讨的互斥锁。
 - en: '[Case study: `Mutex`](#case-study-mutex)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[案例研究：`Mutex`](#case-study-mutex)'
 - en: 'Let''s look at a simple example:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看一个简单的例子：
 - en: '[PRE0]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[`std::sync::MutexGuard` and yield points](#stdsyncmutexguard-and-yield-points)'
+  id: totrans-8
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`std::sync::MutexGuard` 和让点](#stdsyncmutexguard-and-yield-points)'
 - en: This code will compile, but it's dangerous.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这段代码可以编译，但很危险。
 - en: We try to acquire a lock over a `Mutex` from `std` in an asynchronous context.
     We then hold on to the resulting `MutexGuard` across a yield point (the `.await`
     on `http_call`).
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们尝试在异步上下文中从 `std` 的 `Mutex` 获取锁。然后我们在让点（`http_call` 上的 `.await`）上保持对生成的 `MutexGuard`。
 - en: 'Let''s imagine that there are two tasks executing `run`, concurrently, on a
     single-threaded runtime. We observe the following sequence of scheduling events:'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们想象有两个任务在一个单线程运行时并发执行 `run`。我们观察到以下调度事件序列：
 - en: '[PRE1]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: We have a deadlock. Task B will never manage to acquire the lock, because the
     lock is currently held by task A, which has yielded to the runtime before releasing
     the lock and won't be scheduled again because the runtime cannot preempt task
     B.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们有一个死锁。任务 B 将永远无法获取锁，因为锁目前被任务 A 持有，任务 A 在释放锁之前已经让步给运行时，并且由于运行时无法抢占任务 B，因此不会再次被调度。
 - en: '[`tokio::sync::Mutex`](#tokiosyncmutex)'
+  id: totrans-14
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '`tokio::sync::Mutex`'
 - en: 'You can solve the issue by switching to `tokio::sync::Mutex`:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可以通过切换到 `tokio::sync::Mutex` 来解决问题：
 - en: '[PRE2]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Acquiring the lock is now an asynchronous operation, which yields back to the
     runtime if it can't make progress.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 获取锁现在是一个异步操作，如果无法取得进展，则会返回到运行时。
 - en: 'Going back to the previous scenario, the following would happen:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 回到先前的场景，以下会发生：
 - en: '[PRE3]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: All good!
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有都很好！
 - en: '[Multithreaded won''t save you](#multithreaded-wont-save-you)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[多线程无法拯救你](#multithreaded-wont-save-you)'
 - en: We've used a single-threaded runtime as the execution context in our previous
     example, but the same risk persists even when using a multithreaded runtime.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在先前的例子中使用了单线程运行时作为执行上下文，但即使在使用多线程运行时，同样的风险仍然存在。
 - en: 'The only difference is in the number of concurrent tasks required to create
     the deadlock: in a single-threaded runtime, 2 are enough; in a multithreaded runtime,
     we would need `N+1` tasks, where `N` is the number of runtime threads.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 唯一的区别在于创建死锁所需的并发任务数量：在单线程运行时，2 个就足够了；在多线程运行时，我们需要 `N+1` 个任务，其中 `N` 是运行时线程的数量。
 - en: '[Downsides](#downsides)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[缺点](#downsides)'
 - en: Having an async-aware `Mutex` comes with a performance penalty.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 拥有一个异步感知的 `Mutex` 会带来性能损失。
 - en: If you're confident that the lock isn't under significant contention *and* you're
     careful to never hold it across a yield point, you can still use `std::sync::Mutex`
     in an asynchronous context.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您确信锁没有受到重大竞争，并且您小心地确保永远不会在让点（`http_call` 上的 `.await`）持有它，您仍然可以在异步上下文中使用 `std::sync::Mutex`。
 - en: But weigh the performance benefit against the liveness risk you will incur.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 但要权衡性能收益与您将承担的活跃风险。
 - en: '[Other primitives](#other-primitives)'
+  id: totrans-28
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[其他原语](#other-primitives)'
 - en: We used `Mutex` as an example, but the same applies to `RwLock`, semaphores,
     etc.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们以 `Mutex` 为例，但同样适用于 `RwLock`、信号量等。
 - en: Prefer async-aware versions when working in an asynchronous context to minimise
     the risk of issues.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 在异步上下文中工作时，优先选择异步感知版本以最大限度地减少问题风险。
 - en: '[Exercise](#exercise)'
+  id: totrans-31
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`08_futures/06_async_aware_primitives`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/06_async_aware_primitives)
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于 `08_futures/06_async_aware_primitives` 中（[https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/06_async_aware_primitives](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/06_async_aware_primitives)）。

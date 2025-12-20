@@ -1,76 +1,110 @@
 - en: Outro
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 结语
 - en: 原文：[https://rust-exercises.com/100-exercises/08_futures/08_outro.html](https://rust-exercises.com/100-exercises/08_futures/08_outro.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/08_futures/08_outro.html](https://rust-exercises.com/100-exercises/08_futures/08_outro.html)
 - en: 'Rust''s asynchronous model is quite powerful, but it does introduce additional
     complexity. Take time to know your tools: dive deep into `tokio`''s documentation
     and get familiar with its primitives to make the most out of it.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust的异步模型非常强大，但它确实引入了额外的复杂性。花时间了解你的工具：深入研究`tokio`的文档，并熟悉其原语，以充分利用它。
 - en: Keep in mind, as well, that there is ongoing work at the language and `std`
     level to streamline and "complete" Rust's asynchronous story. You may experience
     some rough edges in your day-to-day work due to some of these missing pieces.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 请记住，在语言和`std`级别上，目前正在对Rust的异步故事进行精简和“完善”的工作。由于这些缺失的部分，你可能会在日常工作中遇到一些粗糙的边缘。
 - en: 'A few recommendations for a mostly-pain-free async experience:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于一个基本无痛苦的异步体验，这里有一些推荐：
 - en: '**Pick a runtime and stick to it.**'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**选择一个运行时并坚持下去。**'
 - en: Some primitives (e.g. timers, I/O) are not portable across runtimes. Trying
     to mix runtimes is likely to cause you pain. Trying to write code that's runtime
     agnostic can significantly increase the complexity of your codebase. Avoid it
     if you can.
+  id: totrans-6
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 一些原语（例如计时器、I/O）不能跨运行时移植。尝试混合运行时可能会让你感到痛苦。尝试编写与运行时无关的代码可能会显著增加你的代码库的复杂性。如果可能的话，避免这样做。
 - en: '**There is no stable `Stream`/`AsyncIterator` interface yet.**'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**目前还没有稳定的`Stream`/`AsyncIterator`接口。**'
 - en: An `AsyncIterator` is, conceptually, an iterator that yields new items asynchronously.
     There is ongoing design work, but no consensus (yet). If you're using `tokio`,
     refer to [`tokio_stream`](https://docs.rs/tokio-stream/latest/tokio_stream/) as
     your go-to interface.
+  id: totrans-8
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`AsyncIterator`在概念上是一个异步产生新项目的迭代器。正在进行设计工作，但尚未达成共识（目前）。如果你使用`tokio`，请以`tokio_stream`（[https://docs.rs/tokio-stream/latest/tokio_stream/](https://docs.rs/tokio-stream/latest/tokio_stream/)）作为你的首选接口。'
 - en: '**Be careful with buffering.**'
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**小心缓冲区。**'
 - en: It is often the cause of subtle bugs. Check out ["Barbara battles buffered streams"](https://rust-lang.github.io/wg-async/vision/submitted_stories/status_quo/barbara_battles_buffered_streams.html)
     for more details.
+  id: totrans-10
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 它往往是微妙错误的根源。查看["芭芭拉与缓冲流战斗"](https://rust-lang.github.io/wg-async/vision/submitted_stories/status_quo/barbara_battles_buffered_streams.html)以获取更多详细信息。
 - en: '**There is no equivalent of scoped threads for asynchronous tasks**.'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**异步任务没有范围线程的等价物。**'
 - en: Check out ["The scoped task trilemma"](https://without.boats/blog/the-scoped-task-trilemma/)
     for more details.
+  id: totrans-12
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 查看["范围任务三难问题"](https://without.boats/blog/the-scoped-task-trilemma/)以获取更多详细信息。
 - en: 'Don''t let these caveats scare you: asynchronous Rust is being used effectively
     at *massive* scale (e.g. AWS, Meta) to power foundational services.'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 不要让这些注意事项吓到你：异步Rust正在大规模（例如AWS、Meta）上被有效地使用，以支持基础服务。
 - en: You will have to master it if you're planning building networked applications
     in Rust.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你计划在Rust中构建网络应用程序，你必须掌握它。
 - en: '[Exercise](#exercise)'
+  id: totrans-15
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`08_futures/08_outro`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/08_outro)
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于[`08_futures/08_outro`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/08_outro)

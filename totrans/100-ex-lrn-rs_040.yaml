@@ -1,69 +1,106 @@
 - en: The Drop trait
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: Drop 特性
 - en: 原文：[https://rust-exercises.com/100-exercises/04_traits/13_drop.html](https://rust-exercises.com/100-exercises/04_traits/13_drop.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/04_traits/13_drop.html](https://rust-exercises.com/100-exercises/04_traits/13_drop.html)
 - en: 'When we introduced [destructors](/100-exercises/03_ticket_v1/11_destructor),
     we mentioned that the `drop` function:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们介绍 [析构函数](/100-exercises/03_ticket_v1/11_destructor) 时，我们提到 `drop` 函数：
 - en: reclaims the memory occupied by the type (i.e. `std::mem::size_of` bytes)
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 重新回收类型占用的内存（即 `std::mem::size_of` 字节）
 - en: cleans up any additional resources that the value might be managing (e.g. the
     heap buffer of a `String`)
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 清理值可能管理的任何额外资源（例如 `String` 的堆缓冲区）
 - en: Step 2\. is where the `Drop` trait comes in.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 第 2 步是 `Drop` 特性出现的地方。
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The `Drop` trait is a mechanism for you to define *additional* cleanup logic
     for your types, beyond what the compiler does for you automatically.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Drop` 特性是一个机制，允许你为你的类型定义*额外*的清理逻辑，这超出了编译器为你自动执行的范围。'
 - en: Whatever you put in the `drop` method will be executed when the value goes out
     of scope.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 你在 `drop` 方法中放入的任何内容都会在值超出作用域时执行。
 - en: '[`Drop` and `Copy`](#drop-and-copy)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Drop` 和 `Copy`](#drop-and-copy)'
 - en: When talking about the `Copy` trait, we said that a type can't implement `Copy`
     if it manages additional resources beyond the `std::mem::size_of` bytes that it
     occupies in memory.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们谈论 `Copy` 特性时，我们说如果一个类型在内存中占用的 `std::mem::size_of` 字节数之外管理了额外资源，那么它就不能实现
+    `Copy`。
 - en: 'You might wonder: how does the compiler know if a type manages additional resources?
     That''s right: `Drop` trait implementations!'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能会想知道：编译器是如何知道一个类型管理了额外资源的？没错：`Drop` 特性实现！
 - en: If your type has an explicit `Drop` implementation, the compiler will assume
     that your type has additional resources attached to it and won't allow you to
     implement `Copy`.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你的类型有显式的 `Drop` 实现，编译器将假设你的类型附加了额外资源，并且不允许你实现 `Copy`。
 - en: '[PRE1]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'The compiler will complain with this error message:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器会显示以下错误信息：
 - en: '[PRE2]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Exercise](#exercise)'
+  id: totrans-16
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`04_traits/13_drop`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/13_drop)
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于 `04_traits/13_drop` 中（[https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/13_drop](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/13_drop)）

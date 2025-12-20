@@ -1,58 +1,90 @@
 - en: Indexing
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 索引
 - en: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/13_index.html](https://rust-exercises.com/100-exercises/06_ticket_management/13_index.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/13_index.html](https://rust-exercises.com/100-exercises/06_ticket_management/13_index.html)
 - en: '`TicketStore::get` returns an `Option<&Ticket>` for a given `TicketId`.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '`TicketStore::get` 返回一个针对给定 `TicketId` 的 `Option<&Ticket>`。'
 - en: 'We''ve seen before how to access elements of arrays and vectors using Rust''s
     indexing syntax:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们之前已经看到如何使用 Rust 的索引语法访问数组和向量的元素：
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: How can we provide the same experience for `TicketStore`?
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们如何为 `TicketStore` 提供相同的体验？
 - en: 'You guessed right: we need to implement a trait, `Index`!'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 你猜对了：我们需要实现一个特征，`Index`！
 - en: '[`Index`](#index)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[索引](#index)'
 - en: 'The `Index` trait is defined in Rust''s standard library:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Index` 特征在 Rust 的标准库中定义：'
 - en: '[PRE1]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'It has:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 它具有：
 - en: One generic parameter, `Idx`, to represent the index type
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个泛型参数，`Idx`，用于表示索引类型
 - en: One associated type, `Output`, to represent the type we retrieved using the
     index
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个关联类型，`Output`，用于表示我们使用索引检索的类型
 - en: Notice how the `index` method doesn't return an `Option`. The assumption is
     that `index` will panic if you try to access an element that's not there, as it
     happens for array and vec indexing.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意到 `index` 方法不返回 `Option`。假设是，如果你尝试访问不存在的元素，`index` 将会 panic，就像数组或 vec 索引那样。
 - en: '[Exercise](#exercise)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`06_ticket_management/13_index`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/13_index)
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于 [06_ticket_management/13_index](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/13_index)

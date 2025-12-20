@@ -1,117 +1,179 @@
 - en: Conversions, pt. 1
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 转换，第1部分
 - en: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/10_as_casting.html](https://rust-exercises.com/100-exercises/02_basic_calculator/10_as_casting.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/10_as_casting.html](https://rust-exercises.com/100-exercises/02_basic_calculator/10_as_casting.html)
 - en: We've repeated over and over again that Rust won't perform implicit type conversions
     for integers.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们反复强调，Rust不会为整数执行隐式类型转换。
 - en: How do you perform *explicit* conversions then?
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 你如何执行**显式**转换呢？
 - en: '[`as`](#as)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[as](#as)'
 - en: You can use the `as` operator to convert between integer types.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以使用`as`运算符在整数类型之间进行转换。
 - en: '`as` conversions are **infallible**.'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: '`as`转换是**不可失败的**。'
 - en: 'For example:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE0]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The semantics of this conversion are what you expect: all `u32` values are
     valid `u64` values.'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个转换的语义是你所期望的：所有`u32`值都是有效的`u64`值。
 - en: '[Truncation](#truncation)'
+  id: totrans-10
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[截断](#truncation)'
 - en: 'Things get more interesting if we go in the opposite direction:'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们朝相反的方向进行，事情会更有趣：
 - en: '[PRE1]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: This program will run without issues, because `as` conversions are infallible.
     But what is the value of `b`? When going from a larger integer type to a smaller,
     the Rust compiler will perform a **truncation**.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个程序将正常运行，因为没有问题的，因为`as`转换是**不可失败的**。但`b`的值是多少？当从较大的整数类型转换为较小的类型时，Rust编译器将执行**截断**。
 - en: 'To understand what happens, let''s start by looking at how `256u16` is represented
     in memory, as a sequence of bits:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了理解发生了什么，让我们首先看看`256u16`在内存中是如何表示的，作为一个位序列：
 - en: '[PRE2]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'When converting to a `u8`, the Rust compiler will keep the last 8 bits of a
     `u16` memory representation:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 当转换为`u8`时，Rust编译器将保留`u16`内存表示的最后8位。
 - en: '[PRE3]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Hence `256 as u8` is equal to `0`. That's... not ideal, in most scenarios.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此`256 as u8`等于`0`。这在大多数情况下都不是理想的。
 - en: 'In fact, the Rust compiler will actively try to stop you if it sees you trying
     to cast a literal value which will result in a truncation:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 事实上，如果Rust编译器看到你尝试将字面量值转换为会导致截断的类型，它会主动尝试阻止你：
 - en: '[PRE4]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Recommendation](#recommendation)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[推荐](#recommendation)'
 - en: As a rule of thumb, be quite careful with `as` casting.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为一项经验法则，对`as`转换要非常小心。
 - en: Use it *exclusively* for going from a smaller type to a larger type. To convert
     from a larger to smaller integer type, rely on the [*fallible* conversion machinery](/100-exercises/05_ticket_v2/13_try_from)
     that we'll explore later in the course.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 仅**专门**用于从较小的类型转换为较大的类型。要从较大的整数类型转换为较小的类型，请依赖我们将在课程后面探索的[*可失败*转换机制](/100-exercises/05_ticket_v2/13_try_from)。
 - en: '[Limitations](#limitations)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[限制](#limitations)'
 - en: 'Surprising behaviour is not the only downside of `as` casting. It is also fairly
     limited: you can only rely on `as` casting for primitive types and a few other
     special cases.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 令人惊讶的行为并不是`as`转换的唯一缺点。它也相当有限：你只能依赖`as`转换进行原始类型和一些其他特殊情况的转换。
 - en: When working with composite types, you'll have to rely on different conversion
     mechanisms ([fallible](/100-exercises/05_ticket_v2/13_try_from) and [infallible](/100-exercises/04_traits/09_from)),
     which we'll explore later on.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 当处理复合类型时，你必须依赖不同的转换机制（[可失败](/100-exercises/05_ticket_v2/13_try_from)和[不可失败](/100-exercises/04_traits/09_from)），我们将在后面探讨。
 - en: '[Further reading](#further-reading)'
+  id: totrans-27
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步阅读](#further-reading)'
 - en: Check out [Rust's official reference](https://doc.rust-lang.org/reference/expressions/operator-expr.html#numeric-cast)
     to learn the precise behaviour of `as` casting for each source/target combination,
     as well as the exhaustive list of allowed conversions.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 查阅[Rust的官方参考](https://doc.rust-lang.org/reference/expressions/operator-expr.html#numeric-cast)以了解`as`转换对每个源/目标组合的精确行为，以及允许转换的详尽列表。
 - en: '[Exercise](#exercise)'
+  id: totrans-29
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`02_basic_calculator/10_as_casting`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/10_as_casting)
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于[`02_basic_calculator/10_as_casting`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/10_as_casting)

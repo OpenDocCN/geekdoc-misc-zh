@@ -1,41 +1,63 @@
 - en: Factorial
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 阶乘
 - en: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/05_factorial.html](https://rust-exercises.com/100-exercises/02_basic_calculator/05_factorial.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/05_factorial.html](https://rust-exercises.com/100-exercises/02_basic_calculator/05_factorial.html)
 - en: 'So far you''ve learned:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，你已经学习了：
 - en: How to define a function
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如何定义一个函数
 - en: How to call a function
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如何调用一个函数
 - en: Which integer types are available in Rust
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Rust 中有哪些整数类型可用
 - en: Which arithmetic operators are available for integers
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于整数，有哪些算术运算符可用
 - en: How to execute conditional logic via comparisons and `if`/`else` expressions
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如何通过比较和`if`/`else`表达式执行条件逻辑
 - en: It looks like you're ready to tackle factorials!
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 看起来你已经准备好解决阶乘问题！
 - en: '[Exercise](#exercise)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`02_basic_calculator/05_factorial`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/05_factorial)
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`02_basic_calculator/05_factorial`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/05_factorial)

@@ -1,126 +1,193 @@
 - en: Implementing traits
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 实现特性
 - en: 原文：[https://rust-exercises.com/100-exercises/04_traits/02_orphan_rule.html](https://rust-exercises.com/100-exercises/04_traits/02_orphan_rule.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/04_traits/02_orphan_rule.html](https://rust-exercises.com/100-exercises/04_traits/02_orphan_rule.html)
 - en: 'When a type is defined in another crate (e.g. `u32`, from Rust''s standard
     library), you can''t directly define new methods for it. If you try:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 当类型定义在另一个包中（例如，`u32` 来自 Rust 的标准库）时，你无法直接为其定义新方法。如果你尝试：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'the compiler will complain:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器将报错：
 - en: '[PRE1]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[Extension trait](#extension-trait)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[扩展特性](#extension-trait)'
 - en: An **extension trait** is a trait whose primary purpose is to attach new methods
     to foreign types, such as `u32`. That's exactly the pattern you deployed in the
     previous exercise, by defining the `IsEven` trait and then implementing it for
     `i32` and `u32`. You are then free to call `is_even` on those types as long as
     `IsEven` is in scope.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '**扩展特性** 是一个主要目的是为外部类型附加新方法的特性，例如 `u32`。这正是你在上一个练习中采用的模式，通过定义 `IsEven` 特性并为其实现
+    `i32` 和 `u32`，然后只要 `IsEven` 在作用域内，你就可以自由地调用这些类型上的 `is_even` 方法。'
 - en: '[PRE2]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[One implementation](#one-implementation)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[单一实现](#one-implementation)'
 - en: There are limitations to the trait implementations you can write.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以编写的特性实现有限制。
 - en: 'The simplest and most straight-forward one: you can''t implement the same trait
     twice, in a crate, for the same type.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 最简单、最直接的一个：你无法在一个包中为同一类型实现相同的特性两次。
 - en: 'For example:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE3]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The compiler will reject it:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器将拒绝它：
 - en: '[PRE4]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: There can be no ambiguity as to what trait implementation should be used when
     `IsEven::is_even` is invoked on a `u32` value, therefore there can only be one.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 当在 `u32` 值上调用 `IsEven::is_even` 时，不能对应该使用哪个特性实现产生歧义，因此只能有一个。
 - en: '[Orphan rule](#orphan-rule)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[孤儿规则](#orphan-rule)'
 - en: 'Things get more nuanced when multiple crates are involved. In particular, at
     least one of the following must be true:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 当涉及多个包时，情况会更加复杂。特别是，以下至少有一个必须是真实的：
 - en: The trait is defined in the current crate
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 特性定义在当前包中
 - en: The implementor type is defined in the current crate
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 实现类型定义在当前包中
 - en: This is known as Rust's **orphan rule**. Its goal is to make the method resolution
     process unambiguous.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 这被称为 Rust 的 **孤儿规则**。其目标是使方法解析过程无歧义。
 - en: 'Imagine the following situation:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 想象以下情况：
 - en: Crate `A` defines the `IsEven` trait
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`A` 包定义了 `IsEven` 特性'
 - en: Crate `B` implements `IsEven` for `u32`
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包 `B` 为 `u32` 实现 `IsEven`
 - en: Crate `C` provides a (different) implementation of the `IsEven` trait for `u32`
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包 `C` 为 `u32` 提供了 `IsEven` 特性的（不同）实现
 - en: Crate `D` depends on both `B` and `C` and calls `1.is_even()`
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包 `D` 依赖于 `B` 和 `C` 并调用 `1.is_even()`
 - en: Which implementation should be used? The one defined in `B`? Or the one defined
     in `C`?
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 应该使用哪个实现？`B` 中定义的？还是 `C` 中定义的？
 - en: There's no good answer, therefore the orphan rule was defined to prevent this
     scenario. Thanks to the orphan rule, neither crate `B` nor crate `C` would compile.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有好的答案，因此定义了孤儿规则来防止这种情况。多亏了孤儿规则，包 `B` 和包 `C` 都无法编译。
 - en: '[Further reading](#further-reading)'
+  id: totrans-29
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步阅读](#further-reading)'
 - en: There are some caveats and exceptions to the orphan rule as stated above. Check
     out [the reference](https://doc.rust-lang.org/reference/items/implementations.html#trait-implementation-coherence)
     if you want to get familiar with its nuances.
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如上所述，孤儿规则有一些注意事项和例外。如果你想了解其细微差别，请查看[参考](https://doc.rust-lang.org/reference/items/implementations.html#trait-implementation-coherence)。
 - en: '[Exercise](#exercise)'
+  id: totrans-31
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`04_traits/02_orphan_rule`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/02_orphan_rule)
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`04_traits/02_orphan_rule`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/04_traits/02_orphan_rule)

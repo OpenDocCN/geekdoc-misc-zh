@@ -1,125 +1,187 @@
 - en: Cancellation
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 取消
 - en: 原文：[https://rust-exercises.com/100-exercises/08_futures/07_cancellation.html](https://rust-exercises.com/100-exercises/08_futures/07_cancellation.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/08_futures/07_cancellation.html](https://rust-exercises.com/100-exercises/08_futures/07_cancellation.html)
 - en: What happens when a pending future is dropped?
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 当挂起的未来被丢弃时会发生什么？
 - en: The runtime will no longer poll it, therefore it won't make any further progress.
     In other words, its execution has been **cancelled**.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 运行时将不再轮询它，因此它不会取得任何进一步的进展。换句话说，它的执行已被**取消**。
 - en: 'In the wild, this often happens when working with timeouts. For example:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 在野外，这通常发生在处理超时的情况下。例如：
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'When the timeout expires, the future returned by `http_call` will be cancelled.
     Let''s imagine that this is `http_call`''s body:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 当超时到期时，`http_call`返回的未来将被取消。让我们想象这是`http_call`的主体：
 - en: '[PRE1]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Each yield point becomes a **cancellation point**.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个产出点都成为一个**取消点**。
 - en: '`http_call` can''t be preempted by the runtime, so it can only be discarded
     after it has yielded control back to the executor via `.await`. This applies recursively—e.g.
     `stream.write_all(&request)` is likely to have multiple yield points in its implementation.
     It is perfectly possible to see `http_call` pushing a *partial* request before
     being cancelled, thus dropping the connection and never finishing transmitting
     the body.'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: '`http_call`不能被运行时抢占，因此它只能在通过`.await`将控制权交还给执行器后丢弃。这适用于递归情况——例如，`stream.write_all(&request)`在其实现中可能有多处产出点。完全有可能看到`http_call`在取消之前推送一个**部分**请求，从而断开连接并从未完成传输主体。'
 - en: '[Clean up](#clean-up)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[清理](#clean-up)'
 - en: Rust's cancellation mechanism is quite powerful—it allows the caller to cancel
     an ongoing task without needing any form of cooperation from the task itself.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust的取消机制非常强大——它允许调用者取消一个正在进行的任务，而无需任务本身的任何形式的合作。
 - en: At the same time, this can be quite dangerous. It may be desirable to perform
     a **graceful cancellation**, to ensure that some clean-up tasks are performed
     before aborting the operation.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 同时，这也可能相当危险。可能需要执行一个**优雅的取消**，以确保在终止操作之前执行一些清理任务。
 - en: 'For example, consider this fictional API for a SQL transaction:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，考虑这个虚构的SQL事务API：
 - en: '[PRE2]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: On cancellation, it'd be ideal to explicitly abort the pending transaction rather
     than leaving it hanging. Rust, unfortunately, doesn't provide a bullet-proof mechanism
     for this kind of **asynchronous** clean up operations.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 在取消时，最好显式地中止挂起的交易，而不是让它悬而未决。不幸的是，Rust没有提供一种针对此类**异步**清理操作的万无一失的机制。
 - en: 'The most common strategy is to rely on the `Drop` trait to schedule the required
     clean-up work. This can be by:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 最常见的策略是依赖于`Drop`特质来安排所需的清理工作。这可以通过以下方式实现：
 - en: Spawning a new task on the runtime
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在运行时上启动一个新任务
 - en: Enqueueing a message on a channel
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在通道上入队一条消息
 - en: Spawning a background thread
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 启动一个后台线程
 - en: The optimal choice is contextual.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 最佳选择是情境相关的。
 - en: '[Cancelling spawned tasks](#cancelling-spawned-tasks)'
+  id: totrans-21
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[取消已启动的任务](#cancelling-spawned-tasks)'
 - en: When you spawn a task using `tokio::spawn`, you can no longer drop it; it belongs
     to the runtime.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你使用`tokio::spawn`启动一个任务时，你不能再将其丢弃；它属于运行时。
 - en: 'Nonetheless, you can use its `JoinHandle` to cancel it if needed:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管如此，如果需要，你可以使用它的`JoinHandle`来取消它：
 - en: '[PRE3]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[Further reading](#further-reading)'
+  id: totrans-25
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步阅读](#further-reading)'
 - en: Be extremely careful when using `tokio`'s `select!` macro to "race" two different
     futures. Retrying the same task in a loop is dangerous unless you can ensure **cancellation
     safety**. Check out [`select!`'s documentation](https://tokio.rs/tokio/tutorial/select)
     for more details.
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当使用`tokio`的`select!`宏来“竞速”两个不同的未来时，请务必非常小心。除非你能确保**取消安全性**，否则在循环中重试相同的任务是非常危险的。查看`[`select!`的文档](https://tokio.rs/tokio/tutorial/select)以获取更多详细信息。
 - en: If you need to interleave two asynchronous streams of data (e.g. a socket and
     a channel), prefer using [`StreamExt::merge`](https://docs.rs/tokio-stream/latest/tokio_stream/trait.StreamExt.html#method.merge)
     instead.
+  id: totrans-27
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果你需要混合两个异步数据流（例如，一个套接字和一个通道），建议使用`[`StreamExt::merge](https://docs.rs/tokio-stream/latest/tokio_stream/trait.StreamExt.html#method.merge)`。
 - en: A [`CancellationToken`](https://docs.rs/tokio-util/latest/tokio_util/sync/struct.CancellationToken.html)
     may be preferable to `JoinHandle::abort` in some cases.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在某些情况下，`[`CancellationToken`](https://docs.rs/tokio-util/latest/tokio_util/sync/struct.CancellationToken.html)`可能比`JoinHandle::abort`更可取。
 - en: '[Exercise](#exercise)'
+  id: totrans-29
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`08_futures/07_cancellation`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/07_cancellation)
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`08_futures/07_cancellation`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/08_futures/07_cancellation)

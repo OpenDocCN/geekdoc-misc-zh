@@ -1,96 +1,146 @@
 - en: Bounded vs unbounded channels
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 有界与无界通道
 - en: 原文：[https://rust-exercises.com/100-exercises/07_threads/09_bounded.html](https://rust-exercises.com/100-exercises/07_threads/09_bounded.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/07_threads/09_bounded.html](https://rust-exercises.com/100-exercises/07_threads/09_bounded.html)
 - en: So far we've been using unbounded channels.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们一直在使用无界通道。
 - en: You can send as many messages as you want, and the channel will grow to accommodate
     them.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可以发送尽可能多的消息，通道将增长以容纳它们。
 - en: 'In a multi-producer single-consumer scenario, this can be problematic: if the
     producers enqueue messages at a faster rate than the consumer can process them,
     the channel will keep growing, potentially consuming all available memory.'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 在多生产者单消费者场景中，这可能会出现问题：如果生产者以比消费者处理消息更快的速度排队消息，通道将不断增长，可能会消耗所有可用内存。
 - en: Our recommendation is to **never** use an unbounded channel in a production
     system.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的建议是**永远**不要在生产系统中使用无界通道。
 - en: You should always enforce an upper limit on the number of messages that can
     be enqueued using a **bounded channel**.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 您应该始终使用有界通道强制限制可以排队的消息数量。
 - en: '[Bounded channels](#bounded-channels)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[有界通道](#bounded-channels)'
 - en: A bounded channel has a fixed capacity.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 有界通道具有固定容量。
 - en: 'You can create one by calling `sync_channel` with a capacity greater than zero:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可以通过调用 `sync_channel` 并传入大于零的容量来创建一个：
 - en: '[PRE0]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '`receiver` has the same type as before, `Receiver<T>`.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '`receiver` 与之前相同，类型为 `Receiver<T>`。'
 - en: '`sender`, instead, is an instance of `SyncSender<T>`.'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '`sender`，而是一个 `SyncSender<T>` 的实例。'
 - en: '[Sending messages](#sending-messages)'
+  id: totrans-13
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[发送消息](#sending-messages)'
 - en: 'You have two different methods to send messages through a `SyncSender`:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 您有两种不同的方法通过 `SyncSender` 发送消息：
 - en: '`send`: if there is space in the channel, it will enqueue the message and return
     `Ok(())`.'
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`send`：如果通道中有空间，它将排队消息并返回 `Ok(())`。'
 - en: If the channel is full, it will block and wait until there is space available.
+  id: totrans-16
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果通道已满，它将阻塞并等待直到有空间可用。
 - en: '`try_send`: if there is space in the channel, it will enqueue the message and
     return `Ok(())`.'
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`try_send`：如果通道中有空间，它将排队消息并返回 `Ok(())`。'
 - en: If the channel is full, it will return `Err(TrySendError::Full(value))`, where
     `value` is the message that couldn't be sent.
+  id: totrans-18
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果通道已满，它将返回 `Err(TrySendError::Full(value))`，其中 `value` 是无法发送的消息。
 - en: Depending on your use case, you might want to use one or the other.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 根据您的用例，您可能希望使用其中一个。
 - en: '[Backpressure](#backpressure)'
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[背压](#backpressure)'
 - en: The main advantage of using bounded channels is that they provide a form of
     **backpressure**.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用有界通道的主要优势是它们提供了一种形式的**背压**。
 - en: They force the producers to slow down if the consumer can't keep up. The backpressure
     can then propagate through the system, potentially affecting the whole architecture
     and preventing end users from overwhelming the system with requests.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 它们迫使生产者在消费者跟不上的情况下减速。然后，背压可以传播到整个系统，可能影响整个架构，并防止最终用户通过请求压倒系统。
 - en: '[Exercise](#exercise)'
+  id: totrans-23
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`07_threads/09_bounded`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/09_bounded)
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于 `07_threads/09_bounded` 中[`07_threads/09_bounded`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/07_threads/09_bounded)

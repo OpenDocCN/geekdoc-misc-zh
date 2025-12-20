@@ -1,134 +1,207 @@
 - en: HashMap
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: HashMap
 - en: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/15_hashmap.html](https://rust-exercises.com/100-exercises/06_ticket_management/15_hashmap.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/06_ticket_management/15_hashmap.html](https://rust-exercises.com/100-exercises/06_ticket_management/15_hashmap.html)
 - en: 'Our implementation of `Index`/`IndexMut` is not ideal: we need to iterate over
     the entire `Vec` to retrieve a ticket by id; the algorithmic complexity is `O(n)`,
     where `n` is the number of tickets in the store.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们对 `Index`/`IndexMut` 的实现并不理想：我们需要遍历整个 `Vec` 来通过 id 检索票；算法的复杂度是 `O(n)`，其中 `n`
+    是存储中的票数。
 - en: 'We can do better by using a different data structure for storing tickets: a
     `HashMap<K, V>`.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过使用不同的数据结构来存储票：一个 `HashMap<K, V>`。
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '`HashMap` works with key-value pairs. It''s generic over both: `K` is the generic
     parameter for the key type, while `V` is the one for the value type.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: '`HashMap` 与键值对一起工作。它是通用的：`K` 是键类型的泛型参数，而 `V` 是值类型的泛型参数。'
 - en: The expected cost of insertions, retrievals and removals is **constant**, `O(1)`.
     That sounds perfect for our usecase, doesn't it?
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 插入、检索和删除的预期成本是 **常数**，`O(1)`。这对我们的用例来说听起来很完美，不是吗？
 - en: '[Key requirements](#key-requirements)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[键要求](#key-requirements)'
 - en: 'There are no trait bounds on `HashMap`''s struct definition, but you''ll find
     some on its methods. Let''s look at `insert`, for example:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `HashMap` 的结构定义上没有特征约束，但你会在其方法中找到一些。以 `insert` 为例：
 - en: '[PRE1]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The key type must implement the `Eq` and `Hash` traits.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 键类型必须实现 `Eq` 和 `Hash` 特征。
 - en: Let's dig into those two.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们深入探讨这两个特征。
 - en: '[`Hash`](#hash)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[哈希](#hash)'
 - en: A hashing function (or hasher) maps a potentially infinite set of a values (e.g.
     all possible strings) to a bounded range (e.g. a `u64` value).
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 哈希函数（或哈希器）将一个可能无限大的值集（例如所有可能的字符串）映射到一个有界范围内（例如 `u64` 值）。
 - en: There are many different hashing functions around, each with different properties
     (speed, collision risk, reversibility, etc.).
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 周围有许多不同的哈希函数，每个都有不同的属性（速度、冲突风险、可逆性等）。
 - en: A `HashMap`, as the name suggests, uses a hashing function behind the scene.
     It hashes your key and then uses that hash to store/retrieve the associated value.
     This strategy requires the key type must be hashable, hence the `Hash` trait bound
     on `K`.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 如其名所示，`HashMap` 在幕后使用哈希函数。它将你的键进行哈希处理，然后使用该哈希值来存储/检索关联的值。这种策略要求键类型必须是可哈希的，因此对
+    `K` 有 `Hash` 特征约束。
 - en: 'You can find the `Hash` trait in the `std::hash` module:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以在 `std::hash` 模块中找到 `Hash` 特征：
 - en: '[PRE2]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'You will rarely implement `Hash` manually. Most of the times you''ll derive
     it:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 你很少会手动实现 `Hash`。大多数时候你会从它那里推导出来：
 - en: '[PRE3]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[`Eq`](#eq)'
+  id: totrans-20
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[等价](#eq)'
 - en: '`HashMap` must be able to compare keys for equality. This is particularly important
     when dealing with hash collisions—i.e. when two different keys hash to the same
     value.'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '`HashMap` 必须能够比较键的等价性。当处理哈希冲突时，这一点尤为重要——即当两个不同的键哈希到相同的值时。'
 - en: 'You may wonder: isn''t that what the `PartialEq` trait is for? Almost!'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能会想：那不正是 `PartialEq` 特征的作用吗？几乎是这样！
 - en: '`PartialEq` is not enough for `HashMap` because it doesn''t guarantee reflexivity,
     i.e. `a == a` is always `true`.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '`PartialEq` 对于 `HashMap` 来说不够，因为它不保证自反性，即 `a == a` 总是 `true`。'
 - en: 'For example, floating point numbers (`f32` and `f64`) implement `PartialEq`,
     but they don''t satisfy the reflexivity property: `f32::NAN == f32::NAN` is `false`.'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，浮点数（`f32` 和 `f64`）实现了 `PartialEq`，但它们不满足自反性属性：`f32::NAN == f32::NAN` 是 `false`。
 - en: 'Reflexivity is crucial for `HashMap` to work correctly: without it, you wouldn''t
     be able to retrieve a value from the map using the same key you used to insert
     it.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 自反性对于 `HashMap` 正确工作至关重要：没有它，你将无法使用插入时使用的相同键从映射中检索值。
 - en: 'The `Eq` trait extends `PartialEq` with the reflexivity property:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Eq` 特征通过自反性属性扩展了 `PartialEq`：'
 - en: '[PRE4]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'It''s a marker trait: it doesn''t add any new methods, it''s just a way for
     you to say to the compiler that the equality logic implemented in `PartialEq`
     is reflexive.'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 它是一个标记特征：它不添加任何新方法，它只是让你告诉编译器，在 `PartialEq` 中实现的等价逻辑是自反的。
 - en: 'You can derive `Eq` automatically when you derive `PartialEq`:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你从 `PartialEq` 继承时，可以自动推导出 `Eq`：
 - en: '[PRE5]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[`Eq` and `Hash` are linked](#eq-and-hash-are-linked)'
+  id: totrans-31
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[等价和哈希相关联](#eq-and-hash-are-linked)'
 - en: 'There is an implicit contract between `Eq` and `Hash`: if two keys are equal,
     their hashes must be equal too. This is crucial for `HashMap` to work correctly.
     If you break this contract, you''ll get nonsensical results when using `HashMap`.'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 之间存在 `Eq` 和 `Hash` 的隐式契约：如果两个键相等，它们的哈希值也必须相等。这对于 `HashMap` 正确工作至关重要。如果你违反了这个契约，当使用
+    `HashMap` 时，你会得到无意义的输出。
 - en: '[Exercise](#exercise)'
+  id: totrans-33
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`06_ticket_management/15_hashmap`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/15_hashmap)
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节练习位于[`06_ticket_management/15_hashmap`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/06_ticket_management/15_hashmap)

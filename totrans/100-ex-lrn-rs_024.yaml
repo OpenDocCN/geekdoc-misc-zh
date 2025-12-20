@@ -1,73 +1,113 @@
 - en: References
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 参考文献
 - en: 原文：[https://rust-exercises.com/100-exercises/03_ticket_v1/10_references_in_memory.html](https://rust-exercises.com/100-exercises/03_ticket_v1/10_references_in_memory.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/03_ticket_v1/10_references_in_memory.html](https://rust-exercises.com/100-exercises/03_ticket_v1/10_references_in_memory.html)
 - en: What about references, like `&String` or `&mut String`? How are they represented
     in memory?
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于像`&String`或`&mut String`这样的引用，它们在内存中是如何表示的呢？
 - en: Most references^([1](#footnote-fat)) in Rust are represented, in memory, as
     a pointer to a memory location.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Rust中，大多数引用^([1](#footnote-fat))在内存中都是以指向内存位置的指针形式表示的。
 - en: It follows that their size is the same as the size of a pointer, a `usize`.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，它们的大小与指针的大小相同，即`usize`。
 - en: 'You can verify this using `std::mem::size_of`:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以使用`std::mem::size_of`来验证这一点：
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: A `&String`, in particular, is a pointer to the memory location where the `String`'s
     metadata is stored.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 特别是，一个`&String`是一个指向存储`String`元数据的内存位置的指针。
 - en: 'If you run this snippet:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你运行这个片段：
 - en: '[PRE1]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'you''ll get something like this in memory:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 你在内存中会得到类似这样的结果：
 - en: '[PRE2]'
+  id: totrans-11
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: It's a pointer to a pointer to the heap-allocated data, if you will. The same
     goes for `&mut String`.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你想知道，它是一个指向堆分配数据的指针的指针。对于`&mut String`也是同样的道理。
 - en: '[Not all pointers point to the heap](#not-all-pointers-point-to-the-heap)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[并非所有指针都指向堆](#not-all-pointers-point-to-the-heap)'
 - en: 'The example above should clarify one thing: not all pointers point to the heap.'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 上面的例子应该可以澄清一点：并不是所有的指针都指向堆。
 - en: They just point to a memory location, which *may* be on the heap, but doesn't
     have to be.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 它们仅仅指向一个内存位置，这个位置*可能*在堆上，但也不一定。
 - en: '[Exercise](#exercise)'
+  id: totrans-16
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`03_ticket_v1/10_references_in_memory`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/03_ticket_v1/10_references_in_memory)
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的学习练习位于[`03_ticket_v1/10_references_in_memory`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/03_ticket_v1/10_references_in_memory)
 - en: '* * *'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '[Later in the course](/100-exercises/04_traits/06_str_slice) we''ll talk about
     **fat pointers**, i.e. pointers with additional metadata. As the name implies,
     they are larger than the pointers we discussed in this chapter, also known as
     **thin pointers**. [↩](#fr-fat-1)'
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[课程后续部分](/100-exercises/04_traits/06_str_slice)我们将讨论**胖指针**，即带有额外元数据的指针。正如其名所示，它们比本章讨论的指针要大，也被称为**瘦指针**。[↩](#fr-fat-1)'

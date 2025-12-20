@@ -1,42 +1,61 @@
 - en: Overflow
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 溢出
 - en: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/08_overflow.html](https://rust-exercises.com/100-exercises/02_basic_calculator/08_overflow.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://rust-exercises.com/100-exercises/02_basic_calculator/08_overflow.html](https://rust-exercises.com/100-exercises/02_basic_calculator/08_overflow.html)
 - en: The factorial of a number grows quite fast.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个数的阶乘增长非常快。
 - en: For example, the factorial of 20 is 2,432,902,008,176,640,000\. That's already
     bigger than the maximum value for a 32-bit integer, 2,147,483,647.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，20的阶乘是2,432,902,008,176,640,000。这已经大于32位整数的最大值，2,147,483,647。
 - en: When the result of an arithmetic operation is bigger than the maximum value
     for a given integer type, we are talking about **an integer overflow**.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 当算术运算的结果大于给定整数类型的最大值时，我们谈论的是**整数溢出**。
 - en: Integer overflows are an issue because they violate the contract for arithmetic
     operations.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 整数溢出是一个问题，因为它们违反了算术运算的合同。
 - en: The result of an arithmetic operation between two integers of a given type should
     be another integer of the same type. But the *mathematically correct result* doesn't
     fit into that integer type!
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 两个给定类型的整数之间的算术运算的结果应该是同一类型的另一个整数。但是，*数学上正确的结果*无法适应那个整数类型！
 - en: If the result is smaller than the minimum value for a given integer type, we
     refer to the event as **an integer underflow**.
+  id: totrans-7
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 如果结果是给定整数类型的最小值以下，我们称该事件为**整数下溢**。
 - en: For brevity, we'll only talk about integer overflows for the rest of this section,
     but keep in mind that everything we say applies to integer underflows as well.
+  id: totrans-8
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 为了简洁起见，我们将在本节剩余部分仅讨论整数溢出，但请记住，我们所说的内容同样适用于整数下溢。
 - en: ''
+  id: totrans-9
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -44,105 +63,154 @@
     underflowed for some input combinations. E.g. if `end` is smaller than `start`,
     `end - start` will underflow the `u32` type since the result is supposed to be
     negative but `u32` can't represent negative numbers.
+  id: totrans-10
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 你在["变量"部分](/100-exercises/02_basic_calculator/02_variables)中编写的`speed`函数在某些输入组合中发生了下溢。例如，如果`end`小于`start`，则`end
+    - start`将下溢`u32`类型，因为结果应该是负数，但`u32`无法表示负数。
 - en: '[No automatic promotion](#no-automatic-promotion)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[无自动提升](#no-automatic-promotion)'
 - en: One possible approach would be automatically promote the result to a bigger
     integer type. E.g. if you're summing two `u8` integers and the result is 256 (`u8::MAX
     + 1`), Rust could choose to interpret the result as `u16`, the next integer type
     that's big enough to hold 256.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 一种可能的方法是自动将结果提升到更大的整数类型。例如，如果你正在对两个`u8`整数求和，并且结果是256（`u8::MAX + 1`），Rust可以选择将结果解释为`u16`，这是足够大的下一个整数类型，可以容纳256。
 - en: But, as we've discussed before, Rust is quite picky about type conversions.
     Automatic integer promotion is not Rust's solution to the integer overflow problem.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 但是，正如我们之前讨论的，Rust对类型转换非常挑剔。自动整数提升不是Rust解决整数溢出问题的方案。
 - en: '[Alternatives](#alternatives)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[替代方案](#alternatives)'
 - en: Since we ruled out automatic promotion, what can we do when an integer overflow
     occurs?
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于我们排除了自动提升，当发生整数溢出时我们该怎么办？
 - en: 'It boils down to two different approaches:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 这归结为两种不同的方法：
 - en: Reject the operation
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 拒绝操作
 - en: Come up with a "sensible" result that fits into the expected integer type
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 提出一个“合理”的结果，使其适合预期的整数类型
 - en: '[Reject the operation](#reject-the-operation)'
+  id: totrans-19
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[拒绝操作](#reject-the-operation)'
 - en: 'This is the most conservative approach: we stop the program when an integer
     overflow occurs.'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是最高保守的方法：当发生整数溢出时，我们停止程序。
 - en: That's done via a panic, the mechanism we've already seen in the ["Panics" section](/100-exercises/02_basic_calculator/04_panics).
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 这通过panic来实现，这是我们已经在["panic"部分](/100-exercises/02_basic_calculator/04_panics)中看到过的机制。
 - en: '[Come up with a "sensible" result](#come-up-with-a-sensible-result)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[提出一个“合理”的结果](#come-up-with-a-sensible-result)'
 - en: When the result of an arithmetic operation is bigger than the maximum value
     for a given integer type, you can choose to **wrap around**.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 当算术运算的结果大于给定整数类型的最大值时，你可以选择**环绕**。
 - en: If you think of all the possible values for a given integer type as a circle,
     wrapping around means that when you reach the maximum value, you start again from
     the minimum value.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你将给定整数类型的所有可能值想象成一个圆，环绕意味着当你达到最大值时，你从最小值重新开始。
 - en: For example, if you do a **wrapping addition** between 1 and 255 (=`u8::MAX`),
     the result is 0 (=`u8::MIN`). If you're working with signed integers, the same
     principle applies. E.g. adding 1 to 127 (=`i8::MAX`) with wrapping will give you
     -128 (=`i8::MIN`).
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，如果您在1和255（`u8::MAX`）之间进行带符号的加法，结果将是0（`u8::MIN`）。如果您正在处理有符号整数，则相同的原理适用。例如，使用带符号的方式将1加到127（`i8::MAX`）将得到-128（`i8::MIN`）。
 - en: '[`overflow-checks`](#overflow-checks)'
+  id: totrans-26
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[溢出检查](#overflow-checks)'
 - en: Rust lets you, the developer, choose which approach to use when an integer overflow
     occurs. The behaviour is controlled by the `overflow-checks` profile setting.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust允许您，作为开发者，在整数溢出发生时选择使用哪种方法。该行为由`overflow-checks`配置文件设置控制。
 - en: If `overflow-checks` is set to `true`, Rust will **panic at runtime** when an
     integer operation overflows. If `overflow-checks` is set to `false`, Rust will
     **wrap around** when an integer operation overflows.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果`overflow-checks`设置为`true`，当整数运算发生溢出时，Rust将在运行时**恐慌**。如果`overflow-checks`设置为`false`，当整数运算发生溢出时，Rust将**回绕**。
 - en: You may be wondering—what is a profile setting? Let's get into that!
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可能会想知道——什么是配置文件设置？让我们来探讨一下！
 - en: '[Profiles](#profiles)'
+  id: totrans-30
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[配置文件](#profiles)'
 - en: A [**profile**](https://doc.rust-lang.org/cargo/reference/profiles.html) is
     a set of configuration options that can be used to customize the way Rust code
     is compiled.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: '[配置文件](https://doc.rust-lang.org/cargo/reference/profiles.html)是一组配置选项，可用于自定义Rust代码的编译方式。'
 - en: 'Cargo provides 4 built-in profiles: `dev`, `release`, `test`, and `bench`.'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: Cargo提供了4个内置配置文件：`dev`、`release`、`test`和`bench`。
 - en: The `dev` profile is used every time you run `cargo build`, `cargo run` or `cargo
     test`. It's aimed at local development, therefore it sacrifices runtime performance
     in favor of faster compilation times and a better debugging experience.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 每次您运行`cargo build`、`cargo run`或`cargo test`时，都会使用`dev`配置文件。它旨在针对本地开发，因此它牺牲了运行时性能，以换取更快的编译时间和更好的调试体验。
 - en: The `release` profile, instead, is optimized for runtime performance but incurs
     longer compilation times. You need to explicitly request via the `--release` flag—e.g.
     `cargo build --release` or `cargo run --release`. The `test` profile is the default
@@ -150,74 +218,112 @@
     `dev` profile. The `bench` profile is the default profile used by `cargo bench`.
     The `bench` profile inherits from the `release` profile. Use `dev` for iterative
     development and debugging, `release` for optimized production builds,
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，`release`配置文件针对运行时性能进行了优化，但会带来更长的编译时间。您需要通过`--release`标志显式请求——例如`cargo build
+    --release`或`cargo run --release`。`test`配置文件是`cargo test`使用的默认配置文件。`test`配置文件从`dev`配置文件继承设置。`bench`配置文件是`cargo
+    bench`使用的默认配置文件。`bench`配置文件从`release`配置文件继承。使用`dev`进行迭代开发和调试，使用`release`进行优化后的生产构建，
 - en: '`test` for correctness testing, and `bench` for performance benchmarking.'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: '`test`用于正确性测试，`bench`用于性能基准测试。'
 - en: '"Have you built your project in release mode?" is almost a meme in the Rust
     community.'
+  id: totrans-36
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: “你有没有以发布模式构建你的项目？”在Rust社区中几乎成了一个梗。
 - en: It refers to developers who are not familiar with Rust and complain about its
     performance on social media (e.g. Reddit, Twitter) before realizing they haven't
     built their project in release mode.
+  id: totrans-37
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 这指的是那些不熟悉Rust并在社交媒体（例如Reddit、Twitter）上对其性能提出抱怨的开发者（在意识到他们尚未以发布模式构建项目之前）。
 - en: You can also define custom profiles or customize the built-in ones.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 您还可以定义自定义配置文件或自定义内置的配置文件。
 - en: '[`overflow-check`](#overflow-check)'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[溢出检查](#overflow-check)'
 - en: 'By default, `overflow-checks` is set to:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，`overflow-checks`设置为：
 - en: '`true` for the `dev` profile'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于`dev`配置文件，设置为`true`
 - en: '`false` for the `release` profile'
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于`release`配置文件，设置为`false`
 - en: This is in line with the goals of the two profiles.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 这与两个配置文件的目标一致。
 - en: '`dev` is aimed at local development, so it panics in order to highlight potential
     issues as early as possible.'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '`dev`配置文件旨在针对本地开发，因此它通过尽可能早地突出潜在问题来引发恐慌。'
 - en: '`release`, instead, is tuned for runtime performance: checking for overflows
     would slow down the program, so it prefers to wrap around.'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，`release`配置文件针对运行时性能进行了调整：检查溢出会减慢程序运行速度，因此它更倾向于回绕。
 - en: At the same time, having different behaviours for the two profiles can lead
     to subtle bugs.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 同时，为两个配置文件提供不同的行为可能会导致微妙的错误。
 - en: 'Our recommendation is to enable `overflow-checks` for both profiles: it''s
     better to crash than to silently produce incorrect results. The runtime performance
     hit is negligible in most cases; if you''re working on a performance-critical
     application, you can run benchmarks to decide if it''s something you can afford.'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的推荐是，为两个配置文件都启用`overflow-checks`：出错总比默默产生错误结果要好。在大多数情况下，运行时性能的影响是可以忽略不计的；如果你正在开发一个性能关键的应用程序，你可以运行基准测试来决定这是否是你负担得起的。
 - en: '[Further reading](#further-reading)'
+  id: totrans-48
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[进一步阅读](#further-reading)'
 - en: Check out ["Myths and legends about integer overflow in Rust"](https://huonw.github.io/blog/2016/04/myths-and-legends-about-integer-overflow-in-rust/)
     for an in-depth discussion about integer overflow in Rust.
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 查阅["关于Rust中整数溢出的神话和传说"](https://huonw.github.io/blog/2016/04/myths-and-legends-about-integer-overflow-in-rust/)，以深入了解Rust中的整数溢出。
 - en: '[Exercise](#exercise)'
+  id: totrans-50
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The exercise for this section is located in [`02_basic_calculator/08_overflow`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/08_overflow)
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节的练习位于[`02_basic_calculator/08_overflow`](https://github.com/mainmatter/100-exercises-to-learn-rust/tree/main/exercises/02_basic_calculator/08_overflow)
