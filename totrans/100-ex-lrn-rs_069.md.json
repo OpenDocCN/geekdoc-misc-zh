@@ -1,0 +1,1 @@
+["```rs\nlet mut numbers = vec![1, 2, 3];\nlet slice: &mut [i32] = &mut numbers;\n```", "```rs\nslice[0] = 42;\n```", "```rs\nlet mut numbers = Vec::with_capacity(2);\nlet mut slice: &mut [i32] = &mut numbers;\nslice.push(1);\n```"]
