@@ -1,0 +1,307 @@
+- en: Multithreaded Rustle
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/multithreaded_rustle.html](https://freddiehaddad.github.io/fast-track-to-rust/multithreaded_rustle.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: With our understanding of scoped vs non-scoped threads, we are now prepared
+    to correctly update rustle to process each file specified on the command line
+    in a separate thread.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Here's the updated version of the program with the changes visible.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]rust /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start,
+    1); /// assert_eq!(interval.end, 10); /// [PRE1]rust /// let interval = Interval::new(1,
+    10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end,
+    10); /// [PRE2]rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3,
+    5).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a),
+    true); /// [PRE3]rust /// let a = Interval::new(1, 5).unwrap(); /// let b = Interval::new(2,
+    4).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a),
+    true); /// [PRE4]rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(4,
+    6).unwrap(); /// assert_eq!(a.overlaps(&b), false); /// assert_eq!(b.overlaps(&a),
+    true); /// [PRE5]rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3,
+    5).unwrap(); /// let c = a.merge(&b).unwrap(); /// assert_eq!(c.start, 1); ///
+    assert_eq!(c.end, 5); /// [PRE6]'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Missing Error Output
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs:
+  - PREF_BQ
+  type: TYPE_PRE
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: The error message for the bad file doesn't appear in the playground output because
+    standard error output isn't captured.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Our rustle program is now multithreaded and processes all the input files in
+    parallel! Let's walk through the code changes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`mock_disk`](#mock_disk)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The `mock_disk` [`HashMap`](https://doc.rust-lang.org/std/collections/struct.HashMap.html)
+    simulates disk access to check if a file exists and is accessible. The filename
+    serves as the key, while the file's contents are the value. This approach aids
+    in testing and development, but its use here is solely for Rust playground compatibility.
+    To ensure the creation of multiple threads, I added a new poem written by `yours
+    truly`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`thread::scope`](#threadscope)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Iterate over all files specified on the command line using the `map` iterator
+    adapter, which returns a `Result`. The `Ok` variant holds the filename if valid,
+    while the `Error` holds the error for an invalid filename.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'The `map_ok` iterator adapter processes each `Result`, calling the provided
+    closure on any `Ok` values, allowing us to ignore any invalid filenames. The provided
+    `Scope` (`s`) spawns one thread per file for processing. The closure returns a
+    `Result`: `Err` with an error message in a `RustleFailure` struct if processing
+    fails, or `Ok` with a `RustleSuccess` struct containing intervals and lines from
+    the input file if successful.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Use `collect` to create a vector (`Vec`) of results from each file iteration,
+    binding it to `handles`.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Finally, iterate over the elements in the `handles` vector using a for loop.
+    Print any errors to standard error, and pass successful pattern matching results
+    to the `print_results` function for output to standard output.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[`find_matching_lines`](#find_matching_lines)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Since each thread needs access to the `regex` object, the value is borrowed
+    instead of moved.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Summary](#summary)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Ownership and type systems are powerful tools for managing memory safety and
+    concurrency issues. By leveraging ownership and type checking, many concurrency
+    errors in Rust are caught at compile time rather than at runtime.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Unlike non-scoped threads, scoped threads can borrow non-`'static` data because
+    the scope ensures all threads are joined before it ends.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Exercise](#exercise)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: The fork/join model implemented is suboptimal because it waits for all threads
+    to finish and join before printing any results. To address this, we can use the
+    [`mpsc`](https://doc.rust-lang.org/std/sync/mpsc/index.html) (multiple producer,
+    single consumer) module, which allows threads to send results to a central receiver
+    as soon as they are ready. This enables the program to start outputting results
+    immediately, enhancing its responsiveness and efficiency. Modify the program to
+    make use of `mpsc`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**HINT**: The final solution should have a structure similar to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE9]rust'
+  prefs: []
+  type: TYPE_NORMAL
+- en: /// let interval = Interval::new(1, 10).unwrap();
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(interval.start, 1);
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(interval.end, 10);
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE10]rust
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let interval = Interval::new(1, 10).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(interval.start, 1);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(interval.end, 10);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE11]rust
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let a = Interval::new(1, 3).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let b = Interval::new(3, 5).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(a.overlaps(&b), true);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(b.overlaps(&a), true);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE12]rust
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let a = Interval::new(1, 5).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let b = Interval::new(2, 4).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(a.overlaps(&b), true);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(b.overlaps(&a), true);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE13]rust
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let a = Interval::new(1, 3).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let b = Interval::new(4, 6).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(a.overlaps(&b), false);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(b.overlaps(&a), true);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE14]rust
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let a = Interval::new(1, 3).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let b = Interval::new(3, 5).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// let c = a.merge(&b).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(c.start, 1);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// assert_eq!(c.end, 5);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE15]
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: <details><summary>Solution</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]rust /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start,
+    1); /// assert_eq!(interval.end, 10); /// [PRE17]rust /// let interval = Interval::new(1,
+    10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end,
+    10); /// [PRE18]rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3,
+    5).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a),
+    true); /// [PRE19]rust /// let a = Interval::new(1, 5).unwrap(); /// let b = Interval::new(2,
+    4).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a),
+    true); /// [PRE20]rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(4,
+    6).unwrap(); /// assert_eq!(a.overlaps(&b), false); /// assert_eq!(b.overlaps(&a),
+    true); /// [PRE21]rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3,
+    5).unwrap(); /// let c = a.merge(&b).unwrap(); /// assert_eq!(c.start, 1); ///
+    assert_eq!(c.end, 5); /// [PRE22]</details>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Next](#next)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Wrapping things up!
+  prefs: []
+  type: TYPE_NORMAL

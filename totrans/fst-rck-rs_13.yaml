@@ -1,0 +1,51 @@
+- en: Mutability
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/mutability.html](https://freddiehaddad.github.io/fast-track-to-rust/mutability.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Two lines of code were added to our rustle program on lines 13 and 18\. The
+    variable `i` will get incremented with each loop iteration and we'll use it to
+    print the line number. Go ahead and run the code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: Uh-oh! Something went wrong. Luckily, the compiler (`rustc`) emits very helpful
+    error messages.^([1](#footnote-1)) The variable `i` is immutable!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Variables and Mutability](#variables-and-mutability)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Variables in Rust are immutable by default. This design choice helps you write
+    code that leverages Rust's memory safety and fearless concurrency features. For
+    more details, you can refer to the section on [variables and mutability](https://doc.rust-lang.org/book/ch03-01-variables-and-mutability.html)
+    in the Rust documentation. While the language encourages immutability, there are
+    situations where mutating values is necessary. In such cases, we use the `mut`
+    keyword.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: Go ahead and add the `mut` keyword to line 13 and run the program again.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We're going to explore cases where immutability is needed and appropriate. However,
+    let's see how iterators can be used to avoid the need for a mutable counter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A lot of effort has been put into making `rustc` have great error messages.
+    To help understand how to interpret them, refer to the [diagnostic structure](https://rustc-dev-guide.rust-lang.org/diagnostics.html#diagnostic-structure)
+    in the documentation. [↩](#fr-1-1)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL

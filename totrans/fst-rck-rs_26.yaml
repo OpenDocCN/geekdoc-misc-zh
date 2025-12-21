@@ -1,0 +1,39 @@
+- en: Crates
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/crates.html](https://freddiehaddad.github.io/fast-track-to-rust/crates.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Crates are the smallest units of code that the Rust compiler processes at a
+    time. For instance, the rustle program we're developing is recognized as a crate
+    by the Rust compiler.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Types of Crates](#types-of-crates)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Crates are available in two types: binary and library. The compiler identifies
+    the type of crate being compiled based on the presence of either a `main.rs` or
+    `lib.rs` file.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Binary Crates](#binary-crates)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Binary crates contain a `main.rs` file in the `src` directory, feature a `main`
+    function, and are compiled into an executable.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Library Crates](#library-crates)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Library crates contain a `lib.rs` file in the `src` directory, lack a main function,
+    and do not compile into an executable. Instead, they are designed to be shared
+    with other projects.
+  prefs: []
+  type: TYPE_NORMAL

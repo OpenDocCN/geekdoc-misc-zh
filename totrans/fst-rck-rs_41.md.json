@@ -1,0 +1,1 @@
+["```rs\nInnerAttribute :\n   # ! [ Attr ]\n\nOuterAttribute :\n   # [ Attr ]\n\nAttr :\n      SimplePath AttrInput?\n   | unsafe ( SimplePath AttrInput? )\n\nAttrInput :\n      DelimTokenTree\n   | = Expression \n```", "```rs\n#[derive(Debug, PartialEq)]\npub struct Interval<T> {\n    pub start: T,\n    pub end: T,\n}\n```"]

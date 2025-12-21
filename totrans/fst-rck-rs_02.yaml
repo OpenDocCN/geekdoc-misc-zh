@@ -1,0 +1,32 @@
+- en: Shortcuts
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/shortcuts.html](https://freddiehaddad.github.io/fast-track-to-rust/shortcuts.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: This course, developed with [mdbook](https://github.com/rust-lang/mdBook), features
+    efficient keyboard shortcuts for streamlined navigation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Keyboard Shortcuts](#keyboard-shortcuts)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '`Arrow-Left`: Navigate to the previous page.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Arrow-Right`: Navigate to the next page.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`s`: Activate the search bar.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Ctrl+Enter`: Execute the code in the focused code block.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
