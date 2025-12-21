@@ -10,6 +10,7 @@
 +   [curl 的一切](docs/everything-curl/README.md)
 +   [FreeBSD 101 黑魔法](docs/freebsd-101-hack/README.md)
 +   [F# 有趣又有利的电子书](docs/fs-fun-prof/README.md)
++   [快速掌握 Rust](docs/fst-tck-rs/README.md)
 +   [C/C++迁移到 Rust 的指南](docs/gd-port-ccpp-rust/README.md)
 +   [Golang 101 秘籍](docs/go-101-hack/README.md)
 +   [查询引擎是如何工作的](docs/hw-qry-engi-wk/README.md)
