@@ -15,7 +15,7 @@
 correctly update rustle to process each file specified on the command line in a
 separate thread.</p>
 <p>Here's the updated version of the program with the changes visible.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">use clap::Parser;
 </span><span class="boring">use interval::{Interval, IntervalError};
 </span><span class="boring">use itertools::Itertools;
@@ -398,7 +398,7 @@ there's simply no compelling case to stick with cpp!",
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <blockquote>
 <p>Missing Error Output</p>
 <pre><code class="language-console">File not found: bad_file.txt
@@ -471,7 +471,7 @@ and efficiency. Modify the program to make use of <code>mpsc</code>.</p>
     // prevent main from returning until all results are processed
     let _ = handle.join();
 }</code></pre>
-<pre><pre class="playground"><code class="language-rust editable edition2021">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust editable edition2021">#![allow(unused_imports)]
 use clap::Parser;
 use interval::{Interval, IntervalError};
 use itertools::Itertools;
@@ -854,10 +854,10 @@ pub mod interval {
             }
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <details>
 <summary>Solution</summary>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">use clap::Parser;
 </span><span class="boring">use interval::{Interval, IntervalError};
 </span><span class="boring">use itertools::Itertools;
@@ -1235,7 +1235,7 @@ fn main() {
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 </details>
 <h1 id="next"><a class="header" href="#next">Next</a></h1>
 <p>Wrapping things up!</p>

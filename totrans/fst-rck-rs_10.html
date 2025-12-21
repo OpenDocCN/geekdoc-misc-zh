@@ -23,7 +23,7 @@ efficient and readable.</p>
 <p>We will use a <code>for</code> loop to iterate over all the lines in the poem, checking
 each for the substring specified by <code>pattern</code>. Each line will be evaluated using
 a <code>match</code> expression.</p>
-<pre><pre class="playground"><code class="language-rust editable edition2021">fn main() {
+<pre class="playground"><code class="language-rust editable edition2021">fn main() {
     let pattern = "him";
     let poem = "I have a little shadow that goes in and out with me,
                 And what can be the use of him is more than I can see.
@@ -41,7 +41,7 @@ a <code>match</code> expression.</p>
             false =&gt; (),
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <h2 id="for-loops"><a class="header" href="#for-loops"><code>for</code> Loops</a></h2>
 <p>The syntax of a <code>for</code> loop should look familiar. However, something interesting
 is happening on that line. Notice the method call <code>poem.lines()</code>. You might have
@@ -155,7 +155,7 @@ through the course.</p>
 </ul>
 <details>
 <summary>Solution</summary>
-<pre><pre class="playground"><code class="language-rust editable edition2021">fn main() {
+<pre class="playground"><code class="language-rust editable edition2021">fn main() {
     let pattern = "him";
     let poem = "I have a little shadow that goes in and out with me,
                 And what can be the use of him is more than I can see.
@@ -172,7 +172,7 @@ through the course.</p>
             println!("{line}");
         }
     }
-}</code></pre></pre>
+}</code></pre>
 </details>
 <h1 id="next"><a class="header" href="#next">Next</a></h1>
 <p>Take a break if you need, and then let's continue!</p>

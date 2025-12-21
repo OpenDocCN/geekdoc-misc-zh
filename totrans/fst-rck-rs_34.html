@@ -154,7 +154,7 @@ afterward.</p>
 few minor changes have been made to enhance the design, demonstrate some
 additional language features, and leverage move semantics. Give the program a
 run!</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span>use itertools::Itertools;
 <span class="boring">use regex::Regex;
@@ -289,7 +289,7 @@ impl Interval {
     fn merge(&amp;self, other: &amp;Self) -&gt; Self {
         Interval::new(self.start, other.end)
     }
-}</code></pre></pre>
+}</code></pre>
 <h2 id="summarizing-the-changes"><a class="header" href="#summarizing-the-changes">Summarizing the Changes</a></h2>
 <p>Our rustle program now makes use of our custom type and includes a few other
 enhancements.</p>

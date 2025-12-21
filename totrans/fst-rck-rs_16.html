@@ -22,7 +22,7 @@ languages.</p>
 expressions.</li>
 </ul>
 <h2 id="returning-to-our-loop"><a class="header" href="#returning-to-our-loop">Returning to our Loop</a></h2>
-<pre><pre class="playground"><code class="language-rust editable edition2021">fn main() {
+<pre class="playground"><code class="language-rust editable edition2021">fn main() {
     let pattern = "him";
     let poem = "I have a little shadow that goes in and out with me,
                 And what can be the use of him is more than I can see.
@@ -44,7 +44,7 @@ expressions.</li>
     {
         println!("{line_no}: {line}");
     }
-}</code></pre></pre>
+}</code></pre>
 <p>In the code snippet, the closure is:</p>
 <pre><code class="language-rust  noplayground">|(i, line)| match line.contains(pattern) {
     true =&gt; Some((i + 1, line)),
@@ -67,7 +67,7 @@ Notice how <code>filter_map</code> results in more efficient and concise code.</
 </ul>
 <details>
 <summary>Solution</summary>
-<pre><pre class="playground"><code class="language-rust editable edition2021">fn main() {
+<pre class="playground"><code class="language-rust editable edition2021">fn main() {
     let pattern = "him";
     let poem = "I have a little shadow that goes in and out with me,
                 And what can be the use of him is more than I can see.
@@ -87,7 +87,7 @@ Notice how <code>filter_map</code> results in more efficient and concise code.</
     {
         println!("{line_no}: {line}");
     }
-}</code></pre></pre>
+}</code></pre>
 <blockquote>
 <p>The underscore <code>_</code> prefix in <code>_line_no</code> is how we tell the Rust compiler that
 we are intentionally ignoring the first argument. Without it the compiler will

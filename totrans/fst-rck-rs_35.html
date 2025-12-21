@@ -128,7 +128,7 @@ let intervals =
 <h1 id="updating-rustle-1"><a class="header" href="#updating-rustle-1">Updating Rustle</a></h1>
 <p>With our changes in place, our Interval now supports error handling via <code>Result</code>
 and our rustle program properly handles any errors.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span><span class="boring">use itertools::Itertools;
 </span><span class="boring">use regex::Regex;
@@ -279,7 +279,7 @@ impl Interval {
             Err(IntervalError::NonOverlappingInterval)
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <h1 id="summary"><a class="header" href="#summary">Summary</a></h1>
 <p>The decision to use the <a href="https://doc.rust-lang.org/std/result/enum.Result.html"><code>Result</code></a> type for error handling in Rust provides a
 robust and flexible way of managing errors such as:</p>
@@ -319,7 +319,7 @@ and performance, providing a clear and structured way to handle errors.</p>
 </details></li>
 </ul>
 
-<pre><pre class="playground"><code class="language-rust editable edition2021">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust editable edition2021">#![allow(unused_imports)]
 extern crate regex; // this is needed for the playground
 use itertools::Itertools;
 use regex::Regex;
@@ -470,7 +470,7 @@ impl Interval {
             Err(IntervalError::NonOverlappingInterval)
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <h1 id="next"><a class="header" href="#next">Next</a></h1>
 <p>With our Interval complete, let's make it a module!</p>
 <hr/>

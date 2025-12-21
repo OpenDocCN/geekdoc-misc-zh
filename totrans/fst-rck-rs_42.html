@@ -55,7 +55,7 @@ learn from. If you find yourself building a CLI application, you will most
 certainly want to reference the <a href="https://crates.io/crates/clap">documentation</a>.</p>
 </blockquote>
 <p>Here's the updated version of rustle with command line argument support added:</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span>use clap::Parser;
 <span class="boring">use interval::{Interval, IntervalError};
@@ -350,7 +350,7 @@ fn main() {
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <h1 id="summary"><a class="header" href="#summary">Summary</a></h1>
 <p>We made some minor code changes along with configuring <code>clap</code>. Most of it should
 be straightforward by now, so we'll focus on the new aspects:</p>

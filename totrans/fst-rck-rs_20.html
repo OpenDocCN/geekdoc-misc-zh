@@ -31,7 +31,7 @@ let match_lines: Vec&lt;_&gt; = lines
     .collect(); // turns anything iterable into a collection</code></pre>
 <p>Here is the revised code with the changes implemented. Review it and run the
 code.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
 </span><span class="boring">
 </span>fn find_matching_lines(lines: Vec&lt;&amp;str&gt;, pattern: &amp;str) -&gt; Vec&lt;usize&gt; {
     lines
@@ -98,7 +98,7 @@ fn main() {
             println!("{}: {}", line_no + 1, line)
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <h2 id="uh-oh"><a class="header" href="#uh-oh">Uh-oh!</a></h2>
 <p>A minor code change caused an issue with the program. Fortunately, the Rust
 compiler offers helpful information for diagnosing the problem. However, if

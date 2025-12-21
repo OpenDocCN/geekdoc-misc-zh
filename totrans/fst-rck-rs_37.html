@@ -21,7 +21,7 @@ body within curly braces.</p>
 moved inside the <code>interval</code> module. In addition, comments have been added to the
 module which will be used to generate documentation in an upcoming section. Go
 ahead and run the code to see it in action!</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span><span class="boring">use itertools::Itertools;
 </span><span class="boring">use regex::Regex;
@@ -237,7 +237,7 @@ ahead and run the code to see it in action!</p>
             }
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <p>Uh-oh! Looks like we have all kinds of compiler errors! Among the chaos is two
 different errors having to do with scope and privacy.</p>
 <ul>
@@ -258,7 +258,7 @@ access to <code>IntervalError</code>, so we'll bring that into scope at the same
 bringing multiple types into scope, we can wrap them in <code>{}</code> and separate them
 with <code>,</code>.</p>
 <p>With that change in place, run the code again.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span>use interval::{Interval, IntervalError};
 <span class="boring">use itertools::Itertools;
@@ -475,7 +475,7 @@ with <code>,</code>.</p>
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>Bugger! More compiler errors!</p>
 <h2 id="privacy"><a class="header" href="#privacy">Privacy</a></h2>
 <p>Before we defined the <code>interval</code> module, all the types and their methods were
@@ -483,7 +483,7 @@ public. However, once we enclosed everything in a module, they became private!
 By default, code within a module is private from its parent modules. To make a
 module public, we need to declare it with <code>pub mod</code> instead of just <code>mod</code>. Let's
 add the <code>pub</code> prefix and run the program again.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span><span class="boring">use interval::{Interval, IntervalError};
 </span><span class="boring">use itertools::Itertools;
@@ -700,7 +700,7 @@ add the <code>pub</code> prefix and run the program again.</p>
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>More compiler errors! Who would have thought creating a module could be this
 complicated? The reason for this series of errors is to help us understand
 module scope and privacy. The emerging pattern is that modules default
@@ -708,7 +708,7 @@ everything to private. Simply declaring the module public isn't enough; every
 type and method within the module must also be explicitly declared public if
 that is the intended design. So, let's prefix the methods and types with <code>pub</code>
 and hopefully achieve a successful compile!</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span><span class="boring">use interval::{Interval, IntervalError};
 </span><span class="boring">use itertools::Itertools;
@@ -925,12 +925,12 @@ and hopefully achieve a successful compile!</p>
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>Alright, last time, I promise! As a final note on privacy, and as the compiler
 error pointed out, even the fields of a <code>struct</code> are private by default. So, the
 last step is to make the fields public. Let's do that and finally achieve a
 successful compile. Fingers crossed!</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span><span class="boring">use interval::{Interval, IntervalError};
 </span><span class="boring">use itertools::Itertools;
@@ -1147,7 +1147,7 @@ successful compile. Fingers crossed!</p>
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>Finally, the code compiles! Now, you might be wondering why we didn't have to
 declare the <code>enum</code> variants as public. If you are, good catch! The reason is
 that there are two exceptions to Rust's <em>everything is private</em><sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> behavior:</p>

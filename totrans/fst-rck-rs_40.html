@@ -61,7 +61,7 @@ attribute and the Rust compiler. Give it a try!</p>
 programmer-facing context using the <code>:?</code> operator. This common pattern in Rust
 provides more helpful output in the program below.</p>
 </blockquote>
-<pre><pre class="playground"><code class="language-rust edition2021">use interval::Interval;
+<pre class="playground"><code class="language-rust edition2021">use interval::Interval;
 
 pub mod interval {
 <span class="boring">    /// A list specifying general categories of Interval errors.
@@ -179,7 +179,7 @@ fn main() {
     // Rust supports operator overloading too!
     println!("{:?} == {:?} =&gt; {}", a, b, a == b);
     println!("{:?} != {:?} =&gt; {}", a, c, a != c);
-}</code></pre></pre>
+}</code></pre>
 <blockquote>
 <p>The <a href="https://doc.rust-lang.org/std/result/enum.Result.html#method.unwrap"><code>unwrap()</code></a> method is implemented by <code>Result</code> and other types like
 <code>Option</code>. For <code>Result</code>, it returns the <code>Ok</code> value or panics if the value is
@@ -210,7 +210,7 @@ syntax</em>.<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2<
 </blockquote>
 <p>Here's our revised <code>Interval</code> with the <code>Display</code> trait implemented. Give it a
 try!</p>
-<pre><pre class="playground"><code class="language-rust edition2021">use interval::Interval;
+<pre class="playground"><code class="language-rust edition2021">use interval::Interval;
 
 pub mod interval {
 <span class="boring">    /// A list specifying general categories of Interval errors.
@@ -341,7 +341,7 @@ fn main() {
     // Rust supports operator overloading too!
     println!("{} == {} =&gt; {}", a, b, a == b);
     println!("{} != {} =&gt; {}", a, c, a != c);
-}</code></pre></pre>
+}</code></pre>
 <h1 id="summary"><a class="header" href="#summary">Summary</a></h1>
 <ul>
 <li>Our interval module has been enhanced to support several new capabilities.</li>
@@ -360,7 +360,7 @@ traits using the <code>#[derive]</code> attribute.</li>
 <li>Implement the <a href="https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html"><code>PartialOrd</code></a> trait for <code>Interval</code>. To keep the code simple,
 you can return <code>None</code> for overlapping intervals.</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust editable edition2021">use interval::Interval;
+<pre class="playground"><code class="language-rust editable edition2021">use interval::Interval;
 
 pub mod interval {
     /// A list specifying general categories of Interval errors.
@@ -485,10 +485,10 @@ fn main() {
     assert_eq!(b.partial_cmp(&amp;a), Some(Greater));
 
     println!("Nice Work!");
-}</code></pre></pre>
+}</code></pre>
 <details>
 <summary>Solution</summary>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">use interval::Interval;
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">use interval::Interval;
 </span><span class="boring">
 </span>pub mod interval {
 <span class="boring">    /// A list specifying general categories of Interval errors.
@@ -628,13 +628,13 @@ fn main() {
 </span><span class="boring">    assert_eq!(b.partial_cmp(&amp;a), Some(Greater));
 </span><span class="boring">
 </span><span class="boring">    println!("Nice Work!");
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 </details>
 <h1 id="next"><a class="header" href="#next">Next</a></h1>
 <p>Now that we've covered traits, let's ensure our projects are synchronized before
 we proceed to exploring attributes.</p>
 <p>Here's the completed code:</p>
-<pre><pre class="playground"><code class="language-rust edition2021">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021">#![allow(unused_imports)]
 extern crate regex; // this is needed for the playground
 use interval::{Interval, IntervalError};
 use itertools::Itertools;
@@ -875,7 +875,7 @@ pub mod interval {
             }
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <hr/>
 <ol class="footnote-definition"><li id="footnote-1">
 <p>https://doc.rust-lang.org/rust-by-example/trait.html <a href="#fr-1-1">↩</a></p>

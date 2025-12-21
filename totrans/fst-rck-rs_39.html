@@ -34,7 +34,7 @@ specify additional generic types, such as <code>struct Interval&lt;T, U&gt;</cod
 <p>You've probably guessed it already, but this code won't compile. Take a moment
 to think about why that might be, and then run the code to see what the compiler
 has to say.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span><span class="boring">use interval::{Interval, IntervalError};
 </span><span class="boring">use itertools::Itertools;
@@ -251,7 +251,7 @@ has to say.</p>
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>As you guessed it, there's a lot of compiler errors and they're very helpful!</p>
 <ul>
 <li><a href="https://doc.rust-lang.org/stable/error_codes/E0107.html">E0107</a>: missing generics for <code>struct</code> <code>Interval</code></li>
@@ -280,7 +280,7 @@ help: add missing generic argument
 <p>The fix should be relatively straightforward to understand, as we've used the
 same approach for other generic types we've worked with. Let's apply the fix to
 all the functions and try again!</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span><span class="boring">use interval::{Interval, IntervalError};
 </span><span class="boring">use itertools::Itertools;
@@ -497,7 +497,7 @@ fn print_results(intervals: Vec&lt;Interval&lt;usize&gt;&gt;, lines: Vec&lt;Stri
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>As expected, we still have some more compiler errors to work through and these
 lead us into how we implement methods for a generic type!</p>
 <pre><code class="language-console">error[E0107]: missing generics for struct `Interval`
@@ -543,7 +543,7 @@ section.</p>
 generic type, and the syntax is as follows:</p>
 <pre><code class="language-rust noplayground">impl&lt;T&gt; Type&lt;T&gt; {}  // Type is replaced with Interval for our case</code></pre>
 <p>Here are the necessary changes. Review them and run the program again.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span><span class="boring">use interval::{Interval, IntervalError};
 </span><span class="boring">use itertools::Itertools;
@@ -760,7 +760,7 @@ generic type, and the syntax is as follows:</p>
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>Well, that didn't work! Now we have two new compiler errors:</p>
 <ul>
 <li>[E0369]: binary operation <code>&lt;=</code> cannot be applied to type <code>T</code></li>
@@ -848,7 +848,7 @@ explicitly call <code>clone</code>.</p>
 </blockquote>
 <p>With an understanding of trait bounds, let's examine how to impose these
 restrictions on our <code>Interval</code>. Does the program work now?</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
 </span><span class="boring">extern crate regex; // this is needed for the playground
 </span><span class="boring">use interval::{Interval, IntervalError};
 </span><span class="boring">use itertools::Itertools;
@@ -1065,7 +1065,7 @@ restrictions on our <code>Interval</code>. Does the program work now?</p>
 </span><span class="boring">            }
 </span><span class="boring">        }
 </span><span class="boring">    }
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>Voila! And we now have a generic <code>Interval</code> module that can support any type
 implementing the <code>Copy</code> and <code>PartialOrd</code> traits!</p>
 <h1 id="exercise"><a class="header" href="#exercise">Exercise</a></h1>
@@ -1087,7 +1087,7 @@ implementing the <code>Copy</code> and <code>PartialOrd</code> traits!</p>
     }
 }</code></pre>
 </details>
-<pre><pre class="playground"><code class="language-rust editable edition2021">#![allow(unused_imports)]
+<pre class="playground"><code class="language-rust editable edition2021">#![allow(unused_imports)]
 extern crate regex; // this is needed for the playground
 use interval::{Interval, IntervalError};
 use itertools::Itertools;
@@ -1304,7 +1304,7 @@ pub mod interval {
             }
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <h1 id="next"><a class="header" href="#next">Next</a></h1>
 <p>Let's dive deeper into traits!</p>
 <hr/>

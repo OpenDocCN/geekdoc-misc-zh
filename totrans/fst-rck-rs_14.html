@@ -27,7 +27,7 @@ line numbers.</p>
 count along with the value from the previous iterator, as tuples<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> in the form
 <code>(index, value)</code>. In the loop, the type for <code>i</code> is <code>usize</code>, and the type for
 <code>line</code> is <code>&amp;str</code>.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
 </span><span class="boring">    let pattern = "him";
 </span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
 </span><span class="boring">                And what can be the use of him is more than I can see.
@@ -44,11 +44,11 @@ count along with the value from the previous iterator, as tuples<sup class="foot
             println!("{}: {line}", i + 1);
         }
     }
-<span class="boring">}</span></code></pre></pre>
+<span class="boring">}</span></code></pre>
 <h2 id="advanced-iterators"><a class="header" href="#advanced-iterators">Advanced Iterators</a></h2>
 <p>We can take it a step further by using the <code>filter_map</code> iterator adapter to
 return an iterator that includes only the items we want!</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
 </span><span class="boring">    let pattern = "him";
 </span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
 </span><span class="boring">                And what can be the use of him is more than I can see.
@@ -70,7 +70,7 @@ return an iterator that includes only the items we want!</p>
     {
         println!("{line_no}: {line}");
     }
-<span class="boring">}</span></code></pre></pre>
+<span class="boring">}</span></code></pre>
 <p>Whoa! What just happened? We're on the fast track to learning Rust, so we're
 picking up the pace! Let's break this down because this code snippet needs some
 unpacking.</p>

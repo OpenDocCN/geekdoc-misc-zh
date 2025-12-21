@@ -23,7 +23,7 @@ represents a borrow. In <code>find_matching_lines</code>, <code>pattern</code> i
 type with an <code>&amp;</code>, changing it to <code>&amp;Vec&lt;&amp;str&gt;</code>, and by prefixing the variable
 <code>lines</code> in <code>main</code> to <code>&amp;lines</code>. After making these changes and re-running the
 program, we can see that it now works.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
 </span><span class="boring">
 </span>fn find_matching_lines(lines: &amp;Vec&lt;&amp;str&gt;, pattern: &amp;str) -&gt; Vec&lt;usize&gt; {
     lines
@@ -87,7 +87,7 @@ fn main() {
             println!("{}: {}", line_no + 1, line)
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <h2 id="continuing-to-refactor"><a class="header" href="#continuing-to-refactor">Continuing to Refactor</a></h2>
 <p>Let's create another function to handle the creation of our intervals. Here is
 the function signature:</p>
@@ -109,7 +109,7 @@ let mut intervals: Vec&lt;_&gt; = match_lines
     .collect();</code></pre>
 <p>Here is the revised code with the changes implemented. Review it and run the
 code.</p>
-<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+<pre class="playground"><code class="language-rust editable edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
 </span><span class="boring">
 </span>fn find_matching_lines(lines: &amp;Vec&lt;&amp;str&gt;, pattern: &amp;str) -&gt; Vec&lt;usize&gt; {
     lines
@@ -182,7 +182,7 @@ fn main() {
             println!("{}: {}", line_no + 1, line)
         }
     }
-}</code></pre></pre>
+}</code></pre>
 <blockquote>
 <p>Moving vs Borrowing</p>
 <ul>
@@ -228,7 +228,7 @@ code provided above.</p>
 </blockquote>
 <details>
 <summary>Solution</summary>
-<pre><pre class="playground"><code class="language-rust edition2021">use std::iter::FromIterator; // this line addresses a rust playground bug
+<pre class="playground"><code class="language-rust edition2021">use std::iter::FromIterator; // this line addresses a rust playground bug
 
 fn find_matching_lines(lines: &amp;Vec&lt;&amp;str&gt;, pattern: &amp;str) -&gt; Vec&lt;usize&gt; {
     lines
@@ -310,7 +310,7 @@ fn main() {
 
     // print the lines
     print_results(intervals, lines);
-}</code></pre></pre>
+}</code></pre>
 </details>
 <h1 id="summary"><a class="header" href="#summary">Summary</a></h1>
 <p>Although the concepts of ownership and borrowing are relatively straightforward,

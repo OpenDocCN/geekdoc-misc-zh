@@ -29,7 +29,7 @@ of the following form:</p>
 previously seen code by clicking the <em>Show hidden lines</em> button when hovering
 over the code block.</p>
 </blockquote>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
 </span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
 </span><span class="boring">                And what can be the use of him is more than I can see.
 </span><span class="boring">                He is very, very like me from the heels up to the head;
@@ -47,14 +47,14 @@ over the code block.</p>
 
     // format text for debugging purposes
     println!("{lines:?}");
-<span class="boring">}</span></code></pre></pre>
+<span class="boring">}</span></code></pre>
 <p>We haven't discussed traits yet, so for now, just know that <code>:?</code> specifies
 formatting the output with the <code>Debug</code><sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup> trait. The vector type implements the
 <code>fmt::Debug</code> trait.</p>
 <h3 id="using-an-iterator"><a class="header" href="#using-an-iterator">Using an Iterator</a></h3>
 <p>While using <code>push</code> is functionally correct, it introduces a mutable variable
 unnecessarily. An idiomatic solution would look like this:</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
 </span><span class="boring">
 </span><span class="boring">fn main() {
 </span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
@@ -72,7 +72,7 @@ unnecessarily. An idiomatic solution would look like this:</p>
 <span class="boring">
 </span><span class="boring">    // format text for debugging purposes
 </span><span class="boring">    println!("{lines:?}");
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <blockquote>
 <p>Favoring immutability</p>
 <p>The concept of being <em>immutable by default</em> is one of the many ways Rust
@@ -82,7 +82,7 @@ easy concurrency.</p>
 <h2 id="tracking-all-matches"><a class="header" href="#tracking-all-matches">Tracking all Matches</a></h2>
 <p>Now that we have a vector containing all the lines in our poem, let's create
 another vector to hold the line numbers where the pattern was found.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
 </span><span class="boring">
 </span><span class="boring">fn main() {
 </span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
@@ -112,7 +112,7 @@ another vector to hold the line numbers where the pattern was found.</p>
 <span class="boring">
 </span><span class="boring">    // format text for debugging purposes
 </span><span class="boring">    println!("{match_lines:?}");
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>Instead of using <code>from_iter</code>, you can also use <code>collect</code>.</p>
 <blockquote>
 <p>The inferred type (<code>_</code>) in <code>Vec&lt;_&gt;</code> <em>asks</em> the compiler to infer the type if
@@ -123,7 +123,7 @@ possible based on the surrounding context.<sup class="footnote-reference" id="fr
 passing <code>line_no</code> (the line number) to the function. We use this to identify the
 lines before and after the match that we want to print. To handle potential
 out-of-bounds indexing, we use <code>saturating_add</code> and <code>saturating_sub</code>.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
 </span><span class="boring">
 </span><span class="boring">fn main() {
 </span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
@@ -168,14 +168,14 @@ out-of-bounds indexing, we use <code>saturating_add</code> and <code>saturating_
 <span class="boring">
 </span><span class="boring">    // format text for debugging purposes
 </span><span class="boring">    println!("{intervals:?}");
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <h2 id="merging-intervals"><a class="header" href="#merging-intervals">Merging Intervals</a></h2>
 <p>Merging overlapping intervals is straightforward because they are already
 sorted, and the ending value of the next interval must be greater than the
 current one. We could store the merged intervals in a new Vector, but that would
 be inefficient. Instead, we'll make our <code>intervals</code> vector mutable and take
 advantage of the <code>dedup_by</code> iterator adaptor to perform the merge.</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
 </span><span class="boring">
 </span><span class="boring">fn main() {
 </span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
@@ -228,7 +228,7 @@ advantage of the <code>dedup_by</code> iterator adaptor to perform the merge.</p
 <span class="boring">
 </span><span class="boring">    // format text for debugging purposes
 </span><span class="boring">    println!("{intervals:?}");
-</span><span class="boring">}</span></code></pre></pre>
+</span><span class="boring">}</span></code></pre>
 <p>The <a href="https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.dedup_by"><code>dedup_by</code></a> iterator adaptor removes consecutive identical elements based
 on a provided closure. It starts by calling the closure with the first (<code>prev</code>)
 and second (<code>next</code>) elements in the collection. If the closure returns <code>false</code>,
@@ -241,7 +241,7 @@ efficient merging of overlapping intervals.</p>
 </blockquote>
 <h2 id="print-the-results"><a class="header" href="#print-the-results">Print the Results</a></h2>
 <p>With our intervals merged, we can now print out the results correctly!</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
 </span><span class="boring">
 </span><span class="boring">fn main() {
 </span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
@@ -302,7 +302,7 @@ efficient merging of overlapping intervals.</p>
             println!("{}: {}", line_no + 1, line)
         }
     }
-<span class="boring">}</span></code></pre></pre>
+<span class="boring">}</span></code></pre>
 <h2 id="we-did-it"><a class="header" href="#we-did-it">We Did It!</a></h2>
 <p>We have a working rustle program! Take some time to review everything we've
 covered so far. The rest of the course is going to move quickly.</p>

@@ -44,7 +44,7 @@ aspects of Rust, and many developers find it difficult at first.</p>
 </blockquote>
 <p>Let's examine a simple program to better understand these concepts. Review the
 following code snippet and then run the program.</p>
-<pre><pre class="playground"><code class="language-rust edition2021">fn main() {
+<pre class="playground"><code class="language-rust edition2021">fn main() {
     use std::thread;
 
     let error = 0373; // Compiler error E0373
@@ -54,7 +54,7 @@ following code snippet and then run the program.</p>
     });
 
     handler.join().unwrap();
-}</code></pre></pre>
+}</code></pre>
 <p>This simple program seems perfectly valid. So why does the Rust compiler
 complain about code that would run without issues in most other languages? Even
 though it's not the case in this example, in a more general sense, the spawned
@@ -73,7 +73,7 @@ happen, we see the error:</p>
 referenced variables), use the <a href="https://doc.rust-lang.org/std/keyword.move.html"><code>move</code></a> <sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup> keyword</p>
 </blockquote>
 <p>Let's see what happens if we do that:</p>
-<pre><pre class="playground"><code class="language-rust edition2021">fn main() {
+<pre class="playground"><code class="language-rust edition2021">fn main() {
     use std::thread;
 
     let error = 0373; // Compiler error E0373
@@ -83,7 +83,7 @@ referenced variables), use the <a href="https://doc.rust-lang.org/std/keyword.mo
     });
 
     handler.join().unwrap();
-}</code></pre></pre>
+}</code></pre>
 <p>Recalling our discussion on <em>copy semantics</em>, it probably makes sense why this
 worked. The value was <em>copied</em> into the scope of the spawned thread, making it
 independent from the original and solving the lifetime problem. The variable is
@@ -93,7 +93,7 @@ expensive operation, or the object can't be copied? This leads to the next
 challenge that developers learning Rust often face: what happens if we need to
 spawn additional threads that also need access to the same variable?</p>
 <p>For example, consider this case:</p>
-<pre><pre class="playground"><code class="language-rust edition2021">fn main() {
+<pre class="playground"><code class="language-rust edition2021">fn main() {
     use std::thread;
 
     let error = String::from("E0373"); // Compiler error E0373
@@ -108,7 +108,7 @@ spawn additional threads that also need access to the same variable?</p>
 
     handler1.join().unwrap();
     handler2.join().unwrap();
-}</code></pre></pre>
+}</code></pre>
 <p>While these strict rules may seem daunting, especially in larger programs, they
 are the foundation of Rust's <a href="https://doc.rust-lang.org/book/ch16-00-concurrency.html#fearless-concurrency">fearless concurrency</a> goals. These rules ensure
 that concurrency in your programs is both safe and efficient.</p>

@@ -1,0 +1,9 @@
+# Custom Types
+
+> 原文：[https://freddiehaddad.github.io/fast-track-to-rust/custom_types.html](https://freddiehaddad.github.io/fast-track-to-rust/custom_types.html)
+
+Rust provides two options for creating custom types: [`enum`](https://doc.rust-lang.org/reference/items/enumerations.html) and [`struct`](https://doc.rust-lang.org/reference/items/structs.html). The key difference between them is that enums have a fixed set of variants, meaning they are used to indicate that a value is one of a specific set of possible values. On the other hand, [`struct`](https://doc.rust-lang.org/reference/items/structs.html) is not limited to a set of possible values. Structures allow for packaging related values into meaningful groups.
+
+> We've already encountered enums when we looked at `Option` and `Result`.
+
+In our current rustle program, we use tuples to represent intervals. In this section, we'll replace tuples with a custom `Interval` type using a [`struct`](https://doc.rust-lang.org/reference/items/structs.html), and enhance it by adding methods for various operations. Finally, we'll define an [`enum`](https://doc.rust-lang.org/reference/items/enumerations.html) to represent potential error values when creating and interacting with intervals.

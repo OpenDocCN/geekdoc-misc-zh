@@ -20,7 +20,7 @@ variables, or more precisely, for variable binding.</p>
 <p>Since <code>y</code> is passed as an argument to the <code>print_value</code> function, which requires
 a signed 32-bit integer, the compiler infers its type. Therefore, the explicit
 type declaration for <code>x</code> can be omitted.</p>
-<pre><pre class="playground"><code class="language-rust editable edition2021">fn print_value(value: i32) {
+<pre class="playground"><code class="language-rust editable edition2021">fn print_value(value: i32) {
     println!("{value}");
 }
 
@@ -30,13 +30,13 @@ fn main() {
 
     print_value(x);
     print_value(y);
-}</code></pre></pre>
+}</code></pre>
 <h2 id="rustle-variables"><a class="header" href="#rustle-variables">Rustle Variables</a></h2>
 <p>To begin with our rustle program, we'll avoid handling user input via command
 line arguments for now. Instead, we'll hard code some strings and perform some
 simple <em>rustling</em>. Let's use the famous poem <em>My Shadow</em> by the poet Robert
 Louis Stevenson as our input.</p>
-<pre><pre class="playground"><code class="language-rust editable edition2021">fn main() {
+<pre class="playground"><code class="language-rust editable edition2021">fn main() {
     let pattern = "him";
     let poem = "I have a little shadow that goes in and out with me,
                 And what can be the use of him is more than I can see.
@@ -47,7 +47,7 @@ Louis Stevenson as our input.</p>
                 Not at all like proper children, which is always very slow;
                 For he sometimes shoots up taller like an india-rubber ball,
                 And he sometimes gets so little that there's none of him at all.";
-}</code></pre></pre>
+}</code></pre>
 <p>The next step is to search the poem for occurrences of the pattern and print the
 results. To achieve this, we'll need to learn a bit about control flow.</p>
 <h1 id="summary"><a class="header" href="#summary">Summary</a></h1>

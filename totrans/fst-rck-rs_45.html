@@ -46,7 +46,7 @@ scope are joined before the function returns.</p>
 <p>Let's revisit one of the examples from the previous section that failed to
 compile to better understand these concepts. Review the following code snippet
 and then run the program.</p>
-<pre><pre class="playground"><code class="language-rust edition2021">fn main() {
+<pre class="playground"><code class="language-rust edition2021">fn main() {
     use std::thread;
 
     let error = String::from("E0373"); // Compiler error E0373
@@ -64,7 +64,7 @@ and then run the program.</p>
 
         // Second thread is automatically joined when the closure returns.
     });
-}</code></pre></pre>
+}</code></pre>
 <p>Through these ownership and type system tools, it is guaranteed that all threads
 created within <code>scope</code> are joined before their lifetimes end. This allows the
 Rust compiler to be certain that all borrowed data (in this case, the <code>error</code>
