@@ -49,9 +49,9 @@ pub mod interval {
  /// A list specifying general categories of Interval errors.    #[derive(Debug)]
     pub enum IntervalError {
  /// Start is not less than or equal to end StartEndRangeInvalid, /// Two intervals to be merged do not overlap NonOverlappingInterval, } 
- /// A closed-interval [`start`, `end`] type used for representing a range of /// values between `start` and `end` inclusively. /// /// # Examples /// /// You can create an `Interval` using `new`. /// /// ```rust /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ```rs    #[derive(Debug, PartialEq)]
+ /// A closed-interval [`start`, `end`] type used for representing a range of /// values between `start` and `end` inclusively. /// /// # Examples /// /// You can create an `Interval` using `new`. /// /// ~~~rs /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ~~~    #[derive(Debug, PartialEq)]
     pub struct Interval<T> {
- pub start: T, pub end: T, }   impl<T: Copy + PartialOrd> Interval<T> { /// Creates a new `Interval` set to `start` and `end`. /// /// # Examples /// /// ```rust /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ```rs pub fn new(start: T, end: T) -> Result<Self, IntervalError> { if start <= end { Ok(Self { start, end }) } else { Err(IntervalError::StartEndRangeInvalid) } }   /// Checks if two intervals overlap. Overlapping intervals have at least /// one point in common. /// /// # Examples /// /// ```rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ```rs /// /// ```rust /// let a = Interval::new(1, 5).unwrap(); /// let b = Interval::new(2, 4).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ```rs /// /// ```rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(4, 6).unwrap(); /// assert_eq!(a.overlaps(&b), false); /// assert_eq!(b.overlaps(&a), true); /// ```rs pub fn overlaps(&self, other: &Interval<T>) -> bool { self.end >= other.start }   /// Merges two intervals returning a new `Interval`. /// /// The merged `Interval` range includes the union of ranges from each /// `Interval`. /// /// # Examples /// /// ```rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// let c = a.merge(&b).unwrap(); /// assert_eq!(c.start, 1); /// assert_eq!(c.end, 5); /// ```rs pub fn merge(&self, other: &Self) -> Result<Self, IntervalError> { if self.overlaps(other) { Ok(Self { start: self.start, end: other.end, }) } else { Err(IntervalError::NonOverlappingInterval) } } } }
+ pub start: T, pub end: T, }   impl<T: Copy + PartialOrd> Interval<T> { /// Creates a new `Interval` set to `start` and `end`. /// /// # Examples /// /// ~~~rs /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ~~~ pub fn new(start: T, end: T) -> Result<Self, IntervalError> { if start <= end { Ok(Self { start, end }) } else { Err(IntervalError::StartEndRangeInvalid) } }   /// Checks if two intervals overlap. Overlapping intervals have at least /// one point in common. /// /// # Examples /// /// ~~~rs /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ~~~ /// /// ~~~rs /// let a = Interval::new(1, 5).unwrap(); /// let b = Interval::new(2, 4).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ~~~ /// /// ~~~rs /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(4, 6).unwrap(); /// assert_eq!(a.overlaps(&b), false); /// assert_eq!(b.overlaps(&a), true); /// ~~~ pub fn overlaps(&self, other: &Interval<T>) -> bool { self.end >= other.start }   /// Merges two intervals returning a new `Interval`. /// /// The merged `Interval` range includes the union of ranges from each /// `Interval`. /// /// # Examples /// /// ~~~rs /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// let c = a.merge(&b).unwrap(); /// assert_eq!(c.start, 1); /// assert_eq!(c.end, 5); /// ~~~ pub fn merge(&self, other: &Self) -> Result<Self, IntervalError> { if self.overlaps(other) { Ok(Self { start: self.start, end: other.end, }) } else { Err(IntervalError::NonOverlappingInterval) } } } }
 
 fn main() {
     let a = Interval::new(1, 5).unwrap(); // unwrap returns the Ok value or panics
@@ -97,13 +97,13 @@ Here's our revised `Interval` with the `Display` trait implemented. Give it a tr
 use interval::Interval;
 
 pub mod interval {
- /// A list specifying general categories of Interval errors. #[derive(Debug)] pub enum IntervalError { /// Start is not less than or equal to end StartEndRangeInvalid, /// Two intervals to be merged do not overlap NonOverlappingInterval, }   /// A closed-interval [`start`, `end`] type used for representing a range of /// values between `start` and `end` inclusively. /// /// # Examples /// /// You can create an `Interval` using `new`. /// /// ```rust /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ```rs #[derive(Debug, PartialEq)] pub struct Interval<T> { pub start: T, pub end: T, }      use std::fmt;
+ /// A list specifying general categories of Interval errors. #[derive(Debug)] pub enum IntervalError { /// Start is not less than or equal to end StartEndRangeInvalid, /// Two intervals to be merged do not overlap NonOverlappingInterval, }   /// A closed-interval [`start`, `end`] type used for representing a range of /// values between `start` and `end` inclusively. /// /// # Examples /// /// You can create an `Interval` using `new`. /// /// ~~~rs /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ~~~ #[derive(Debug, PartialEq)] pub struct Interval<T> { pub start: T, pub end: T, }      use std::fmt;
     impl<T: fmt::Display> fmt::Display for Interval<T> {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> fmt::Result {
             write!(f, "[{}, {}]", self.start, self.end)
         }
     }
-  impl<T: Copy + PartialOrd> Interval<T> { /// Creates a new `Interval` set to `start` and `end`. /// /// # Examples /// /// ```rust /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ```rs pub fn new(start: T, end: T) -> Result<Self, IntervalError> { if start <= end { Ok(Self { start, end }) } else { Err(IntervalError::StartEndRangeInvalid) } }   /// Checks if two intervals overlap. Overlapping intervals have at least /// one point in common. /// /// # Examples /// /// ```rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ```rs /// /// ```rust /// let a = Interval::new(1, 5).unwrap(); /// let b = Interval::new(2, 4).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ```rs /// /// ```rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(4, 6).unwrap(); /// assert_eq!(a.overlaps(&b), false); /// assert_eq!(b.overlaps(&a), true); /// ```rs pub fn overlaps(&self, other: &Interval<T>) -> bool { self.end >= other.start }   /// Merges two intervals returning a new `Interval`. /// /// The merged `Interval` range includes the union of ranges from each /// `Interval`. /// /// # Examples /// /// ```rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// let c = a.merge(&b).unwrap(); /// assert_eq!(c.start, 1); /// assert_eq!(c.end, 5); /// ```rs pub fn merge(&self, other: &Self) -> Result<Self, IntervalError> { if self.overlaps(other) { Ok(Self { start: self.start, end: other.end, }) } else { Err(IntervalError::NonOverlappingInterval) } } } }
+  impl<T: Copy + PartialOrd> Interval<T> { /// Creates a new `Interval` set to `start` and `end`. /// /// # Examples /// /// ~~~rs /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ~~~ pub fn new(start: T, end: T) -> Result<Self, IntervalError> { if start <= end { Ok(Self { start, end }) } else { Err(IntervalError::StartEndRangeInvalid) } }   /// Checks if two intervals overlap. Overlapping intervals have at least /// one point in common. /// /// # Examples /// /// ~~~rs /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ~~~ /// /// ~~~rs /// let a = Interval::new(1, 5).unwrap(); /// let b = Interval::new(2, 4).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ~~~ /// /// ~~~rs /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(4, 6).unwrap(); /// assert_eq!(a.overlaps(&b), false); /// assert_eq!(b.overlaps(&a), true); /// ~~~ pub fn overlaps(&self, other: &Interval<T>) -> bool { self.end >= other.start }   /// Merges two intervals returning a new `Interval`. /// /// The merged `Interval` range includes the union of ranges from each /// `Interval`. /// /// # Examples /// /// ~~~rs /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// let c = a.merge(&b).unwrap(); /// assert_eq!(c.start, 1); /// assert_eq!(c.end, 5); /// ~~~ pub fn merge(&self, other: &Self) -> Result<Self, IntervalError> { if self.overlaps(other) { Ok(Self { start: self.start, end: other.end, }) } else { Err(IntervalError::NonOverlappingInterval) } } } }
 
 fn main() {
     let a = Interval::new(1, 5).unwrap(); // unwrap returns the Ok value or panics
@@ -161,11 +161,11 @@ pub mod interval {
     ///
     /// You can create an `Interval` using `new`.
     ///
-    /// ```rust
+    /// ~~~rs
     /// let interval = Interval::new(1, 10).unwrap();
     /// assert_eq!(interval.start, 1);
     /// assert_eq!(interval.end, 10);
-    /// ```rs
+    /// ~~~
     #[derive(Debug, PartialEq)]
     pub struct Interval<T> {
         pub start: T,
@@ -184,11 +184,11 @@ pub mod interval {
         ///
         /// # Examples
         ///
-        /// ```rust
+        /// ~~~rs
         /// let interval = Interval::new(1, 10).unwrap();
         /// assert_eq!(interval.start, 1);
         /// assert_eq!(interval.end, 10);
-        /// ```rs
+        /// ~~~
         pub fn new(start: T, end: T) -> Result<Self, IntervalError> {
             if start <= end {
                 Ok(Self { start, end })
@@ -202,26 +202,26 @@ pub mod interval {
         ///
         /// # Examples
         ///
-        /// ```rust
+        /// ~~~rs
         /// let a = Interval::new(1, 3).unwrap();
         /// let b = Interval::new(3, 5).unwrap();
         /// assert_eq!(a.overlaps(&b), true);
         /// assert_eq!(b.overlaps(&a), true);
-        /// ```rs
+        /// ~~~
         ///
-        /// ```rust
+        /// ~~~rs
         /// let a = Interval::new(1, 5).unwrap();
         /// let b = Interval::new(2, 4).unwrap();
         /// assert_eq!(a.overlaps(&b), true);
         /// assert_eq!(b.overlaps(&a), true);
-        /// ```rs
+        /// ~~~
         ///
-        /// ```rust
+        /// ~~~rs
         /// let a = Interval::new(1, 3).unwrap();
         /// let b = Interval::new(4, 6).unwrap();
         /// assert_eq!(a.overlaps(&b), false);
         /// assert_eq!(b.overlaps(&a), true);
-        /// ```rs
+        /// ~~~
         pub fn overlaps(&self, other: &Interval<T>) -> bool {
             self.end >= other.start
         }
@@ -233,13 +233,13 @@ pub mod interval {
         ///
         /// # Examples
         ///
-        /// ```rust
+        /// ~~~rs
         /// let a = Interval::new(1, 3).unwrap();
         /// let b = Interval::new(3, 5).unwrap();
         /// let c = a.merge(&b).unwrap();
         /// assert_eq!(c.start, 1);
         /// assert_eq!(c.end, 5);
-        /// ```rs
+        /// ~~~
         pub fn merge(&self, other: &Self) -> Result<Self, IntervalError> {
             if self.overlaps(other) {
                 Ok(Self {
@@ -274,7 +274,7 @@ fn main() {
 
 ```rs
 use interval::Interval;   pub mod interval {
- /// A list specifying general categories of Interval errors. #[derive(Debug)] pub enum IntervalError { /// Start is not less than or equal to end StartEndRangeInvalid, /// Two intervals to be merged do not overlap NonOverlappingInterval, }   /// A closed-interval [`start`, `end`] type used for representing a range of /// values between `start` and `end` inclusively. /// /// # Examples /// /// You can create an `Interval` using `new`. /// /// ```rust /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ```rs #[derive(Debug, PartialEq)] pub struct Interval<T> { pub start: T, pub end: T, }   use std::fmt; impl<T: fmt::Display> fmt::Display for Interval<T> { fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> fmt::Result { write!(f, "[{}, {}]", self.start, self.end) } }      use std::cmp::Ordering;
+ /// A list specifying general categories of Interval errors. #[derive(Debug)] pub enum IntervalError { /// Start is not less than or equal to end StartEndRangeInvalid, /// Two intervals to be merged do not overlap NonOverlappingInterval, }   /// A closed-interval [`start`, `end`] type used for representing a range of /// values between `start` and `end` inclusively. /// /// # Examples /// /// You can create an `Interval` using `new`. /// /// ~~~rs /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ~~~ #[derive(Debug, PartialEq)] pub struct Interval<T> { pub start: T, pub end: T, }   use std::fmt; impl<T: fmt::Display> fmt::Display for Interval<T> { fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> fmt::Result { write!(f, "[{}, {}]", self.start, self.end) } }      use std::cmp::Ordering;
     impl<T: PartialEq + PartialOrd> PartialOrd for Interval<T> {
         fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
             if self == other {
@@ -288,7 +288,7 @@ use interval::Interval;   pub mod interval {
             }
         }
     }
-  impl<T: Copy + PartialOrd> Interval<T> { /// Creates a new `Interval` set to `start` and `end`. /// /// # Examples /// /// ```rust /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ```rs pub fn new(start: T, end: T) -> Result<Self, IntervalError> { if start <= end { Ok(Self { start, end }) } else { Err(IntervalError::StartEndRangeInvalid) } }   /// Checks if two intervals overlap. Overlapping intervals have at least /// one point in common. /// /// # Examples /// /// ```rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ```rs /// /// ```rust /// let a = Interval::new(1, 5).unwrap(); /// let b = Interval::new(2, 4).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ```rs /// /// ```rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(4, 6).unwrap(); /// assert_eq!(a.overlaps(&b), false); /// assert_eq!(b.overlaps(&a), true); /// ```rs pub fn overlaps(&self, other: &Interval<T>) -> bool { self.end >= other.start }   /// Merges two intervals returning a new `Interval`. /// /// The merged `Interval` range includes the union of ranges from each /// `Interval`. /// /// # Examples /// /// ```rust /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// let c = a.merge(&b).unwrap(); /// assert_eq!(c.start, 1); /// assert_eq!(c.end, 5); /// ```rs pub fn merge(&self, other: &Self) -> Result<Self, IntervalError> { if self.overlaps(other) { Ok(Self { start: self.start, end: other.end, }) } else { Err(IntervalError::NonOverlappingInterval) } } } }
+  impl<T: Copy + PartialOrd> Interval<T> { /// Creates a new `Interval` set to `start` and `end`. /// /// # Examples /// /// ~~~rs /// let interval = Interval::new(1, 10).unwrap(); /// assert_eq!(interval.start, 1); /// assert_eq!(interval.end, 10); /// ~~~ pub fn new(start: T, end: T) -> Result<Self, IntervalError> { if start <= end { Ok(Self { start, end }) } else { Err(IntervalError::StartEndRangeInvalid) } }   /// Checks if two intervals overlap. Overlapping intervals have at least /// one point in common. /// /// # Examples /// /// ~~~rs /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ~~~ /// /// ~~~rs /// let a = Interval::new(1, 5).unwrap(); /// let b = Interval::new(2, 4).unwrap(); /// assert_eq!(a.overlaps(&b), true); /// assert_eq!(b.overlaps(&a), true); /// ~~~ /// /// ~~~rs /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(4, 6).unwrap(); /// assert_eq!(a.overlaps(&b), false); /// assert_eq!(b.overlaps(&a), true); /// ~~~ pub fn overlaps(&self, other: &Interval<T>) -> bool { self.end >= other.start }   /// Merges two intervals returning a new `Interval`. /// /// The merged `Interval` range includes the union of ranges from each /// `Interval`. /// /// # Examples /// /// ~~~rs /// let a = Interval::new(1, 3).unwrap(); /// let b = Interval::new(3, 5).unwrap(); /// let c = a.merge(&b).unwrap(); /// assert_eq!(c.start, 1); /// assert_eq!(c.end, 5); /// ~~~ pub fn merge(&self, other: &Self) -> Result<Self, IntervalError> { if self.overlaps(other) { Ok(Self { start: self.start, end: other.end, }) } else { Err(IntervalError::NonOverlappingInterval) } } } }
   fn main() {
  use std::cmp::Ordering::{Equal, Greater, Less};   let a = Interval::new(0, 1).unwrap(); let b = Interval::new(0, 1).unwrap(); assert_eq!(a.partial_cmp(&b), Some(Equal)); assert_eq!(b.partial_cmp(&a), Some(Equal));   let a = Interval::new(0, 1).unwrap(); let b = Interval::new(2, 3).unwrap(); assert_eq!(a.partial_cmp(&b), Some(Less)); assert_eq!(b.partial_cmp(&a), Some(Greater));   println!("Nice Work!"); }
 ```</details> 
@@ -436,11 +436,11 @@ pub mod interval {
     ///
     /// You can create an `Interval` using `new`.
     ///
-    /// ```rust
+    /// ~~~rs
     /// let interval = Interval::new(1, 10).unwrap();
     /// assert_eq!(interval.start, 1);
     /// assert_eq!(interval.end, 10);
-    /// ```rs
+    /// ~~~
     #[derive(Debug, PartialEq)]
     pub struct Interval<T> {
         pub start: T,
@@ -452,11 +452,11 @@ pub mod interval {
         ///
         /// # Examples
         ///
-        /// ```rust
+        /// ~~~rs
         /// let interval = Interval::new(1, 10).unwrap();
         /// assert_eq!(interval.start, 1);
         /// assert_eq!(interval.end, 10);
-        /// ```rs
+        /// ~~~
         pub fn new(start: T, end: T) -> Result<Self, IntervalError> {
             if start <= end {
                 Ok(Self { start, end })
@@ -470,26 +470,26 @@ pub mod interval {
         ///
         /// # Examples
         ///
-        /// ```rust
+        /// ~~~rs
         /// let a = Interval::new(1, 3).unwrap();
         /// let b = Interval::new(3, 5).unwrap();
         /// assert_eq!(a.overlaps(&b), true);
         /// assert_eq!(b.overlaps(&a), true);
-        /// ```rs
+        /// ~~~
         ///
-        /// ```rust
+        /// ~~~rs
         /// let a = Interval::new(1, 5).unwrap();
         /// let b = Interval::new(2, 4).unwrap();
         /// assert_eq!(a.overlaps(&b), true);
         /// assert_eq!(b.overlaps(&a), true);
-        /// ```rs
+        /// ~~~
         ///
-        /// ```rust
+        /// ~~~rs
         /// let a = Interval::new(1, 3).unwrap();
         /// let b = Interval::new(4, 6).unwrap();
         /// assert_eq!(a.overlaps(&b), false);
         /// assert_eq!(b.overlaps(&a), true);
-        /// ```rs
+        /// ~~~
         pub fn overlaps(&self, other: &Interval<T>) -> bool {
             self.end >= other.start
         }
@@ -501,13 +501,13 @@ pub mod interval {
         ///
         /// # Examples
         ///
-        /// ```rust
+        /// ~~~rs
         /// let a = Interval::new(1, 3).unwrap();
         /// let b = Interval::new(3, 5).unwrap();
         /// let c = a.merge(&b).unwrap();
         /// assert_eq!(c.start, 1);
         /// assert_eq!(c.end, 5);
-        /// ```rs
+        /// ~~~
         pub fn merge(&self, other: &Self) -> Result<Self, IntervalError> {
             if self.overlaps(other) {
                 Ok(Self {
