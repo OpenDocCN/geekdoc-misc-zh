@@ -1,0 +1,2563 @@
+- en: 'Prologue: How to Program🔗'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://htdp.org/2024-11-6/Book/part_prologue.html](https://htdp.org/2024-11-6/Book/part_prologue.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|     [Arithmetic and Arithmetic](#%28part._arithmetic-pro%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Inputs and Output](#%28part._some-i%2Fo%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Many Ways to Compute](#%28part._pro-cond%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [One Program, Many Definitions](#%28part._pro-many-def%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [One More Definition](#%28part._more-def%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [You Are a Programmer Now](#%28part._program-now%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Not!](#%28part._sec~3anot%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: 'When you were a small child, your parents taught you to count andConsider a
+    quick look at [On Teaching Part I](../notes/note_teaching.html). perform simple
+    calculations with your fingers: “1 + 1 is 2”; “1 + 2 is 3”; and so on. Then they
+    would ask “what’s 3 + 2?” and you would count off the fingers of one hand. They
+    programmed, and you computed. And in some way, that’s really all there is to programming
+    and computing.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Download DrRacket from [its web site](https://download.racket-lang.org/).
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Now it is time to switch roles. Start DrRacket. Doing so brings up the window
+    of [figure 3](#%28counter._%28figure._fig~3adrracket%29%29). Select “Choose language”
+    from the “Language” menu, which opens a dialog listing “Teaching Languages” for
+    “How to Design Programs.” Choose “Beginning Student” (the Beginning Student Language,
+    or BSL) and click OK to set up DrRacket. With this task completed, you can program,
+    and the DrRacket software becomes the child. Start with the simplest of all calculations.
+    You type
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 1 1)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: into the top part of DrRacket, click RUN, and a 2 shows up in the bottom.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/8e221db06711f916a48620239e9a4016.png)'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_IMG
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '![](../Images/278cce6a770948ff316946b01fa568fe.png)'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_IMG
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 3: Meet DrRacket (using menu-based (top) and racket-#lang (bottom) teaching
+    languages)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'That’s how simple programming is. You ask questions as if DrRacket were a child,
+    and DrRacket computes for you. You can also ask DrRacket to process several requests
+    at once:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 2 2)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 3 3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 4 2)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 6 2)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'After you click RUN, you see 4  9  2  3 in the bottom half of DrRacket, which
+    are the expected results.Let’s slow down for a moment and introduce some words:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The top half of DrRacket is called the definitions area. In this area, you create
+    the programs, which is called editing. As soon as you add a word or change something
+    in the definitions area, the SAVE button shows up in the top-left corner. When
+    you click SAVE for the first time, DrRacket asks you for the name of a file so
+    that it can store your program for good. Once your definitions area is associated
+    with a file, clicking SAVE ensures that the content of the definitions area is
+    stored safely in the file.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Programs consist of expressions. You have seen expressions in mathematics. For
+    now, an expression is either a plain number or something that starts with a left
+    parenthesis “(” and ends in a matching right parenthesis “)”—<wbr>which DrRacket
+    rewards by shading the area between the pair of parentheses.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'When you click RUN, DrRacket evaluates the expressions in the definitions area
+    and shows their result in the interactions area. Then, DrRacket, your faithful
+    servant, awaits your commands at the prompt (>). The appearance of the prompt
+    signals that DrRacket is waiting for you to enter additional expressions, which
+    it then evaluates like those in the definitions area:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 1 1)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 2 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Enter an expression at the prompt, hit the “return” or “enter” key on your
+    keyboard, and watch how DrRacket responds with the result. You can do so as often
+    as you wish:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 2 2)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 4 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 3 3)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 9 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 4 2)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 2 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 6 2)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 3 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([sqr](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._sqr%29%29) 3)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 9 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([expt](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._expt%29%29) 2 3)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 8 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([sin](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._sin%29%29) 0)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 0 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([cos](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cos%29%29) [pi](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._pi%29%29))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #i-1.0 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Take a close look at the last number. Its “#i” prefix is short for “I don’t
+    really know the precise number so take that for now” or an inexact number. Unlike
+    your calculator or other programming systems, DrRacket is honest. When it doesn’t
+    know the exact number, it warns you with this special prefix. Later, we will show
+    you really strange facts about “computer numbers,” and you will then truly appreciate
+    that DrRacket issues such warnings.By now you might be wondering whether DrRacket
+    can add more than two numbers at once, and yes, it can! As a matter of fact, it
+    can do it in two different ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 2 ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 3 4))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 9 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 2 3 4)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 9 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: The first one is nested arithmetic, as you know it from school. The second one
+    is BSL arithmetic; and the latter is natural, because in this notation you always
+    use parentheses to group operations and numbers together.In BSL,This book does
+    not teach you Racket, even if the editor is called DrRacket. See the Preface,
+    especially the section on DrRacket and the Teaching Languages for details on the
+    choice to develop our own language. every time you want to use a “calculator operation,”
+    you write down an opening parenthesis, the operation you wish to perform, say
+    [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29),
+    the numbers on which the operation should work (separated by spaces or even line
+    breaks), and, finally, a closing parenthesis. The items following the operation
+    are called the operands. Nested arithmetic means that you can use an expression
+    for an operand, which is why
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 2 ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 3 4))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 9 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'is a fine program. You can do this as often as you wish:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 2 ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 3 3) 4))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 15 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 2 ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 3 ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 12 4)) 4))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 15 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 5 5) ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 3 ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 12 4)) 4))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 38 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: There are no limits to nesting, except for your patience.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Naturally, when DrRacket calculates for you, it uses the rules that you know
+    and love from math. Like you, it can determine the result of an addition only
+    when all the operands are plain numbers. If an operand is a parenthesized operator
+    expression—<wbr>something that starts with a “(” and an operation—<wbr>it determines
+    the result of that nested expression first. Unlike you, it never needs to ponder
+    which expression to calculate first—<wbr>because this first rule is the only rule
+    there is.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The price for DrRacket’s convenience is that parentheses have meaning. You
+    must enter all these parentheses, and you may not enter too many. For example,
+    while extra parentheses are acceptable to your math teacher, this is not the case
+    for BSL. The expression ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  (1)  (2))
+    contains way too many parentheses, and DrRacket lets you know in no uncertain
+    terms:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) (1) (2))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| function call:expected a function after the open parenthesis, found a number
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Once you get used to BSL programming, though, you will see that it isn’t a
+    price at all. First, you get to use operations on several operands at once, if
+    it is natural to do so:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 1 2 3 4 5 6 7 8 9 0)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 45 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 1 2 3 4 5 6 7 8 9 0)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 0 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'If you don’t know what an operation does for several operands, enter an example
+    into the interactions area and hit “return”; DrRacket lets you know whether and
+    how it works. Or use HelpDesk to read the documentation.If you are using the standard
+    BSL option, click “Check Syntax” and notice that the names are now hyper-linked
+    to the documentation in HelpDesk. If you are using #lang htdp/bsl, the names of
+    operations are always linked. Right-click on any name, say [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29),
+    and choose “View Documentation ...” from the pop-up menu. This action will open
+    a browser window to the appropriate documentation entry. Second, when you read
+    programs that others write, you will never have to wonder which expressions are
+    evaluated first. The parentheses and the nesting will immediately tell you.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this context, to program is to write down comprehensible arithmetic expressions,
+    and to compute is to determine their value. With DrRacket, it is easy to explore
+    this kind of programming and computing.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Arithmetic and Arithmetic[🔗](#(part._arithmetic-pro) "Link to here")
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If programming were just about numbers and arithmetic, it would be as boring
+    as mathematics. Fortunately, there is much more to programming than numbers: text,
+    truths, images, and a great deal more.Just kidding: mathematics is a fascinating
+    subject, but you won’t need much of it for now.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The first thing you need to know is that in BSL, text is any sequence of keyboard
+    characters enclosed in double quotes ("). We call it a string. Thus, "hello world"
+    is a perfectly fine string; and when DrRacket evaluates this string, it just echoes
+    it back in the interactions area, like a number:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > "hello world" |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| "hello world" |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Indeed, many people’s first program is one that displays exactly this string.Otherwise,
+    you need to know that in addition to an arithmetic of numbers, DrRacket also knows
+    about an arithmetic of strings. So here are two interactions that illustrate this
+    form of arithmetic:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([string-append](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-append%29%29) "hello" "world")
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| "helloworld" |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([string-append](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-append%29%29) "hello
+    " "world") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| "hello world" |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Just like [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29),
+    [string-append](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-append%29%29)
+    is an operation; it makes a string by adding the second to the end of the first.
+    As the first interaction shows, it does this literally, without adding anything
+    between the two strings: no blank space, no comma, nothing. Thus, if you want
+    to see the phrase "hello world", you really need to add a space to one of these
+    words somewhere; that’s what the second interaction shows. Of course, the most
+    natural way to create this phrase from the two words is to enter'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([string-append](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-append%29%29) "hello" "
+    " "world")
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: because [string-append](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-append%29%29),
+    like [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29),
+    can handle as many operands as desired.
+  prefs: []
+  type: TYPE_NORMAL
+- en: You can do more with strings than append them. You can extract pieces from a
+    string, reverse them, render all letters uppercase (or lowercase), strip blank
+    spaces from the left and right, and so on. And best of all, you don’t have to
+    memorize any of that. If you need to know what you can do with strings, look up
+    the term in HelpDesk.Use F1 or the drop-down menu on the right to open HelpDesk.
+    Look at the manuals for BSL and its section on pre-defined operations, especially
+    those for strings.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If you looked up the primitive operations of BSL, you saw that primitive (sometimes
+    called pre-defined or built-in) operations can consume strings and produce numbers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([string-length](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-length%29%29) "hello
+    world") 20) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 31 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([number->string](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._number-~3estring%29%29) 42)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| "42" |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'There is also an operation that converts strings into numbers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([string->number](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-~3enumber%29%29) "42")
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 42 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'If you expected “forty-two” or something clever along those lines, sorry, that’s
+    really not what you want from a string calculator.The last expression raises a
+    question, though. What if someone uses [string->number](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-~3enumber%29%29)
+    with a string that is not a number wrapped within string quotes? In that case,
+    the operation produces a different kind of result:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([string->number](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-~3enumber%29%29) "hello
+    world") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #false |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'This is neither a number nor a string; it is a Boolean. Unlike numbers and
+    strings, Boolean values come in only two varieties: #true and #false. The first
+    is truth, the second falsehood. Even so, DrRacket has several operations for combining
+    Boolean values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29) #true #true)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #true |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29) #true #false)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #false |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29) #true #false)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #true |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29) #false #false)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #false |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([not](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._not%29%29) #false)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #true |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'and you get the results that the name of the operation suggests. (Don’t know
+    what [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29),
+    [or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29),
+    and [not](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._not%29%29)
+    compute? Easy: ([and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)  x  y)
+    is true if x and y are true; ([or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29)  x  y)
+    is true if either x or y or both are true; and ([not](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._not%29%29)  x)
+    results in #true precisely when x is #false.)It is also useful to “convert” two
+    numbers into a Boolean:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) 10 9)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #true |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([<](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c%29%29) -1 0)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #true |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 42 9)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #false |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Stop! Try the following three expressions: ([>=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e~3d%29%29)  10  10),
+    ([<=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c~3d%29%29)  -1  0),
+    and ([string=?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string~3d~3f%29%29)  "design"  "tinker").
+    This last one is different again; but don’t worry, you can do it.With all these
+    new kinds of data—<wbr>yes, numbers, strings, and Boolean values are data—<wbr>and
+    operations floating around, it is easy to forget some basics, like nested arithmetic:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29) ([or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) ([string-length](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-length%29%29) "hello
+    world") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|             ([string->number](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-~3enumber%29%29) "11"))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|          ([string=?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string~3d~3f%29%29) "hello
+    world" "good morning")) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([>=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e~3d%29%29) ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([string-length](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-length%29%29) "hello
+    world") 60) 80)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'What is the result of this expression? How did you figure it out? All by yourself?
+    Or did you just type it into DrRacket’s interactions area and hit the “return”
+    key? If you did the latter, do you think you would know how to do this on your
+    own? After all, if you can’t predict what DrRacket does for small expressions,
+    you may not want to trust it when you submit larger tasks than that for evaluation.Before
+    we show you how to do some “real” programming, let’s discuss one more kind of
+    data to spice things up: images.To insert images such as this rocket into DrRacket,
+    use the Insert menu. Or, copy and paste the image from your browser into DrRacket.
+    When you insert an image into the interactions area and hit “return” like this'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/b927b276855f672434339692f24d7af2.png)'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_IMG
+- en: DrRacket replies with the image. In contrast to many other programming languages,
+    BSL understands images, and it supports an arithmetic of images just as it supports
+    an arithmetic of numbers or strings. In short, your programs can calculate with
+    images, and you can do so in the interactions area. Furthermore, BSL programmers—<wbr>like
+    the programmers for other programming languages—<wbr>create libraries that others
+    may find helpful. Using such libraries is just like expanding your vocabularies
+    with new words or your programming vocabulary with new primitives. We dub such
+    libraries teachpacks because they are helpful with teaching.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Add ([require](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._require%29%29)  2htdp/image)
+    to the definitions area, or select Add Teachpack from the Language menu and choose
+    image from the Preinstalled HtDP/2e Teachpack menu.
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'One important teachpack—<wbr>2htdp/image—<wbr>supports operations for computing
+    the width and height of an image:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) ([image-width](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-width%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png)) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png)))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Once your program includes the teachpack, clicking RUN gives you 1176 because
+    that’s the area of a 28 by 42 image.You don’t have to use Google to find images
+    and insert them in your DrRacket programs with the “Insert” menu. You can also
+    instruct DrRacket to create simple images from scratch:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([circle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._circle%29%29) 10 "solid" "red")
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ![image](../Images/3f2c33d0d6eb73e21274a2854d252ebf.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([rectangle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._rectangle%29%29) 30 20 "outline" "blue")
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ![image](../Images/2101c9adfedf5228d6d43401fa72048d.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'When the result of an expression is an image, DrRacket draws it into the interactions
+    area. But otherwise, a BSL program deals with images as data that is just like
+    numbers. In particular, BSL has operations for combining images in the same way
+    that it has operations for adding numbers or appending strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([overlay](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._overlay%29%29) ([circle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._circle%29%29) 5 "solid" "red")
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;            ([rectangle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._rectangle%29%29) 20 20 "solid" "blue"))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| ![image](../Images/d45da13cb5745f08ca075da4c86b8a0f.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Overlaying these images in the opposite order produces a solid blue square:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([overlay](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._overlay%29%29) ([rectangle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._rectangle%29%29) 20 20 "solid" "blue")
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;            ([circle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._circle%29%29) 5 "solid" "red"))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| ![image](../Images/053f5a8892f4dafed0bbb9d706aeba73.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Stop and reflect on this last result for a moment.As you can see, [overlay](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._overlay%29%29)
+    is more like [string-append](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-append%29%29)
+    than [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29),
+    but it does “add” images just like [string-append](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-append%29%29)
+    “adds” strings and [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)
+    adds numbers. Here is another illustration of the idea:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([image-width](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-width%29%29) ([square](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._square%29%29) 10 "solid" "red"))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 10 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([image-width](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-width%29%29)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ([overlay](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._overlay%29%29) ([rectangle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._rectangle%29%29) 20 20 "solid" "blue")
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;              ([circle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._circle%29%29) 5 "solid" "red")))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| 20 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'These interactions with DrRacket don’t draw anything at all; they really just
+    measure their width.Two more operations matter: [empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29)
+    and [place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29).
+    The first creates a scene, a special kind of rectangle. The second places an image
+    into such a scene:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ([circle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._circle%29%29) 5 "solid" "green")
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|              50 80 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|              ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 100))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: and you get this:Not quite. The image comes without a grid. We superimpose the
+    grid on the empty scene so that you can see where exactly the green dot is placed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/745527d2d8817fb19a06b8fb770904b1.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'As you can see from this image, the origin (or (0,0)) is in the upper-left
+    corner. Unlike in mathematics, the y-coordinate is measured downward, not upward.
+    Otherwise, the image shows what you should have expected: a solid green disk at
+    the coordinates (50,80) in a 100 by 100 empty rectangle.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Let’s summarize again. To program is to write down an arithmetic expression,
+    but you’re no longer restricted to boring numbers. In BSL, arithmetic is the arithmetic
+    of numbers, strings, Booleans, and even images. To compute, though, still means
+    to determine the value of an expression—<wbr>except that this value can be a string,
+    a number, a Boolean, or an image.
+  prefs: []
+  type: TYPE_NORMAL
+- en: And now you’re ready to write programs that make rockets fly.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Inputs and Output[🔗](#(part._some-i/o) "Link to here")
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The programs you have written so far are pretty boring. You write down an expression
+    or several expressions; you click RUN; you see some results. If you click RUN
+    again, you see the exact same results. As a matter of fact, you can click RUN
+    as often as you want, and the same results show up. In short, your programs really
+    are like calculations on a pocket calculator, except that DrRacket calculates
+    with all kinds of data, not just numbers.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'That’s good news and bad news. It is good because programming and computing
+    ought to be a natural generalization of using a calculator. It is bad because
+    the purpose of programming is to deal with lots of data and to get lots of different
+    results, with more or less the same calculations. (It should also compute these
+    results quickly, at least faster than we can.) That is, you need to learn more
+    still before you know how to program. No need to worry though: with all your knowledge
+    about arithmetic of numbers, strings, Boolean values, and images, you’re almost
+    ready to write a program that creates movies, not just some silly program for
+    displaying “hello world” somewhere. And that’s what we’re going to do next.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Just in case you didn’t know, a movie is a sequence of images that are rapidly
+    displayed in order. If your algebra teachers had known about the “arithmetic of
+    images” that you saw in the preceding section, you could have produced movies
+    in algebra instead of boring number sequences. Well, here is one more such table:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| x = |  | 1 |  | 2 |  | 3 |  | 4 |  | 5 |  | 6 |  | 7 |  | 8 |  | 9 |  | 10
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|  |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| y = |  | 1 |  | 4 |  | 9 |  | 16 |  | 25 |  | 36 |  | 49 |  | 64 |  | 81
+    |  | ? |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Your teachers would now ask you to fill in the blank, that is, replace the “?”
+    mark with a number.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'It turns out that making a movie is no more complicated than completing a table
+    of numbers like that. Indeed, it is all about such tables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| x = |  | 1 |  | 2 |  | 3 |  | 4 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|  |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| y = |  | ![image](../Images/7a989c6283fa16916c9f006e61068159.png) |  | ![image](../Images/3254f6527ef8c518b72cc79299833d16.png)
+    |  | ![image](../Images/d55c7b074bf95c28b538af5ac3db7743.png) |  | ![image](../Images/fa31758920ce646559f20f9c145c7a24.png)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'To be concrete, your teacher should ask you here to draw the fourth image,
+    the fifth, and the 1273rd one because a movie is just a lot of images, some 20
+    or 30 of them per second. So you need some 1200 to 1800 of them to make one minute’s
+    worth of it.You may also recall that your teacher not only asked for the fourth
+    or fifth number in some sequence but also for an expression that determines any
+    element of the sequence from a given x. In the numeric example, the teacher wants
+    to see something like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/dda81cf9d7353f0c2c5ea4e5d720c0dc.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: If you plug in 1, 2, 3, and so on for x, you get 1, 4, 9, and so on for y—<wbr>just
+    as the table says. For the sequence of images, you could say something like
+  prefs: []
+  type: TYPE_NORMAL
+- en: y = the image that contains a dot x2 pixels below the top.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'The key is that these one-liners are not just expressions but functions.At
+    first glance, functions are like expressions, always with a y on the left, followed
+    by an = sign, and an expression. They aren’t expressions, however. And the notation
+    you often see in school for functions is utterly misleading. In DrRacket, you
+    therefore write functions a bit differently:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (y x) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) x x))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: The [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)
+    says “consider y a function,” which, like an expression, computes a value. A function’s
+    value, though, depends on the value of something called the input, which we express
+    with (y  x). Since we don’t know what this input is, we use a name to represent
+    the input. Following the mathematical tradition, we use x here to stand in for
+    the unknown input; but pretty soon, we will use all kinds of names.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This second part means you must supply one number—<wbr>for x—<wbr>to determine
+    a specific value for y. When you do, DrRacket plugs the value for x into the expression
+    associated with the function. Here the expression is ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29)  x  x).
+    Once x is replaced with a value, say 1, DrRacket can compute the result of the
+    expressions, which is also called the output of the function.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Click RUN and watch nothing happen. Nothing shows up in the interactions area.
+    Nothing seems to change anywhere else in DrRacket. It is as if you hadn’t accomplished
+    anything. But you did. You actually defined a function and informed DrRacket about
+    its existence. As a matter of fact, the latter is now ready for you to use the
+    function. Enter
+  prefs: []
+  type: TYPE_NORMAL
+- en: (y 1)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: at the prompt in the interactions area and watch a 1 appear in response. The
+    (y  1) is called a function application in DrRacket.Mathematics also calls y(1)
+    a function application, but your teachers forgot to tell you. Try
+  prefs: []
+  type: TYPE_NORMAL
+- en: (y 2)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'and see a 4 pop out. Of course, you can also enter all these expressions in
+    the definitions area and click RUN:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (y x) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) x x))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (y 1) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (y 2) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (y 3) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (y 4) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (y 5) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'In response, DrRacket displays: 1  4  9  16  25, which are the numbers from
+    the table. Now determine the missing entry.What all this means for you is that
+    functions provide a rather economic way of computing lots of interesting values
+    with a single expression. Indeed, programs are functions; and once you understand
+    functions well, you know almost everything there is to know about programming.
+    Given their importance, let’s recap what we know about functions so far:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: First,
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)  (FunctionName  InputName)  BodyExpression)
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'is a function definition. You recognize it as such because it starts with the
+    “[define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)”
+    keyword. It essentially consists of three pieces: two names and an expression.
+    The first name is the name of the function; you need it to apply the function
+    as often as you wish. The second name—<wbr>called a parameter—<wbr>represents
+    the input of the function, which is unknown until you apply the function. The
+    expression, dubbed body, computes the output of the function for a specific input.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Second,
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (FunctionName  ArgumentExpression)
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: is a function application. The first part tells DrRacket which function you
+    wish to use. The second part is the input to which you want to apply the function.
+    If you were reading a Windows or a Mac manual, it might tell you that this expression
+    “launches” the “application” called FunctionName and that it is going to process
+    ArgumentExpression as the input. Like all expressions, the latter is possibly
+    a plain piece of data or a deeply nested expression.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Functions can input more than numbers, and they can output all kinds of data,
+    too. Our next task is to create a function that simulates the second table—<wbr>the
+    one with images of a colored dot—<wbr>just like the first function simulated the
+    numeric table. Since the creation of images from expressions isn’t something you
+    know from high school, let’s start simply. Do you remember [empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29)?
+    We quickly mentioned it at the end of the previous section. When you type it into
+    the interactions area, like that:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ![image](../Images/3adf8ff1004486241d764ad8d18c6074.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'DrRacket produces an empty rectangle, also called a scene. You can add images
+    to a scene with [place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![image](../Images/f63d2d9544f9b6fbc078749642a3233b.png) 50 23 ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ![image](../Images/16b4b70974b76d51880eea991436e3bf.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Think of the rocket as an object that is like the dot in the above table from
+    your mathematics class. The difference is that a rocket is interesting.Next, you
+    should make the rocket descend, just like the dot in the above table. From the
+    preceding section, you know how to achieve this effect by increasing the y-coordinate
+    that is supplied to [place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![image](../Images/cb743f6c5829c1ed6f748c068fa9aab3.png) 50 20 ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ![image](../Images/f01798015472173d7d6418d076711b39.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![image](../Images/601c55dcbaa771e4aa0b2f7da3f28434.png) 50 30 ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ![image](../Images/7ec3e73e9de17e555aef3cdfb84f8f46.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![image](../Images/1a5a4dc491d51c334ed82606e8fc0358.png) 50 40 ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ![image](../Images/9868cd43def7cf1b62ee40b5df654f5b.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: All that’s needed now is to produce lots of these scenes easily and to display
+    all of them in rapid order.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (picture-of-rocket height)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png) 50 height ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 4: Landing a rocket (version 1)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'The first goal can be achieved with a function, of course; see [figure 4](#%28counter._%28figure._fig~3apicture-of-rocket..v1%29%29).In
+    BSL, you can use all kinds of characters in names, including “-” and “.”. Yes,
+    this is a function definition. Instead of y, it uses the name picture-of-rocket,
+    a name that immediately tells you what the function outputs: a scene with a rocket.
+    Instead of x, the function definition uses height for the name of its parameter,
+    a name that suggests that it is a number and that it tells the function where
+    to place the rocket. The body expression of the function is exactly like the series
+    of expressions with which we just experimented, except that it uses height in
+    place of a number. And we can easily create all of those images with this one
+    function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (picture-of-rocket 0) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (picture-of-rocket 10) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (picture-of-rocket 20) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (picture-of-rocket 30) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Try this out in the definitions area or the interactions area; both create
+    the expected scenes.The second goal requires knowledge about a primitive operation
+    from another teachpack: 2htdp/universe: [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Add ([require](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._require%29%29)  2htdp/universe)
+    to the definitions area, or select Add Teachpack from the Language menu and choose
+    universe from the Preinstalled HtDP/2e Teachpack menu.
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'So, click RUN and enter the following expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29) picture-of-rocket)
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Stop and note that the argument expression is a function. Don’t worry for now
+    about using functions as arguments; it works well with [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29),
+    but don’t try to define functions like [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29)
+    at home just yet.
+  prefs: []
+  type: TYPE_NORMAL
+- en: As soon as you hit the “return” key, DrRacket evaluates the expression; but
+    it does not display a result, not even a prompt. It opens another window—<wbr>a
+    canvas—<wbr>and starts a clock that ticks 28 times per second. Every time the
+    clock ticks, DrRacket applies picture-of-rocket to the number of ticks passed
+    since this function call. The results of these function calls are displayed in
+    the canvas, and it produces the effect of an animated movie. The simulation runs
+    until you close the window. At that point, [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29)
+    returns the number of ticks that have passed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The question is where the images on the window come from. The short explanation
+    is that [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29)
+    runs its operand on the numbers 0, 1, 2, and so on,[Exercise 298](part_three.html#%28counter._%28exercise._ex~3aanimate%29%29)
+    explains how to design [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29).
+    and displays the resulting images. The long explanation is this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29)
+    starts a clock and counts the number of ticks;'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: the clock ticks 28 times per second;
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: every time the clock ticks, [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29)
+    applies the function picture-of-rocket to the current clock tick; and
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: the scene that this application creates is displayed on the canvas.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This means that the rocket first appears at height 0, then 1, then 2, and so
+    on, which explains why the rocket descends from the top of the canvas to the bottom.
+    That is, our three-line program creates some 100 pictures in about 3.5 seconds,
+    and displaying these pictures rapidly creates the effect of a rocket descending
+    to the ground.
+  prefs: []
+  type: TYPE_NORMAL
+- en: So here is what you learned in this section. Functions are useful because they
+    can process lots of data in a short time. You can launch a function by hand on
+    a few select inputs to ensure that it produces the proper outputs. This is called
+    testing a function. Or, DrRacket can launch a function on lots of inputs with
+    the help of some teachpacks; when you do that, you are running the function. Naturally,
+    DrRacket can launch functions when you press a key on your keyboard or when you
+    manipulate the mouse of your computer. To find out how, keep reading. Whatever
+    triggers a function application isn’t important, but do keep in mind that (simple)
+    programs are functions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Many Ways to Compute[🔗](#(part._pro-cond) "Link to here")
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: When you evaluate ([animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29)  picture-of-rocket),
+    the rocket eventually disappears into the ground. As Venkat Pamulapati notes,
+    SpaceX has landed many rockets vertically since these words were written. That’s
+    plain silly. Rockets in old science fiction movies don’t sink into the ground;
+    they gracefully land on their bottoms, and the movie should end right there.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This idea suggests that computations should proceed differently, depending on
+    the situation. In our example, the picture-of-rocket program should work “as is”
+    while the rocket is in flight. When the rocket’s bottom touches the bottom of
+    the canvas, however, it should stop the rocket from descending any farther.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In a sense, the idea shouldn’t be new to you. Even your mathematics teachers
+    define functions that distinguish various situations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/98e5bac58a3adf5cd5789bc8b4c1cc58.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'This sign function distinguishes three kinds of inputs: those numbers that
+    are larger than 0, those equal to 0, and those smaller than 0. Depending on the
+    input, the result of the function is +1, 0, or -1.You can define this function
+    in DrRacket without much ado using a [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)itional
+    expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (sign x)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) x 0) 1]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) x 0) 0]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([<](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c%29%29) x 0) -1]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: After you click RUN, you can interact with sign like any other function:Open
+    a new tab in DrRacket and start with a clean slate.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > (sign 10) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 1 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > (sign -5) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| -1 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > (sign 0) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 0 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: This is a good time to explore what the STEP button does. Add (sign  -5) to
+    the definitions area and click STEP for the above sign program. When the new window
+    comes up, click the right and left arrows there.
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: In general, a conditional expression has the shape
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [ConditionExpression1 ResultExpression1] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [ConditionExpression2 ResultExpression2] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ... |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [ConditionExpressionN ResultExpressionN]) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'That is, a [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)itional
+    expression consists of as many conditional lines as needed. Each line contains
+    two expressions: the left one is often called condition, and the right one is
+    called result; occasionally we also use question and answer. To evaluate a [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    expression, DrRacket evaluates the first condition expression, ConditionExpression1.
+    If this yields #true, DrRacket replaces the [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    expression with ResultExpression1, evaluates it, and uses the value as the result
+    of the entire [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    expression. If the evaluation of ConditionExpression1 yields #false, DrRacket
+    drops the first line and starts over. In case all condition expressions evaluate
+    to #false, DrRacket signals an error.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (picture-of-rocket.v2 height)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([<=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c~3d%29%29) height 60)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png) 50 height
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60))]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) height 60)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png) 50 60
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60))]))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 5: Landing a rocket (version 2)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: With this knowledge, you can now change the course of the simulation. The goal
+    is to not let the rocket descend below the ground level of a 100-by-60 scene.
+    Since the picture-of-rocket function consumes the height where it should place
+    the rocket in the scene, a simple test comparing the given height to the maximum
+    height appears to suffice.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'See [figure 5](#%28counter._%28figure._fig~3apicture-of-rocket..v2%29%29) for
+    the revised function definition. The definition uses the name picture-of-rocket.v2
+    to distinguish the two versions. Using distinct names also allows us to use both
+    functions in the interactions area and to compare the results. Here is how the
+    original version works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > (picture-of-rocket 5555) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ![image](../Images/7014a336551547a935da9e329fc04e34.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'And here is the second one:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > (picture-of-rocket.v2 5555) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ![image](../Images/19166b8926203ed881869437cad8a7ad.png) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: No matter what number you give to picture-of-rocket.v2, if it is over 60, you
+    get the same scene. In particular, when you run
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29) picture-of-rocket.v2)
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: the rocket descends and sinks halfway into the ground before it stops.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Stop! What do you think we want to see?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Landing the rocket this far down is ugly. Then again, you know how to fix this
+    aspect of the program. As you have seen, BSL knows an arithmetic of images. When
+    [place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29)
+    adds an image to a scene, it uses its center point as if it were the whole image,
+    even though the image has a real height and a real width. As you may recall, you
+    can measure the height of an image with the operation [image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29).
+    This function comes in handy here because you really want to fly the rocket only
+    until its bottom touches the ground.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Putting one and one together you can now figure out that
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 60 ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png)) 2))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'is the point at which you want the rocket to stop its descent. You could figure
+    this out by playing with the program directly, or you can experiment in the interactions
+    area with your image arithmetic.Here is a first attempt:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png) 50 ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 60 ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|              ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Now replace the third argument in the above application with
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 60 ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png)) 2))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Stop! Conduct the experiments. Which result do you like better?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (picture-of-rocket.v3 height)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([<=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c~3d%29%29) height ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 60 ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png)) 2)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png) 50 height
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60))]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) height ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 60 ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png)) 2)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png) 50 ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 60 ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ![](../Images/b927b276855f672434339692f24d7af2.png)) 2))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) 100 60))]))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 6: Landing a rocket (version 3)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: When you think and experiment along these lines, you eventually get to the program
+    in [figure 6](#%28counter._%28figure._fig~3apicture-of-rocket..v3%29%29). Given
+    some number, which represents the height of the rocket, it first tests whether
+    the rocket’s bottom is above the ground. If it is, it places the rocket into the
+    scene as before. If it isn’t, it places the rocket’s image so that its bottom
+    touches the ground.
+  prefs: []
+  type: TYPE_NORMAL
+- en: One Program, Many Definitions[🔗](#(part._pro-many-def) "Link to here")
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Now suppose your friends watch the animation but don’t like the size of your
+    canvas. They might request a version that uses 200-by-400 scenes. This simple
+    request forces you to replace 60 with 400 in five places in the program and 100
+    with 200 in two other places—<wbr>not to speak of the occurrences of 50, which
+    really means “middle of the canvas.”
+  prefs: []
+  type: TYPE_NORMAL
+- en: Stop! Before you read on, try to do just that so that you get an idea of how
+    difficult it is to execute this request for a five-line program. As you read on,
+    keep in mind that programs in the world consist of 50,000 or 500,000 or even 5,000,000
+    or more lines of program code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the ideal program, a small request, such as changing the sizes of the canvas,
+    should require an equally small change. The tool to achieve this simplicity with
+    BSL is [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29).
+    In addition to defining functions, you can also introduce constant definitions,
+    which assign some name to a constant. The general shape of a constant definition
+    is straightforward:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)  Name  Expression)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Thus, for example, if you write down
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) HEIGHT 60)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: in your program, you are saying that HEIGHT always represents the number 60.
+    The meaning of such a definition is what you expect. Whenever DrRacket encounters
+    HEIGHT during its calculations, it uses 60 instead.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (picture-of-rocket.v4 h)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([<=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c~3d%29%29) h ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) HEIGHT ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ROCKET) 2)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ROCKET 50 h ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) WIDTH HEIGHT))]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) h ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) HEIGHT ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ROCKET) 2)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ROCKET
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   50 ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) HEIGHT ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ROCKET) 2))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) WIDTH HEIGHT))]))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) WIDTH 100)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) HEIGHT 60)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) ROCKET ![](../Images/b927b276855f672434339692f24d7af2.png))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 7: Landing a rocket (version 4)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Now take a look at the code in [figure 7](#%28counter._%28figure._fig~3apicture-of-rocket..v4%29%29),
+    which implements this simple change and also names the image of the rocket. Copy
+    the program into DrRacket; and after clicking RUN, evaluate the following interaction:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29) picture-of-rocket.v4)
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Confirm that the program still functions as before.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The program in [figure 7](#%28counter._%28figure._fig~3apicture-of-rocket..v4%29%29)
+    consists of four definitions: one function definition and three constant definitions.
+    The numbers 100 and 60 occur only twice—<wbr>once as the value of WIDTH and once
+    as the value of HEIGHT. You may also have noticed that it uses h instead of height
+    for the function parameter of picture-of-rocket.v4. Strictly speaking, this change
+    isn’t necessary because DrRacket doesn’t confuse height with HEIGHT, but we did
+    it to avoid confusing you.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: When DrRacket evaluates ([animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29)  picture-of-rocket.v4),
+    it replaces HEIGHT with 60, WIDTH with 100, and ROCKET with the image every time
+    it encounters these names. To experience the joys of real programmers, change
+    the 60 next to HEIGHT into a 400 and click RUN. You see a rocket descending and
+    landing in a 100 by 400 scene. One small change did it all.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In modern parlance, you have just experienced your first program refactoring.
+    Every time you reorganize your program to prepare yourself for likely future change
+    requests, you refactor your program. Put it on your resume. It sounds good, and
+    your future employer probably enjoys reading such buzzwords, even if it doesn’t
+    make you a good programmer. What a good programmer would never live with, however,
+    is having a program contain the same expression three times:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) HEIGHT ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ROCKET) 2))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Every time your friends and colleagues read this program, they need to understand
+    what this expression computes, namely, the distance between the top of the canvas
+    and the center point of a rocket resting on the ground. Every time DrRacket computes
+    the value of the expressions, it has to perform three steps: (1) determine the
+    height of the image; (2) divide it by 2; and (3) subtract the result from HEIGHT.
+    And, every time, it comes up with the same number.This observation calls for the
+    introduction of one more definition:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) ROCKET-CENTER-TO-TOP
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) HEIGHT ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ROCKET) 2)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Now substitute ROCKET-CENTER-TO-TOP for the expression ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29)  HEIGHT  ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29)  ROCKET)  2))
+    in the rest of the program. You may be wondering whether this definition should
+    be placed above or below the definition for HEIGHT. More generally, you should
+    be wondering whether the ordering of definitions matters. The answer is that for
+    constant definitions, the order matters; and for function definitions, it doesn’t.
+    As soon as DrRacket encounters a constant definition, it determines the value
+    of the expression and then associates the name with this value. For example,
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) HEIGHT ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 2 CENTER))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) CENTER 100)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: causes DrRacket to complain that “CENTER is used before its definition,” when
+    it encounters the definition for HEIGHT. In contrast,
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) CENTER 100)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) HEIGHT ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 2 CENTER))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: works as expected. First, DrRacket associates CENTER with 100. Second, it evaluates
+    ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29)  2  CENTER),
+    which yields 200. Finally, DrRacket associates 200 with HEIGHT.
+  prefs: []
+  type: TYPE_NORMAL
+- en: While the order of constant definitions matters, it does not matter where you
+    place constant definitions relative to function definitions. Indeed, if your program
+    consists of many function definitions, their order doesn’t matter either, though
+    it is good to introduce all constant definitions first, followed by the definitions
+    of functions in decreasing order of importance. When you start writing your own
+    multi-definition programs, you will see why this ordering matters.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; constants |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) WIDTH  100)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) HEIGHT  60)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) EMPTY  ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) WIDTH HEIGHT)) ; short
+    for empty scene |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) ROCKET ![](../Images/b927b276855f672434339692f24d7af2.png))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) ROCKET-CENTER-TO-TOP
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) HEIGHT ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ROCKET) 2)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; functions |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (picture-of-rocket.v5 h)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([<=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c~3d%29%29) h ROCKET-CENTER-TO-TOP)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ROCKET 50 h EMPTY)]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) h ROCKET-CENTER-TO-TOP)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ROCKET 50 ROCKET-CENTER-TO-TOP EMPTY)]))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 8: Landing a rocket (version 5)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: The program also contains two line comments, introduced with semicolons (“;”).
+    While DrRacket ignores such comments, people who read programs should not because
+    comments are intended for human readers. It is a “back channel” of communication
+    between the author of the program and all of its future readers to convey information
+    about the program.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Once you eliminate all repeated expressions, you get the program in [figure 8](#%28counter._%28figure._fig~3apicture-of-rocket..v5%29%29).
+    It consists of one function definition and five constant definitions. Beyond the
+    placement of the rocket’s center, these constant definitions also factor out the
+    image itself as well as the creation of the empty scene.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Before you read on, ponder the following changes to your program:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: How would you change the program to create a 200-by-400 scene?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'How would you change the program so that it depicts the landing of a green
+    UFO (unidentified flying object)? Drawing the UFO is easy:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| ([overlay](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._overlay%29%29) ([circle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._circle%29%29) 10 "solid" "green")
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|          ([rectangle](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._rectangle%29%29) 40 4 "solid" "green"))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: How would you change the program so that the background is always blue?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How would you change the program so that the rocket lands on a flat rock bed
+    that is 10 pixels higher than the bottom of the scene? Don’t forget to change
+    the scenery, too.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Better than pondering is doing. It’s the only way to learn. So don’t let us
+    stop you. Just do it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Magic Numbers Take another look at picture-of-rocket.v5. Because we eliminated
+    all repeated expressions, all but one number disappeared from this function definition.
+    In the world of programming, these numbers are called magic numbers, and nobody
+    likes them. Before you know it, you forget what role the number plays and what
+    changes are legitimate. It is best to name such numbers in a definition.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Here we actually know that 50 is our choice for an x-coordinate for the rocket.
+    Even though 50 doesn’t look like much of an expression, it really is a repeated
+    expression, too. Thus, we have two reasons to eliminate 50 from the function definition,
+    and we leave it to you to do so.
+  prefs: []
+  type: TYPE_NORMAL
+- en: One More Definition[🔗](#(part._more-def) "Link to here")
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Recall that [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29)
+    actually applies its functions to the number of clock ticks that have passed since
+    it was first called. That is, the argument to picture-of-rocket isn’t a height
+    but a time. Our previous definitions of picture-of-rocket use the wrong name forDanger
+    ahead! This section introduces one piece of knowledge from physics. If physics
+    scares you, skip it on a first reading; programming doesn’t require physics knowledge.
+    the argument of the function; instead of h—<wbr>short for height—<wbr>it ought
+    to use t for time:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (picture-of-rocket t)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([<=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c~3d%29%29) t ROCKET-CENTER-TO-TOP)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ROCKET 50 t EMPTY)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) t ROCKET-CENTER-TO-TOP)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ROCKET
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   50 ROCKET-CENTER-TO-TOP |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   EMPTY)])) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: And this small change to the definition immediately clarifies that this program
+    uses time as if it were a distance. What a bad idea.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Even if you have never taken a physics course, you know that a time is not a
+    distance. So somehow our program worked by accident. Don’t worry, though; it is
+    all easy to fix. All you need to know is a bit of rocket science, which people
+    like us call physics.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Physics?!? Well, perhaps you have already forgotten what you learned in that
+    course. Or perhaps you have never taken a course on physics because you are way
+    too young or gentle. No worries. This happens to the best programmers all the
+    time because they need to help people with problems in music, economics, photography,
+    nursing, and all kinds of other disciplines. Obviously, not even programmers know
+    everything. So they look up what they need to know. Or they talk to the right
+    kind of people. And if you talk to a physicist, you will find out that the distance
+    traveled is proportional to the time:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/a1d39bb9d9e6f1223d51592183e6c9c6.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'That is, if the velocity of an object is v, then the object travels d miles
+    (or meters or pixels or whatever) in t seconds.Of course, a teacher ought to show
+    you a proper function definition:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/eab6b8c551b4dad1afa649e5afd521e1.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'because this tells everyone immediately that the computation of d depends on
+    t and that v is a constant. A programmer goes even further and uses meaningful
+    names for these one-letter abbreviations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) V 3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (distance t)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) V t))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'This program fragment consists of two definitions: a function distance that
+    computes the distance traveled by an object traveling at a constant velocity,
+    and a constant V that describes the velocity.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: You might wonder why V is 3 here. There is no special reason. We consider 3
+    pixels per clock tick a good velocity. You may not. Play with this number and
+    see what happens with the animation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; properties of the "world" and the descending rocket |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) WIDTH  100)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) HEIGHT  60)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) V 3)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) X 50)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; graphical constants |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) EMPTY  ([empty-scene](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._empty-scene%29%29) WIDTH HEIGHT)) ; short
+    for empty scene |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) ROCKET ![](../Images/b927b276855f672434339692f24d7af2.png))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) ROCKET-CENTER-TO-TOP
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) HEIGHT ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([image-height](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._image-height%29%29) ROCKET) 2)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; functions |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (picture-of-rocket.v6 t)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([<=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c~3d%29%29) (distance t) ROCKET-CENTER-TO-TOP)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ROCKET X (distance t) EMPTY)]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) (distance t) ROCKET-CENTER-TO-TOP)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([place-image](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._place-image%29%29) ROCKET X ROCKET-CENTER-TO-TOP EMPTY)]))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (distance t)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) V t))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 9: Landing a rocket (version 6)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Now we can fix picture-of-rocket again. Instead of comparing t with a height,
+    the function can use (distance  t) to calculate how far down the rocket is. The
+    final program is displayed in [figure 9](#%28counter._%28figure._fig~3apicture-of-rocket..v6%29%29).
+    It consists of two function definitions: picture-of-rocket.v6 and distance. The
+    remaining constant definitions make the function definitions readable and modifiable.
+    As always, you can run this program with [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29) picture-of-rocket.v6)
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: In comparison to the previous versions of picture-of-rocket, this one shows
+    that a program may consist of several function definitions that refer to each
+    other. Then again, even the first version used [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)
+    and [/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)—<wbr>it’s
+    just that you think of those as built into BSL.
+  prefs: []
+  type: TYPE_NORMAL
+- en: As you become a true-blue programmer, you will find out that programs consist
+    of many function definitions and many constant definitions. You will also see
+    that functions refer to each other all the time. What you really need to practice
+    is to organize them so that you can read them easily, even months after completion.
+    After all, an older version of you—<wbr>or someone else—<wbr>will want to make
+    changes to these programs; and if you cannot understand the program’s organization,
+    you will have a difficult time with even the smallest task. Otherwise, you mostly
+    know what there is to know.
+  prefs: []
+  type: TYPE_NORMAL
+- en: You Are a Programmer Now[🔗](#(part._program-now) "Link to here")
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The claim that you are a programmer may have come as a surprise to you at the
+    end of the preceding section, but it is true. You know all the mechanics that
+    there are to know about BSL. You know that programming uses the arithmetic of
+    numbers, strings, images, and whatever other data your chosen programming languages
+    support. You know that programs consist of function and constant definitions.
+    You know, because we have told you, that in the end, it’s all about organizing
+    these definitions properly. Last but not least, you know that DrRacket and the
+    teachpacks support lots of other functions and that DrRacket’s HelpDesk explains
+    what these functions do.
+  prefs: []
+  type: TYPE_NORMAL
+- en: You might think that you still don’t know enough to write programs that react
+    to keystrokes, mouse clicks, and so on. As it turns out, you do. In addition to
+    the [animate](http://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28def._%28%28lib._2htdp%2Funiverse..rkt%29._animate%29%29)
+    function, the 2htdp/universe teachpack provides other functions that hook up your
+    programs to the keyboard, the mouse, the clock, and other moving parts in your
+    computer. Indeed, it even supports writing programs that connect your computer
+    with anybody else’s computer around the world. So this isn’t really a problem.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In short, you have seen almost all the mechanics of putting together programs.
+    If you read up on all the functions that are available, you can write programs
+    that play interesting computer games, run simulations, or keep track of business
+    accounts. The question is whether this really means you are a programmer. Are
+    you?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: Stop! Don’t turn the page yet. Think!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: Not![🔗](#(part._sec~3anot) "Link to here")
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: When you look at the “programming” bookshelves in a random bookstore, you will
+    see loads of books that promise to turn you into a programmer on the spot. Now
+    that you have worked your way through some first examples, however, you probably
+    realize that this cannot possibly happen.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Acquiring the mechanical skills of programming—<wbr>learning to write expressions
+    that the computer understands, getting to know which functions and teachpacks
+    are available, and similar activities—<wbr>isn’t helping you all that much with
+    real programming. If it were, you could equally well learn a foreign language
+    by memorizing a thousand words from the dictionary and a few rules from a grammar
+    book.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Good programming is far more than the mechanics of acquiring a language. Most
+    importantly, it is about keeping in mind that programmers create programs for
+    other people to read them in the future. A good program reflects the problem statements
+    and its important concepts. It comes with a concise self-description. Examples
+    illustrate this description and relate it back to the problem. The examples make
+    sure that the future reader knows why and how your code works. In short, good
+    programming is about solving problems systematically and conveying the system
+    within the code. Best of all, this approach to programming actually makes programming
+    accessible to everyone—<wbr>so it serves two masters at once.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The rest of this book is all about these things; very little of the book’s content
+    is actually about the mechanics of DrRacket, BSL, or teachpacks. The book shows
+    you how good programmers think about problems. And, you will even learn that this
+    way of solving problems applies to other situations in life, such as the work
+    of doctors, journalists, lawyers, and engineers.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Oh, and by the way, the rest of the book uses a tone that is more appropriate
+    for a serious text than this Prologue. Enjoy!
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Note on What This Book Is Not About Introductory books on programming tend
+    to contain lots of material about the authors’ favorite application discipline:
+    puzzles, mathematics, physics, music, and so on. Such material is natural because
+    programming is obviously useful in all these areas, but it also distracts from
+    the essential elements of programming. Hence, we have made every attempt to minimize
+    the use of knowledge from other areas so that we can focus on what computer science
+    can teach you about computational problem solving.'
+  prefs: []
+  type: TYPE_NORMAL

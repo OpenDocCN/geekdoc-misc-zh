@@ -1,0 +1,2600 @@
+- en: 'Intermezzo 3: Scope and Abstraction🔗'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://htdp.org/2024-11-6/Book/i3-4.html](https://htdp.org/2024-11-6/Book/i3-4.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|     [Scope](#%28part._.Scope%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [ISL for Loops](#%28part._.I.S.L_for_.Loops%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Pattern Matching](#%28part._.Pattern_.Matching%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: While the preceding part gets away with explaining [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    and [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)
+    in an informal manner, the introduction of such abstraction mechanisms really
+    requires additional terminology to facilitate such discussions. In particular,
+    these discussions need words to delineate regions within programs and to refer
+    to specific uses of variables.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This intermezzo starts with a section that defines the new terminology: scope,
+    binding variables, and bound variables. It immediately uses this new capability
+    to introduce two abstraction mechanisms often found in programming languages:
+    for loops and pattern matching. The former is an alternative to functions such
+    as [map](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._map%29%29),
+    [build-list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._build-list%29%29),
+    [andmap](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._andmap%29%29),
+    and the like; the latter abstracts over the conditional in the functions of the
+    first three parts of the book. Both require not only the definition of functions
+    but also the creation of entirely new language constructs, meaning they are not
+    something programmers can usually design and add to their vocabulary.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Scope[🔗](#(part._.Scope) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Consider the following two definitions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (f x) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) x x) 25))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (g x) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (f ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x 1)) (f ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29) x 1))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Clearly, the occurrences of x in f are completely unrelated to the occurrences
+    of x in the definition of g. We could systematically replace the shaded occurrences
+    with y and the function would still compute the exact same result. In short, the
+    shaded occurrences of x have meaning only inside the definition of f and nowhere
+    else.
+  prefs: []
+  type: TYPE_NORMAL
+- en: At the same time, the first occurrence of x in f is different from the others.
+    When we evaluate (f  n), the occurrence of f completely disappears while those
+    of x are replaced with n. To distinguish these two kinds of variable occurrences,
+    we call the x in the function header a binding occurrence and those in the function’s
+    body the bound occurrences. We also say that the binding occurrence of x binds
+    all occurrences of x in the body of f. Indeed, people who study programming languages
+    even have a name for the region where a binding occurrence works, namely, its
+    lexical scope.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The definitions of f and g bind two more names: f and g. Their scope is called
+    top-level scope because we think of scopes as nested (see below).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The term free occurrence applies to a variable without any binding occurrence.
+    It is a name without definition, that is, neither the language nor its teachpacks
+    nor the program associates it with some value. For example, if you were to put
+    the above program into a definitions area by itself and run it, entering f, g,
+    and x at the prompt of the interactions would show that the first two are defined
+    and the last one is not:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > f |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| f |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > g |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| g |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > x |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| x:this variable is not defined |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: The description of lexical scope suggests a pictorial representation of f’s
+    definition:DrRacket’s “Check Syntax” functionality draws diagrams like these.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/9ab65ed3adc2dc4bb497279cf3b65a8b.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'Here is an arrow diagram for top-level scope:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/3d3e91c2cea8210f5721e9da11e8fb61.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: Note that the scope of f includes all definitions above and below its definition.
+    The bullet over the first occurrence indicates that it is a binding occurrence.
+    The arrows from the binding occurrence to the bound occurrences suggest the flow
+    of values. When the value of a binding occurrence becomes known, the bound occurrences
+    receive their values from there.Along similar lines, these diagrams also explain
+    how renaming works. If you wish to rename a function parameter, you search for
+    all bound occurrences in scope and replace them. For example, renaming f’s x to
+    y in the program above means that
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (f x) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) x x) 25))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (g x) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (f ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x 1)) (f ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29) x 1))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'changes only two occurrences of x:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (f y) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) y y) 25))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (g x) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (f ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x 1)) (f ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29) x 1))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Exercise 300\. Here is a simple ISL+ program:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (p1 x y)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) x y)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) 2 x)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) 2 y) 22))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (p2 x)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) 55 x) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x 11)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (p3 x)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (p1 x 0)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (p1 x 1) (p2 x))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Draw arrows from p1’s x parameter to all its bound occurrences. Draw arrows
+    from p1 to all bound occurrences of p1. Check the results with DrRacket’s CHECK
+    SYNTAX functionality.In contrast to top-level function definitions, the scope
+    of the definitions in a [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    is limited. Specifically, the scope of local definitions is the [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    expression. Consider the definition of an auxiliary function f in a [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    expression. It binds all occurrences within the [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    expression but none that occurs outside:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/10d7e686a8582483b1f16458a7f8119b.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'The two occurrences outside of [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    are not bound by the local definition of f. As always, the parameters of a function
+    definition, local or not, are only bound in the function’s body.Since the scope
+    of a function name or a function parameter is a textual region, people also draw
+    box diagrams to indicate scope. More precisely, for parameters a box is drawn
+    around the body of a function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/85824ef33e52e8e6b0d76bca22b40504.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'In the case of [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29),
+    the box is drawn around the entire expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/6742f654357c748c271420c2c51d4383.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'In this example, the box describes the scope of the definitions of f and g.Drawing
+    a box around a scope, we can also easily understand what it means to reuse the
+    name of a function inside a [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/bab1e834994c2c4ac7e651fb165f0862.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'The gray box describes the scope of the inner definition of f; the white box
+    is the scope of the outer definition of f. Accordingly, all occurrences of f in
+    the gray box refer to the inner [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29);
+    all those in the white box, minus the gray one, refer to the definition in the
+    outer [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29).
+    In other words, the gray box is a hole in the scope of the outer definition of
+    f.Holes can also occur in the scope of a parameter definition:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/beff762eaaec40e4f9868528bb0d46c9.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'In this function, the parameter x is used twice: for f and g; the scope of
+    the latter is thus a hole in the scope of the former.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In general, if the same name occurs more than once in a function, the boxes
+    that describe the corresponding scopes never overlap. In some cases the boxes
+    are nested within each other, which gives rise to holes. Still, the picture is
+    always that of a hierarchy of smaller and smaller nested boxes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (insertion-sort alon)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) alon)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|             ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) alon) ''()]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                (add ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) alon) ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) alon)))]))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|           ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (add an alon)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|             ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) alon) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) an)]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                  [([>](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3e%29%29) an ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) alon)) ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) an alon)]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                  [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) alon)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                              (add an ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) alon)))])])))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) alon)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 105: Drawing lexical scope contours for [exercise 301](#%28counter._%28exercise._ex~3ascope2%29%29)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Exercise 301\. Draw a box around the scope of each binding occurrence of [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    and alon in [figure 105](#%28counter._%28figure._fig~3aex~3ascope2%29%29). Then
+    draw arrows from each occurrence of [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    to the appropriate binding occurrence. Now repeat the exercise for the variant
+    in [figure 106](#%28counter._%28figure._fig~3aex~3ascope2-2%29%29). Do the two
+    functions differ other than in name?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) alon)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) alon)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|             ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) alon) ''()]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                (add ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) alon) ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) alon)))]))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|           ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (add an alon)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|             ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) alon) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) an)]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                 ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   [([>](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3e%29%29) an ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) alon)) ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) an alon)]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) alon)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                               (add an ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) alon)))])])))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) alon)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 106: Drawing lexical scope contours for [exercise 301](#%28counter._%28exercise._ex~3ascope2%29%29)
+    (version 2)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Exercise 302\. Recall that each occurrence of a variable receives its value
+    from its binding occurrence. Consider the following definition:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) x ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) 1 x))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Where is the shaded occurrence of x bound? Since the definition is a constant
+    definition and not a function definition, we need to evaluate the right-hand side
+    immediately. What should be the value of the right-hand side according to our
+    rules?As discussed in [Functions from lambda](part_three.html#%28part._sec~3aint-lambda%29),
+    a [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)
+    expression is just a short-hand for a [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    expression. That is, if a-new-name does not occur in [exp](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._exp%29%29),
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (x-1 [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29)  x-n) [exp](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._exp%29%29))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: is short for
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (a-new-name x-1 [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29) x-n) [exp](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._exp%29%29)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   a-new-name) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: The short-hand explanation suggests that
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (x-1 [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29)  x-n) [exp](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._exp%29%29))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'introduces x-1, ..., x-n as binding occurrences and that the scope of parameters
+    is [exp](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._exp%29%29),
+    for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/a51f7735d8dc25681c51224bc0081cb3.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'Of course, if [exp](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._exp%29%29)
+    contains further binding constructs (say, a nested [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    expression), then the scope of the variables may have a hole.Exercise 303\. Draw
+    arrows from the shaded occurrences of x to their binding occurrences in each of
+    the following three [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)
+    expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (x y)
+    |'
+  prefs:
+  - PREF_OL
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) x y)))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (x y)
+    |'
+  prefs:
+  - PREF_OL
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) x ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) y y)))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) 3 x)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|           ([/](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2F%29%29) 1 x)))))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (x y)
+    |'
+  prefs:
+  - PREF_OL
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (x)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) 3 x)
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|            ([/](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2F%29%29) 1 x)))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|       ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) y y))))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: Also draw a box for the scope of each shaded x and holes in the scope as necessary.
+  prefs: []
+  type: TYPE_NORMAL
+- en: ISL for Loops[🔗](#(part._.I.S.L_for_.Loops) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Even though it never mentions the word, [Abstraction](part_three.html) introduces
+    loops. Abstractly, a loop traverses compound data, processing
+  prefs: []
+  type: TYPE_NORMAL
+- en: Add ([require](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._require%29%29)  2htdp/abstraction)
+    to the definitions area, or select Add Teachpack from the Language menu and choose
+    abstraction from the Preinstalled HtDP/2e Teachpack menu.
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: one piece at a time. In the process, loops also synthesize data. For example,
+    [map](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._map%29%29)
+    traverses a list, applies a function to each item, and collects the results in
+    a list. Similarly, [build-list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._build-list%29%29)
+    enumerates the sequence of predecessors of a natural number (from 0 to ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29)  n  1)),
+    maps each of these to some value, and also gathers the results in a list.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The loops of ISL+ differ from those in conventional languages in two ways. First,
+    a conventional loop does not directly create new data; in contrast, abstractions
+    such as [map](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._map%29%29)
+    and [build-list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._build-list%29%29)
+    are all about computing new data from traversals. Second, conventional languages
+    often provide only a fixed number of loops; an ISL+ programmer defines new loops
+    as needed. Put differently, conventional languages view loops as syntactic constructs
+    akin to [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    or [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29),
+    and their introduction requires a detailed explanation of their vocabulary, grammar,
+    scope, and meaning.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Loops as syntactic constructs have two advantages over the functional loops
+    of the preceding part. On the one hand, their shape tends to signal intentions
+    more directly than a composition of functions. On the other hand, language implementations
+    typically translate syntactic loops into faster commands for computers than functional
+    loops. It is therefore common that even functional programming languages—<wbr>with
+    all their emphasis on functions and function compositions—<wbr>provide syntactic
+    loops.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In this section, we introduce ISL+’s so-called for loops. The goal is to illustrate
+    how to think about conventional loops as linguistic constructs and to indicate
+    how programs built with abstractions may use loops instead. [Figure 107](#%28counter._%28figure._fig~3asyn-for-loops%29%29)
+    spells out the grammar of our selected for loops as an extension of BSL’s grammar
+    from [Intermezzo 1: Beginning Student Language](i1-2.html). Every loop is an expression
+    and, like all compound constructs, is marked with a keyword. The latter is followed
+    by a parenthesized sequence of so-called comprehension clauses and a single expression.
+    The clauses introduce so-called loop variables, and the expression at the end
+    is the loop body.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|   expr |   | = |   | ... |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for/and](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fand%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for*/and](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Fand%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for/or](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2For%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for*/or](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2For%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for/sum](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fsum%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for*/sum](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Fsum%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for/product](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fproduct%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for*/product](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Fproduct%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for/string](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fstring%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([for*/string](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Fstring%29%29) (clause clause ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   |   |   |   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   clause |   | = |   | [variable expr] |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 107: ISL+ extended with for loops'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Even a cursory look at the grammar shows that the dozen looping constructs
+    come in six pairs: a for and for* variant for each of list, and, or, sum, product,
+    and string.Racket’s version of these loops comes with more functionality than
+    those presented here, and the language has many more loops than this. All for
+    loops bind the variables of their clauses in the body; the for* variants also
+    bind variables in the subsequent clauses. The following two near-identical code
+    snippets illustrate the difference between these two scoping rules:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|  | ![image](../Images/8dedbde051f75bae989e2a245d8694cd.png) |  | ![image](../Images/848e526afea1c9d06d4704f1747cd5b5.png)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: The syntactic difference is that the left one uses [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29)
+    and the right one [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29).
+    In terms of scope, the two strongly differ as the arrows indicate. While both
+    pieces introduce the loop variables width and height, the left one uses an externally
+    defined variable for height’s initial value and the right one uses the first loop
+    variable.Semantically, a [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29)
+    expression evaluates the expressions in its clauses to generate sequences of values.
+    If a clause expression evaluates to
+  prefs: []
+  type: TYPE_NORMAL
+- en: a list, its items make up the sequence values;
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: a natural number n, the sequence consists of 0, 1, ..., ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29)  n  1);
+    and
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: a string, its one-character strings are the sequence items.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Next, [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29)
+    evaluates the loop body with the loop variables successively bound to the values
+    of the generated sequence(s). Finally, it collects the values of its body into
+    a list. The evaluation of a [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29)
+    expression stops when the shortest sequence is exhausted.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Terminology Each evaluation of a loop body is called an iteration. Similarly,
+    a loop is said to iterate over the values of its loop variables.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Based on this explanation, we can easily generate the list from 0 to 9:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) ([i 10])
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     i) &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| (list 0 1 2 3 4 5 6 7 8 9) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'This is the equivalent of a [build-list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._build-list%29%29)
+    loop:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([build-list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._build-list%29%29) 10 ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (i) i))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list 0 1 2 3 4 5 6 7 8 9) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The second example “zips” together two sequences:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) ([i 2] [j ''(a b)])
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) i j))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| (list (list 0 ''a) (list 1 ''b)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'For comparison again, here is the same expression using plain ISL+:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) i-s ([build-list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._build-list%29%29) 2 ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (i) i)))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;           ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) j-s ''(a b)))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ([map](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._map%29%29) [list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) i-s j-s))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| (list (list 0 ''a) (list 1 ''b)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The final example emphasizes designing with [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Sample Problem Design enumerate. The function consumes a list and produces a
+    list of the same items paired with their relative index.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Stop! Design this function systematically, using ISL+’s abstractions.With [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29),
+    this problem has a straightforward solution:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [[List-of](part_three.html#%28tech._sim-dd._list._of%29) X] -> [[List-of](part_three.html#%28tech._sim-dd._list._of%29)
+    [[List](part_three.html#%28tech._sim-dd._list%29) N X]] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; pairs each item in lx with its index |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   (enumerate ''(a b c)) ''((1 a) (2 b) (3 c))) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (enumerate lx)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) ([x lx] [ith (length lx)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ith 1) x)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The function’s body uses [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29)
+    to iterate over the given list and a list of numbers from 0 to (length  lx) (minus
+    1); the loop body combines the index (plus 1) with the list item.In semantic terms,
+    [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    iterates over the sequences in a nested fashion while [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29)
+    traverses them in parallel. That is, a [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    expression basically unfolds into a nest of loops:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29) ([i 2] [j ''(a b)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: is short for
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) ([i 2])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) ([j ''(a b)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: In addition, [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    collects the nested lists into a single list by concatenating them with [foldl](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._foldl%29%29)
+    and [append](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._append%29%29).Exercise 304\.
+    Evaluate
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) ([i 2] [j '(a b)]) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) i j))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: and
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29) ([i 2] [j '(a b)]) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) i j))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'in the interactions area of DrRacket.Let’s continue the exploration by turning
+    the difference in scoping between [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29)
+    and [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    into a semantic difference:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) width 2)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) ([width 3][height width])
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) width height))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| (list (list 0 0) (list 1 1)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29) ([width 3][height width])
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) width height))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| (list (list 1 0) (list 2 0) (list 2 1)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: To understand the first interaction, remember that [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29)
+    traverses the two sequences in parallel and stops when the shorter one is exhausted.
+    Here, the two sequences are
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| width |  | = |  | 0, 1, 2 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| height |  | = |  | 0, 1 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| body |  | = |  | ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  0  0)
+    ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  1)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The first two rows show the values of the two loop variables, which change
+    in tandem. The last row shows the result of each iteration, which explains the
+    first result and the absence of a pair containing 2.Now contrast this situation
+    with [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| width |  | = |  | 0 |  | 1 |  | 2 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| height |  | = |  |  |  | 0 |  | 0, 1 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| body |  | = |  |  |  | ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  0)
+    |  | ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  0)
+    ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'While the first row is like the one for [for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29),
+    the second one now displays sequences of numbers in its cells. The implicit nesting
+    of [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    means that each iteration recomputes height for a specific value of width and
+    thus creates a distinct sequence of height values. This explains why the first
+    cell of height values is empty; after all, there are no natural numbers between
+    0 (inclusive) and 0 (exclusive). Finally, each nested for loop yields a sequences
+    of pairs, which are collected into a single list of pairs.Here is a problem that
+    illustrates this use of [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    in context:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Sample Problem Design cross. The function consumes two lists, l1 and l2, and
+    produces pairs of all items from these lists.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Stop! Take a moment to design the function, using existing abstractions.As
+    you design cross, you work through a table such as:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| cross |  | ''a |  | ''b |  | ''c |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 1 |  | ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  ''a  1)
+    |  | ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  ''b  1)
+    |  | ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  ''c  1)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 2 |  | ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  ''a  2)
+    |  | ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  ''b  2)
+    |  | ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  ''c  2)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The first row displays l1 as given, while the left-most column shows l2. Each
+    cell in the table corresponds to one of the pairs to be generated.Since the purpose
+    of [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    is an enumeration of all such pairs, defining cross via [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    is straightforward:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [[List-of](part_three.html#%28tech._sim-dd._list._of%29) X] [[List-of](part_three.html#%28tech._sim-dd._list._of%29)
+    Y] -> [[List-of](part_three.html#%28tech._sim-dd._list._of%29) [[List](part_three.html#%28tech._sim-dd._list%29)
+    X Y]] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; generates all pairs of items from l1 and l2 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-satisfied](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-satisfied%29%29) (cross ''(a b c) ''(1 2))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                  ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (c) ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) (length c) 6)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (cross l1 l2)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|    ([for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29) ([x1 l1][x2 l2])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|       ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) x1 x2)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: We use [check-satisfied](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-satisfied%29%29)
+    instead of [check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29)
+    because we do not wish to predict the exact order in which [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    generates the pairs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [[List-of](part_three.html#%28tech._sim-dd._list._of%29) X] -> [[List-of](part_three.html#%28tech._sim-dd._list._of%29)
+    [[List-of](part_three.html#%28tech._sim-dd._list._of%29) X]] |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; creates a list of all rearrangements of the items in w |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (arrangements w)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) w) ''(())]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29) ([item w]
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                       [arrangement-without-item |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                        (arrangements ([remove](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._remove%29%29) item w))])
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|             ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) item arrangement-without-item))]))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [[List-of](part_three.html#%28tech._sim-dd._list._of%29) X] -> [Boolean](part_one.html#%28tech._boolean%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (all-words-from-rat? w)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([and](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._and%29%29) ([member?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._member~3f%29%29) ([explode](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._explode%29%29) "rat") w)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        ([member?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._member~3f%29%29) ([explode](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._explode%29%29) "art") w)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        ([member?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._member~3f%29%29) ([explode](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._explode%29%29) "tar") w)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-satisfied](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-satisfied%29%29) (arrangements ''("r" "a" "t"))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                  all-words-from-rat?) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 108: A compact definition of arrangements with [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Note [Figure 108](#%28counter._%28figure._fig~3apermutation-for%29%29) shows
+    another in-context use of [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29).
+    It displays a compact solution of the extended design problem of creating all
+    possible rearrangements of the letters in a given list.
+  prefs: []
+  type: TYPE_NORMAL
+- en: While [Word Games, the Heart of the Problem](part_two.html#%28part._sec~3apermute%29)
+    sketches the proper design of this complex program, [figure 108](#%28counter._%28figure._fig~3apermutation-for%29%29)
+    uses the combined power of [for*/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2A%2Flist%29%29)
+    and an unusual form of recursion to define the same We thank Mark Engelberg for
+    suggesting this exhibition of expressive power. program as a single, five-line
+    function definition. The figure merely exhibits the power of these abstractions;
+    for the underlying design, see especially [exercise 477](part_five.html#%28counter._fsm._%28exercise._ex~3apermutation-gen%29%29).
+    End
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The .../list suffix clearly signals that the loop expression creates a list.
+    In addition, the teachpack comes with for and for* loops that have equally suggestive
+    suffixes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '.../and collects the values of all iterations with [and](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._and%29%29):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| > ([for/and](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fand%29%29) ([i 10]) ([>](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3e%29%29) ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29) 9 i) 0))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #false |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([for/and](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fand%29%29) ([i 10]) ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([>=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3e~3d%29%29) i 0) i #false))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 9 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'For pragmatics, the loop returns the last generated value or #false.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '.../or is like .../and but uses [or](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29)
+    instead of [and](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._and%29%29):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| > ([for/or](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2For%29%29) ([i 10]) ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29) 9 i) 0) i #false))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 9 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([for/or](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2For%29%29) ([i 10]) ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) i 0) i #false))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #false |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'These loops return the first value that is not #false.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '.../sum adds up the numbers that the iterations generate:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| > ([for/sum](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fsum%29%29) ([c "abc"]) ([string->int](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._string-~3eint%29%29) c))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 294 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '.../product multiplies the numbers that the iterations generate'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| > ([for/product](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fproduct%29%29) ([c "abc"]) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([string->int](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._string-~3eint%29%29) c) 1))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| 970200 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '.../string creates [String](part_one.html#%28tech._string%29)s from the [1String](part_one.html#%28tech._1string%29)
+    sequence:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| > ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) a ([string->int](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._string-~3eint%29%29) "a"))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ([for/string](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fstring%29%29) ([j 10]) ([int->string](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._int-~3estring%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) a j)))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| "abcdefghij" |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: Stop! Imagine how a for/fold loop would work.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Stop again! It is an instructive exercise to reformulate all of the above examples
+    using the existing abstractions in ISL+. Doing so also indicates how to design
+    functions with for loops instead of abstract functions. Hint Design and-map and
+    or-map, which work like [andmap](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._andmap%29%29)
+    and [ormap](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._ormap%29%29),
+    respectively, but which return the appropriate non-#false values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [N](part_two.html#%28tech._n%29) -> sequence? |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; constructs the infinite sequence of natural numbers, |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; starting from n |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) ([in-naturals](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28def._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._in-naturals%29%29) n) [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [N](part_two.html#%28tech._n%29)  [N](part_two.html#%28tech._n%29)  [N](part_two.html#%28tech._n%29)
+    -> sequence? |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; constructs the following finite sequence of natural numbers: |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ;   start |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ;   ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29)  start  step)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ;   ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29)  start  step  step)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ;   ... |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ;  until the number exceeds end |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) ([in-range](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28def._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._in-range%29%29) start end step) [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 109: Constructing sequences of natural numbers'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Looping over numbers isn’t always a matter of enumerating 0 through ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29)  n  1).
+    Often programs need to step through nonsequential sequences of numbers; other
+    times, an unlimited supply of numbers is needed. To accommodate this form of programming,
+    Racket comes with functions that generate sequences, and [figure 109](#%28counter._%28figure._fig~3asequence-makers%29%29)
+    lists two that are provided in the abstraction teachpack for ISL+.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'With the first one, we can simplify the enumerate function a bit:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (enumerate.v2 lx)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) ([item lx] [ith ([in-naturals](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28def._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._in-naturals%29%29) 1)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) ith item)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Here [in-naturals](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28def._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._in-naturals%29%29)
+    is used to generate the infinite sequence of natural numbers starting at 1; the
+    for loop stops when lx is exhausted.With the second one, it is, for example, possible
+    to step through the even numbers among the first n:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [N](part_two.html#%28tech._n%29) -> [Number](part_one.html#%28tech._number%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; adds the even numbers between 0 and n (exclusive) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (sum-evens 2) 0)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (sum-evens 4) 2)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (sum-evens n)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([for/sum](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Fsum%29%29) ([i ([in-range](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28def._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._in-range%29%29) 0 n 2)]) i))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Although this use may appear trivial, many problems originating in mathematics
+    call for just such loops, which is precisely why concepts such as [in-range](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28def._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._in-range%29%29)
+    are found in many programming languages.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 305\. Use loops to define convert-euro. See [exercise 267](part_three.html#%28counter._%28exercise._ex~3ause-map%29%29).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 306\. Use loops to define a function that
+  prefs: []
+  type: TYPE_NORMAL
+- en: creates the list ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 0 [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29) ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29) n 1))
+    for any natural number n;
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: creates the list ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29) n)
+    for any natural number n;
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: creates the list ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  1/2  [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29)  1/n)
+    for any natural number n;
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: creates the list of the first n even numbers; and
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: creates a diagonal square of 0s and 1s; see [exercise 262](part_three.html#%28counter._%28exercise._ex~3alocal-for-diagonal%29%29).
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Finally, use loops to define tabulate from [exercise 250](part_three.html#%28counter._%28exercise._ex~3aabs-tabulate%29%29).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 307\. Define find-name. The function consumes a name and a list of
+    names. It retrieves the first name on the latter that is equal to, or an extension
+    of, the former.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Define a function that ensures that no name on some list of names exceeds some
+    given width. Compare with [exercise 271](part_three.html#%28counter._%28exercise._ex~3aand-or-map%29%29).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Pattern Matching[🔗](#(part._.Pattern_.Matching) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: When we design a function for a data definition with six clauses, we use a six-pronged
+    [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    expression. When we formulate one of the [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    clauses, we use a predicate toThe interested instructor may wish to study the
+    facilities of the 2htdp/abstraction teachpack to define algebraic data types.
+    determine whether this clause should process the given value and, if so, selectors
+    to deconstruct any compound values. The first three parts of this book explain
+    this idea over and over again.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Repetition calls for abstraction. While [Abstraction](part_three.html) explains
+    how programmers can create some of these abstractions, the predicate-selector
+    pattern can be addressed only by a language designer. In particular, the designers
+    of functional programming languages have recognized the need for abstracting these
+    repetitive uses of predicates and selectors. These languages therefore provide
+    pattern matching as a linguistic construct that combines and simplifies these
+    [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    clauses.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This section presents a simplification of Racket’s pattern matcher. [Figure 110](#%28counter._%28figure._fig~3asyn-match%29%29)
+    displays its grammar; match is clearly a syntactically complex construct. While
+    its outline resembles that of [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29),
+    it features patterns instead of conditions, and they come with their own rules.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|   expr |   | = |   | ... |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) expr [pattern expr] ...)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   |   |   |   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   pattern |   | = |   | variable |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | literal-constant |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | (cons pattern pattern) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | (structure-name pattern ...) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | (? predicate-name) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 110: ISL+ match expressions'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Roughly speaking,
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) expr
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [pattern1 expr1] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [pattern2 expr2] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'proceeds like a [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    expression in that it evaluates expr and sequentially tries to match its result
+    with pattern1, pattern2, ... until it succeeds with patterni. At that point, it
+    determines the value of expri, which is also the result of the entire [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    expression.The key difference is that [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29),
+    unlike [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29),
+    introduces a new scope, which is best illustrated with a screen shot from DrRacket:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/dbb346afcc57ed5065d94bda2906ceae.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: As the image shows, each pattern clause of this function binds variables. Furthermore,
+    the scope of a variable is the body of the clause, so even if two patterns introduce
+    the same variable binding—<wbr>as is the case in the above code snippet—<wbr>their
+    bindings cannot interfere with each other.Syntactically, a pattern resembles nested,
+    structural data whose leafs are literal constants, variables, or predicate patterns
+    of the shape
+  prefs: []
+  type: TYPE_NORMAL
+- en: (? predicate-name)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: In the latter, predicate-name must refer to a predicate function in scope, that
+    is, a function that consumes one value and produces a [Boolean](part_one.html#%28tech._boolean%29).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Semantically, a pattern is [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)ed
+    to a value v. If the pattern is
+  prefs: []
+  type: TYPE_NORMAL
+- en: a literal-constant, it matches only that literal constant
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) 4
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [''four  1] &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ["four" 2] &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [#true  3] &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [4      "hello world"]) &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| "hello world" |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: a variable, it matches any value, and it is associated with this value during
+    the evaluation of the body of the corresponding [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    clause
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) 2
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [3 "one"] &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [x ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x 3)])
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| 5 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: Since 2 does not equal the first pattern, which is the literal constant 3, [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    matches 2 with the second pattern, which is a plain variable and thus matches
+    any value. Hence, [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    picks the second clause and evaluates its body, with x standing for 2.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29)  pattern1
+    pattern2), it matches only an instance of [cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29),
+    assuming its first field matches pattern1 and its rest matches pattern2
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) 1 ''())
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) 1 tail) tail]
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) head tail) head])
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| ''() |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) 2 ''())
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) 1 tail) tail]
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) head tail) head])
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| 2 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: These interactions show how [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    first deconstructs [cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29)
+    and then uses literal constants and variables for the leafs of the given list.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (structure-name  pattern1 [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29)  patternn),
+    it matches only a structure-name structure, assuming its field values match pattern1,
+    ..., patternn
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| > ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) p ([make-posn](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._make-posn%29%29) 3 4))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) p
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [(posn x y) ([sqrt](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sqrt%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) ([sqr](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sqr%29%29) x) ([sqr](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sqr%29%29) y)))])
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| 5 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Obviously, matching an instance of posn with a pattern is just like matching
+    a [cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29)
+    pattern. Note, though, how the pattern uses posn for the pattern, not the name
+    of the constructor.Matching also works for our own structure type definitions:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '| > ([define-struct](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define-struct%29%29) phone [area switch four])
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) (make-phone 713 664 9993)
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [(phone x y z) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x y z)])
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| 11370 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Again, the pattern uses the name of the structure, phone.Finally, matching
+    also works across several layers of constructions:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) (make-phone 713 664 9993) ''())
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) (phone area-code 664 9993) tail)
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;      area-code]) &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| 713 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: This [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    expression extracts the area code from a phone number in a list if the switch
+    code is 664 and the last four digits are 9993.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '(?  predicate-name), it matches when (predicate-name  v) produces #true'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) 1 ''())
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) (? [symbol?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._symbol~3f%29%29)) tail) tail]
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) head tail) head])
+    &#124;'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| 1 |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: This expression produces 1, the result of the second clause, because 1 is not
+    a symbol.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Stop! Experiment with [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    before you read on.At this point, it is time to demonstrate the usefulness of
+    [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Sample Problem Design the function last-item, which retrieves the last item
+    on a non-empty list. Recall that non-empty lists are defined as follows:'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| ; A [Non-empty-list X] is one of: |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; –  ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29)  X  ''())
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; –  ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29)  X  [[Non-empty-list](#%28tech._non._empty._list%29)  X])
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Stop! [Arbitrarily Large Data](part_two.html) deals with this problem. Look
+    up the solution.With [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29),
+    a designer can eliminate three selectors and two predicates from the solution
+    using [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [[Non-empty-list](#%28tech._non._empty._list%29) X] -> X |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; retrieves the last item of ne-l |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (last-item ''(a b c)) ''c)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-error](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-error%29%29) (last-item ''()))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (last-item ne-l)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) ne-l
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) lst ''()) lst]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) fst rst) (last-item rst)]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Instead of predicates and selectors, this solution uses patterns that are just
+    like those found in the data definition. For each self-reference and occurrence
+    of the set parameter in the data definition, the patterns use program-level variables.
+    The bodies of the [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    clauses no longer extract the relevant parts from the list with selectors but
+    simply refer to these names. As before, the function recurs on the [rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)
+    field of the given [cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29)
+    because the data definition refers to itself in this position. In the base case,
+    the answer is lst, the variable that stands for the last item on the list.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s take a look at a second problem from [Arbitrarily Large Data](part_two.html):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Sample Problem Design the function depth, which measures the number of layers
+    surrounding a Russian doll. Here is the data definition again:'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| ([define-struct](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define-struct%29%29) layer [[color](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._color%29%29) doll])
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; An RD.v2 (short for Russian doll) is one of: |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; –  "doll" |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; –  (make-layer  [String](part_one.html#%28tech._string%29)  [RD.v2](#%28tech._rd..v2%29))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Here is a definition of depth using [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [RD.v2](#%28tech._rd..v2%29) -> [N](part_two.html#%28tech._n%29) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; how many dolls are a part of an-rd |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (depth (make-layer "red" "doll")) 1)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (depth a-doll)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) a-doll
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     ["doll" 0] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [(layer c inside) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (depth inside) 1)]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'While the pattern in the first [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    clause looks for "doll", the second one matches any layer structure, associating
+    c with the value in the [color](http://docs.racket-lang.org/teachpack/2htdpimage.html#%28def._%28%28lib._2htdp%2Fimage..rkt%29._color%29%29)
+    field and inside with the value in the doll field. In short, [match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29)
+    again makes the function definition concise.The final problem is an excerpt from
+    the generalized UFO game:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Sample Problem Design the move-right function. It consumes a list of [Posn](part_one.html#%28tech._posn%29)s,
+    which represent the positions of objects on a canvas, plus a number. The function
+    adds the latter to each x-coordinate, which represents a rightward movement of
+    these objects.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Here is our solution, using the full power of ISL+:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [[List-of](part_three.html#%28tech._sim-dd._list._of%29)  [Posn](part_one.html#%28tech._posn%29)]
+    -> [[List-of](part_three.html#%28tech._sim-dd._list._of%29)  [Posn](part_one.html#%28tech._posn%29)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; moves each object right by delta-x pixels |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) input  `(,([make-posn](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._make-posn%29%29) 1 1) ,([make-posn](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._make-posn%29%29) 10 14)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) expect `(,([make-posn](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._make-posn%29%29) 4 1) ,([make-posn](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._make-posn%29%29) 13 14)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (move-right input 3) expect)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (move-right lop delta-x)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([for/list](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._for%2Flist%29%29) ((p lop))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     ([match](http://docs.racket-lang.org/teachpack/2htdpabstraction.html#%28form._x._%28%28lib._teachpack%2F2htdp%2Fabstraction..rkt%29._match%29%29) p
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      [(posn x y) ([make-posn](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._make-posn%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) x delta-x) y)])))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Stop! Did you notice that we use [define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29)
+    to formulate the tests? If you give data examples good names with [define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29)
+    and write down next to them what a function produces as the expected result, you
+    can read the code later much more easily than if you had just written down the
+    constants.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Stop! How does a solution with [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    and selectors compare? Write it out and compare the two. Which one do you like
+    better?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 308\. Design the function replace, which substitutes the area code
+    713 with 281 in a list of phone records.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 309\. Design the function words-on-line, which determines the number
+    of [String](part_one.html#%28tech._string%29)s per item in a list of list of strings.
+  prefs: []
+  type: TYPE_NORMAL

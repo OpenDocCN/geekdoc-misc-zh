@@ -1,0 +1,1048 @@
+- en: 'Intermezzo 4: The Nature of Numbers🔗'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://htdp.org/2024-11-6/Book/i4-5.html](https://htdp.org/2024-11-6/Book/i4-5.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|     [Fixed-Size Number Arithmetic](#%28part._.Fixed-.Size_.Number_.Arithmetic%29)
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Overflow](#%28part._.Overflow%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Underflow](#%28part._.Underflow%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [*SL Numbers](#%28part.__.S.L_.Numbers%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: When it comes to numbers, programming languages mediate the gap between the
+    underlying hardware and true mathematics. The typical computer hardware represents
+    numbers with fixed-size chunks of data;These chunks are called bits, bytes, and
+    words. they also come with processors that work on just such chunks. In paper-and-pencil
+    calculations, we don’t worry about how many digits we process; in principle, we
+    can deal with numbers that consist of one digit, 10 digits, or 10,000 digits.
+    Thus, if a programming language uses the numbers from the underlying hardware,
+    its calculations are as efficient as possible. If it sticks to the numbers we
+    know from mathematics, it must translate those into chunks of hardware data and
+    back—<wbr>and these translations cost time. Because of this cost, most creators
+    of programming languages adopt the hardware-based choice.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This intermezzo explains the hardware representation of numbers as an exercise
+    in data representation. Concretely, the first subsection introduces a concrete
+    fixed-size data representation for numbers, discusses how to map numbers into
+    this representation, and hints at how calculations work on such numbers. The second
+    and third sections illustrate the two most fundamental problems of this choice:
+    arithmetic overflow and underflow, respectively. The last one sketches how arithmetic
+    in the teaching languages works; its number system generalizes what you find in
+    most of today’s programming languages. The final exercises show how bad things
+    can get when programs compute with numbers.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Fixed-Size Number Arithmetic[🔗](#(part._.Fixed-.Size_.Number_.Arithmetic) "Link
+    to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Suppose we can use four digits to represent numbers. If we represent natural
+    numbers, one representable range is [0,10000). For real numbers, we could pick
+    10,000 fractions between 0 and 1 or 5,000 between 0 and 1 and another 5,000 between
+    1 and 2, and so on. In either case, four digits can represent at most 10,000 numbers
+    for some chosen interval, while the number line for this interval contains an
+    infinite number of numbers.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The common choice for hardware numbers is to use so-called scientific notation,
+    meaning numbers are represented with two parts:For pure scientific notation, the
+    base is between 0 and 9; we ignore this constraint.
+  prefs: []
+  type: TYPE_NORMAL
+- en: a mantissa, which is a base number, and
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: an exponent, which is used to determine a 10-based factor.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Expressed as a formula, we write numbers as
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/797ac4b17eae5ebe56eda6d586da7a9f.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: where m is the mantissa and e the exponent. For example, one representation
+    of 1200 with this scheme is
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/8a52272b3360c2f1cb18dae832c0c483.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: another one is
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/1376d0cccca83b7e9b1b3fec091c64e9.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'In general, a number has several equivalents in this representation.We can
+    also use negative exponents, which add fractions at the cost of one extra piece
+    of data: the sign of the exponent. For example,'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/d566bc84c6c4ad42b139ffbc208fe339.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: stands for
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/ac69110bb4c54630dd14e9d8f85af770.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: To use a form of mantissa-exponent notation for our problem, we must decide
+    how many of the four digits we wish to use for the representation of the mantissa
+    and how many for the exponent. Here we use two for each plus a sign for the exponent;
+    other choices are possible. Given this decision, we can still represent 0 as
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/cdb487d793ead5049d131d09c02223fe.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: The maximal number we can represent is
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/93f071c604dfee7fafac77d69d9ccc39.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: which is 99 followed by 99 0’s. Using the negative exponents, we can add fractions
+    all the way down to
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/752c9969d8ca2c9c7a8d27591a83f7c4.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: which is the smallest representable number. In sum, using scientific notation
+    with four digits (and a sign), we can represent a vast range of numbers and fractions,
+    but this improvement comes with its own problems.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [N](part_two.html#%28tech._n%29)  [Number](part_one.html#%28tech._number%29)  [N](part_two.html#%28tech._n%29)
+    -> [Inex](#%28tech._inex%29) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; makes an instance of [Inex](#%28tech._inex%29) after checking the arguments
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define%29%29) (create-inex m s e)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([and](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._and%29%29) ([<=](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._~3c~3d%29%29) 0 m 99) ([<=](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._~3c~3d%29%29) 0 e 99) ([or](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._or%29%29) ([=](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._~3d%29%29) s 1) ([=](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._~3d%29%29) s -1)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (make-inex m s e)] |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [[else](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._else%29%29) ([error](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._error%29%29) "bad
+    values given")])) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [Inex](#%28tech._inex%29) -> [Number](part_one.html#%28tech._number%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; converts an [inex](#%28tech._inex%29) into its numeric equivalent |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define%29%29) (inex->number an-inex)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([*](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._%2A%29%29) (inex-mantissa an-inex)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        10 ([*](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._%2A%29%29) (inex-sign an-inex) (inex-exponent an-inex)))))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 143: Functions for inexact representations'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'To understand the problems, it is best to make these choices concrete with
+    a data representation in ISL+ and by running some experiments. Let’s represent
+    a fixed-size number with a structure that has three fields:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define-struct](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define-struct%29%29) inex [mantissa sign exponent])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; An Inex is a structure: |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ;   (make-inex  [N99](#%28tech._n99%29)  [S](#%28tech._%29)  [N99](#%28tech._n99%29))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; An S is one of: |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; –  1 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; –  -1 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; An N99 is an [N](part_two.html#%28tech._n%29) between 0 and 99 (inclusive).
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Because the conditions on the fields of an [Inex](#%28tech._inex%29) are so
+    stringent, we define the function create-inex to instantiate this structure type
+    definition; see [figure 143](#%28counter._%28figure._fig~3ainexact-construct%29%29).
+    The figure also defines inex->number, which turns [Inex](#%28tech._inex%29)es
+    into numbers using the above formula.Let’s translate the above example, 1200,
+    into our data representation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (create-inex 12 1 2)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Representing 1200 as ![image](../Images/5150a3fb1680b953f0da7aa0ef26de23.png)
+    is illegal, however, according to our [Inex](#%28tech._inex%29) data definition:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > (create-inex 120 1 1) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| bad values given |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'For other numbers, though, we can find two [Inex](#%28tech._inex%29) equivalents.
+    One example is 5e-19:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > (create-inex 50 -1 20) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (make-inex 50 -1 20) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > (create-inex 5 -1 19) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (make-inex 5 -1 19) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Use inex->number to confirm the equivalence of these two numbers.With create-inex
+    it is also easy to delimit the range of representable numbers, which is actually
+    quite small for many applications:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define%29%29) MAX-POSITIVE (create-inex 99 1 99))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define%29%29) MIN-POSITIVE (create-inex 1 -1 99))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: The question is which of the real numbers in the range between 0 and MAX-POSITIVE
+    can be translated into an [Inex](#%28tech._inex%29). In particular, any positive
+    number less than
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/f2b4fbe32d56023c28a2e74b879a9614.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: has no equivalent [Inex](#%28tech._inex%29). Similarly, the representation has
+    gaps in the middle. For example, the immediate successor of
+  prefs: []
+  type: TYPE_NORMAL
+- en: (create-inex 12 1 2)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: is
+  prefs: []
+  type: TYPE_NORMAL
+- en: (create-inex 13 1 2)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'The first [Inex](#%28tech._inex%29) represents 1200, the second one 1300. Numbers
+    in the middle, say 1240, can be represented as one or the other—<wbr>no other
+    [Inex](#%28tech._inex%29) makes sense. The standard choice is to round the number
+    to the closest representable equivalent, and that is what computer scientists
+    mean with inexact numbers. That is, the chosen data representation forces us to
+    map mathematical numbers to approximations.Finally, we must also consider arithmetic
+    operations on [Inex](#%28tech._inex%29) structures. Adding two [Inex](#%28tech._inex%29)
+    representations with the same exponent means adding the two mantissas:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inex+ (create-inex 1 1 0) (create-inex 2 1 0)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (create-inex 3 1 0) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Translated into mathematical notation, we have
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/a6bfe7a3671587f8edd5ccc3880c13f8.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: When the addition of two mantissas yields too many digits, we have to use the
+    closest neighbor in [Inex](#%28tech._inex%29). Consider adding ![image](../Images/0d676191f6000dcbfaa5917dc1cd8e6b.png)
+    to itself. Mathematically we get
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/7d37ac193d72dff101e92e636e601dca.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: but we can’t just translate this number naively into our chosen representation
+    because ![image](../Images/a9030652b13da3ab0232c40923194fd5.png). The proper corrective
+    action is to represent the result as
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/8a5cc142bb817cfa0a018f88b3ad5573.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'Or, translated into ISL+, we must ensure that inex+ computes as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inex+ (create-inex 55 1 0) (create-inex 55 1 0)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (create-inex 11 1 1) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'More generally, if the mantissa of the result is too large, we must divide
+    it by 10 and increase the exponent by one.Sometimes the result contains more mantissa
+    digits than we can represent. In those cases, inex+ must round to the closest
+    equivalent in the [Inex](#%28tech._inex%29) world. For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inex+ (create-inex 56 1 0) (create-inex 56 1 0)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (create-inex 11 1 1) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Compare this with the precise calculation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/2ea6285e1dfc5564663a77ace7df9ebd.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'Because the result has too many mantissa digits, the integer division of the
+    result mantissa by 10 produces an approximate result:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/f79b1c43f53b5931e06ccac353095f4e.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: This is an example of the many approximations in [Inex](#%28tech._inex%29) arithmetic.And
+    inexact is appropriate.We can also multiply [Inex](#%28tech._inex%29) numbers.
+    Recall that
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/4fc08d40a787bbb4d10284483778bb41.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'Thus we get:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/e6dfa678d68ed23816ee6a137e75b96a.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'or, in ISL+ notation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inex* (create-inex 2 1 4) (create-inex 8 1 10)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (create-inex 16 1 14) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'As with addition, things are not straightforward. When the result has too many
+    significant digits in the mantissa, inex* has to increase the exponent:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inex* (create-inex 20 1 1) (create-inex  5 1 4)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (create-inex 10 1 6) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'And just like inex+, inex* introduces an approximation if the true mantissa
+    doesn’t have an exact equivalent in [Inex](#%28tech._inex%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inex* (create-inex 27 -1 1) (create-inex  7 1 4)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (create-inex 19 1 4) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Exercise 412\. Design inex+. The function adds two [Inex](#%28tech._inex%29)
+    representations of numbers that have the same exponent. The function must be able
+    to deal with inputs that increase the exponent. Furthermore, it must signal its
+    own error if the result is out of range, not rely on create-inex for error checking.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Challenge Extend inex+ so that it can deal with inputs whose exponents differ
+    by 1:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._check-expect%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   (inex+ (create-inex 1 1 0) (create-inex 1 -1 1)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   (create-inex 11 -1 1)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Do not attempt to deal with larger classes of inputs than that without reading
+    the following subsection.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 413\. Design inex*. The function multiplies two [Inex](#%28tech._inex%29)
+    representations of numbers, including inputs that force an additional increase
+    of the output’s exponent. Like inex+, it must signal its own error if the result
+    is out of range, not rely on create-inex to perform error checking.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 414\. As this section illustrates, gaps in the data representation
+    lead to round-off errors when numbers are mapped to [Inex](#%28tech._inex%29)es.
+    The problem is, such round-off errors accumulate across computations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Design add, a function that adds up n copies of #i1/185. For your examples,
+    use 0 and 1; for the latter, use a tolerance of 0.0001. What is the result for
+    (add  185)? What would you expect? What happens if you multiply the result with
+    a large number?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Design sub. The function counts how often 1/185 can be subtracted from the argument
+    until it is 0. Use 0 and 1/185 for your examples. What are the expected results?
+    What are the results for (sub  1) and (sub #i1.0)? What happens in the second
+    case? Why?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Overflow[🔗](#(part._.Overflow) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: While scientific notation expands the range of numbers we can represent with
+    fixed-size chunks of data, it is still finite. Some numbers are just too big to
+    fit into a fixed-size number representation. For example,
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/c72bde11d3dcaed712a42652a1801078.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'can’t be represented because the exponent 500 won’t fit into two digits, and
+    the mantissa is as large as legally possible.Numbers that are too large for [Inex](#%28tech._inex%29)
+    can arise during a computation. For example, two numbers that we can represent
+    can add up to a number that we cannot represent:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inex+ (create-inex 50 1 99) (create-inex 50 1 99)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (create-inex 100 1 99) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: which violates the data definition. When [Inex](#%28tech._inex%29) arithmetic
+    produces numbers that are too large to be represented, we speak of (arithmetic)
+    overflow.
+  prefs: []
+  type: TYPE_NORMAL
+- en: When overflow takes place, some language implementations signal an error and
+    stop the computation. Others designate some symbolic value, called infinity, to
+    represent such numbers and propagate it through arithmetic operations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note If [Inex](#%28tech._inex%29)es had a sign field for the mantissa, then
+    two negative numbers can add up to one that is so negative that it can’t be represented
+    either. This is called overflow in the negative direction. End
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 415\. ISL+ uses +inf.0 to deal with overflow. Determine the integer
+    n such that
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29) #i10.0 n)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: is an inexact number while ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29) #i10. ([+](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._%2B%29%29) n 1))
+    is approximated with +inf.0. Hint Design a function to compute n.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Underflow[🔗](#(part._.Underflow) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'At the opposite end of the spectrum, there are small numbers that don’t have
+    a representation in [Inex](#%28tech._inex%29). For example, ![image](../Images/2c2b463c45832817b98140a29e8e090d.png)
+    is not 0, but it’s smaller than the smallest non-zero number we can represent.
+    An (arithmetic) underflow arises when we multiply two small numbers and the result
+    is too small for [Inex](#%28tech._inex%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inex* (create-inex 1 -1 10) (create-inex 1 -1 99)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (create-inex 1 -1 109) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: which signals an error.
+  prefs: []
+  type: TYPE_NORMAL
+- en: When underflow occurs, some language implementations signal an error; others
+    use 0 to approximate the result. Using 0 to approximate underflow is qualitatively
+    different from picking an approximate representation of a number in [Inex](#%28tech._inex%29).
+    Concretely, approximating 1250 with (create-inex  12  1  2) drops significant
+    digits from the mantissa, but the result is always within 10% of the number to
+    be represented. Approximating an underflow, however, means dropping the entire
+    mantissa, meaning the result is not within a predictable percentage range of the
+    true result.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Exercise 416\. ISL+ uses #i0.0 to approximate underflow. Determine the smallest
+    integer n such that ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29) #i10.0 n)
+    is still an inexact ISL+ number and ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29) #i10. ([-](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._-%29%29) n 1))
+    is approximated with 0. Hint Use a function to compute n. Consider abstracting
+    over this function and the solution of [exercise 415](#%28counter._%28exercise._ex~3aflow-large%29%29).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*SL Numbers[🔗](#(part.__.S.L_.Numbers) "Link to here")'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Most programming languages support only approximate number representationsInexact
+    real representations come in several flavors: float, double, extflonum, and so
+    on. and arithmetic for numbers. A typical language limits its integers to an interval
+    that is related to the size of the chunks of the hardware on which it runs. Its
+    representation of real numbers is loosely based on the sketch in the preceding
+    sections, though with larger chunks than the four digits [Inex](#%28tech._inex%29)
+    uses and with digits from the 2-based number system.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The teaching languages support both exact and inexact numbers. Their integers
+    and rationals are arbitrarily large and precise, limited only by the absolute
+    size of the computer’s entire memory. For calculations on these numbers, our teaching
+    languages use the underlying hardware as long as the involved rationals fit into
+    the supported chunks of data; it automatically switches to a different representation
+    and to a different version of the arithmetic operations for numbers outside of
+    this interval. Their real numbers come in two flavors: exact and inexact. An exact
+    number truly represents a real number; an inexact one approximates a real number
+    in the spirit of the preceding sections. Arithmetic operations preserve exactness
+    when possible; they produce an inexact result when necessary. Thus, [sqrt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._sqrt%29%29)
+    returns an inexact number for both the exact and inexact representation of 2.
+    In contrast, [sqrt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._sqrt%29%29)
+    produces an exact 2 when given exact 4 and #i2.0 for an input of #i4.0. Finally,
+    a numeric constant in a teaching program is understood as an exact rational, unless
+    it is prefixed with #i.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Plain Racket interprets all decimal numbers as inexact numbers; it also renders
+    all real numbers as decimals, regardless of whether they are exact or inexact.
+    The implication is that all such numbers are dangerous because they are likely
+    to be inexact approximations of the true number. A programmer can force Racket
+    to interpret numbers with a dot as exact by prefixing numerical constants with
+    #e.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: At this point, you may wonder how much a program’s results may differ from the
+    true results if it uses these inexact numbers. This question is one that early
+    computer scientists struggled with a lot, and over the pastFor an accessible introduction—<wbr>using
+    Racket—<wbr>read [Practically Accurate Floating-Point Math](Https://jeapostrophe.github.io/home/static/tm-cise2014.pdf),
+    an article on error analysis by Neil Toronto and Jay McCarthy. It is also fun
+    to watch [Debugging Floating-Point Math in Racket](https://www.youtube.com/watch?v=HmtgHVwja4k),
+    Neil Toronto’s RacketCon 2011 lecture, available on YouTube. few decades these
+    studies have created a separate field, called numerical analysis. Every computer
+    scientist, and indeed, every person who uses computers and software, ought to
+    be aware of its existence and some of its basic insights into the workings of
+    numeric programs. As a first taste, the following exercises illustrate how bad
+    things can get. Work through them to never lose sight of the problems of inexact
+    numbers.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 417\. Evaluate ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29)  1.001  1e-12)
+    in Racket and in ISL+. Explain what you see.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 418\. Design my-expt without using [expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29).
+    The function raises the first given number to the power of the second one, a natural
+    number. Using this function, conduct the following experiment. Add
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define%29%29) inex ([+](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._%2B%29%29) 1 #i1e-12))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define%29%29) exac ([+](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._%2B%29%29) 1 1e-12))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: to the definitions area. What is (my-expt  inex  30)? And how about (my-expt  exac  30)?
+    Which answer is more useful?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define%29%29) JANUS
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([list](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._list%29%29) 31.0
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         #i2e+34 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         #i-1.2345678901235e+80 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         2749.0 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         -2939234.0 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         #i-2e+33 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         #i3.2e+270 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         17.0 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         #i-2.4e+270 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         #i4.2344294738446e+170 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         1.0 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         #i-8e+269 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         0.0 |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|         99.0)) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 144: A Janus-faced series of inexact numbers'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Exercise 419\. When you add two inexact numbers of vastly different orders
+    of magnitude, you may get the larger one back as the result. For example, if a
+    number system uses only 15 significant digits, we run into problems when adding
+    numbers that vary by more than a factor of ![image](../Images/769a0712df6472da5d4ad975c9a35864.png):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/c1aa1c0e98f213fc9d6cace4dc3292fd.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'but the closest representable answer is ![image](../Images/6bf392428c09f79b62a1830fbb0d7727.png).At
+    first glance, this approximation doesn’t look too bad. Being wrong by one part
+    in ![image](../Images/8fdfdacb4c508ab1cd38aa14f6242203.png) (ten million billion)
+    is close enough to the truth. Unfortunately, this kind of problem can add up to
+    huge problems. Consider the list of numbers in [figure 144](#%28counter._%28figure._fig~3ajanus%29%29)
+    and determine the values of these expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (sum  JANUS)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (sum  ([reverse](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._reverse%29%29)  JANUS))
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (sum  ([sort](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._sort%29%29)  JANUS  [<](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._~3c%29%29)))
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Assuming sum adds the numbers in a list from left to right, explain what these
+    expressions compute. What do you think of the results?Generic advice on inexact
+    calculations tells programmers to start additions with the smallest numbers. While
+    adding a big number to two small numbers might yield the big one, adding small
+    numbers first creates a large one, which might change the outcome:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29) 2 #i53.0)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #i9007199254740992.0 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > (sum ([list](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._list%29%29) #i1.0 ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29) 2 #i53.0)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #i9007199254740992.0 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > (sum ([list](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._list%29%29) #i1.0 #i1.0 ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29) 2 #i53.0)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #i9007199254740994.0 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'This trick may not work; see the JANUS interactions above.In a language such
+    as ISL+, you can convert the numbers to exact rationals, use exact arithmetic
+    on those, and convert the result back:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([exact->inexact](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._exact-~3einexact%29%29) (sum ([map](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._map%29%29) [inexact->exact](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._inexact-~3eexact%29%29) JANUS)))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Evaluate this expression and compare the result to the three sums above. What
+    do you think now about advice from the web?Exercise 420\. JANUS is just a fixed
+    list, but take a look at this function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define%29%29) (oscillate n)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([local](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._define%29%29) (O i)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|             ([cond](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [([>](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._~3e%29%29) i n) ''()]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               [[else](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28form._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._else%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                ([cons](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._cons%29%29) ([expt](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._expt%29%29) #i-0.99 i) (O ([+](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._%2B%29%29) i 1)))])))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     (O 1))) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Applying oscillate to a natural number n produces the first n elements of a
+    mathematical series. It is best understood as a graph, like the one in [figure 145](#%28counter._%28figure._fig~3aoscillate%29%29).
+    Run (oscillate  15) in DrRacket and inspect the result.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/027195280e1b9cd07d49364a20b6b029.png)'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_IMG
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 145: The graph of oscillate'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Summing its results from left to right computes a different result than from
+    right to left:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > (sum (oscillate #i1000.0)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #i-0.49746596003269394 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > (sum ([reverse](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._reverse%29%29) (oscillate #i1000.0)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| #i-0.4974659600326953 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Again, the difference may appear to be small until we see the context:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ([-](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._-%29%29) ([*](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._%2A%29%29) 1e+16 (sum (oscillate #i1000.0)))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;      ([*](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._%2A%29%29) 1e+16 (sum ([reverse](http://docs.racket-lang.org/htdp-langs/intermediate.html#%28def._htdp-intermediate._%28%28lib._lang%2Fhtdp-intermediate..rkt%29._reverse%29%29) (oscillate #i1000.0)))))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| #i14.0 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Can this difference matter? Can we trust computers?
+  prefs: []
+  type: TYPE_NORMAL
+- en: The question is which numbers programmers should use in their programs if they
+    are given a choice. The answer depends on the context, of course. In the world
+    of financial statements, numerical constants should be interpreted as exact numbers,
+    and computational manipulations of financial statements ought to be able to rely
+    on the exactness-preserving nature of mathematical operations. After all, the
+    law cannot accommodate the serious errors that come with inexact numbers and their
+    operations. In scientific computations, however, the extra time needed to produce
+    exact results might impose too much of a burden. Scientists therefore tend to
+    use inexact numbers but carefully analyze their programs to make sure that the
+    numerical errors are tolerable for their uses of the outputs of programs.
+  prefs: []
+  type: TYPE_NORMAL

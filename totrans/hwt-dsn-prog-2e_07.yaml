@@ -1,0 +1,1288 @@
+- en: 'Intermezzo 2: Quote, Unquote🔗'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://htdp.org/2024-11-6/Book/i2-3.html](https://htdp.org/2024-11-6/Book/i2-3.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|     [Quote](#%28part._.Quote%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Quasiquote and Unquote](#%28part._.Quasiquote_and_.Unquote%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Unquote Splice](#%28part._.Unquote_.Splice%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: Lists play an important role in our book as well as in Racket, the basis of
+    our teaching languages.Be sure to set your language level to BSL+ or up. For the
+    design of programs, it is critical to understand how lists are constructed from
+    first principles; it informs the creation of our programs. Routine work with lists
+    calls for a compact notation, however, like the [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)
+    function introduced in [The list Function](part_two.html#%28part._sec~3aabbrev%29).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Since the late 1950s, Lisp-style languages have come with an even more powerful
+    pair of list-creation tools: quotation and anti-quotation. Many programming languages
+    support them now, and the PHP web page design language injected the idea into
+    the commercial world.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This intermezzo gives you a taste of this quotation mechanism. It also introduces
+    symbols, a form of data that is intimately tied to quotation. While this introduction
+    is informal and uses simplistic examples, the rest of the book illustrates the
+    power of the idea with near-realistic variants. Come back to this intermezzo if
+    any of these examples cause you trouble.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Quote[🔗](#(part._.Quote) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Quotation is a short-hand mechanism for writing down a large list easily. Roughly
+    speaking, a list constructed with the [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)
+    function can be constructed even more concisely by quoting lists. Conversely,
+    a quoted list abbreviates a construction with [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Technically, [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)
+    is a keyword for a compound sentence in the spirit of [Intermezzo 1: Beginning
+    Student Language](i1-2.html) and it is used like this: ([quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29) (1 2 3)).
+    DrRacket translates this expression to ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)  1  2  3).
+    At this point, you may wonder why we call [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)
+    an abbreviation because the [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)d
+    expression looks more complicated than its translation. The key is that '' is
+    a short-hand for [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29).
+    Here are some short examples, then:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ''(1 2 3) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list 1 2 3) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ''("a" "b" "c") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list "a" "b" "c") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > ''(#true "hello world" 42) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list #true "hello world" 42) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'As you can see, the use of '' creates the promised lists. In case you forgot
+    what ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)  1  2  3)
+    means, reread [The list Function](part_two.html#%28part._sec~3aabbrev%29); it
+    explains that this list is short for ([cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29)  1  ([cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29)  2  ([cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29)  3  ''()))).So
+    far [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)
+    looks like a small improvement over [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29),
+    but look:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; > ''(("a" 1) &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ("b" 2) &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ("d" 4)) &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '| (list (list "a" 1) (list "b" 2) (list "d" 4)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: With ' we can construct lists as well as nested lists.To understand how [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)
+    works, imagine it as a function that traverses the shape it is given. When ' encounters
+    a plain piece of data—<wbr>a number, a string, a Boolean, or an image—<wbr>it
+    disappears. When it sits in front of an open parenthesis, (, it inserts [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)
+    to the right of the parenthesis and puts ' on all the items between ( and the
+    closing ). For example,
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ''(1 2 3) |  | is short for |  | ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) ''1 ''2 ''3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'As you already know, '' disappears from numbers so the rest is easy. Here is
+    an example that creates nested lists:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ''(("a" 1) 3) |  | is short for |  | ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) ''("a" 1) ''3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'To continue this example, we expand the abbreviation in the first position:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) ''("a" 1) ''3)
+    |  | is short for |  | ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) ''"a" ''1) 3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'We leave it to you to wrap up this example.Exercise 231\. Eliminate [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)
+    in favor of [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)
+    from these expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '''(1  "a"  2  #false  3  "c")'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '''()'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'and this table-like shape:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| ''(("alan" 1000) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ("barb" 2000) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ("carl" 1500)) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: Now eliminate [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)
+    in favor of [cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29)
+    where needed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Quasiquote and Unquote[🔗](#(part._.Quasiquote_and_.Unquote) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The preceding section should convince you of the advantages of ' and [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29).
+    You may even wonder why the book introduces [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)
+    only now and didn’t do so right from the start. It seems to greatly facilitate
+    the formulation of test cases that involve lists as well as for keeping track
+    of large collections of data. But all good things come with surprises, and that
+    includes [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29).
+  prefs: []
+  type: TYPE_NORMAL
+- en: When it comes to program design, it is misleading for beginners to think of
+    lists as [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)d
+    or even [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)-constructed
+    values. The construction of lists with [cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29)
+    is far more illuminating for the step-wise creation of programs than short-hands
+    such as [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29),
+    which hide the underlying construction. So don’t forget to think of [cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29)
+    whenever you are stuck during the design of a list-processing function.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s move on, then, to the actual surprises hidden behind [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29).
+    Suppose your definitions area contains one constant definition:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29) x 42)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Imagine running this program and experimenting with
+  prefs: []
+  type: TYPE_NORMAL
+- en: '''(40 41 x 43 44)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: in the interactions area. What result do you expect? Stop! Try to apply the
+    above rules of ' for a moment.Here is the experiment
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ''(40 41 x 43 44) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list 40 41 ''x 43 44) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'At this point it is important to remember that DrRacket displays values. Everything
+    on the list is a value, including ''x. It is a value you have never seen before,
+    namely, a Symbol. For our purposes, a symbol looks like a variable name except
+    that it starts with '' and that a symbol is a value. Variables only stand for
+    values; they are not values in and of themselves. Symbols play a role similar
+    to those of strings; they are a great way to represent symbolic information as
+    data. [Intertwined Data](part_four.html) illustrates how; for now, we just accept
+    symbols as yet another form of data.To drive home the idea of symbols, consider
+    a second example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '''(1 (+ 1 1) 3)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: You might expect that this expression constructs ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)  1  2  3).
+    If you use the rules for expanding ', however, you discover that
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ''(1 (+ 1 1) 3) |  | is short for |  | ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) ''1 ''(+ 1 1) ''3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: And the ' on the second item in this list does not disappear. Instead, it abbreviates
+    the construction of another list so that the entire example comes out as
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) 1 ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) '+ 1 1) 3)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: What this means is that '+ is a symbol just like 'x. Just as the latter is unrelated
+    to the variable x, the former has no immediate relationship to the function [+](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2B%29%29)
+    that comes with BSL+. Then again, you should be able to imagine that '+ could
+    serve as an elegant data representation of the function [+](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2B%29%29)
+    just as '(+  1  1) could serve as a data representation of ([+](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2B%29%29)  1  1).
+    [Intertwined Data](part_four.html) picks up this idea.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In some cases, you do not want to create a nested list. You actually want a
+    true expression in a [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)d
+    list and you want to evaluate the expression during the construction of the list.
+    For such cases, you want to use [quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29),
+    which, like [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29),
+    is just a keyword for a compound sentence: ([quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29) (1 2 3)).
+    And, like [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29),
+    [quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29)
+    comes with a short-hand, namely the ` character, which is the “other” single-quote
+    key on your keyboard.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'At first glance, ` acts just like '' in that it constructs lists:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > `(1 2 3) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list 1 2 3) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > `("a" "b" "c") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list "a" "b" "c") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > `(#true "hello world" 42) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list #true "hello world" 42) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The best part about ` is that you can also use it to unquote, that is, you
+    can demand an escape back to the programming language proper inside of a [quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29)d
+    list. Let’s illustrate the idea with the above examples:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > `(40 41 ,x 43 44) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list 40 41 42 43 44) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > `(1 ,([+](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2B%29%29) 1 1) 3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list 1 2 3) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'As above, the first interaction assumes a definitions area that contains ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29)  x  42).
+    The best way to understand this syntax is to see it with actual keywords instead
+    of ` and , short-hands:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29) (40 41 ([unquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._unquote%29%29) x) 43 44))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29) (1 ([unquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._unquote%29%29) ([+](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2B%29%29) 1 1)) 3))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The rules for expanding a [quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29)d
+    and an [unquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._unquote%29%29)d
+    shape are those of [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29)
+    supplemented with one rule. When ` appears in front of a parenthesis, it is distributed
+    over all parts between it and the matching closing parenthesis. When it appears
+    next to a basic piece of data, it disappears. When it is in front of some variable
+    name, you get a symbol. And the new rule is that when ` is immediately followed
+    by [unquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._unquote%29%29),
+    both characters disappear:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| `(1 ,([+](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2B%29%29) 1 1) 3)
+    |  | is short for |  | ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) `1 `,([+](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2B%29%29) 1 1) `3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: and
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) `1 `,([+](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2B%29%29) 1 1) `3)
+    |  | is short for |  | ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) 1 ([+](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2B%29%29) 1 1) 3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: And this is how you get ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)  1  2  3)
+    as seen above.
+  prefs: []
+  type: TYPE_NORMAL
+- en: From here it is a short step to the production of web pages. Yes, you read correctly—<wbr>web
+    pages! In principle, web pages are coded in the HTML and CSS programming languages.
+    But nobody writes down HTML programs directly; instead people design programs
+    that produce web pages. Not surprisingly, you can write such functions in BSL+,
+    too, and there is a simplistic example in [figure 83](#%28counter._%28figure._fig~3asimplistic-html%29%29).
+    As you can immediately see, this function consumes two strings and produces a
+    deeply nested list—<wbr>a data representation of a web page.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [String](part_one.html#%28tech._string%29)  [String](part_one.html#%28tech._string%29)
+    -> ... deeply nested list ... |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; produces a web page with given author and title |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29) (my-first-web-page author title)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   `(html |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (head |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        (title ,title) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        (meta ((http-equiv "content-type") |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               (content "text-html")))) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (body |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        (h1 ,title) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        (p "I, " ,author ", made this page.")))) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 83: A simplistic HTML generator'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'A second look also shows that the title parameter shows up twice in the function
+    body: once nested in a nested list labeled with ''head and once nested in the
+    nested list labeled with ''body. The other parameter shows up only once. We consider
+    the nested list a page template, and the parameters are holes in the template,
+    to be filled by useful values. As you can imagine, this template-driven style
+    of creating web pages is most useful when you wish to create many similar pages
+    for a site.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Nested List Representation |  | Web Page Code (HTML) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; ''(html &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   (head &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;    (title "Hello World") &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;    (meta &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ((http-equiv "content-type") &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;      (content "text-html")))) &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   (body &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     (h1 "Hello World") &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     (p "I, " &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;        "Matthias" &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;        ", made this page."))) &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|  |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; <html> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   <head> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     <title> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;       Hello World &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     </title> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     <meta &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;       http-equiv="content-type" &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;       content="text-html" /> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   </head> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   <body> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     <h1> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;       Hello World &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     </h1> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     <p> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;       I, &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;       Matthias, &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;       made this page. &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     </p> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   </body> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; </html> &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 84: A data representation based on nested lists'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: To understand how the function works, we experiment in DrRacket’s interactions
+    area. Given your knowledge of [quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29)
+    and [unquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._unquote%29%29),
+    you should be able to predict what the result of
+  prefs: []
+  type: TYPE_NORMAL
+- en: (my-first-web-page "Matthias" "Hello World")
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'is. Then again, DrRacket is so fast that it is better to show you the result:
+    see the left column in [figure 84](#%28counter._%28figure._fig~3anested-list-rep%29%29).You
+    can use show-in-browser from the 2htdp/web-io.rkt teachpack to display the result
+    in a web browser. The right column of the table contains the equivalent code in
+    HTML. If you were to open this web page in a browser you would see something like
+    this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/6170d3bf808c12e30d622477455362db.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'Note that "Hello World" shows up twice again: once in the title bar of the
+    web browser—<wbr>which is due to the <title> specification—<wbr>and once in the
+    text of the web page.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If this were 1993, you could now sell the above function as a Dot Com company
+    that generates people’s first web page with a simple function call. Alas, in this
+    day and age, it is only an exercise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Exercise 232\. Eliminate [quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29)
+    and [unquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._unquote%29%29)
+    from the following expressions so that they are written with [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)
+    instead:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`(1  "a"  2  #false  3  "c")'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'this table-like shape:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| `(("alan" ,([*](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2A%29%29) 2 500))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ("barb" 2000) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   (,([string-append](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._string-append%29%29) "carl" "
+    , the great") 1500) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ("dawn" 2300)) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'and this second web page:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| `(html |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|    (head |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (title ,title)) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|    (body |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (h1 ,title) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (p "A second web page"))) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: where ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29)  title  "ratings").
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Also write down the nested lists that the expressions produce.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Unquote Splice[🔗](#(part._.Unquote_.Splice) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'When [quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29)
+    meets [unquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._unquote%29%29)
+    during the expansion of short-hands, the two annihilate each other:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; `(tr &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   ,(make-row &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     ''(3 4 5))) &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|  | is short for |  |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) ''tr
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   (make-row &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;      ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) 3 4 5)))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Thus, whatever make-row produces becomes the second item of the list. In particular,
+    if make-row produces a list, this list becomes the second item of a list. If make-row
+    translates the given list of numbers into a list of strings, then the result is
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) 'tr ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) "3" "4" "5"))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: In some cases, however, we may want to splice such a nested list into the outer
+    one, so that for our running example we would get
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) 'tr "3" "4" "5")
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'One way to solve this small problem is to fall back on [cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29).
+    That is, to mix [cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29)
+    with [quote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quote%29%29),
+    [quasiquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._quasiquote%29%29),
+    and [unquote](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._unquote%29%29).
+    After all, all of these characters are just short-hands for [cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29)ed
+    lists. Here is what is needed to get the desired result in our example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29) 'tr (make-row '(3 4 5)))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Convince yourself that the result is ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)  ''tr  "3"  "4"  "5").Since
+    this situation occurs quite often in practice, BSL+ supports one more short-hand
+    mechanism for list creation: ,@, also known as [unquote-splicing](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._unquote-splicing%29%29)
+    in keyword form. With this form, it is straightforward to splice a nested list
+    into a surrounding list. For example,'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`(tr ,@(make-row ''(3 4 5)))'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: translates into
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29) 'tr (make-row '(3 4 5)))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'which is precisely what we need for our example.Now consider the problem of
+    creating an HTML table in our nested-list representation. Here is a table of two
+    rows with four cells each:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|   ''(table ((border "1")) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (tr (td "1")   (td "2")    (td "3")   (td "4")) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (tr (td "2.8") (td "-1.1") (td "3.4") (td "1.3"))) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The first nested lists tells HTML to draw a thin border around each cell in
+    the table; the other two nested lists represent a row each.In practice, you want
+    to create such tables with arbitrarily wide rows and arbitrarily many rows. For
+    now, we just deal with the first problem, which requires a function that translates
+    lists of numbers into HTML rows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [List-of-numbers](part_two.html#%28tech._list._of._number%29) -> ... nested
+    list ... |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; creates a row for an HTML table from l |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29) (make-row l)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._empty~3f%29%29) l) ''()]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [[else](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._else%29%29) ([cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29) (make-cell ([first](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._first%29%29) l))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                 (make-row ([rest](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._rest%29%29) l)))]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [Number](part_one.html#%28tech._number%29) -> ... nested list ... |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; creates a cell for an HTML table from a number |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29) (make-cell n)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   `(td ,([number->string](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._number-~3estring%29%29) n)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Instead of adding examples, we explore the behavior of these functions in DrRacket’s
+    interactions area:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > (make-cell 2) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list ''td "2") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| > (make-row ''(1 2)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list (list ''td "1") (list ''td "2")) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'These interactions show the creation of lists that represent a cell and a row.To
+    turn such row lists into actual rows of an HTML table representation, we need
+    to splice them into a list that starts with ''tr:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [List-of-numbers](part_two.html#%28tech._list._of._number%29)  [List-of-numbers](part_two.html#%28tech._list._of._number%29)
+    -> ... nested list ... |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; creates an HTML table from two lists of numbers |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29) (make-table row1 row2)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   `(table ((border "1")) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|           (tr ,@(make-row row1)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|           (tr ,@(make-row row2)))) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'This function consumes two lists of numbers and creates an HTML table representation.
+    With make-row, it translates the lists into lists of cell representations. With
+    ,@ these lists are spliced into the table template:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > (make-table ''(1 2 3 4 5) ''(3.5 2.8 -1.1 3.4 1.3)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (list ''table (list (list ''border "1")) ''....) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'ThisThe dots are not part of the output. application of make-table suggests
+    another reason why people write programs to create web pages rather than make
+    them by hand.Exercise 233\. Develop alternatives to the following expressions
+    that use only [list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29)
+    and produce the same values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`(0  ,@''(1  2  3)  4)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'this table-like shape:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| `(("alan" ,([*](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._%2A%29%29) 2 500))
+    |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ("barb" 2000) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   (,@''("carl" " , the great")   1500) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ("dawn" 2300)) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'and this third web page:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '| `(html |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|    (body |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      (table ((border "1")) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        (tr ((width "200")) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|          ,@(make-row ''( 1  2))) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|        (tr ((width "200")) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|          ,@(make-row ''(99 65)))))) |'
+  prefs:
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: where make-row is the function from above.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Use [check-expect](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._check-expect%29%29)
+    to check your work.Exercise 234\. Create the function make-ranking, which consumes
+    a list of ranked song titles and produces a list representation of an HTML table.
+    Consider this example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29) one-list
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ''("Asia: Heat of the Moment" |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     "U2: One" |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     "The White Stripes: Seven Nation Army")) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: If you apply make-ranking to one-list and display the resulting web page in
+    a browser, you see something like the screen shot in [figure 85](#%28counter._%28figure._fig~3amy-second-page%29%29).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/476ad6d2bbcb8cc568e36fd78f296a82.png)'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_IMG
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 85: A web page generated with BSL+'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Hint Although you could design a function that determines the rankings from
+    a list of strings, we wish you to focus on the creation of tables instead. Thus
+    we supply the following functions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29) (ranking los)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([reverse](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._reverse%29%29) (add-ranks ([reverse](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._reverse%29%29) los))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._define%29%29) (add-ranks los)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._empty~3f%29%29) los) ''()]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [[else](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28form._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._else%29%29) ([cons](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._cons%29%29) ([list](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._list%29%29) ([length](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._length%29%29) los) ([first](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._first%29%29) los))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|                 (add-ranks ([rest](http://docs.racket-lang.org/htdp-langs/beginner-abbr.html#%28def._htdp-beginner-abbr._%28%28lib._lang%2Fhtdp-beginner-abbr..rkt%29._rest%29%29) los)))]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Before you use these functions, equip them with signatures and purpose statements.
+    Then explore their workings with interactions in DrRacket. [Accumulators](part_six.html)
+    expands the design recipe with a way to create simpler functions for computing
+    rankings than ranking and add-ranks.
+  prefs: []
+  type: TYPE_NORMAL

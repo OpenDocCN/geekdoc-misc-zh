@@ -1,0 +1,2957 @@
+- en: 'Intermezzo 1: Beginning Student Language🔗'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://htdp.org/2024-11-6/Book/i1-2.html](https://htdp.org/2024-11-6/Book/i1-2.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|     [BSL Vocabulary](#%28part._.B.S.L_.Vocabulary%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [BSL Grammar](#%28part._.B.S.L_.Grammar%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [BSL Meaning](#%28part._.B.S.L_.Meaning%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Meaning and Computing](#%28part._.Meaning_and_.Computing%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [BSL Errors](#%28part._.B.S.L_.Errors%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Boolean Expressions](#%28part._.Boolean_.Expressions%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Constant Definitions](#%28part._.Constant_.Definitions%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Structure Type Definitions](#%28part._.Structure_.Type_.Definitions%29)
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [BSL Tests](#%28part._.B.S.L_.Tests%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [BSL Error Messages](#%28part._.B.S.L_.Error_.Messages%29) |'
+  prefs: []
+  type: TYPE_TB
+- en: '[Fixed-Size Data](part_one.html) deals with BSL as if it were a natural language.
+    It introduces the “basic words” of the language, suggests how to compose “words”
+    into “sentences,” and appeals to your knowledge of algebra for an intuitive understanding
+    of these “sentences.” While this kind of introduction works to some extent, truly
+    effective communication requires some formal study.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In many ways, the analogy of [Fixed-Size Data](part_one.html) is correct. A
+    programming language does have a vocabulary and a grammar, though programmers
+    use the word syntax for these elements. A sentence in BSL is an expression or
+    a definition. The grammar of BSL dictates how to form these phrases. But not all
+    grammatical sentences are meaningful—<wbr>neither in English nor in a programming
+    language. For example, the English sentence “the cat is round” is a meaningful
+    sentence, but “the brick is a car” makes no sense even though it is completely
+    grammatical. To determine whether a sentence is meaningful, we must know the meaning
+    of a language; programmers call this semantics.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This intermezzo presents BSL as if it were an extension of the familiar language
+    of arithmetic and algebra in middle school. After all, computation starts with
+    this form of simple mathematics, and we should understand the connection between
+    this mathematics and computing. The first three sections present the syntax and
+    semantics of a good portion ofProgrammers must eventually understand these principles
+    of computation, but they are complementary to the principles of design. BSL. Based
+    on this new understanding of BSL, the fourth resumes our discussion of errors.
+    The remaining sections expand this understanding to the complete language; the
+    last one expands the tools for expressing tests.
+  prefs: []
+  type: TYPE_NORMAL
+- en: BSL Vocabulary[🔗](#(part._.B.S.L_.Vocabulary) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Figure 39](#%28counter._%28figure._fig~3alex-beginner%29%29) introduces and
+    defines BSL’s basic vocabulary. It consists of literal constants, such as numbers
+    or Boolean values; names that have meaning according to BSL, for example, [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    or [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29);
+    and names to which programs can give meaning via [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)
+    or function parameters.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A name or a variable is a sequence of characters, not including a space or
+    one of the following: " , '' ` ( ) [ ] { } | ; #:'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: A primitive is a name to which BSL assigns meaning, for example, [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)
+    or [sqrt](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._sqrt%29%29).
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: A variable is a name without preassigned meaning.
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'A value is one of:'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'A number is one of: 1, -1, 3/5, 1.22, #i1.22, 0+1i, and so on. The syntax for
+    BSL numbers is complicated because it accommodates a range of formats: positive
+    and negative numbers, fractions and decimal numbers, exact and inexact numbers,
+    real and complex numbers, numbers in bases other than 10, and more. Understanding
+    the precise notation for numbers requires a thorough understanding of grammars
+    and parsing, which is out of scope for this intermezzo.'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'A Boolean is one of: #true or #false.'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'A string is one of: "", "he says \"hello world\" to you", "doll", and so on.
+    In general, it is a sequence of characters enclosed by a pair of ".'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: An image is a png, jpg, tiff, and various other formats. We intentionally omit
+    a precise definition.
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: We use v, v-1, v-2 and the like when we wish to say “any possible value.”
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 39: BSL core vocabulary'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Each of the explanations defines a set via a suggestive itemization of its elements.
+    Although it is possible to specify these collections in their entirety, we consider
+    this superfluous here and trust your intuition. Just keep in mind that each of
+    these sets may come with some extra elements.
+  prefs: []
+  type: TYPE_NORMAL
+- en: BSL Grammar[🔗](#(part._.B.S.L_.Grammar) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Figure 40](#%28counter._%28figure._fig~3asyn-beginner%29%29) shows a large
+    part of the BSL grammar, which—<wbr>in comparison to other languages—<wbr>is extremely
+    simple. As to BSL’s expressive power, don’t let the looks deceive you. The first
+    action item, though, is to discuss how to read such grammars. Each lineReading
+    a grammar aloud makes it sound like a data definition. One could indeed use grammars
+    to write down many of our data definitions. with a = introduces a syntactic category;
+    the best way to pronounce = is as “is one of” and | as “or.” Wherever you see
+    three dots, imagine as many repetitions of what precedes the dots as you wish.
+    This means, for example, that a program is either nothing or a single occurrence
+    of def-expr or a sequence of two of them, or three, four, five, or however many.
+    Since this example is not particularly illuminating, let’s look at the second
+    syntactic category. It says that def is either'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (variable variable) expr)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: because “as many as you wish” includes zero, or
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (variable variable variable) expr)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: which is one repetition, or
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (variable variable variable variable) expr)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: which uses two.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|   program |   | = |   | def-expr ... |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   |   |   |   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   def-expr |   | = |   | def |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | expr |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   |   |   |   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   def |   | = |   | ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (variable variable variable ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   |   |   |   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   expr |   | = |   | variable |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | value |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | (primitive expr expr ...) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | (variable expr expr ...) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29) [expr expr] ... [expr expr])
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29) [expr expr] ... [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) expr])
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 40: BSL core grammar'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'The final point about grammars concerns the three “words” that come in a distinct
+    font: [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29),
+    [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29),
+    and [else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29).
+    According to the definition of BSL vocabulary, these three words are names. What
+    the vocabulary definition does not tell us is that these names have a pre-defined
+    meaning. In BSL, these words serve as markers that differentiate some compound
+    sentences from others, and in acknowledgment of their role, such words are called
+    keywords.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Now we are ready to state the purpose of a grammar. The grammar of a programming
+    language dictates how to form sentences from the vocabulary of the grammar. Some
+    sentences are just elements of vocabulary. For example, according to [figure 40](#%28counter._%28figure._fig~3asyn-beginner%29%29)
+    42 is a sentence of BSL:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The first syntactic category says that a program is a def-expr. Expressions
+    may refer to the definitions.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The second one tells us that a def-expr is either a def or an expr.In DrRacket,
+    a program really consists of two distinct parts: the definitions area and the
+    expressions in the interactions area.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The last definition lists all ways of forming an expr, and the second one is
+    value.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Since we know from [figure 39](#%28counter._%28figure._fig~3alex-beginner%29%29)
+    that 42 is a value, we have confirmation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The interesting parts of the grammar show how to form compound sentences, those
+    built from other sentences. For example, the def part tells us that a function
+    definition is formed by using “(”, followed by the keyword [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29),
+    followed by another “(”, followed by a sequence of at least two variables, followed
+    by “)”, followed by an expr, and closed by a right parenthesis “)” that matches
+    the very first one. Note how the leading keyword [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)
+    distinguishes definitions from expressions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Expressions (expr) come in six flavors: variables, constants, primitive applications,
+    (function) applications, and two varieties of [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)itionals.
+    While the first two are atomic sentences, the last four are compound sentences.
+    Like [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29),
+    the keyword [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    distinguishes conditional expressions from applications.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Here are three examples of expressions: "all", x, and (f  x). The first one
+    belongs to the class of strings and is therefore an expression. The second is
+    a variable, and every variable is an expression. The third is a function application,
+    because f and x are variables.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In contrast, these parenthesized sentences are not legal expressions: (f  [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)),
+    ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)  x),
+    and ((f  2)  10). The first one partially matches the shape of a function application
+    but it uses [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)
+    as if it were a variable. The second one fails to be a correct [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    expression because it contains a variable as the second item and not a pair of
+    expressions surrounded by parentheses. The last one is neither a conditional nor
+    an application because the first part is an expression.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Finally, you may notice that the grammar does not mention white space: blank
+    spaces, tabs, and newlines. BSL is a permissive language. As long as there is
+    some white space between the elements of any sequence in a program, DrRacket can
+    understand your BSL programs. Good programmers,Keep in mind that two kinds of
+    readers study your BSL programs: people and DrRacket. however, may not like what
+    you write. These programmers use white space to make their programs easily readable.
+    Most importantly, they adopt a style that favors human readers over the software
+    applications that process programs (such as DrRacket). They pick up this style
+    from carefully reading code examples in books, paying attention to how they are
+    formatted.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Exercise 116\. Take a look at the following sentences:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: x
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29)  y  z)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29)  ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29)  y  z)  0)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Explain why they are syntactically legal expressionsExercise 117\. Consider
+    the following sentences:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (3  [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  4)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[number?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._number~3f%29%29)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (x)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Explain why they are syntactically illegal.Exercise 118\. Take a look at the
+    following sentences:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)  (f  x)  x)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)  (f  x)  y)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)  (f  x  y)  3)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Explain why they are syntactically legal definitionsExercise 119\. Consider
+    the following sentences:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)  (f  "x")  x)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)  (f  x  y  z)  (x))
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Explain why they are syntactically illegal.Exercise 120\. Discriminate the
+    legal from the illegal sentences:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (x)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  1  ([not](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._not%29%29)  x))
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  1  2  3)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Explain why the sentences are legal or illegal. Determine whether the legal
+    ones belong to the category expr or def.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note on Grammatical Terminology The components of compound sentences have names.
+    We have introduced some of these names on an informal basis. [Figure 41](#%28counter._%28figure._fig~3aterminology%29%29)
+    provides a summary of the conventions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; function application: |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (function argument [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) argument)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; function definition: |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (function-name parameter [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) parameter)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   function-body) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; conditional expression: |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   cond-clause |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   cond-clause) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    clause |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| [condition answer] |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 41: Syntactic naming conventions'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: In addition to the terminology of [figure 41](#%28counter._%28figure._fig~3aterminology%29%29),
+    we say function header for the second component of a definition. Accordingly,
+    the expression component is called a function body. People who consider programming
+    languages as a form of mathematics use left-hand side for a header and right-hand
+    side for the body. On occasion, you also hear or read the term actual arguments
+    for the arguments in a function application. End
+  prefs: []
+  type: TYPE_NORMAL
+- en: BSL Meaning[🔗](#(part._.B.S.L_.Meaning) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: When you hit the return key on your keyboard and ask DrRacket to evaluate an
+    expression, it uses the laws of arithmetic and algebra to obtain a value. For
+    the variant of BSL treated so far, [figure 39](#%28counter._%28figure._fig~3alex-beginner%29%29)
+    defines grammatically what a value is—<wbr>the set of values is just a subset
+    of all expressions. The set includes [Boolean](part_one.html#%28tech._boolean%29)s,
+    [String](part_one.html#%28tech._string%29)s, and [Image](part_one.html#%28tech._image%29)s.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The rules of evaluation come in two categories. An infinite number of rules,
+    like those of arithmetic, explain how to determine the value of an application
+    of a primitive operation to values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 1 1) == 2
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 2 1) == 1
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Remember == says that two expressions are equal according to the laws of computation
+    in BSL. But BSL arithmetic is more general than just number crunching. It also
+    includes rules for dealing with Boolean values, strings, and so on:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([not](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._not%29%29) #true)        == #false
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([string=?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string~3d~3f%29%29) "a" "a") == #true
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: And, like in algebra, you can always replace equals with equals; see [figure 42](#%28counter._%28figure._fig~3aequals-for-equals%29%29)
+    for a sample calculation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([boolean?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._boolean~3f%29%29) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) ([string-length](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-length%29%29) ([string-append](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-append%29%29) "h" "w"))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|           ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  1  3)))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([boolean?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._boolean~3f%29%29) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) ([string-length](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-length%29%29) ([string-append](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-append%29%29)  "h"  "w")) 4))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([boolean?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._boolean~3f%29%29) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) ([string-length](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string-length%29%29)  "hw") 4))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([boolean?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._boolean~3f%29%29) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29)  2  4))
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([boolean?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._boolean~3f%29%29)  #false)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == #true |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 42: Replacing equals by equals'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Second, we need a rule from algebra to understand the application of a function
+    to arguments. Suppose the program contains the definition
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (f x-1 [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) x-n)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   f-body) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Then an application of a function is governed by the law:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (f v-1 [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) v-n) == f-body
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; with all occurrences of x-1  [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29)  x-n
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; replaced with v-1  ...  v-n, respectively |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Due to the history of languages such as BSL, we refer to this rule as the beta
+    orSee [Computing with lambda](part_three.html#%28part._sec~3alambda-technical%29)
+    for more on this rule. beta-value rule.This rule is formulated as generally as
+    possible, so it is best to look at a concrete example. Say the definition is
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (poly x y)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([expt](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._expt%29%29) 2 x) y))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'and DrRacket is given the expression (poly  3  5). Then the first step in an
+    evaluation of the expression uses the beta rule:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (poly 3 5) == ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([expt](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._expt%29%29) 2 3) 5) [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) == ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 8 5) == 13
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'In addition to beta, we need rules that determine the value of [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    expressions. These rules are algebraic even if they are not explicitly taught
+    as part of the standard curriculum. When the first condition is #false, the first
+    [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)-line
+    disappears, leaving the rest of the lines intact:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)                    == ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [#false [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29)]               ; first
+    line removed |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [condition2 answer2]       [condition2 answer2] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29))                       [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'This rule has the name [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)false.
+    Here is [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)true:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)                    == answer-1
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [#true answer-1] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [condition2 answer2] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The rule also applies when the first condition is [else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29).Consider
+    the following evaluation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [([zero?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._zero~3f%29%29) 3) 1]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 3 3) ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 1 1)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) 3])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == ; by plain arithmetic and equals-for-equals |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [#false 1] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 3 3) ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 1 1)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) 3])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == ; by rule [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)false
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 3 3) ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 1 1)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) 3])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == ; by plain arithmetic and equals-for-equals |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [#true ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 1 1)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) 3])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == ; by rule [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)true
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 1 1)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'The calculation illustrates the rules of plain arithmetic, the replacement
+    of equals by equals, and both [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    rules.Exercise 121\. Evaluate the following expressions step-by-step:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 12 8) 2/3)
+    |'
+  prefs:
+  - PREF_OL
+  type: TYPE_TB
+- en: '|    ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 20 ([sqrt](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._sqrt%29%29) 4)))
+    |'
+  prefs:
+  - PREF_IND
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_OL
+  type: TYPE_TB
+- en: '|   [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 0 0) #false]
+    |'
+  prefs:
+  - PREF_IND
+  type: TYPE_TB
+- en: '|   [([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) 0 1) ([string=?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string~3d~3f%29%29) "a" "a")]
+    |'
+  prefs:
+  - PREF_IND
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1 0) 9)])
+    |'
+  prefs:
+  - PREF_IND
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_OL
+  type: TYPE_TB
+- en: '|   [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 2 0) #false]
+    |'
+  prefs:
+  - PREF_IND
+  type: TYPE_TB
+- en: '|   [([>](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e%29%29) 2 1) ([string=?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._string~3d~3f%29%29) "a" "a")]
+    |'
+  prefs:
+  - PREF_IND
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1 2) 9)])
+    |'
+  prefs:
+  - PREF_IND
+  type: TYPE_TB
+- en: 'Use DrRacket’s stepper to confirm your computations.Exercise 122\. Suppose
+    the program contains these definitions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (f x y)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 3 x) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) y y)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Show how DrRacket evaluates the following expressions, step-by-step:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) (f 1 2) (f 2 1))
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (f 1 ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 2 3))
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (f (f 1 ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 2 3)) 19)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Use DrRacket’s stepper to confirm your computations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Meaning and Computing[🔗](#(part._.Meaning_and_.Computing) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The stepper tool in DrRacket mimics a student in a pre-algebra course. Unlike
+    you, the stepper is extremely good at applying the laws ofA scientist calls the
+    stepper a model of DrRacket’s evaluation mechanism. [Refining Interpreters](part_four.html#%28part._ch~3aevaluator%29)
+    presents another model, an interpreter. arithmetic and algebra as spelled out
+    here, and it is also extremely fast.
+  prefs: []
+  type: TYPE_NORMAL
+- en: You can, and you ought to, use the stepper when you don’t understand how a new
+    language construct works. The sections on Computing suggest exercises for this
+    purpose, but you can make up your own examples, run them through the stepper,
+    and ponder why it takes certain steps.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Finally, you may also wish to use the stepper when you are surprised by the
+    result that a program computes. Using the stepper effectively in this way requires
+    practice. For example, it often means copying the program and pruning unnecessary
+    pieces. But once you understand how to use the stepper well this way, you will
+    find that this procedure clearly explains run-time errors and logical mistakes
+    in your programs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: BSL Errors[🔗](#(part._.B.S.L_.Errors) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: When DrRacket discovers that some parenthesized phrase does not belong to BSL,
+    it signals a syntax error. To determine whether aFor a nearly full list of error
+    messages, see the last section of this intermezzo. fully parenthesized program
+    is syntactically legal, DrRacket uses the grammar in [figure 40](#%28counter._%28figure._fig~3asyn-beginner%29%29)
+    and reasons along the lines explained above. Not all syntactically legal programs
+    have meaning, however.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'When DrRacket evaluates a syntactically legal program and discovers that some
+    operation is used on the wrong kind of value, it raises a run-time error. Consider
+    the syntactically legal expression ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1  0),
+    which, as you know from mathematics, has no value. Since BSL’s calculations must
+    be consistent with mathematics, DrRacket signals an error:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 1 0)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| /:division by zero |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Naturally it also signals an error when an expression such as ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1  0)
+    is nested deeply inside of another expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| > ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 20 2) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 1 ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 10 10)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| /:division by zero |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'DrRacket’s behavior translates into our calculations as follows. When we find
+    an expression that is not a value and when the evaluation rules allow no further
+    simplification, we say the computation is stuck. This notion of stuck corresponds
+    to a run-time error. For example, computing the value of the above expression
+    leads to a stuck state:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 20 2) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 1 ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) 10 10)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 20 2) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 1 0))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) 40 ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 1 0))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'What this calculation also shows is that DrRacket eliminates the context of
+    a stuck expression as it signals an error. In this concrete example, it eliminates
+    the addition of 40 to the stuck expression ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1  0).Not
+    all nested stuck expressions end up signaling errors. Suppose a program contains
+    this definition:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (my-divide n)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) n 0) "inf"]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 1 n)]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'If you now apply my-divide to 0, DrRacket calculates as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (my-divide 0) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 0 0) "inf"]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1  0)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'It would obviously be wrong to say that the function signals the division-by-zero
+    error now, even though an evaluation of the shaded sub-expression may suggest
+    it. The reason is that ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29)  0  0)
+    evaluates to #true and therefore the second [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    clause does not play any role:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (my-divide 0) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 0 0) "inf"]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1  0)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [#true "inf"] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1  0)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == "inf" |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Fortunately, our laws of evaluation take care of these situations automatically.
+    We just need to remember when they apply. For example, in
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 20 2) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 20 2))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: the addition cannot take place before the multiplication or division. Similarly,
+    the shaded division in
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 0 0) "inf"]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1  0)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'cannot be substituted for the complete [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    expression until the corresponding line is the first condition in the [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29).As
+    a rule of thumb, it is best to keep the following in mind:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Always choose the outermost and left-most nested expression that is ready for
+    evaluation.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'While this guideline may look simplistic, it always explains BSL’s results.In
+    some cases, programmers also want to define functions that raise errors. Recall
+    the checked version of area-of-disk from [Input Errors](part_one.html#%28part._sec~3ainput-errors%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (checked-area-of-disk v)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([number?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._number~3f%29%29) v) (area-of-disk v)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([error](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._error%29%29) "number
+    expected")])) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Now imagine applying checked-area-of-disk to a string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) (checked-area-of-disk "a")
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|    (checked-area-of-disk 10)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      [([number?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._number~3f%29%29) "a") (area-of-disk "a")]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([error](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._error%29%29) "number
+    expected")]) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|    (checked-area-of-disk 10)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      [#false (area-of-disk "a")] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) ([error](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._error%29%29) "number
+    expected")]) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     (checked-area-of-disk 10)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) ([error](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._error%29%29) "number
+    expected") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|    (checked-area-of-disk 10)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: At this point you might try to evaluate the second expression, but even if you
+    do find out that its result is roughly 314, your calculation must eventually deal
+    with the [error](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._error%29%29)
+    expression, which is just like a stuck expression. In short, the calculation ends
+    in
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([error](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._error%29%29) "number
+    expected")
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Boolean Expressions[🔗](#(part._.Boolean_.Expressions) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Our current definition of BSL omits [or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29)
+    and [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    expressions. Adding them provides a case study of how to study new language constructs.
+    We must first understand their syntax and then their semantics.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Here is the revised grammar of expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|   expr |   | = |   | ... |'
+  prefs: []
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29) expr expr)
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29) expr expr)
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: The grammar says that [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    and [or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29)
+    are keywords, each followed by two expressions. They are not function applications.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'To understand why [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    and [or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29)
+    are not BSL-defined functions, we must look at their pragmatics first. Suppose
+    we need to formulate a condition that determines whether ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1  n)
+    is r:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (check n r)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29) ([not](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._not%29%29) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) n 0)) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 1 n) r)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'We formulate the condition as an [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    combination because we don’t wish to divide by 0 accidentally. Now let’s apply
+    check to 0 and 1/5:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (check 0 1/5) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == ([and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29) ([not](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._not%29%29) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) 0 0)) ([=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3d%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29)  1  0) 1/5))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'If [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    were an ordinary operation, we would have to evaluate both sub-expressions, and
+    doing so would trigger an error. Instead [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    simply does not evaluate the second expression when the first one is #false, meaning,
+    [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    short-circuits evaluation.It would be easy to formulate evaluation rules for [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    and [or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29).
+    Another way to explain their meaning is to translate them into other expressions:To
+    make sure expr-2 evaluates to a Boolean value, these abbreviations should use
+    ([if](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._if%29%29)  expr-2  #true  #false)
+    instead of just expr-2. We gloss over this detail here.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29) expr-1 expr-2)
+    |  | is short for |  |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   [expr-1 expr-2] &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) #false])
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: and
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29) expr-1 expr-2)
+    |  | is short for |  |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   [expr-1 #true] &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) expr-2])
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: So if you are ever in doubt about how to evaluate an [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    or [or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29)
+    expression, use the above equivalences to calculate. But we trust that you understand
+    these operations intuitively, and that is almost always enough.Exercise 123\.
+    The use of [if](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._if%29%29)
+    may have surprised you in another way because this intermezzo does not mention
+    this form elsewhere. In short, the intermezzo appears to explain [and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29)
+    with a form that has no explanation either. At this point, we are relying on your
+    intuitive understanding of [if](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._if%29%29)
+    as a short-hand for [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29).
+    Write down a rule that shows how to reformulate
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([if](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._if%29%29) expr-test expr-then expr-else)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: as a [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    expression.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Constant Definitions[🔗](#(part._.Constant_.Definitions) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Programs consist not only of function definitions but also of constant definitions,
+    but these weren’t included in our first grammar. So here is an extended grammar
+    that includes constant definitions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|   definition |   | = |   | ... |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) name expr)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: The shape of a constant definition is similar to that of a function definition.
+    While the keyword [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)
+    distinguishes constant definitions from expressions, it does not differentiate
+    from functionAs it turns out, DrRacket has another way of dealing with function
+    definitions; see [Nameless Functions](part_three.html#%28part._ch~3a3lambda%29).
+    definitions. For that, a human reader must look at the second component of the
+    definition.Next we must understand what a constant definition means. For a constant
+    definition with a literal constant on the right-hand side, such as
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) RADIUS 5)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: the variable is just a short-hand for the value. Wherever DrRacket encounters
+    RADIUS during an evaluation, it replaces it with 5.For a definition with a proper
+    expression on the right-hand side, say,
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) DIAMETER ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 2 RADIUS))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: we must immediately determine the value of the expression. This process makes
+    use of whatever definitions precede this constant definition. Hence,
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) RADIUS 5)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) DIAMETER ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 2 RADIUS))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: is equivalent to
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) RADIUS 5)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) DIAMETER 10)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'This process even works when function definitions are involved:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) RADIUS 10)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) DIAMETER ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 2 RADIUS))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (area r) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 3.14 ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) r r)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) AREA-OF-RADIUS (area RADIUS))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'As DrRacket steps through this sequence of definitions, it first determines
+    that RADIUS stands for 10, DIAMETER for 20, and area is the name of a function.
+    Finally, it evaluates (area  RADIUS) to 314 and associates AREA-OF-RADIUS with
+    that value.Mixing constant and function definitions gives rise to a new kind of
+    run-time error, too. Take a look at this program:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) RADIUS 10)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) DIAMETER ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 2 RADIUS))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) AREA-OF-RADIUS (area RADIUS))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (area r) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 3.14 ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) r r)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'It is like the one above with the last two definitions swapped. For the first
+    two definitions, evaluation proceeds as before. For the third one, however, evaluation
+    goes wrong. The process calls for the evaluation of (area  RADIUS). While the
+    definition of RADIUS precedes this expression, the definition of area has not
+    yet been encountered. If you were to evaluate the program with DrRacket, you would
+    therefore get an error, explaining that “this function is not defined.” So be
+    careful to use functions in constant definitions only when you know they are defined.Exercise 124\.
+    Evaluate the following program, step-by-step:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) PRICE 5)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) SALES-TAX ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 0.08 PRICE))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) TOTAL ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) PRICE SALES-TAX))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Does the evaluation of the following program signal an error?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) COLD-F 32)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) COLD-C (fahrenheit->celsius COLD-F))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (fahrenheit->celsius f)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|  ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 5/9 ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) f 32)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: How about the next one?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) LEFT -100)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) RIGHT 100)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (f x) ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) ([*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29) 5 ([expt](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._expt%29%29) x 2)) 10))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) f@LEFT (f LEFT))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) f@RIGHT (f RIGHT))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Check your computations with DrRacket’s stepper.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Structure Type Definitions[🔗](#(part._.Structure_.Type_.Definitions) "Link to
+    here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'As you can imagine, [define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)
+    is the most complex BSL construct. We have therefore saved its explanation for
+    last. Here is the grammar:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|   definition |   | = |   | ... |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) name [name ...])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'A structure type definition is a third form of definition. The keyword distinguishes
+    it from both function and constant definitions.Here is a simple example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) point [x y z])
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Since point, x, y, and z are variables and the parentheses are placed according
+    to the grammatical pattern, it is a proper definition of a structure type. In
+    contrast, these two parenthesized sentences
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) [point x y z])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) point x y z)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'are illegal definitions because [define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)
+    is not followed by a single variable name and a sequence of variables in parentheses.While
+    the syntax of [define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)
+    is straightforward, its meaning is difficult to spell out with evaluation rules.
+    As mentioned several times, a [define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)
+    definition defines several functions at once: a constructor, several selectors,
+    and a predicate. Thus the evaluation of'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) c [s-1 [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) s-n])
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'introduces the following functions into the program:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'make-c: a constructor;'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'c-s-1...  c-s-n: a series of selectors; and'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'c?: a predicate.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'These functions have the same status as [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29),
+    [-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29),
+    or [*](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2A%29%29).
+    Before we can understand the rules that govern these new functions, however, we
+    must return to the definition of values. After all, one purpose of a [define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)
+    is to introduce a class of values that is distinct from all existing values.Simply
+    put, the use of [define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)
+    extends the universe of values. To start with, it now also contains structures,
+    which compound several values into one. When a program contains a [define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)
+    definition, its evaluation modifies the definition of values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A value is one of: a number, a Boolean, a string, an image,'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'or a structure value:'
+  prefs:
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '| (make-c _value-1 [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) _value-n)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: assuming a structure type c is defined.
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'For example, the definition of point adds values of this shape:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (make-point 1 2 -1) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (make-point "one" "hello" "world") |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (make-point 1 "one" (make-point 1 2 -1)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Now we are in a position to understand the evaluation rules of the new functions.
+    If c-s-1 is applied to a c structure, it returns the first component of the value.
+    Similarly, the second selector extracts the second component, the third selector
+    the third component, and so on. The relationship between the new data constructor
+    and the selectors is best characterized with n equations added to BSL’s rules:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (c-s-1 (make-c V-1 [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) V-n)) == V-1
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (c-s-n (make-c V-1 [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) V-n)) == V-n
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: For our running example, we get the specific equations
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (point-x (make-point V U W)) == V |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (point-y (make-point V U W)) == U |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (point-z (make-point V U W)) == W |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'When DrRacket sees (point-y  (make-point  3  4  5)), it replaces the expression
+    with 4 while (point-x  (make-point  (make-point  1  2  3)  4  5)) evaluates to
+    (make-point  1  2  3).The predicate c? can be applied to any value. It returns
+    #true if the value is of kind c and #false otherwise. We can translate both parts
+    into two equations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (c? (make-c V-1 [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29) V-n)) == #true
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (c? V)                    == #false |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'if V is a value not constructed with make-c. Again, the equations are best
+    understood in terms of our example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (point? (make-point U V W)) == #true |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (point? X)                  == #false |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'if X is a value but not a point structure.Exercise 125\. Discriminate the legal
+    from the illegal sentences:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)  oops  [])
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)  child  [parents  dob  date])
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)  (child  person)  [dob  date])
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Explain why the sentences are legal or illegal.Exercise 126\. Identify the
+    values among the following expressions, assuming the definitions area contains
+    these structure type definitions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) point [x y z])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) none  [])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: (make-point  1  2  3)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (make-point  (make-point  1  2  3)  4  5)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (make-point  ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  1  2)  3  4)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (make-none)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (make-point  (point-x  (make-point  1  2  3))  4  5)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Explain why the expressions are values or not.Exercise 127\. Suppose the program
+    contains
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) ball [x y speed-x speed-y])
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Predict the results of evaluating the following expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([number?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._number~3f%29%29)  (make-ball  1  2  3  4))
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (ball-speed-y  (make-ball  ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  1  2)  ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  3  3)  2  3))
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (ball-y  (make-ball  ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  1  2)  ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)  3  3)  2  3))
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (ball-x  ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29)  1  2))
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: (ball-speed-y  5)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Check your predictions in the interactions area and with the stepper.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|   def-expr |   | = |   | definition |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | expr |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | test-case |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   |   |   |   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   definition |   | = |   | ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (name variable variable ...) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) name expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) name [name ...])
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   |   |   |   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   expr |   | = |   | (name expr expr ...) |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29) [expr expr] ... [expr expr])
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29) [expr expr] ... [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) expr])
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([and](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._and%29%29) expr expr expr ...)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([or](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._or%29%29) expr expr expr ...)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | name |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | number |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | string |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | image |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   |   |   |   |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   test-case |   | = |   | ([check-expect](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-expect%29%29) expr expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([check-within](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-within%29%29) expr expr expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([check-member-of](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-member-of%29%29) expr expr ...)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([check-range](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-range%29%29) expr expr expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([check-error](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-error%29%29) expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([check-random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-random%29%29) expr expr)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |   | &#124; |   | ([check-satisfied](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-satisfied%29%29) expr name)
+    |'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_TB
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 43: BSL, full grammar'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: BSL Tests[🔗](#(part._.B.S.L_.Tests) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Figure 43](#%28counter._%28figure._fig~3afull-grammar%29%29) presents all
+    of BSL plus a number of testing forms.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The general meaning of testing expressions is easy to explain. When you click
+    the RUN button, DrRacket collects all testing expressions and moves them to the
+    end of the program, retaining the order in which they appear. It then evaluates
+    the content of the definitions area. Each test evaluates its pieces and then compares
+    them with the expected outcome via some predicate. Beyond that, tests communicate
+    with DrRacket to collect some statistics and information on how to display test
+    failures.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For details, read the documentation on these test forms. Here are some illustrative
+    examples:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [check-expect](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-expect%29%29)
+    compares the outcome and the expected value with [equal?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._equal~3f%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-expect%29%29) 3 3)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [check-member-of](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-member-of%29%29)
+    compares the outcome and the expected values with [equal?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._equal~3f%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; if one of them yields #true, the test succeeds |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-member-of](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-member-of%29%29) "green" "red" "yellow" "green")
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [check-within](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-within%29%29)
+    compares the outcome and the expected value with a predicate |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ;  like [equal?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._equal~3f%29%29)
+    but allows for a tolerance of epsilon for each inexact number |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-within](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-within%29%29) ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29) #i1.0 #i1.1) ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29) #i0.9 #i1.2) 0.2)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [check-range](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-range%29%29)
+    is like [check-within](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-within%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; but allows for a specification of an interval |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-range](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-range%29%29) 0.9 #i0.6 #i1.0)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [check-error](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-error%29%29)
+    checks whether an expression signals (any) error |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-error](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-error%29%29) ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) 1 0))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [check-random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-random%29%29)
+    evaluates the sequences of calls to [random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29)
+    in the |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; two expressions such that they yield the same number |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-random%29%29) ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29) ([random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29) 3) ([random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29) 9))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29) ([random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29) 3) ([random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29) 9)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; [check-satisfied](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-satisfied%29%29)
+    determines whether a predicate produces #true |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; when applied to the outcome, that is, whether outcome has a certain property
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-satisfied](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-satisfied%29%29) 4 [even?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._even~3f%29%29))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'All of the above tests succeed. The remaining parts of the book re-introduce
+    these test forms as needed.Exercise 128\. Copy the following tests into DrRacket’s
+    definitions area:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([check-member-of](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-member-of%29%29) "green" "red" "yellow" "grey")
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-within](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-within%29%29) ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29) #i1.0 #i1.1)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29) #i0.9 #i1.2)  0.01)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-range](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-range%29%29) #i0.9 #i0.6 #i0.8)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-random%29%29) ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29) ([random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29) 3) ([random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29) 9))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29) ([random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29) 9) ([random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29) 3)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-satisfied](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._check-satisfied%29%29) 4 [odd?](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._odd~3f%29%29))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Validate that all of them fail and explain why.
+  prefs: []
+  type: TYPE_NORMAL
+- en: BSL Error Messages[🔗](#(part._.B.S.L_.Error_.Messages) "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A BSL program may signal many kinds of syntax errors. While we have developed
+    BSL and its error reporting system specifically for novices who, by definition,
+    make mistakes, error messages need some getting used to.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Below we sample the kinds of error messages that you may encounter. Each entry
+    in one of the listings consists of three parts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: the code fragments that signal the error message;
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: the error message; and
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: an explanation with a suggestion on how to fix the mistake.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Consider the following example, which is the worst possible error message you
+    may ever see:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (absolute n)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;   ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;     [[<](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c%29%29) 0 ([-](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._-%29%29) n)]
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;     [[else](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._else%29%29) n]))
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; <: expected a function call, but there is no open parenthesis before
+    this function &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| A [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    expression consists of the keyword followed by an arbitrarily long sequence of
+    [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    clauses. In turn, every clause consists of two parts: a condition and an answer,
+    both of which are expressions. In this definition of absolute, the first clause
+    starts with [<](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c%29%29),
+    which is supposed to be a condition but isn’t even an expression according to
+    our definition. This confuses BSL so much that it does not “see” the open parenthesis
+    to the left of [<](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c%29%29).
+    The fix is to use ([<](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c%29%29)  n  0)
+    as the condition. |'
+  prefs: []
+  type: TYPE_TB
+- en: The highlighting of [<](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3c%29%29)
+    in the function definition points to the error. Below the definition, you can
+    see the error message that DrRacket presents in the interactions window if you
+    click RUN. Study the explanation of the error on the right to understand how to
+    address this somewhat self-contradictory message. And now rest assured that no
+    other error message is even remotely as opaque as this one.
+  prefs: []
+  type: TYPE_NORMAL
+- en: So, when an error shows up and you need help, find the appropriate figure, search
+    the entries for a match, and then study the complete entry.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Error Messages about Function Applications in BSL
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Assume that the definitions area contains the following and nothing else:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [Number](part_one.html#%28tech._number%29)  [Number](part_one.html#%28tech._number%29)
+    -> [Number](part_one.html#%28tech._number%29) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; finds the average of x and y |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (average x y)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([/](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2F%29%29) ([+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29) x y)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      2)) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Hit the RUN button. Now you may encounter the error messages below.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; (f 1) &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; f: this function is not defined &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| The application names f as the function, and f is not defined in the definitions
+    area. Define the function, or make sure that the variable name is spelled correctly.
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; (1 3 "three" #true) &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; function call: expected a function after the open parenthesis, but found
+    a number &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| An open parenthesis must always be followed by a keyword or the name of a
+    function, and 1 is neither. A function name is either defined by BSL, say [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29),
+    or in the definitions area, say average. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; (average  7) &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; average: expects 2 arguments, but found only 1 &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| This function call applies average to one argument, 7, even though its definition
+    calls for two numbers. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; (average  1  2  3) &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; average: expects 2 arguments, but found 3 &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Here average is applied to three numbers instead of two. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29)  1)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; make-posn: expects 2 arguments, but found only 1 &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Functions defined by BSL must also be applied to the correct number of arguments.
+    For example, [make-posn](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._make-posn%29%29)
+    must be applied to two arguments. |'
+  prefs: []
+  type: TYPE_TB
+- en: Error Messages about Wrong Data in BSL
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The error scenarios below again assume that the definitions area contains the
+    following:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [Number](part_one.html#%28tech._number%29)  [Number](part_one.html#%28tech._number%29)
+    -> [Number](part_one.html#%28tech._number%29) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; find the average of x and y |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (average x y) [...](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._......%29%29))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Remember that posn is a pre-defined structure type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([posn-x](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._posn-x%29%29) #true)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; posn-x: expects a posn, given #true &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| A function must be applied to the arguments it expects. For example, [posn-x](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._posn-x%29%29)
+    expects an instance of posn. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; (average "one" "two") &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; +: expects a number as 1st argument, given "one" &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| A function defined to consume two [Number](part_one.html#%28tech._number%29)s
+    must be applied to two [Number](part_one.html#%28tech._number%29)s; here average
+    is applied to [String](part_one.html#%28tech._string%29)s. The error message is
+    triggered only when average applies [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)
+    to these [String](part_one.html#%28tech._string%29)s. Like all primitive operations,
+    [+](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._%2B%29%29)
+    is a checked function. |'
+  prefs: []
+  type: TYPE_TB
+- en: Error Messages about Conditionals in BSL
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This time we expect a constant definition in the definitions area:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ; [N](part_two.html#%28tech._n%29) in [0,1,...10) &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) 0-to-9 ([random](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._random%29%29) 10))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;   [([>=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e~3d%29%29)  0-to-9  5)])
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; cond: expected a clause with a question and an answer, but found a clause
+    with only one part &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Every [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    clause must consist of exactly two parts: a condition and an answer. Here ([>=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e~3d%29%29)  0-to-9  5)
+    is apparently intended as the condition; the answer is missing. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;   [([>=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e~3d%29%29)  0-to-9  5)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;    "head" &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;    "tail"]) &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; cond: expected a clause with a question and an answer, but found a clause
+    with 3 parts &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| In this case, the [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    clause consists of three parts, which also violates the grammar. While ([>=](http://docs.racket-lang.org/htdp-langs/beginner.html#%28def._htdp-beginner._%28%28lib._lang%2Fhtdp-beginner..rkt%29._~3e~3d%29%29)  0-to-9  5)
+    is clearly intended to be the condition, the clause comes with two answers: "head"
+    and "tail". Pick one or create a single value from the two strings. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29))
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; cond: expected a clause after cond, but nothing’s there &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| A conditional must come with at least one [cond](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._cond%29%29)
+    clause and usually it comes with at least two. |'
+  prefs: []
+  type: TYPE_TB
+- en: Error Messages about Function Definitions in BSL
+  prefs: []
+  type: TYPE_NORMAL
+- en: All of the following error scenarios assume that you have placed the code snippet
+    into the definitions area and hit RUN.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) f(x) x)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; define: expected only one expression after the variable name f, but
+    found 1 extra part &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| A definition consist of three parts: the [define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29)
+    keyword, a sequence of variable names enclosed in parentheses, and an expression.
+    This definition consists of four parts; this definition is an attempt to use the
+    standard notation from algebra courses for the header f  (x) instead of (f  x).
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (f x x) x)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; define: found a variable that is used more than once: x &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| The sequence of parameters in a function definition must not contain duplicate
+    variables. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (g) x)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; define: expected at least one variable after the function name, but
+    found none &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| In BSL a function header must contain at least two names. The first one is
+    the name of the function; the remaining variable names are the parameters, and
+    they are missing here. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (f (x)) x)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; define: expected a variable, but found a part &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| The function header contains (x), which is not a variable name. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define%29%29) (h x y) x y)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; define: expected only one expression for the function body, but found
+    1 extra part &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| This function definition comes with two expressions following the header:
+    x and y. |'
+  prefs: []
+  type: TYPE_TB
+- en: Error Messages about Structure Type Definitions in BSL
+  prefs: []
+  type: TYPE_NORMAL
+- en: Now you need to place the structure type definitions into the definitions area
+    and hit RUN to experiment with the following errors.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) [x])
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) [x  y])
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; define-struct: expected the structure name after define-struct, but
+    found a part &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| A structure type definition consists of three parts: the [define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29)
+    keyword, the structure’s name, and a sequence of names in parentheses. Here the
+    structure’s name is missing. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) x
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;   [y y]) &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; define-struct: found a field name that is used more than once: y &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| The sequence of field names in a structure type definition must not contain
+    duplicate names. |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) x y)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; ([define-struct](http://docs.racket-lang.org/htdp-langs/beginner.html#%28form._%28%28lib._lang%2Fhtdp-beginner..rkt%29._define-struct%29%29) x y z)
+    &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '&#124; define-struct: expected at least one field name (in parentheses) after
+    the structure name, but found something else &#124;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| These structure type definitions lack the sequence of field names, enclosed
+    in parentheses. |'
+  prefs: []
+  type: TYPE_TB

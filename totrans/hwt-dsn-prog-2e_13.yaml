@@ -1,0 +1,1148 @@
+- en: 'Intermezzo 5: The Cost of Computation🔗'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://htdp.org/2024-11-6/Book/i5-6.html](https://htdp.org/2024-11-6/Book/i5-6.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|     [Concrete Time, Abstract Time](#%28part._.Concrete_.Time__.Abstract_.Time%29)
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [The Definition of “On the Order Of”](#%28part._.The_.Definition_of__.On_the_.Order_.Of_%29)
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '|     [Why Do Programs Use Predicates and Selectors?](#%28part._.Why_.Do_.Programs_.Use_.Predicates_and_.Selectors_%29)
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  |'
+  prefs: []
+  type: TYPE_TB
+- en: 'What do you know about program f once the following tests succeed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (f 0) 0)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (f 1) 1)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (f 2) 8)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'If this question showed up on a standard test, you might respond with this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (f x) ([expt](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._expt%29%29) x 3))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'But nothing speaks against the following:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (f x) ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) x 2) 8 ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) x x)))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Tests tell you only that a program works as expected on some inputs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the same spirit, timing the evaluation of a program application for specific
+    inputs tells you how long it takes to compute the answers for those inputs—<wbr>and
+    nothing else.You may also wish to reread [Local Definitions](part_three.html#%28part._sec~3alocal-definitions%29)
+    and the discussion of integrity checks in [Project: Database](part_four.html#%28part._db._sec~3aproj-db%29).
+    You may have two programs—<wbr>prog-linear and prog-square—<wbr>that compute the
+    same answers when given the same inputs, and you may find that for all chosen
+    inputs, prog-linear always computes the answer faster than prog-square. [Making
+    Choices](part_five.html#%28part._sec~3achoice%29) presents just such a pair of
+    programs: gcd, a structurally recursive program, and gcd-generative, an equivalent
+    but generative-recursive program. The timing comparison suggests that the latter
+    is much faster than the former.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/a9aff491c3ae10691102e52088eb2722.png)'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_IMG
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Figure 176: A comparison of two running time expressions'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: How confident are you that you wish to use prog-linear instead of prog-square?
+    Consider the graph in [figure 176](#%28counter._%28figure._fig~3aperformance%29%29).
+    In this graph, the x-axis records the size of the input—<wbr>say, the length of
+    a list—<wbr>and the y-axis records the time it takes to compute the answer for
+    an input of a specific size. Assume that the straight line represents the running
+    time of prog-linear and the curved graph represents prog-square. In the shaded
+    region, prog-linear takes more time than prog-square, but at the edge of this
+    region the two graphs cross, and to its right the performance of prog-square is
+    worse than that of prog-linear. If, for whatever reasons, you had evaluated the
+    performance of prog-linear and prog-square only for input sizes in the shaded
+    region and if your clients were to run your program mostly on inputs that fall
+    in the nonshaded region, you would be delivering the wrong program.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This intermezzo introduces the idea of algorithmic analysis, which allows programmers
+    to make general statements about a program’s performance and everyone else about
+    the growth of a function. We thank Prabhakar Ragde for sharing his notes on connecting
+    the first edition of this book with algorithmic analysis.Any serious programmer
+    and scientist must eventually become thoroughly familiar with this notion. It
+    is the basis for analyzing performance attributes of programs. To understand the
+    idea properly, you will need to work through a text book.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Concrete Time, Abstract Time[🔗](#(part._.Concrete_.Time__.Abstract_.Time) "Link
+    to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Making Choices](part_five.html#%28part._sec~3achoice%29) compares the running
+    time of gcd and gcd-generative. In addition, it argues that the latter is better
+    because it always uses fewer recursive steps than the former to compute an answer.
+    We use this idea as the starting point to analyze the performance of how-many,
+    a simple program from [Designing with Self-Referential Data Definitions](part_two.html#%28part._ch~3adesign-lists%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (how-many a-list)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) a-list) 0]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) a-list)) 1)]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Suppose we want to know how long it takes to compute the length of some unknown,
+    non-empty list. Using the rules of computation from [Intermezzo 1: Beginning Student
+    Language](i1-2.html), we can look at this process as a series of algebraic manipulations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (how-many some-non-empty-list) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) some-non-empty-list) 0]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [#false 0] |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)])
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: The first step is to replace a-list in the definition of how-many with the actual
+    argument, some-non-empty-list, which yields the first [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    expression. Next we must evaluate
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) some-non-empty-list)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'By assumption the result is #false. The question is how long it takes to determine
+    this result. While we don’t know the precise amount of time, it is safe to say
+    that checking on the constructor of a list takes a small and fixed amount of time.
+    Indeed, this assumption also holds for the next step, when [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    checks what the value of the first condition is. Since it is #false, the first
+    [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    line is dropped. Checking whether a [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    line starts with [else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    is equally fast, which means we are left with'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Finally we may safely assume that [rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)
+    extracts the remainder of the list in a fixed amount of time, but otherwise it
+    looks like we are stuck. To compute how long how-many takes to determine the length
+    of some list, we need to know how long how-many takes to count the number of items
+    in the rest of that list.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Alternatively, if we assume that predicates and selectors take some fixed amount
+    of time, the time it takes how-many to determine the length of a list depends
+    on the number of recursive steps it takes. Somewhat more precisely, evaluating
+    (how-many  some-list) takes roughly n times some fixed amount where n is the length
+    of the list or, equivalently, the number of times the program recurs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Generalizing from this example suggests that the running time depends on the
+    size of the input and that the number of recursive steps is a good estimate for
+    the length of an evaluation sequence. For this reason, computer scientists discuss
+    the abstract running time of a program as a relationship between the size of the
+    input and the number of recursive steps in an evaluation.“Abstract” because the
+    measure ignores the details of how much time primitive steps take. In our first
+    example, the size of the input is the number of items on the list. Thus, a list
+    of one item requires one recursive step, a list of two needs two steps, and for
+    a list of n items, it’s n steps.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Computer scientists use the phrase a program f takes “on the order of n steps”
+    to formulate a claim about the abstract running time of f. To use the phrase correctly,
+    it must come with an explanation of n, for example, “it counts the number of items
+    on the given list” or “it is the number of digits in the given number.” Without
+    such an explanation, the original phrase is actually meaningless.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Not all programs have the kind of simple abstract running time as how-many.
+    Take a look at the first recursive program in this book:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (contains-flatt? lo-names)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) lo-names) #false]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([cons?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons~3f%29%29) lo-names)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|      ([or](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29) ([string=?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._string~3d~3f%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) lo-names) ''flatt)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|          (contains-flatt? ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) lo-names)))]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: For a list that starts with 'flatt, say,
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (contains-flatt? |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) "flatt" "robot" "ball" "game-boy" "pokemon"))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: the program requires no recursive steps. In contrast, if 'flatt occurs at the
+    end of the list, as in,
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (contains-flatt? |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) "robot" "ball" "game-boy" "pokemon" "flatt"))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'the evaluation needs as many recursive steps as there are items in the list.This
+    second analysis brings us to the second important idea of program analysis, namely,
+    the kind of analysis that is performed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A best-case analysis focuses on the class of inputs for which the program can
+    easily find the answer. In our running example, a list that starts with 'flatt
+    is the best kind of input.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In turn, a worst-case analysis determines how badly a program performs for those
+    inputs that stress it most. The contains-flatt? function exhibits its worst performance
+    when 'flatt is at the end of the input list.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Finally, an average analysis starts from the ideas that programmers cannot assume
+    that inputs are always of the best possible shape and that they must hope that
+    the inputs are not of the worst possible shape. In many cases, they must estimate
+    the average time a program takes. For example, contains-flatt? finds, on the average,
+    'flatt somewhere in the middle of the input list. Thus, if the latter consists
+    of n items, the average running time of contains-flatt? is ![image](../Images/5508a238d1d7a9aeb5f8be1db2873a99.png),
+    that is, it recurs half as often as there are items on the input.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Computer scientists therefore usually employ the “on the order of” phrase in
+    conjunction with “on the average” or “in the worst case.”Returning to the idea
+    that contains-flatt? uses, on the average, an “order of ![image](../Images/25a95a4fc3b6d221dc694d45b65e5155.png)
+    steps” brings us to one more characteristic of abstract running time. Because
+    it ignores the exact time it takes to evaluate primitive computation steps—<wbr>checking
+    predicates, selecting values, picking [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    clauses—<wbr>we can drop the division by 2. Here is why. By assumption, each basic
+    step takes k units of time, meaning contains-flatt? takes time
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/7b6f64f587d83057a66e69eb8e58fdff.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'If you had a newer computer, these basic computations may run twice as fast,
+    in which case we would use ![image](../Images/359cbc0aab97b891e05e79cda6c20504.png)
+    as the constant for basic work. Let’s call this constant c and calculate:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/5a26809e35f0c3c2c64817c1fdb69718.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'that is, the abstract running time is always n multiplied by a constant, and
+    that’s all that matters to say “on the order of n.”Now consider our sorting program
+    from [figure 72](part_two.html#%28counter._%28figure._fig~3asort%29%29). Here
+    is a hand-evaluation for a small input, listing all recursive steps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 3 1 2))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == (insert 3 ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 2)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == (insert 3 (insert 1 ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == (insert 3 (insert 1 (insert 2 ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ''()))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == (insert 3 (insert 1 (insert 2 ''()))) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == (insert 3 (insert 1 ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == (insert 3 ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) 2 (insert 1 ''())))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == (insert 3 ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2 1))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 3 2 1)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: The evaluation shows how [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    traverses the given list and how it sets up an application of insert for each
+    number in the list. Put differently, [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    is a two-phase program. During the first one, the recursive steps for [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    set up as many applications of insert as there are items in the list. During the
+    second phase, each application of insert traverses a sorted list.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Inserting an item is similar to finding one, so it is not surprising that the
+    performance of insert and contains-flatt? are alike. The applications of insert
+    to a list of l items triggers between 0 and l recursive steps. On the average,
+    we assume it requires l/2, which means that insert takes “on the order of l steps”
+    where l is the length of the given list.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The question is how long these lists are to which insert adds numbers. Generalizing
+    from the above calculation, we can see that the first one is ![image](../Images/7a488e0678bcda587256627517a92a4a.png)
+    items long, the second one ![image](../Images/ec4725047c34badcfb2e7caa70f865cc.png),
+    and so on, all the way down to the empty list. Hence, we get that insert performs
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/cfa5b68dd2fd6fdc1de6fab57bf0c2e8.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: meaning
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/224266712925f08d1b761cf89805625a.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: represents the best “guess” at the average number of insertion steps. In this
+    last term, n2 is the dominant factor, and so we say that a sorting process takes
+    “on the order of n2 steps.” [Exercise 486](#%28counter._%28exercise._ex~3abig-o1%29%29)
+    ask you to argue why it is correct to simplify this claim in this way.
+  prefs: []
+  type: TYPE_NORMAL
+- en: See [exercise 486](#%28counter._%28exercise._ex~3abig-o1%29%29) for why this
+    is the case.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can also proceed with less formalism and rigor. Because [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    uses insert once per item on the list, we get an “order of n” insert steps where
+    n is the size of the list. Since insert needs ![image](../Images/8ba01d49527f7fea1f4be11045d5201a.png)
+    steps, we now see that a sorting process needs ![image](../Images/69656ca4d5aa8de0cffbafb3c5ad4db2.png)
+    steps or “on the order of n2.”
+  prefs: []
+  type: TYPE_NORMAL
+- en: Totaling it all up, we get that [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    takes on the “order of n steps” plus n2 recursive steps in insert for a list of
+    n items, which yields
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/477edf0309fa95e801d23bc2bc64d404.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'steps. See again [exercise 486](#%28counter._%28exercise._ex~3abig-o1%29%29)
+    for details. Note This analysis assumes that comparing two items on the list takes
+    a fixed amount of time. EndOur final example is the inf program from [Local Definitions](part_three.html#%28part._sec~3alocal-definitions%29):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (inf l)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) (inf ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|               (inf ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)))]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Let’s start with a small input: ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  3  2  1  0).
+    We know that the result is 0. Here is the first important step of a hand-evaluation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 3 2 1 0))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) 3 (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     3 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'From here, we must evaluate the first recursive call. Because the result is
+    0 and the condition is thus #false, we must evaluate the recursion in the else-branch
+    as well.Once we do so, we see two evaluations of (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  0)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2 1 0))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| == |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) 2 (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 0))) 2 (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 0)))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'At this point we can generalize the pattern and summarize it in a table:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| original expression |  | requires two evaluations of |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  3  2  1  0))
+    |  | (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0))
+    |  | (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  0))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  0))
+    |  | (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  0))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: In total, the hand-evaluation requires eight recursive steps for a list of four
+    items. If we added 4 to the front of the list, we would double the number of recursive
+    steps again. Speaking algebraically, inf needs on the order of 2n recursive steps
+    for a list of n numbers when the last number is the maximum, which is clearly
+    the worst case for inf.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Stop! If you paid close attention, you know that the above suggestion is sloppy.
+    The inf program really just needs ![image](../Images/c9554316c32d091d3282a0687bde3786.png)
+    recursive steps for a list of n items. What is going on?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Remember that we don’t really measure the exact time when we say “on the order
+    of.” Instead we skip over all built-in predicates, selectors, constructors, arithmetic,
+    and so on and focus on recursive steps only. Now consider this calculation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/e298cbb87cefdf15599b78a1d0b508ec.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'It shows that ![image](../Images/5ce18453da5db1101f45e5e86466d800.png) and
+    ![image](../Images/bbe024a86b6d8940ebe582b4b6e81078.png) differ by a small factor:
+    2, meaning “on the order of ![image](../Images/0d8f48d2f0ddc397a99bd2e738cf485c.png)
+    steps” describes inf in a world where all basic operations provided by *SL run
+    at half the speed when compared to an inf program that runs at “the order of ![image](../Images/80c37d30f0f754eb672fada31a6368cf.png)
+    steps.” In this sense, the two expressions really mean the same thing. The question
+    is what exactly they mean, and that is the subject of the next section.Exercise 484\.
+    While a list sorted in descending order is clearly the worst possible input for
+    inf, the analysis of inf’s abstract running time explains why the rewrite of inf
+    with [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    reduces the running time. For convenience, we replicate this version here:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (infL l)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) s (infL ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|             ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) s) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) s))]))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Hand-evaluate (infL  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  3  2  1  0)).
+    Then argue that infL uses on the “order of n steps” in the best and the worst
+    case. You may now wish to revisit [exercise 261](part_three.html#%28counter._%28exercise._ex~3alocal-interm1%29%29),
+    which asks you to explore a similar problem.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 485\. A number tree is either a number or a pair of number trees. Design
+    sum-tree, which determines the sum of the numbers in a tree. What is its abstract
+    running time? What is an acceptable measure of the size of such a tree? What is
+    the worst possible shape of the tree? What’s the best possible shape?
+  prefs: []
+  type: TYPE_NORMAL
+- en: The Definition of “On the Order Of”[🔗](#(part._.The_.Definition_of__.On_the_.Order_.Of_)
+    "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The preceding section alluded to all the key ingredients of the phrase “on
+    the order of.” Now it is time to introduce a rigorous description of the phrase.
+    Let’s start with the two ideas that the preceding section develops:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The abstract measurement of performance is a relationship between two quantities:
+    the size of the input and the number of recursive steps needed to determine the
+    answer. The relationship is actually a mathematical function that maps one natural
+    number (the size of the input) to another (the time needed).'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Hence, a general statement about the performance of a program is a statement
+    about a function, and a comparison of the performance of two programs calls for
+    the comparison of two such functions.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: How do you decide whether one such function is “better” than another?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Exercise 245](part_three.html#%28counter._%28exercise._ex~3asem2-funcs%29%29)
+    tackles a different question, namely, whether we can formulate a program that
+    decides whether two other programs are equal. In this intermezzo, we are not writing
+    a program; we are using plain mathematical arguments.'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Let’s return to the imaginary programs from the introduction: prog-linear and
+    prog-square. They compute the same results but their performance differs. The
+    prog-linear program requires “on the order of n steps” while prog-square uses
+    “on the order of n2 steps.” Mathematically speaking, the performance function
+    for prog-linear is'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/7872ca20539012e1646f6f1ee950c105.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: and prog-square’s associated performance function is
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/0d212a489cb59fa989f9a0327ba7f270.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: In these definitions, cL is the cost for each recursive step in prog-square
+    and cS is the cost per step in prog-linear.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Say we figure out that cL = 1000 and cS = 1. Then we can tabulate these abstract
+    running times to make the comparison concrete:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| n |  | 10 |  | 100 |  | 1000 |  | 2000 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| prog-square |  | 100 |  | 10000 |  | 1000000 |  | 4000000 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| prog-linear |  | 10000 |  | 100000 |  | 1000000 |  | 2000000 |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Like the graphs in [figure 176](#%28counter._%28figure._fig~3aperformance%29%29),
+    the table at first seems to say that prog-square is better than prog-linear, because
+    for inputs of the same size n, prog-square’s result is smaller than prog-linear’s.
+    But look at the last column in the table. Once the inputs are sufficiently large,
+    prog-square’s advantage decreases until it disappears at an input size of 1000.
+    Thereafter prog-square is always slower than prog-linear.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This last insight is the key to the precise definition of the phrase “order
+    of.” If a function f on the natural numbers produces larger numbers than some
+    function g for all natural numbers, then f is clearly larger than g. But what
+    if this comparison fails for just a few inputs, say for 1000 or 1000000, and holds
+    for all others? In that case, we would still like to say f is better than g. And
+    this brings us to the following definition.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Definition Given a function g on the natural numbers, O(g) (pronounced: “big-O
+    of g”) is a class of functions on natural numbers. A function f is a member of
+    O(g) if there exist numbers c and bigEnough such that'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: for all ![image](../Images/b1f4ea947e0bebdf3a77119f9035dff0.png) it is true
+    that ![image](../Images/60b70013d09d53654133a5da3b20eb87.png)
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Terminology If ![image](../Images/5715013ca11c006bd73f6bde9538cbe8.png), we
+    say f is no worse than g.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Naturally, we would love to illustrate this definition with the example of
+    prog-linear and prog-square from above. Recall the performance functions for prog-linear
+    and prog-square, with the constants plugged in:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/89a7a208f6d30fcec2a433690df2dedb.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: and
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/388f25341d60c905bc40d2f0e15ce9ce.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'The key is to find the magic numbers c and bigEnough such that ![image](../Images/09ee87a558b30b0a99d66a58eab19994.png),
+    which would validate that prog-linear’s performance is no worse than prog-square’s.
+    For now, we just tell you what these numbers are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/2fea098632d16316ffe703bf0ed4af2f.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: Using these numbers, we need to show that
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/c15a8148f5e1f2975690c852ba5f7840.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'for every single n larger than 1000. Here is how this kind of argument is spelled
+    out:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pick some specific n0 that satisfies the condition:'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '![image](../Images/cf1da4c8f0de5bafdc4d8e77e3153fd3.png)'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_IMG
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'We use the symbolic name n0 so that we don’t make any specific assumptions
+    about it. Now recall from algebra that you can multiply both sides of the inequality
+    with the same positive factor, and the inequality still holds. We use n0:'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '![image](../Images/e1a8fc5a8c4d7483e6840b79c81d2129.png)'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_IMG
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'At this point, it is time to observe that the left side of the inequality is
+    just L(n0) and the right side is S(n0):'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '![image](../Images/e48be6976ea4af33e40ea8fb0ca2a9c9.png)'
+  prefs:
+  - PREF_BQ
+  - PREF_BQ
+  type: TYPE_IMG
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Since n0 is a generic number of the right kind, we have shown exactly what we
+    wanted to show.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Usually you find bigEnough and c by working your way backward through such
+    an argument. While this kind of mathematical reasoning is fascinating, we leave
+    it to a course on algorithms.The definition of O also explains with mathematical
+    rigor why we don’t have to pay attention to specific constants in our comparisons
+    of abstract running times. Say we can make each basic step of prog-linear go twice
+    as fast so that we have:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/d1d04ed0d7c6258b06256e155bfff852.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: and
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![image](../Images/70f1ba8139ede729e10e30d71781a7e8.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: The above argument goes through by doubling bigEnough to 2000.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Finally, most people use O together with a short-hand for stating functions.
+    Thus they say how-many’s running time is O(n)—<wbr>because they tend to think
+    of n as an abbreviation of the (mathematical) function id(n) = n. Similarly, this
+    use yields the claim that [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)’s
+    worst-case running time is O(n2) and inc’s is O(2n)—<wbr>again because n2 is short-hand
+    for the function sqr(n) = n2 and 2n is short for expt(n) = 2n.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Stop! What does it mean to say that a function’s performance is O(1)?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 486\. In the first subsection, we stated that the function f(n) = n2
+    + n belongs to the class O(n2). Determine the pair of numbers c and bigEnough
+    that verify this claim.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 487\. Consider the functions f(n) = 2n and g(n) = 1000 n. Show that
+    g belongs to O(f), which means that f is, abstractly speaking, more (or at least
+    equally) expensive than g. If the input size is guaranteed to be between 3 and
+    12, which function is better?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise 488\. Compare ![image](../Images/358b0d099d2024a7ba8c30e181b09235.png)
+    and ![image](../Images/6c3f41526a45a85f9bfde748bdb38152.png). Does f belong to
+    O(g) or g to O(f)?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Why Do Programs Use Predicates and Selectors?[🔗](#(part._.Why_.Do_.Programs_.Use_.Predicates_and_.Selectors_)
+    "Link to here")
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The notion of “on the order of” explains why the design recipes produce both
+    well-organized and “performant” programs. We illustrate this insight with a single
+    example, the design of a program that searches for a number in a list of numbers.
+    Here are the signature, the purpose statement, and examples formulated as tests:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [Number](part_one.html#%28tech._number%29) [[List-of](part_three.html#%28tech._sim-dd._list._of%29)  [Number](part_one.html#%28tech._number%29)]
+    -> [Boolean](part_one.html#%28tech._boolean%29) |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; is x in l |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (search 0 ''(3 2 1 0)) #true)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (search 4 ''(3 2 1 0)) #false)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: 'Here are two definitions that live up to these expectations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (searchL x l)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) l) #false]
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;      ([or](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29) ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) x)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;          (searchL &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;            x ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)))]))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (searchS x l)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) (length l) 0) #false]
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;      ([or](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29) ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) x)
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;          (searchS &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '&#124;            x ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)))]))
+    &#124;'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '|'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: The design of the program on the left follows the design recipe. In particular,
+    the development of the template calls for the use of structural predicates per
+    clause in the data definition. Following this advice yields a conditional program
+    whose first [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    line deals with empty lists and whose second one deals with all others. The question
+    in the first [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    line uses [empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29)
+    and the second one uses [cons?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons~3f%29%29)
+    or [else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29).
+  prefs: []
+  type: TYPE_NORMAL
+- en: The design of searchS fails to live up to the structural designIt really uses
+    generative recursion. recipe. It instead takes inspiration from the idea that
+    lists are containers that have a size. Hence, a program can check this size for
+    0, which is equivalent to checking for emptiness.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Although this idea is functionally correct, it makes the assumption that the
+    cost of *SL-provided operations is a fixed constant. If length is more like how-many,
+    however, searchS is going to be slower than searchL. Using our new terminology,
+    searchL is using O(n) recursive steps while searchS needs O(n2) steps for a list
+    of n items. In short, using arbitrary *SL operations to formulate conditions may
+    shift performance from one class of functions to one that is much worse.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s wrap up this intermezzo with an experiment that checks whether length
+    is a constant-time function or whether it consumes time proportionally to the
+    length of the given list. The easiest way is to define a program that creates
+    a long list and determines how much time each version of the search program takes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| ; [N](part_two.html#%28tech._n%29) -> [[List](part_three.html#%28tech._sim-dd._list%29)  [Number](part_one.html#%28tech._number%29)  [Number](part_one.html#%28tech._number%29)]
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; how long do searchS and searchL take |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ; to look for n in ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  0  [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29)  ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29)  n  1))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (timing n)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|   ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) long-list
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|             ([build-list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._build-list%29%29) n ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (x) x))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|     ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|       ([time](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._time%29%29) (searchS n long-list))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: '|       ([time](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._time%29%29) (searchL n long-list)))))
+    |'
+  prefs:
+  - PREF_BQ
+  type: TYPE_TB
+- en: Now run this program on 10000 and 20000. If length is like [empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29),
+    the times for the second run will be roughly twice those of the first one; otherwise,
+    the time for searchS will increase dramatically.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Stop! Conduct the experiment.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Assuming you have completed the experiment, you now know that length takes time
+    proportionally to the size of the given list. The “S” in searchS stands for “squared”
+    because its running time is O(n2). But don’t jump to the conclusion that thisSee
+    [Data Representations with Accumulators](part_six.html#%28part._sec~3amore-accu-mc%29)
+    for how other languages track the size of a container. kind of reasoning holds
+    for every programming language you will encounter. Many deal with containers differently
+    than *SL. Understanding how this is done requires one more design concept, accumulators,
+    the concern of the final part of this book.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[🔗](#(part._i5-6-fake) "Link to here")'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
