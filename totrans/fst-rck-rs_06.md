@@ -4,13 +4,7 @@
 
 Let's make sure all the prerequisites are in place. You should have followed the [installation](installation.html) instructions to prepare your development environment. After those steps are complete, you should be able to run the following commands:
 
-```rs
-$ rustc --version
-rustc 1.81.0 (eeb90cda1 2024-09-04)
-
-$ cargo --version
-cargo 1.81.0 (2dbb1af80 2024-08-20) 
-```
+[PRE0]
 
 > The version numbers might be different, but the output should look relatively similar.
 
@@ -18,23 +12,11 @@ If the above commands worked, you're ready to go!
 
 1.  Use `cargo new rustle` to create a new Rust package named `rustle` for our project:
 
-    ```rs
-    $ cargo new rustle
-        Creating binary (application) `rustle` package
-    note: see more `Cargo.toml` keys and their definitions at
-    https://doc.rust-lang.org/cargo/reference/manifest.html 
-    ```
+    [PRE1]
 
 2.  Navigate to the `rustle` directory and use `cargo run` to build and run the program:
 
-    ```rs
-    $ cd rustle
-    $ cargo run
-       Compiling rustle v0.1.0 (S:\projects\git\rustle)
-        Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
-         Running `target\debug\rustle.exe`
-    Hello, world! 
-    ```
+    [PRE2]
 
 3.  Explore some of the other actions you can perform with `cargo` using `cargo --help`.
 

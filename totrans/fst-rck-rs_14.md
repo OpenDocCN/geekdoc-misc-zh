@@ -12,34 +12,13 @@ New iterators can be created using [iterator adaptors](https://doc.rust-lang.org
 
 The `enumerate` function creates an iterator that yields the current iteration count along with the value from the previous iterator, as tuples^([1](#footnote-1)) in the form `(index, value)`. In the loop, the type for `i` is `usize`, and the type for `line` is `&str`.
 
-```rs
-fn main() {
- let pattern = "him"; let poem = "I have a little shadow that goes in and out with me, And what can be the use of him is more than I can see. He is very, very like me from the heels up to the head; And I see him jump before me, when I jump into my bed.   The funniest thing about him is the way he likes to grow - Not at all like proper children, which is always very slow; For he sometimes shoots up taller like an india-rubber ball, And he sometimes gets so little that there's none of him at all.";      for (i, line) in poem.lines().enumerate() {
-        if line.contains(pattern) {
-            println!("{}: {line}", i + 1);
-        }
-    }
-}
-```
+[PRE0]
 
 ## [Advanced Iterators](#advanced-iterators)
 
 We can take it a step further by using the `filter_map` iterator adapter to return an iterator that includes only the items we want!
 
-```rs
-fn main() {
- let pattern = "him"; let poem = "I have a little shadow that goes in and out with me, And what can be the use of him is more than I can see. He is very, very like me from the heels up to the head; And I see him jump before me, when I jump into my bed.   The funniest thing about him is the way he likes to grow - Not at all like proper children, which is always very slow; For he sometimes shoots up taller like an india-rubber ball, And he sometimes gets so little that there's none of him at all.";      for (line_no, line) in
-        poem.lines()
-            .enumerate()
-            .filter_map(|(i, line)| match line.contains(pattern) {
-                true => Some((i + 1, line)),
-                false => None,
-            })
-    {
-        println!("{line_no}: {line}");
-    }
-}
-```
+[PRE1]
 
 Whoa! What just happened? We're on the fast track to learning Rust, so we're picking up the pace! Let's break this down because this code snippet needs some unpacking.
 

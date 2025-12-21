@@ -31,9 +31,7 @@ This visualization helps in understanding how string literals are stored and acc
 
 When we bind the string literal `"rust"` to the variable `language`:
 
-```rs
-let language = "rust";
-```
+[PRE0]
 
 The memory would look like:
 

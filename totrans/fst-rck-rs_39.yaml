@@ -1,0 +1,217 @@
+- en: Interval
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/interval.html](https://freddiehaddad.github.io/fast-track-to-rust/interval.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: The current version of our `Interval` is limited to the `usize` type. If we
+    want to support floating point values, negative integers, or other exotic numeric
+    types, it won't work. We're going to address this by making it compatible with
+    any numeric type, with some restrictions.^([1](#footnote-1))
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Generic Data Type](#generic-data-type)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The current definition of our `Interval` `struct` specifies the field types
+    as `usize`. To redefine the `struct` to use a generic type parameter for its fields,
+    we use the `<>` syntax.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: By using a single generic type to define `Interval<T>`, we indicate that the
+    `Interval<T>` `struct` is generic over some type `T`, and the fields `start` and
+    `end` are both of that same type, whatever it may be. If we attempt to create
+    an instance of `Interval<T>` with fields of different types, our code won't compile.
+    To support different types for the fields, we would need to specify additional
+    generic types, such as `struct Interval<T, U>`.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: You've probably guessed it already, but this code won't compile. Take a moment
+    to think about why that might be, and then run the code to see what the compiler
+    has to say.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: As you guessed it, there's a lot of compiler errors and they're very helpful!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[E0107](https://doc.rust-lang.org/stable/error_codes/E0107.html): missing generics
+    for `struct` `Interval`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Let's walk through the errors one by one. The first error informs us that the
+    return value on line 26 references a generic type but fails to specify one. It
+    shows the definition of the type on line 141 and provides a helpful tip for how
+    to correct it. The compiler suggests appending `<T>` to `Interval` and specifying
+    the type for `T`, which in our case will be `usize`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: The fix should be relatively straightforward to understand, as we've used the
+    same approach for other generic types we've worked with. Let's apply the fix to
+    all the functions and try again!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: As expected, we still have some more compiler errors to work through and these
+    lead us into how we implement methods for a generic type!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Inherent Implementation](#inherent-implementation)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'There are two main types of implementation we define: inherent implementations
+    (standalone) and trait implementations.^([2](#footnote-2)) We''ll focus on inherent
+    implementation first and explore trait implementations towards the end of this
+    section.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We need to update our `impl` block to support generic type parameters for our
+    generic type, and the syntax is as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: Here are the necessary changes. Review them and run the program again.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Well, that didn''t work! Now we have two new compiler errors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[E0369]: binary operation `<=` cannot be applied to type `T`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[E0507]: cannot move out of `self.start` which is behind a shared reference'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That's okay, because these errors are a perfect segue into trait bounds!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Trait Bounds](#trait-bounds)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The compiler generated a few very helpful error messages, which we can categorize
+    into two types, both of which suggest the use of trait bounds:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: With an introduction to trait bounds, everything will become clear. Let's begin
+    with the first error. The compiler indicates that a comparison between two generic
+    types is being attempted in the `new` function, and not all types support this
+    capability. In other words, not all types implement the [`PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html)
+    trait, which is necessary for using comparison operators like `<=` and `>=`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For those with an object-oriented programming background, a trait can be thought
+    of as similar to an interface.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Since our `Interval` `struct` is generic over `T`, the types for `start` and
+    `end` can be anything, including types that aren't comparable. Therefore, the
+    compiler is instructing us to restrict `T` to any type that implements the [`PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html)
+    trait. In other words, we need to place a *bound* on `T`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The next error requires us to revisit the topic of move semantics in Rust.
+    Except for primitive types, most standard library types and those found in third-party
+    crates do not implement the [`Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html)
+    trait. In other words, they do not have *copy semantics*. Let''s examine the function
+    where the error occurs:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `merge` function borrows the values for `self` and `other`. If the two intervals
+    overlap, a new interval is returned with the values copied into it. Since we have
+    been using `usize`, a type that implements the `Copy` trait, this worked. To ensure
+    it continues to work, we need to place another bound on `T`, limiting it to types
+    that implement the `Copy` trait.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The compiler also mentions the [`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html)
+    trait, which allows for explicit duplication of an object via the `clone` method.
+    This means we could specify the trait bound as `Clone` instead of `Copy` and update
+    the method to explicitly call `clone`.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: With an understanding of trait bounds, let's examine how to impose these restrictions
+    on our `Interval`. Does the program work now?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: Voila! And we now have a generic `Interval` module that can support any type
+    implementing the `Copy` and `PartialOrd` traits!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Exercise](#exercise)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Modify the program to use the `Clone` trait instead of `Copy`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: <details><summary>Solution</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]</details>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Next](#next)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Let's dive deeper into traits!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The restrictions we place on the supported types are known as [trait bounds](https://doc.rust-lang.org/reference/trait-bounds.html).
+    [↩](#fr-1-1)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: For more information on `impl Trait` syntax, see the [Rust book](https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits)
+    [↩](#fr-2-1)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL

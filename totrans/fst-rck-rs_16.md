@@ -11,40 +11,11 @@ Closures in Rust have some distinct characteristics:
 
 ## [Returning to our Loop](#returning-to-our-loop)
 
-```rs
-fn main() {
-    let pattern = "him";
-    let poem = "I have a little shadow that goes in and out with me,
-                And what can be the use of him is more than I can see.
-                He is very, very like me from the heels up to the head;
-                And I see him jump before me, when I jump into my bed.
-
-                The funniest thing about him is the way he likes to grow -
-                Not at all like proper children, which is always very slow;
-                For he sometimes shoots up taller like an india-rubber ball,
-                And he sometimes gets so little that there's none of him at all.";
-
-    for (line_no, line) in
-        poem.lines()
-            .enumerate()
-            .filter_map(|(i, line)| match line.contains(pattern) {
-                true => Some((i + 1, line)),
-                false => None,
-            })
-    {
-        println!("{line_no}: {line}");
-    }
-}
-```
+[PRE0]
 
 In the code snippet, the closure is:
 
-```rs
-|(i, line)| match line.contains(pattern) {
-    true => Some((i + 1, line)),
-    false => None,
-}
-```
+[PRE1]
 
 ## [`filter_map`](#filter_map)
 
@@ -58,29 +29,7 @@ The [`filter_map`](https://doc.rust-lang.org/std/iter/struct.FilterMap.html) ^([
 
 <details><summary>Solution</summary>
 
-```rs
-fn main() {
-    let pattern = "him";
-    let poem = "I have a little shadow that goes in and out with me,
-                And what can be the use of him is more than I can see.
-                He is very, very like me from the heels up to the head;
-                And I see him jump before me, when I jump into my bed.
-
-                The funniest thing about him is the way he likes to grow -
-                Not at all like proper children, which is always very slow;
-                For he sometimes shoots up taller like an india-rubber ball,
-                And he sometimes gets so little that there's none of him at all.";
-
-    for (line_no, line) in poem
-        .lines()
-        .enumerate()
-        .map(|(i, line)| (i + 1, line))
-        .filter(|(_line_no, line)| line.contains(pattern))
-    {
-        println!("{line_no}: {line}");
-    }
-}
-```
+[PRE2]
 
 > The underscore `_` prefix in `_line_no` is how we tell the Rust compiler that we are intentionally ignoring the first argument. Without it the compiler will complain.</details> 
 

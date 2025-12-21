@@ -1,0 +1,46 @@
+- en: Modules
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/modules.html](https://freddiehaddad.github.io/fast-track-to-rust/modules.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*Modules* help us organize code within a crate for better readability and easy
+    reuse. They also allow us to control the *privacy* of items, as code within a
+    module is private by default. Private items are internal implementation details
+    not accessible from outside. We can choose to make modules and their items public,
+    exposing them for external code to use and depend on.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Refer to the section on [Defining Modules to Control Scope and Privacy](https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html#defining-modules-to-control-scope-and-privacy)
+    in the Rust documentation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Summary](#summary)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 'In this section, we were introduced to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Crates: A tree of modules that produces a library or executable'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Packages: A Cargo feature that lets you build, test, and share crates'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Modules: Let you control the organization of your project'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Next](#next)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: With a basic understanding of crates, packages, and modules, let's utilize one
+    for regular expression support.
+  prefs: []
+  type: TYPE_NORMAL

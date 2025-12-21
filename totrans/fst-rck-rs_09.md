@@ -6,46 +6,19 @@ Rust is a statically typed language, meaning that all variables have a type, and
 
 The anatomy of a `let` statement^([1](#footnote-1)) ^([2](#footnote-2)):
 
-```rs
-let identifier: type = expression;
-```
+[PRE0]
 
 ## [Type Inference](#type-inference)
 
 Since `y` is passed as an argument to the `print_value` function, which requires a signed 32-bit integer, the compiler infers its type. Therefore, the explicit type declaration for `x` can be omitted.
 
-```rs
-fn print_value(value: i32) {
-    println!("{value}");
-}
-
-fn main() {
-    let x: i32 = 10;
-    let y = 20;
-
-    print_value(x);
-    print_value(y);
-}
-```
+[PRE1]
 
 ## [Rustle Variables](#rustle-variables)
 
 To begin with our rustle program, we'll avoid handling user input via command line arguments for now. Instead, we'll hard code some strings and perform some simple *rustling*. Let's use the famous poem *My Shadow* by the poet Robert Louis Stevenson as our input.
 
-```rs
-fn main() {
-    let pattern = "him";
-    let poem = "I have a little shadow that goes in and out with me,
-                And what can be the use of him is more than I can see.
-                He is very, very like me from the heels up to the head;
-                And I see him jump before me, when I jump into my bed.
-
-                The funniest thing about him is the way he likes to grow -
-                Not at all like proper children, which is always very slow;
-                For he sometimes shoots up taller like an india-rubber ball,
-                And he sometimes gets so little that there's none of him at all.";
-}
-```
+[PRE2]
 
 The next step is to search the poem for occurrences of the pattern and print the results. To achieve this, we'll need to learn a bit about control flow.
 

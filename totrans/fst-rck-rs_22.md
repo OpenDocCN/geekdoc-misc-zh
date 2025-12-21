@@ -8,12 +8,7 @@ Many programs use mechanisms like exceptions for handling errors, but Rust takes
 
 `Result<T, E>` is the type used for returning and propagating errors. Similar to `Option`, it has two variants: `Ok(T)`, which represents success and contains a value, and `Err(E)`, which represents an error and contains an error value. The `T` and `E` are generic type parameters that we'll discuss in more detail soon. For now, it's important to know that `T` represents the type of the value returned in a success case within the `Ok` variant, and `E` represents the type of the error returned in a failure case within the `Err` variant.
 
-```rs
-enum Result<T, E> {
-   Ok(T),
-   Err(E),
-}
-```
+[PRE0]
 
 ## [Additional Resources](#additional-resources)
 

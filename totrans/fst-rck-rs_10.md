@@ -12,27 +12,7 @@ These methods help you manage the execution flow and make your code more efficie
 
 We will use a `for` loop to iterate over all the lines in the poem, checking each for the substring specified by `pattern`. Each line will be evaluated using a `match` expression.
 
-```rs
-fn main() {
-    let pattern = "him";
-    let poem = "I have a little shadow that goes in and out with me,
-                And what can be the use of him is more than I can see.
-                He is very, very like me from the heels up to the head;
-                And I see him jump before me, when I jump into my bed.
-
-                The funniest thing about him is the way he likes to grow -
-                Not at all like proper children, which is always very slow;
-                For he sometimes shoots up taller like an india-rubber ball,
-                And he sometimes gets so little that there's none of him at all.";
-
-    for line in poem.lines() {
-        match line.contains(pattern) {
-            true => println!("{line}"),
-            false => (),
-        }
-    }
-}
-```
+[PRE0]
 
 ## [`for` Loops](#for-loops)
 
@@ -50,25 +30,7 @@ Let's ensure we fully understand this. In the code snippet, comment out line 16 
 > 
 > Take a moment to appreciate just how helpful this compiler error is. The Rust compiler is truly your friend!
 
-```rs
- Compiling playground v0.0.1 (/playground)
-error[E0004]: non-exhaustive patterns: `false` not covered
-  --> src/main.rs:14:15
-   |
-14 |         match line.contains(pattern) {
-   |               ^^^^^^^^^^^^^^^^^^^^^^ pattern `false` not covered
-   |
-   = note: the matched value is of type `bool`
-help: ensure that all possible cases are being handled by adding a match arm with a
-   |  wildcard pattern or an explicit pattern as shown
-   |
-15 ~             true => println!("{line}"),
-16 ~             false => todo!(),
-   |
-
-For more information about this error, try `rustc --explain E0004`.
-error: could not compile `playground` (bin "playground") due to 1 previous error 
-```
+[PRE1]
 
 The compiler error message is informing you that:
 
@@ -78,61 +40,11 @@ The compiler error message is informing you that:
 
 Let's see what the Rust compiler has to say:
 
-```rs
-$ rustc --explain E0004
-This error indicates that the compiler cannot guarantee a matching pattern for
-one or more possible inputs to a match expression. Guaranteed matches are
-required in order to assign values to match expressions, or alternatively,
-determine the flow of execution.
-
-Erroneous code example:
-
-enum Terminator {
-    HastaLaVistaBaby,
-    TalkToMyHand,
-}
-
-let x = Terminator::HastaLaVistaBaby;
-
-match x { // error: non-exhaustive patterns: `HastaLaVistaBaby` not covered
-    Terminator::TalkToMyHand => {}
-}
-
-If you encounter this error you must alter your patterns so that every possible
-value of the input type is matched. For types with a small number of variants
-(like enums) you should probably cover all cases explicitly. Alternatively, the
-underscore `_` wildcard pattern can be added after all other patterns to match
-"anything else". Example:
-
-enum Terminator {
-    HastaLaVistaBaby,
-    TalkToMyHand,
-}
-
-let x = Terminator::HastaLaVistaBaby;
-
-match x {
-    Terminator::TalkToMyHand => {}
-    Terminator::HastaLaVistaBaby => {}
-}
-
-// or:
-
-match x {
-    Terminator::TalkToMyHand => {}
-    _ => {}
-}
-```
+[PRE2]
 
 `match` arms have the following structure:
 
-```rs
-match VALUE {
-    PATTERN => EXPRESSION,
-    PATTERN => EXPRESSION,
-    PATTERN => EXPRESSION,
-} 
-```
+[PRE3]
 
 ## [`()` Unit Type](#-unit-type)
 
@@ -153,26 +65,7 @@ In this section, we:
 
 <details><summary>Solution</summary>
 
-```rs
-fn main() {
-    let pattern = "him";
-    let poem = "I have a little shadow that goes in and out with me,
-                And what can be the use of him is more than I can see.
-                He is very, very like me from the heels up to the head;
-                And I see him jump before me, when I jump into my bed.
-
-                The funniest thing about him is the way he likes to grow -
-                Not at all like proper children, which is always very slow;
-                For he sometimes shoots up taller like an india-rubber ball,
-                And he sometimes gets so little that there's none of him at all.";
-
-    for line in poem.lines() {
-        if line.contains(pattern) {
-            println!("{line}");
-        }
-    }
-}
-```</details> 
+[PRE4]</details> 
 
 # [Next](#next)
 

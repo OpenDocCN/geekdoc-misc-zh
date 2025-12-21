@@ -6,114 +6,21 @@ Currently, our entire rustle program is contained within the `main` function. Th
 
 Let's start by creating a function to handle the work of finding all the lines in the input that contain the specified pattern. Here is the function signature:
 
-```rs
-fn find_matching_lines(lines: Vec<&str>, pattern: &str) -> Vec<usize>
-```
+[PRE0]
 
 This is the code that we'll transfer into the new function:
 
-```rs
-// store the 0-based line number for any matched line
-let match_lines: Vec<_> = lines
-    .iter()
-    .enumerate()
-    .filter_map(|(i, line)| match line.contains(pattern) {
-        true => Some(i),
-        false => None,
-    })
-    .collect(); // turns anything iterable into a collection
-```
+[PRE1]
 
 Here is the revised code with the changes implemented. Review it and run the code.
 
-```rs
-use std::iter::FromIterator; // this line addresses a rust playground bug   fn find_matching_lines(lines: Vec<&str>, pattern: &str) -> Vec<usize> {
-    lines
-        .iter()
-        .enumerate()
-        .filter_map(|(i, line)| match line.contains(pattern) {
-            true => Some(i),
-            false => None,
-        })
-        .collect() // turns anything iterable into a collection
-        // The return keyword is unnecessary when the returned value is the
-        // final expression in a function. In this scenario, the semicolon (;)
-        // is omitted.
-}
-
-fn main() {
-    let poem = "I have a little shadow that goes in and out with me,
-                And what can be the use of him is more than I can see.
-                He is very, very like me from the heels up to the head;
-                And I see him jump before me, when I jump into my bed.
-
-                The funniest thing about him is the way he likes to grow -
-                Not at all like proper children, which is always very slow;
-                For he sometimes shoots up taller like an india-rubber ball,
-                And he sometimes gets so little that there's none of him at all.";
-
-    // command line arguments
-    let pattern = "all";
-    let before_context = 1;
-    let after_context = 1;
-
-    // convert the poem into lines
-    let lines = Vec::from_iter(poem.lines());
-
-    // store the 0-based line number for any matched line
-    let match_lines = find_matching_lines(lines, pattern);
-
-    // create intervals of the form [a,b] with the before/after context
-    let mut intervals: Vec<_> = match_lines
-        .iter()
-        .map(|line| {
-            (
-                line.saturating_sub(before_context),
-                line.saturating_add(after_context),
-            )
-        })
-        .collect();
-
-    // merge overlapping intervals
-    intervals.dedup_by(|next, prev| {
-        if prev.1 < next.0 {
-            false
-        } else {
-            prev.1 = next.1;
-            true
-        }
-    });
-
-    // print the lines
-    for (start, end) in intervals {
-        for (line_no, line) in
-            lines.iter().enumerate().take(end + 1).skip(start)
-        {
-            println!("{}: {}", line_no + 1, line)
-        }
-    }
-}
-```
+[PRE2]
 
 ## [Uh-oh!](#uh-oh)
 
 A minor code change caused an issue with the program. Fortunately, the Rust compiler offers helpful information for diagnosing the problem. However, if you're not familiar with Rust's ownership rules, understanding this error can be challenging. Let's break down the error and understand what went wrong. Here are the key details from the error message, cleaned up for readability:
 
-```rs
-error[E0382]: borrow of moved value: `lines`
-    --> src/main.rs:63:13
-     |
-34   |     let lines = Vec::from_iter(poem.lines());
-     |         ----- move occurs because `lines` has type `Vec<&str>`, which
-     |               does not implement the `Copy` trait
-...
-37   |     let match_lines = find_matching_lines(lines, pattern);
-     |                                           ----- value moved here
-...
-63   |             lines.iter().enumerate().take(end + 1).skip(start)
-     |             ^^^^^^^^^^^^ value borrowed here after move
-     | 
-```
+[PRE3]
 
 ### [Unpacking the Error](#unpacking-the-error)
 

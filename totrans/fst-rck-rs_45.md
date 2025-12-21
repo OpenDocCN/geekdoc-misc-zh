@@ -8,11 +8,7 @@ In the previous section, we explored the `spawn` method in the `thread` module a
 
 Here's the signature for the [`scope` function](https://doc.rust-lang.org/stable/std/thread/fn.scope.html):
 
-```rs
-pub fn scope<'env, F, T>(f: F) -> T
-where
-    F: for<'scope> FnOnce(&'scope Scope<'scope, 'env>) -> T,
-```
+[PRE0]
 
 The `scope` function takes a closure (`f`) as an argument, which receives a `Scope` object (created by `scope`). This `Scope` object allows threads to be spawned using the [`spawn`](https://doc.rust-lang.org/stable/std/thread/struct.Scope.html#method.spawn) method. The spawn method returns a [`ScopedJoinHandle`](https://doc.rust-lang.org/stable/std/thread/struct.ScopedJoinHandle.html), which, as the name suggests, provides a [`join`](https://doc.rust-lang.org/stable/std/thread/struct.ScopedJoinHandle.html#method.join) method to wait for the spawned thread to complete.
 
@@ -25,26 +21,6 @@ In plain English, the `scope` function takes a closure `f` that can borrow data 
 
 Let's revisit one of the examples from the previous section that failed to compile to better understand these concepts. Review the following code snippet and then run the program.
 
-```rs
-fn main() {
-    use std::thread;
-
-    let error = String::from("E0373"); // Compiler error E0373
-
-    thread::scope(|s| {
-        let handler = s.spawn(|| {
-            println!("{error}");
-        });
-
-        s.spawn(|| {
-            println!("{error}");
-        });
-
-        handler.join().unwrap(); // Manually join the first thread
-
-        // Second thread is automatically joined when the closure returns.
-    });
-}
-```
+[PRE1]
 
 Through these ownership and type system tools, it is guaranteed that all threads created within `scope` are joined before their lifetimes end. This allows the Rust compiler to be certain that all borrowed data (in this case, the `error` `String`) remains valid for the lifetime of the threads. This is how Rust turns many runtime errors into compile-time errors. Concepts like this facilitate fearless concurrency in Rust!

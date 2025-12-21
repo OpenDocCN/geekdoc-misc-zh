@@ -6,21 +6,7 @@ Throughout this course, we've been using [attributes](https://doc.rust-lang.org/
 
 At a high level, an attribute is metadata applied to a crate, module, or item. This metadata serves various purposes. Attributes follow this syntax:
 
-```rs
-InnerAttribute :
-   # ! [ Attr ]
-
-OuterAttribute :
-   # [ Attr ]
-
-Attr :
-      SimplePath AttrInput?
-   | unsafe ( SimplePath AttrInput? )
-
-AttrInput :
-      DelimTokenTree
-   | = Expression 
-```
+[PRE0]
 
 Attributes come in two forms: `InnerAttribute` and `OuterAttribute`. The difference between them is that an `InnerAttribute` includes a bang (`!`) between the `#` and the `[`. An `InnerAttribute` applies to the item it is declared within, while an `OuterAttribute` applies to whatever follows it.
 
@@ -32,13 +18,7 @@ For example, in our rustle program, we've used the inner attribute `#![allow(unu
 
 Recall in the last section, we derived the `Debug` and `PartialEq` traits. We achieved this using the `#[derive(...)]` attribute. Notice how this attribute is placed directly before the definition of the `Interval` `struct`. This is an example of an `OuterAttribute`.
 
-```rs
-#[derive(Debug, PartialEq)]
-pub struct Interval<T> {
-    pub start: T,
-    pub end: T,
-}
-```
+[PRE1]
 
 ## [Classification of Attributes](#classification-of-attributes)
 

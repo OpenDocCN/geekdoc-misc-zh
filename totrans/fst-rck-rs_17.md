@@ -21,48 +21,15 @@ The `--before-context` option requires us to print preceding lines when we encou
 
 Consider the poem from our code:
 
-```rs
-I have a little shadow that goes in and out with me,
-And what can be the use of him is more than I can see.
-He is very, very like me from the heels up to the head;
-And I see him jump before me, when I jump into my bed.
-
-The funniest thing about him is the way he likes to grow -
-Not at all like proper children, which is always very slow;
-For he sometimes shoots up taller like an india-rubber ball,
-And he sometimes gets so little that there's none of him at all. 
-```
+[PRE0]
 
 If the pattern is "him" and the number of lines to print before each match is set to 2 (`--before-context=2`), without a method to track printed lines, we would end up with the following output:
 
-```rs
-1: I have a little shadow that goes in and out with me,
-2: And what can be the use of him is more than I can see.
-2: And what can be the use of him is more than I can see.
-3: He is very, very like me from the heels up to the head;
-4: And I see him jump before me, when I jump into my bed.
-5:
-4: And I see him jump before me, when I jump into my bed.
-5:
-6: The funniest thing about him is the way he likes to grow -
-7: Not at all like proper children, which is always very slow;
-8: For he sometimes shoots up taller like an india-rubber ball,
-9: And he sometimes gets so little that there's none of him at all. 
-```
+[PRE1]
 
 This is not the behavior we want from our rustle program. Instead, we aim for the following output:
 
-```rs
-1: I have a little shadow that goes in and out with me,
-2: And what can be the use of him is more than I can see.
-3: He is very, very like me from the heels up to the head;
-4: And I see him jump before me, when I jump into my bed.
-5:
-6: The funniest thing about him is the way he likes to grow -
-7: Not at all like proper children, which is always very slow;
-8: For he sometimes shoots up taller like an india-rubber ball,
-9: And he sometimes gets so little that there's none of him at all. 
-```
+[PRE2]
 
 A similar issue arises with `--after-context`. Our solution involves using a vector and tuples (since we are now familiar with them) to create intervals over the ranges of lines we want to print.
 

@@ -12,17 +12,11 @@ Our rustle program wouldn't be complete without the ability to search text files
 
 Let's start by creating a function that reads a file and returns a vector of strings (`Vec<String>`) where each string represents a line. Here is the function signature:^([2](#footnote-2)) ^([3](#footnote-3))
 
-```rs
-fn read_file(file: File) -> Vec<String> {
-    todo!(); // see the footnote [^3]
-}
-```
+[PRE0]
 
 This is the code that we'll add to the `read_file` function:
 
-```rs
-BufReader::new(file).lines().map_while(Result::ok).collect()
-```
+[PRE1]
 
 The `read_file` function accepts a file handle and utilizes [`BufReader`](https://doc.rust-lang.org/std/io/struct.BufReader.html) to efficiently read the file line by line, storing each line in a vector of strings (`Vec<String>`), which it then returns to the caller.
 
@@ -30,22 +24,7 @@ The `read_file` function accepts a file handle and utilizes [`BufReader`](https:
 
 The modifications to the `main` function:
 
-```rs
-fn main() {
-    // command line arguments
- let pattern = "all"; let before_context = 1; let after_context = 1;    let filename = "poem.txt";
-
-    // attempt to open the file
-    let lines = match File::open(filename) {
-        // convert the poem into lines
-        Ok(file) => read_file(file),
-        Err(e) => {
-            eprintln!("Error opening {filename}: {e}");
-            exit(1);
-        }
-    };
-  // store the 0-based line number for any matched line let match_lines = find_matching_lines(&lines, pattern);   // create intervals of the form [a,b] with the before/after context let mut intervals = create_intervals(match_lines, before_context, after_context);   // merge overlapping intervals merge_intervals(&mut intervals);   // print the lines print_results(intervals, lines); }
-```
+[PRE2]
 
 ## [Unpacking the Code](#unpacking-the-code)
 
@@ -53,11 +32,7 @@ There's a lot going on here, so let's break it down step by step.
 
 ### [`read_file`](#read_file)
 
-```rs
-fn read_file(file: File) -> Vec<String> {
-    BufReader::new(file).lines().map_while(Result::ok).collect()
-}
-```
+[PRE3]
 
 1.  **`BufReader`**: `BufReader::new(file)` creates a buffered reader from the provided `File`. This helps in efficiently reading the file line by line.
 
@@ -65,21 +40,7 @@ fn read_file(file: File) -> Vec<String> {
 
 3.  **`map_while(Result::ok)`**: The `map_while` method is used to transform the iterator. It applies the `Result::ok` function to each item, which converts `Ok(line)` to `Some(line)` and `Err(_)` to `None`. The iteration stops when the first `None` is encountered. Here are the relevant parts from the [source code](https://doc.rust-lang.org/std/result/enum.Result.html), cleaned up for readability:
 
-    ```rs
-    pub enum Result<T, E> {
-       Ok(T),
-       Err(E),
-    }
-
-    impl<T, E> Result<T, E> {
-        pub fn ok(self) -> Option<T> {
-            match self {
-                Ok(x) => Some(x),
-                Err(_) => None,
-            }
-        }
-    }
-    ```
+    [PRE4]
 
     This conversion is necessary because the map method requires the closure to return an `Option`. Converting `Err` to `None` drops the error value and causes `map_while` to stop yielding.
 
@@ -93,35 +54,7 @@ In the `main` function, we attempt to open a file, which can fail for various re
 
 Here are the changes with the unrelated parts of the program hidden:
 
-```rs
-use std::fs::File;
-use std::io::{BufRead, BufReader};
-use std::process::exit;
-  fn find_matching_lines(lines: &[String], pattern: &str) -> Vec<usize> {
- lines .iter() .enumerate() .filter_map(|(i, line)| match line.contains(pattern) { true => Some(i), false => None, }) .collect() // turns anything iterable into a collection }   fn create_intervals(
- lines: Vec<usize>, before_context: usize, after_context: usize, ) -> Vec<(usize, usize)> {
- lines .iter() .map(|line| { ( line.saturating_sub(before_context), line.saturating_add(after_context), ) }) .collect() }   fn merge_intervals(intervals: &mut Vec<(usize, usize)>) {
- // merge overlapping intervals intervals.dedup_by(|next, prev| { if prev.1 < next.0 { false } else { prev.1 = next.1; true } }) }   fn print_results(intervals: Vec<(usize, usize)>, lines: Vec<String>) {
- for (start, end) in intervals { for (line_no, line) in lines.iter().enumerate().take(end + 1).skip(start) { println!("{}: {}", line_no + 1, line) } } } 
-fn read_file(file: File) -> Vec<String> {
-    BufReader::new(file).lines().map_while(Result::ok).collect()
-}
-
-fn main() {
-    // command line arguments
- let pattern = "all"; let before_context = 1; let after_context = 1;    let filename = "poem.txt";
-
-    // attempt to open the file
-    let lines = match File::open(filename) {
-        // convert the poem into lines
-        Ok(file) => read_file(file),
-        Err(e) => {
-            eprintln!("Error opening {filename}: {e}");
-            exit(1);
-        }
-    };
-  // store the 0-based line number for any matched line let match_lines = find_matching_lines(&lines, pattern);   // create intervals of the form [a,b] with the before/after context let mut intervals = create_intervals(match_lines, before_context, after_context);   // merge overlapping intervals merge_intervals(&mut intervals);   // print the lines print_results(intervals, lines); }
-```
+[PRE5]
 
 > Don't forget, you can reveal the hidden parts by clicking *Show hidden lines*.
 

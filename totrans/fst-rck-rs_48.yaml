@@ -1,0 +1,34 @@
+- en: Rustle
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/rustle.html](https://freddiehaddad.github.io/fast-track-to-rust/rustle.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: As we reach the end of this journey, I am pleased to present the final version
+    of the rustle program, ready for production use. To compile a release version,
+    be sure to use `cargo build --release`. I hope you have enjoyed this journey as
+    much as I have enjoyed guiding you through it. Thank you very much for completing
+    the course. Have fun on your Rust journey!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Fork/Join Solution](#forkjoin-solution)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[MPSC Solution](#mpsc-solution)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: You can find both versions of the rustle program we built together during this
+    course [here](https://github.com/freddiehaddad/rustle).
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL

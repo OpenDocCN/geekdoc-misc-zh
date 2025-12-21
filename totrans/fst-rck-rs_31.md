@@ -6,12 +6,7 @@ Now that we've added the `regex` crate as a dependency, we are ready to *use* it
 
 We've been doing this in our rustle program:
 
-```rs
-use std::fs::File;
-use std::io::Read;
-use std::io::{BufRead, BufReader};
-use std::process::exit;
-```
+[PRE0]
 
 By bringing the module into scope with `use regex::Regex;`, we can reference it with `Regex`.
 

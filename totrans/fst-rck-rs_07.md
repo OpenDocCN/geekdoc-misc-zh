@@ -6,18 +6,9 @@ In the previous section, we used `cargo new` to create a Rust package, which is 
 
 Let's clean everything up with `cargo clean` and return to the boilerplate. The `cargo clean` command removes the target directory where all the generated code resides. After running `cargo clean`, we're left with the boilerplate.
 
-```rs
-$ cargo clean
-     Removed 23 files, 2.9MiB total 
-```
+[PRE0]
 
-```rs
-.
-+ Cargo.lock
-+ Cargo.toml
-+ src
-  + main.rs 
-```
+[PRE1]
 
 For now, we'll focus on `main.rs` and discuss `Cargo.lock` and `Cargo.toml` later.
 
@@ -27,11 +18,7 @@ For now, we'll focus on `main.rs` and discuss `Cargo.lock` and `Cargo.toml` late
 
 The contents of `main.rs`:
 
-```rs
-fn main() {
-    println!("Hello, world!");
-}
-```
+[PRE2]
 
 Some of the syntax should look familiar:
 

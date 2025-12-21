@@ -16,17 +16,7 @@ Someone with a C++ background might be inclined to achieve this using a variant 
 > 
 > To make reading the code easier, only the new parts are visible. You can view previously seen code by clicking the *Show hidden lines* button when hovering over the code block.
 
-```rs
-fn main() {
- let poem = "I have a little shadow that goes in and out with me, And what can be the use of him is more than I can see. He is very, very like me from the heels up to the head; And I see him jump before me, when I jump into my bed.   The funniest thing about him is the way he likes to grow - Not at all like proper children, which is always very slow; For he sometimes shoots up taller like an india-rubber ball, And he sometimes gets so little that there's none of him at all.";      let mut lines = Vec::new(); // each call to push mutates the vector
-    for line in poem.lines() {
-        lines.push(line);
-    }
-
-    // format text for debugging purposes
-    println!("{lines:?}");
-}
-```
+[PRE0]
 
 We haven't discussed traits yet, so for now, just know that `:?` specifies formatting the output with the `Debug`^([2](#footnote-2)) trait. The vector type implements the `fmt::Debug` trait.
 
@@ -34,12 +24,7 @@ We haven't discussed traits yet, so for now, just know that `:?` specifies forma
 
 While using `push` is functionally correct, it introduces a mutable variable unnecessarily. An idiomatic solution would look like this:
 
-```rs
-use std::iter::FromIterator; // this line addresses a rust playground bug   fn main() {
- let poem = "I have a little shadow that goes in and out with me, And what can be the use of him is more than I can see. He is very, very like me from the heels up to the head; And I see him jump before me, when I jump into my bed.   The funniest thing about him is the way he likes to grow - Not at all like proper children, which is always very slow; For he sometimes shoots up taller like an india-rubber ball, And he sometimes gets so little that there's none of him at all.";      // convert poem into lines
-    let lines = Vec::from_iter(poem.lines());
-  // format text for debugging purposes println!("{lines:?}"); }
-```
+[PRE1]
 
 > Favoring immutability
 > 
@@ -49,21 +34,7 @@ use std::iter::FromIterator; // this line addresses a rust playground bug   fn m
 
 Now that we have a vector containing all the lines in our poem, let's create another vector to hold the line numbers where the pattern was found.
 
-```rs
-use std::iter::FromIterator; // this line addresses a rust playground bug   fn main() {
- let poem = "I have a little shadow that goes in and out with me, And what can be the use of him is more than I can see. He is very, very like me from the heels up to the head; And I see him jump before me, when I jump into my bed.   The funniest thing about him is the way he likes to grow - Not at all like proper children, which is always very slow; For he sometimes shoots up taller like an india-rubber ball, And he sometimes gets so little that there's none of him at all.";      let pattern = "all";
-
- // convert the poem into lines let lines = Vec::from_iter(poem.lines());      // store the 0-based line number for any matched line
-    let match_lines: Vec<_> = lines // inferred type (_)
-        .iter()
-        .enumerate()
-        .filter_map(|(i, line)| match line.contains(pattern) {
-            true => Some(i),
-            false => None,
-        })
-        .collect(); // turns anything iterable into a collection
-  // format text for debugging purposes println!("{match_lines:?}"); }
-```
+[PRE2]
 
 Instead of using `from_iter`, you can also use `collect`.
 
@@ -73,44 +44,13 @@ Instead of using `from_iter`, you can also use `collect`.
 
 The `map` function invokes the `closure` once for each value in the vector, passing `line_no` (the line number) to the function. We use this to identify the lines before and after the match that we want to print. To handle potential out-of-bounds indexing, we use `saturating_add` and `saturating_sub`.
 
-```rs
-use std::iter::FromIterator; // this line addresses a rust playground bug   fn main() {
- let poem = "I have a little shadow that goes in and out with me, And what can be the use of him is more than I can see. He is very, very like me from the heels up to the head; And I see him jump before me, when I jump into my bed.   The funniest thing about him is the way he likes to grow - Not at all like proper children, which is always very slow; For he sometimes shoots up taller like an india-rubber ball, And he sometimes gets so little that there's none of him at all.";   let pattern = "all";    let before_context = 1;
-    let after_context = 1;
-
- // convert the poem into lines let lines = Vec::from_iter(poem.lines());   // store the 0-based line number for any matched line let match_lines: Vec<_> = lines .iter() .enumerate() .filter_map(|(i, line)| match line.contains(pattern) { true => Some(i), false => None, }) .collect(); // turns anything iterable into a collection      // create intervals of the form [a,b] with the before/after context
-    let intervals: Vec<_> = match_lines
-        .iter()
-        .map(|line_no| {
-            (
-                // prevent underflow
-                line_no.saturating_sub(before_context),
-                // prevent overflow
-                line_no.saturating_add(after_context),
-            )
-        })
-        .collect();
-  // format text for debugging purposes println!("{intervals:?}"); }
-```
+[PRE3]
 
 ## [Merging Intervals](#merging-intervals)
 
 Merging overlapping intervals is straightforward because they are already sorted, and the ending value of the next interval must be greater than the current one. We could store the merged intervals in a new Vector, but that would be inefficient. Instead, we'll make our `intervals` vector mutable and take advantage of the `dedup_by` iterator adaptor to perform the merge.
 
-```rs
-use std::iter::FromIterator; // this line addresses a rust playground bug   fn main() {
- let poem = "I have a little shadow that goes in and out with me, And what can be the use of him is more than I can see. He is very, very like me from the heels up to the head; And I see him jump before me, when I jump into my bed.   The funniest thing about him is the way he likes to grow - Not at all like proper children, which is always very slow; For he sometimes shoots up taller like an india-rubber ball, And he sometimes gets so little that there's none of him at all.";   let pattern = "all"; let before_context = 1; let after_context = 1;   // convert the poem into lines let lines = Vec::from_iter(poem.lines());   // store the 0-based line number for any matched line let match_lines: Vec<_> = lines .iter() .enumerate() .filter_map(|(i, line)| match line.contains(pattern) { true => Some(i), false => None, }) .collect(); // turns anything iterable into a collection   // create intervals of the form [a,b] with the before/after context    let mut intervals: Vec<_> = match_lines
- .iter() .map(|line| { ( line.saturating_sub(before_context), line.saturating_add(after_context), ) }) .collect();      // merge overlapping intervals
-    intervals.dedup_by(|next, prev| {
-        if prev.1 < next.0 {
-            false
-        } else {
-            prev.1 = next.1;
-            true
-        }
-    });
-  // format text for debugging purposes println!("{intervals:?}"); }
-```
+[PRE4]
 
 The [`dedup_by`](https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.dedup_by) iterator adaptor removes consecutive identical elements based on a provided closure. It starts by calling the closure with the first (`prev`) and second (`next`) elements in the collection. If the closure returns `false`, `prev` becomes `next`, `next` is advanced, and the closure is called with the new elements. If the closure returns `true`, only `next` is advanced. This behavior allows us to update `prev` to be the merged interval, enabling efficient merging of overlapping intervals.
 
@@ -120,20 +60,7 @@ The [`dedup_by`](https://docs.rs/itertools/latest/itertools/trait.Itertools.html
 
 With our intervals merged, we can now print out the results correctly!
 
-```rs
-use std::iter::FromIterator; // this line addresses a rust playground bug   fn main() {
- let poem = "I have a little shadow that goes in and out with me, And what can be the use of him is more than I can see. He is very, very like me from the heels up to the head; And I see him jump before me, when I jump into my bed.   The funniest thing about him is the way he likes to grow - Not at all like proper children, which is always very slow; For he sometimes shoots up taller like an india-rubber ball, And he sometimes gets so little that there's none of him at all.";   let pattern = "all"; let before_context = 1; let after_context = 1;   // convert the poem into lines let lines = Vec::from_iter(poem.lines());   // store the 0-based line number for any matched line let match_lines: Vec<_> = lines .iter() .enumerate() .filter_map(|(i, line)| match line.contains(pattern) { true => Some(i), false => None, }) .collect(); // turns anything iterable into a collection   // create intervals of the form [a,b] with the before/after context let mut intervals: Vec<_> = match_lines .iter() .map(|line| { ( line.saturating_sub(before_context), line.saturating_add(after_context), ) }) .collect();   // merge overlapping intervals intervals.dedup_by(|next, prev| { if prev.1 < next.0 { false } else { prev.1 = next.1; true } });      // print the lines
-    for (start, end) in intervals {
-        for (line_no, line) in lines
-                .iter()
-                .enumerate()
-                .take(end + 1)
-                .skip(start) {
-            println!("{}: {}", line_no + 1, line)
-        }
-    }
-}
-```
+[PRE5]
 
 ## [We Did It!](#we-did-it)
 

@@ -8,34 +8,19 @@ We're going to create a type to represent an interval. Rust follows a standardiz
 
 Our closed interval is going to represent the start and end of the lines to print:
 
-```rs
-struct Interval {
-    start: usize,
-    end: usize,
-}
-```
+[PRE0]
 
 ## [Defining Behavior](#defining-behavior)
 
 Functions and methods are added by defining them inside an `impl` block:
 
-```rs
-impl Interval {
-    // Methods definitions
-}
-```
+[PRE1]
 
 ## [The `new` Function](#the-new-function)
 
 As it is common convention in Rust to define a function called `new` for creating an object, we'll begin by defining one to return an `Interval`.
 
-```rs
-impl Interval {
-    fn new(start: usize, end: usize) -> Self {
-        Self { start, end }
-    }
-}
-```
+[PRE2]
 
 > The keyword `Self`
 > 
@@ -49,15 +34,7 @@ impl Interval {
 
 Recall from our rustle program that we merged overlapping intervals to prevent printing the same line multiple times. It would be useful to create a method to check if two intervals overlap and another method to merge overlapping intervals. Let's outline these methods!
 
-```rs
-fn overlaps(&self, other: &Interval) -> bool {
-    todo!();
-}
-
-fn merge(&self, other: &Self) -> Self {
-    todo!();
-}
-```
+[PRE3]
 
 > The `todo!()` and `unimplemented!()` macros can be useful if you are prototyping and just want a placeholder to let your code pass type analysis.
 
@@ -75,11 +52,7 @@ Remember that our rustle program processes lines sequentially. This allows us to
 
 The `overlaps` method is fairly straightforward. We check if the `end` of the first interval is greater than or equal to the `start` of the next interval. The only caveat is the order of the comparison.
 
-```rs
-fn overlaps(&self, other: &Interval) -> bool {
-    self.end >= other.start
-}
-```
+[PRE4]
 
 ### [`merge`](#merge)
 
@@ -87,60 +60,17 @@ The `merge` method returns a new `Interval` using the `start` of the first inter
 
 In both cases, an immutable borrow for both intervals is sufficient since we do not need to mutate either value.
 
-```rs
-fn merge(&self, other: &Self) -> Self {
-    Interval::new(self.start, other.end)
-}
-```
+[PRE5]
 
 ### [Implementing `merge_intervals`](#implementing-merge_intervals)
 
 Rust programmers coming from a C++ background might be inclined to implement this function using some variation of the following algorithm:
 
-```rs
-fn merge_intervals(intervals: Vec<Interval>) -> Vec<Interval> {
-    let mut merged_intervals: Vec<Interval> = Vec::new();
-
-    let mut iter = intervals.into_iter();
-    match iter.next() {
-        Some(interval) => merged_intervals.push(interval),
-        None => return merged_intervals,
-    };
-
-    for interval in iter {
-        if let Some(previous_interval) = merged_intervals.last() {
-            if previous_interval.overlaps(&interval) {
-                let new_interval = previous_interval.merge(&interval);
-                merged_intervals.pop();
-                merged_intervals.push(new_interval);
-            } else {
-                merged_intervals.push(interval);
-            }
-        }
-    }
-
-    merged_intervals
-}
-```
+[PRE6]
 
 While functionally correct, Rust features powerful crates that can make implementing this behavior more concise. One such crate is [`Itertools`](https://docs.rs/itertools/latest/itertools), which provides extra iterator adaptors. To use this crate, specify it as a dependency in `Crates.toml` and include it in `main.rs` with `use itertools::Itertools`. Let's see how the [`coalesce`](https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.coalesce) adaptor can simplify the code:
 
-```rs
-use itertools::Itertools;
-
-fn merge_intervals(intervals: Vec<Interval>) -> Vec<Interval> {
-    intervals
-        .into_iter()
-        .coalesce(|p, c| {
-            if p.overlaps(&c) {
-                Ok(p.merge(&c))
-            } else {
-                Err((p, c))
-            }
-        })
-        .collect()
-}
-```
+[PRE7]
 
 > `into_iter`
 > 
@@ -152,77 +82,7 @@ fn merge_intervals(intervals: Vec<Interval>) -> Vec<Interval> {
 
 It's time to update our rustle program to utilize our new type. Additionally, a few minor changes have been made to enhance the design, demonstrate some additional language features, and leverage move semantics. Give the program a run!
 
-```rs
-#![allow(unused_imports)] extern crate regex; // this is needed for the playground use itertools::Itertools;
-use regex::Regex; use std::fs::File; use std::io::Read; use std::io::{BufRead, BufReader}; use std::process::exit;   fn find_matching_lines(lines: &[String], regex: Regex) -> Vec<usize> {
- lines .iter() .enumerate() .filter_map(|(i, line)| match regex.is_match(line) { true => Some(i), false => None, }) .collect() // turns anything iterable into a collection } 
-fn create_intervals(
-    lines: Vec<usize>,
-    before_context: usize,
-    after_context: usize,
-) -> Vec<Interval> {
-    lines
-        .iter()
-        .map(|line| {
-            let start = line.saturating_sub(before_context);
-            let end = line.saturating_add(after_context);
-            Interval::new(start, end)
-        })
-        .collect()
-}
-
-fn merge_intervals(intervals: Vec<Interval>) -> Vec<Interval> {
-    // merge overlapping intervals
-    intervals
-        .into_iter()
-        .coalesce(|p, c| {
-            if p.overlaps(&c) {
-                Ok(p.merge(&c))
-            } else {
-                Err((p, c))
-            }
-        })
-        .collect()
-}
-
-fn print_results(intervals: Vec<Interval>, lines: Vec<String>) {
-    for interval in intervals {
-        for (line_no, line) in lines
-            .iter()
-            .enumerate()
-            .take(interval.end + 1)
-            .skip(interval.start)
-        {
-            println!("{}: {}", line_no + 1, line)
-        }
-    }
-}
-
-fn read_file(file: impl Read) -> Vec<String> {
- BufReader::new(file).lines().map_while(Result::ok).collect() }   fn main() {
- let poem = "I have a little shadow that goes in and out with me, And what can be the use of him is more than I can see. He is very, very like me from the heels up to the head; And I see him jump before me, when I jump into my bed.   The funniest thing about him is the way he likes to grow - Not at all like proper children, which is always very slow; For he sometimes shoots up taller like an india-rubber ball, And he sometimes gets so little that there's none of him at all.";   let mock_file = std::io::Cursor::new(poem);   // command line arguments let pattern = "(all)|(little)"; let before_context = 1; let after_context = 1;   // attempt to open the file let lines = read_file(mock_file); //let lines = match File::open(filename) { //    // convert the poem into lines //    Ok(file) => read_file(file), //    Err(e) => { //        eprintln!("Error opening {filename}: {e}"); //        exit(1); //    } //};   // compile the regular expression let regex = match Regex::new(pattern) { Ok(re) => re, // bind re to regex Err(e) => { eprintln!("{e}"); // write to standard error exit(1); } };   // store the 0-based line number for any matched line let match_lines = find_matching_lines(&lines, regex);   // create intervals of the form [a,b] with the before/after context let intervals = create_intervals(match_lines, before_context, after_context);      // merge overlapping intervals
-    let intervals = merge_intervals(intervals);
-  // print the lines print_results(intervals, lines); }
-
-struct Interval {
-    start: usize,
-    end: usize,
-}
-
-impl Interval {
-    fn new(start: usize, end: usize) -> Self {
-        Self { start, end }
-    }
-
-    fn overlaps(&self, other: &Interval) -> bool {
-        self.end >= other.start
-    }
-
-    fn merge(&self, other: &Self) -> Self {
-        Interval::new(self.start, other.end)
-    }
-}
-```
+[PRE8]
 
 ## [Summarizing the Changes](#summarizing-the-changes)
 

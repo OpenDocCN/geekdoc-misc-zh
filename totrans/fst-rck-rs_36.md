@@ -6,14 +6,7 @@ In the previous section, we defined an `enum` and `struct`. However, we didn't a
 
 Since we're building our module to work in this online book, we'll deviate slightly from standard practice. Typically, modules are created in separate files. For instance, our `Interval` would be placed in a new file called `interval.rs`.
 
-```rs
-rustle
-+ Cargo.lock
-+ Cargo.toml
-+ src
-  + interval.rs
-  + main.rs 
-```
+[PRE0]
 
 > Document generation
 > 

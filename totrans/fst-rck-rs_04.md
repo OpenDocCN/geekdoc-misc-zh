@@ -4,11 +4,7 @@
 
 In addition to running and editing code in the browser, you might find the [Rust Playground](https://play.rust-lang.org/) helpful. It's a web interface for running Rust code.
 
-```rs
-fn main() {
-    println!("Welcome to Fast Track to Rust!");
-}
-```
+[PRE0]
 
 # [Exercise](#exercise)
 

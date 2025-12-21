@@ -8,183 +8,27 @@ Given the error in the previous section about borrowing a value after it has bee
 
 Recall from the section on the [string slice `str`](types.html#string-slice-str) that we said it's usually seen in it's *borrowed* form `&str`. The `&` operator^([1](#footnote-1)) in the prefix position represents a borrow. In `find_matching_lines`, `pattern` is *borrowed*.
 
-```rs
-fn find_matching_lines(lines: Vec<&str>, pattern: &str) -> Vec<usize>
-```
+[PRE0]
 
 ## [Borrowing `lines`](#borrowing-lines)
 
 In `find_matching_lines`, we can *borrow* `lines` by prefixing the parameter's type with an `&`, changing it to `&Vec<&str>`, and by prefixing the variable `lines` in `main` to `&lines`. After making these changes and re-running the program, we can see that it now works.
 
-```rs
-use std::iter::FromIterator; // this line addresses a rust playground bug   fn find_matching_lines(lines: &Vec<&str>, pattern: &str) -> Vec<usize> {
-    lines
-        .iter()
-        .enumerate()
-        .filter_map(|(i, line)| match line.contains(pattern) {
-            true => Some(i),
-            false => None,
-        })
-        .collect() // turns anything iterable into a collection
-}
-
-fn main() {
-    let poem = "I have a little shadow that goes in and out with me,
-                And what can be the use of him is more than I can see.
-                He is very, very like me from the heels up to the head;
-                And I see him jump before me, when I jump into my bed.
-
-                The funniest thing about him is the way he likes to grow -
-                Not at all like proper children, which is always very slow;
-                For he sometimes shoots up taller like an india-rubber ball,
-                And he sometimes gets so little that there's none of him at all.";
-
-    // command line arguments
-    let pattern = "all";
-    let before_context = 1;
-    let after_context = 1;
-
-    // convert the poem into lines
-    let lines = Vec::from_iter(poem.lines());
-
-    // store the 0-based line number for any matched line
-    let match_lines = find_matching_lines(&lines, pattern);
-
-    // create intervals of the form [a,b] with the before/after context
-    let mut intervals: Vec<_> = match_lines
-        .iter()
-        .map(|line| {
-            (
-                line.saturating_sub(before_context),
-                line.saturating_add(after_context),
-            )
-        })
-        .collect();
-
-    // merge overlapping intervals
-    intervals.dedup_by(|next, prev| {
-        if prev.1 < next.0 {
-            false
-        } else {
-            prev.1 = next.1;
-            true
-        }
-    });
-
-    // print the lines
-    for (start, end) in intervals {
-        for (line_no, line) in
-            lines.iter().enumerate().take(end + 1).skip(start)
-        {
-            println!("{}: {}", line_no + 1, line)
-        }
-    }
-}
-```
+[PRE1]
 
 ## [Continuing to Refactor](#continuing-to-refactor)
 
 Let's create another function to handle the creation of our intervals. Here is the function signature:
 
-```rs
-fn create_intervals(
-    lines: Vec<usize>,
-    before_context: usize,
-    after_context: usize,
-) -> Vec<(usize, usize)>
-```
+[PRE2]
 
 This is the code that we'll transfer into the new function:
 
-```rs
-// create intervals of the form [a,b] with the before/after context
-let mut intervals: Vec<_> = match_lines
-    .iter()
-    .map(|line| {
-        (
-            line.saturating_sub(before_context),
-            line.saturating_add(after_context),
-        )
-    })
-    .collect();
-```
+[PRE3]
 
 Here is the revised code with the changes implemented. Review it and run the code.
 
-```rs
-use std::iter::FromIterator; // this line addresses a rust playground bug   fn find_matching_lines(lines: &Vec<&str>, pattern: &str) -> Vec<usize> {
-    lines
-        .iter()
-        .enumerate()
-        .filter_map(|(i, line)| match line.contains(pattern) {
-            true => Some(i),
-            false => None,
-        })
-        .collect() // turns anything iterable into a collection
-}
-
-fn create_intervals(
-    lines: Vec<usize>,
-    before_context: usize,
-    after_context: usize,
-) -> Vec<(usize, usize)> {
-    lines
-        .iter()
-        .map(|line| {
-            (
-                line.saturating_sub(before_context),
-                line.saturating_add(after_context),
-            )
-        })
-        .collect()
-}
-
-fn main() {
-    let poem = "I have a little shadow that goes in and out with me,
-                And what can be the use of him is more than I can see.
-                He is very, very like me from the heels up to the head;
-                And I see him jump before me, when I jump into my bed.
-
-                The funniest thing about him is the way he likes to grow -
-                Not at all like proper children, which is always very slow;
-                For he sometimes shoots up taller like an india-rubber ball,
-                And he sometimes gets so little that there's none of him at all.";
-
-    // command line arguments
-    let pattern = "all";
-    let before_context = 1;
-    let after_context = 1;
-
-    // convert the poem into lines
-    let lines = Vec::from_iter(poem.lines());
-
-    // store the 0-based line number for any matched line
-    let match_lines = find_matching_lines(&lines, pattern);
-
-    // create intervals of the form [a,b] with the before/after context
-    let mut intervals =
-        create_intervals(match_lines, before_context, after_context);
-
-    // merge overlapping intervals
-    intervals.dedup_by(|next, prev| {
-        if prev.1 < next.0 {
-            false
-        } else {
-            prev.1 = next.1;
-            true
-        }
-    });
-
-    // print the lines
-    for (start, end) in intervals {
-        for (line_no, line) in
-            lines.iter().enumerate().take(end + 1).skip(start)
-        {
-            println!("{}: {}", line_no + 1, line)
-        }
-    }
-}
-```
+[PRE4]
 
 > Moving vs Borrowing
 > 
@@ -197,30 +41,11 @@ Develop a function named merge_intervals and transfer the specified code from ma
 
 *   Create a function named `merge_intervals` and move the specified code from `main` into this function, making any necessary updates.
 
-    ```rs
-    // merge overlapping intervals
-    intervals.dedup_by(|next, prev| {
-        if prev.1 < next.0 {
-            false
-        } else {
-            prev.1 = next.1;
-            true
-        }
-    });
-    ```
+    [PRE5]
 
 *   Create another function called `print_results` and move the specified code from `main` into this function, updating it as needed.
 
-    ```rs
-    // print the lines
-    for (start, end) in intervals {
-        for (line_no, line) in
-            lines.iter().enumerate().take(end + 1).skip(start)
-        {
-            println!("{}: {}", line_no + 1, line)
-        }
-    }
-    ```
+    [PRE6]
 
 *   Modify `main` to utilize these newly created functions.
 
@@ -228,91 +53,7 @@ Develop a function named merge_intervals and transfer the specified code from ma
 
 <details><summary>Solution</summary>
 
-```rs
-use std::iter::FromIterator; // this line addresses a rust playground bug
-
-fn find_matching_lines(lines: &Vec<&str>, pattern: &str) -> Vec<usize> {
-    lines
-        .iter()
-        .enumerate()
-        .filter_map(|(i, line)| match line.contains(pattern) {
-            true => Some(i),
-            false => None,
-        })
-        .collect() // turns anything iterable into a collection
-}
-
-fn create_intervals(
-    lines: Vec<usize>,
-    before_context: usize,
-    after_context: usize,
-) -> Vec<(usize, usize)> {
-    lines
-        .iter()
-        .map(|line| {
-            (
-                line.saturating_sub(before_context),
-                line.saturating_add(after_context),
-            )
-        })
-        .collect()
-}
-
-fn merge_intervals(intervals: &mut Vec<(usize, usize)>) {
-    // merge overlapping intervals
-    intervals.dedup_by(|next, prev| {
-        if prev.1 < next.0 {
-            false
-        } else {
-            prev.1 = next.1;
-            true
-        }
-    })
-}
-
-fn print_results(intervals: Vec<(usize, usize)>, lines: Vec<&str>) {
-    for (start, end) in intervals {
-        for (line_no, line) in
-            lines.iter().enumerate().take(end + 1).skip(start)
-        {
-            println!("{}: {}", line_no + 1, line)
-        }
-    }
-}
-
-fn main() {
-    let poem = "I have a little shadow that goes in and out with me,
-                And what can be the use of him is more than I can see.
-                He is very, very like me from the heels up to the head;
-                And I see him jump before me, when I jump into my bed.
-
-                The funniest thing about him is the way he likes to grow -
-                Not at all like proper children, which is always very slow;
-                For he sometimes shoots up taller like an india-rubber ball,
-                And he sometimes gets so little that there's none of him at all.";
-
-    // command line arguments
-    let pattern = "all";
-    let before_context = 1;
-    let after_context = 1;
-
-    // convert the poem into lines
-    let lines = Vec::from_iter(poem.lines());
-
-    // store the 0-based line number for any matched line
-    let match_lines = find_matching_lines(&lines, pattern);
-
-    // create intervals of the form [a,b] with the before/after context
-    let mut intervals =
-        create_intervals(match_lines, before_context, after_context);
-
-    // merge overlapping intervals
-    merge_intervals(&mut intervals);
-
-    // print the lines
-    print_results(intervals, lines);
-}
-```</details> 
+[PRE7]</details> 
 
 # [Summary](#summary)
 

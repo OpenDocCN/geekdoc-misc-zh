@@ -10,12 +10,7 @@ However, this approach is flawed! While it might be a valuable learning experien
 
 Here's the signature for the `spawn` function:
 
-```rs
-pub fn spawn<F, T>(f: F) -> JoinHandle<T>
-where
-    F: FnOnce() -> T + Send + 'static,
-    T: Send + 'static,
-```
+[PRE0]
 
 The `spawn` function takes a closure (`f`) as an argument, spawns a new thread to run the closure, and returns a [`JoinHandle`](https://doc.rust-lang.org/stable/std/thread/struct.JoinHandle.html). As the name suggests, the `JoinHandle` provides a [`join`](https://doc.rust-lang.org/stable/std/thread/struct.JoinHandle.html#method.join) method to wait for the spawned thread to finish. So far, so good. However, the `'static`^([1](#footnote-1)) constraint on `F` and the return value `T` is where, as the Bard would say, lies the rub.
 
@@ -27,19 +22,7 @@ If a thread, and by extension its return value, can outlive its caller, we need 
 
 Let's examine a simple program to better understand these concepts. Review the following code snippet and then run the program.
 
-```rs
-fn main() {
-    use std::thread;
-
-    let error = 0373; // Compiler error E0373
-
-    let handler = thread::spawn(|| {
-        println!("{error}");
-    });
-
-    handler.join().unwrap();
-}
-```
+[PRE1]
 
 This simple program seems perfectly valid. So why does the Rust compiler complain about code that would run without issues in most other languages? Even though it's not the case in this example, in a more general sense, the spawned thread created in `main` could potentially outlive the thread from which it was created. Because the closure borrows the `error` value, the parent thread could go out of scope, causing the `error` value to be dropped rendering the reference invalid. Because the compiler *can't* know whether or not that's going to happen, we see the error:
 
@@ -51,42 +34,13 @@ The compiler does offer a solution that may work under some circumstances:
 
 Let's see what happens if we do that:
 
-```rs
-fn main() {
-    use std::thread;
-
-    let error = 0373; // Compiler error E0373
-
-    let handler = thread::spawn(move || {
-        println!("{error}");
-    });
-
-    handler.join().unwrap();
-}
-```
+[PRE2]
 
 Recalling our discussion on *copy semantics*, it probably makes sense why this worked. The value was *copied* into the scope of the spawned thread, making it independent from the original and solving the lifetime problem. The variable is now guaranteed to live for as long as the thread. This works fine for primitive types and types implementing the `Copy` trait. But what if copying is an expensive operation, or the object can't be copied? This leads to the next challenge that developers learning Rust often face: what happens if we need to spawn additional threads that also need access to the same variable?
 
 For example, consider this case:
 
-```rs
-fn main() {
-    use std::thread;
-
-    let error = String::from("E0373"); // Compiler error E0373
-
-    let handler1 = thread::spawn(move || {
-        println!("{error}");
-    });
-
-    let handler2 = thread::spawn(move || {
-        println!("{error}");
-    });
-
-    handler1.join().unwrap();
-    handler2.join().unwrap();
-}
-```
+[PRE3]
 
 While these strict rules may seem daunting, especially in larger programs, they are the foundation of Rust's [fearless concurrency](https://doc.rust-lang.org/book/ch16-00-concurrency.html#fearless-concurrency) goals. These rules ensure that concurrency in your programs is both safe and efficient.
 

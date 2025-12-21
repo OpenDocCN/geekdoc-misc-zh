@@ -1,0 +1,1 @@
+["```rs\npub enum Option<T> {\n    None,\n    Some(T),\n}\n```", "```rs\n for (line_no, line) in\n        poem.lines()\n            .enumerate()\n            .filter_map(|(i, line)| match line.contains(pattern) {\n                true => Some((i + 1, line)),\n                false => None,\n            })\n    {\n        println!(\"{line_no}: {line}\");\n    }\n```"]

@@ -1,0 +1,227 @@
+- en: Traits
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/traits.html](https://freddiehaddad.github.io/fast-track-to-rust/traits.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'In the previous section, we specified trait bounds to restrict the types that
+    can be used with our `Interval`. Let''s formalize what a trait is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A trait is officially defined as a collection of methods for an unknown type:
+    `Self`.^([1](#footnote-1))'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In simpler terms, a trait allows you to define shared behavior in an abstract
+    way. It specifies a set of methods that a type must implement, similar to interfaces
+    in other programming languages.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The [Rust By Example](https://doc.rust-lang.org/rust-by-example/) book includes
+    many examples of [traits](https://doc.rust-lang.org/rust-by-example/trait.html)
+    and explores their usage in depth. Reviewing this material is highly recommended.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The compiler can automatically provide basic implementations for certain traits
+    using the derive (`#[derive]`) [attribute](https://doc.rust-lang.org/reference/attributes.html).
+    However, if more complex behavior is needed, these traits can still be manually
+    implemented. Here is a list of derivable traits:'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Comparison traits: [`Eq`](https://doc.rust-lang.org/std/cmp/trait.Eq.html),
+    [`PartialEq`](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html), Ord, [`PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html), to create
+    `T` from `&T` via a copy.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html), to give a type
+    *copy semantics* instead of *move semantics*.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`Hash`](https://doc.rust-lang.org/std/hash/trait.Hash.html), to compute a
+    hash from `&T`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`Default`](https://doc.rust-lang.org/std/default/trait.Default.html), to create
+    an empty instance of a data type.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`Debug`](https://doc.rust-lang.org/std/fmt/trait.Debug.html), to format a
+    value using the `{:?}` formatter.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Deriving a Trait](#deriving-a-trait)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Someone using our `Interval` might find it helpful to have an easy way to compare
+    them. For instance, a user may want to check if two intervals are equal. The [`PartialEq`](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html)
+    trait, part of the [`cmp`](https://doc.rust-lang.org/std/cmp/index.html) module,
+    specifies two methods that any type must define to implement the `PartialEq` trait.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: Notice the comment above the `ne` method that says "Provided method." This indicates
+    that if we manually implement this trait, we only need to provide an implementation
+    for `eq`.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Here's our revised `Interval` with support for `PartialEq`, thanks to the derive
+    attribute and the Rust compiler. Give it a try!
+  prefs: []
+  type: TYPE_NORMAL
+- en: The `Debug` trait has also been derived, enabling intervals to be printed in
+    a programmer-facing context using the `:?` operator. This common pattern in Rust
+    provides more helpful output in the program below.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: The [`unwrap()`](https://doc.rust-lang.org/std/result/enum.Result.html#method.unwrap)
+    method is implemented by `Result` and other types like `Option`. For `Result`,
+    it returns the `Ok` value or panics if the value is `Err`. Its usage is generally
+    discouraged and is only used here for brevity.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Operator Overloading
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: You might have noticed the comparison between intervals using `==` and `!=`.
+    This works because Rust includes support for operator overloading! You can find
+    all the detailed information in the [Operator Overloading](https://doc.rust-lang.org/rust-by-example/trait/ops.html)
+    section of the [Rust by Example](https://doc.rust-lang.org/rust-by-example/) book
+    and in the [`ops`](https://doc.rust-lang.org/std/ops/index.html) module.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[Implementing a Trait](#implementing-a-trait)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Just as comparing traits for equality can be helpful, so can generating a user-facing
+    representation of an `Interval`. By implementing the [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html)
+    trait, we can achieve this quite efficiently. Additionally, implementing the `Display`
+    trait automatically implements the [`ToString`](https://doc.rust-lang.org/std/string/trait.ToString.html)
+    trait, enabling the use of the `to_string()` method. Let's enhance our `Interval`
+    code to print an interval in the form `[x, y]`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Here''s the trait definition for `Display`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `<'_>` suffix next to `Formatter` is known as *lifetime annotation syntax*.^([2](#footnote-2))
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Here's our revised `Interval` with the `Display` trait implemented. Give it
+    a try!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Summary](#summary)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Our interval module has been enhanced to support several new capabilities.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can print programmer-facing intervals using the `Debug` trait and user-facing
+    intervals using the `Display` trait.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We have limited support for comparing intervals through the `PartialEq` and
+    `PartialOrd` traits.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A trait defines shared behavior abstractly, specifying methods a type must implement,
+    similar to interfaces in other languages.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The compiler can automatically provide basic implementations for certain traits
+    using the `#[derive]` attribute.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Rust includes support for operator overloading.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Exercise](#exercise)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Implement the [`PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html)
+    trait for `Interval`. To keep the code simple, you can return `None` for overlapping
+    intervals.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: <details><summary>Solution</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]</details>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Next](#next)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Now that we've covered traits, let's ensure our projects are synchronized before
+    we proceed to exploring attributes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Here''s the completed code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: https://doc.rust-lang.org/rust-by-example/trait.html [↩](#fr-1-1)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: This is a separate topic that you can learn more about in the [Validating References
+    with Lifetimes](https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html) section
+    of the [Rust Programming Language](https://doc.rust-lang.org/stable/book/) and
+    the [Lifetimes](https://doc.rust-lang.org/rust-by-example/scope/lifetime.html)
+    section of [Rust By Example](https://doc.rust-lang.org/rust-by-example/). [↩](#fr-2-1)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
