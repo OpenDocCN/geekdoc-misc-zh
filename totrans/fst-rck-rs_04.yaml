@@ -1,0 +1,50 @@
+- en: Rust Playground
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/rust_playground.html](https://freddiehaddad.github.io/fast-track-to-rust/rust_playground.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: In addition to running and editing code in the browser, you might find the [Rust
+    Playground](https://play.rust-lang.org/) helpful. It's a web interface for running
+    Rust code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: fn main() {
+  prefs: []
+  type: TYPE_NORMAL
+- en: println!("Welcome to Fast Track to Rust!");
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Exercise](#exercise)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Hover the mouse over the code block and click the arrow button to run the code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Modify the `"Welcome to Fast Track to Rust!"` string and re-run the code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Revert your changes by hovering your mouse over the code block and clicking
+    the *Undo changes* button.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Run the hello world program in the [playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&code=fn+main%28%29+%7B%0A++++println%21%28%22Welcome+to+Fast+Track+to+Rust%21%22%29%3B%0A%7D).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

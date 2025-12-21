@@ -1,0 +1,1 @@
+["```rs\npub fn spawn<F, T>(f: F) -> JoinHandle<T>\nwhere\n    F: FnOnce() -> T + Send + 'static,\n    T: Send + 'static,\n```", "```rs\n\n```", "```rs\n\n```", "```rs\n\n```", "```rs\n\n```", "```rs\n\n```", "```rs\n\n```"]

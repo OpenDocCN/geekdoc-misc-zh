@@ -1,0 +1,3412 @@
+- en: Multithreaded Rustle
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/multithreaded_rustle.html](https://freddiehaddad.github.io/fast-track-to-rust/multithreaded_rustle.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: With our understanding of scoped vs non-scoped threads, we are now prepared
+    to correctly update rustle to process each file specified on the command line
+    in a separate thread.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Here's the updated version of the program with the changes visible.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '#![allow(unused_imports)] use clap::Parser; use interval::{Interval, IntervalError};
+    use itertools::Itertools; use regex::Regex; use std::collections::HashMap;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: use std::fs::File; use std::io::Read; use std::io::{BufRead, BufReader}; use
+    std::path::PathBuf; use std::process::exit; use std::thread;
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'fn find_matching_lines(lines: &[String], regex: &Regex) -> Vec<usize> {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: lines
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .iter()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .enumerate()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .filter_map(|(i, line)| match regex.is_match(line) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: true => Some(i),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: false => None,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .collect() // turns anything iterable into a collection
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: fn create_intervals(
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'lines: Vec<usize>, before_context: usize, after_context: usize, ) -> Result<Vec<Interval<usize>>,
+    IntervalError> {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'lines .iter() .map(|line| { let start = line.saturating_sub(before_context);
+    let end = line.saturating_add(after_context); Interval::new(start, end) }) .collect()
+    }   fn merge_intervals(intervals: Vec<Interval<usize>>) -> Vec<Interval<usize>>
+    {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: // merge overlapping intervals intervals .into_iter() .coalesce(|p, c| p.merge(&c).map_err(|_|
+    (p, c))) .collect() }   fn print_results(
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'intervals: Vec<Interval<usize>>, lines: Vec<String>, line_number: bool, ) {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'for interval in intervals { for (line_no, line) in lines .iter() .enumerate()
+    .take(interval.end + 1) .skip(interval.start) { if line_number { print!("{}: ",
+    line_no + 1); } println!("{}", line); } } }   fn read_file(file: impl Read) ->
+    Vec<String> {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'BufReader::new(file).lines().map_while(Result::ok).collect() }   #[derive(Parser)]
+    #[command(version, about, long_about = None)] struct Cli {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '/// Prefix each line of output with the 1-based line number within its ///
+    input file. #[arg(short, long, default_value_t = false)] line_number: bool,   ///
+    Print num lines of trailing context before matching lines. #[arg(short, long,
+    default_value_t = 0, value_name = "num")] before_context: u8,   /// Print num
+    lines of trailing context after matching lines. #[arg(short, long, default_value_t
+    = 0, value_name = "num")] after_context: u8,   /// The regular expression to match.
+    #[arg(required = true)] pattern: String,   /// List of files to search. #[arg(required
+    = true)] files: Vec<PathBuf>, }'
+  prefs: []
+  type: TYPE_NORMAL
+- en: // Result from a thread
+  prefs: []
+  type: TYPE_NORMAL
+- en: struct RustleSuccess {
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'intervals: Vec<Interval<usize>>,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'lines: Vec<String>,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: // Result from a failed thread
+  prefs: []
+  type: TYPE_NORMAL
+- en: struct RustleFailure {
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'error: String,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: fn main() {
+  prefs: []
+  type: TYPE_NORMAL
+- en: // let cli = Cli::parse(); // for production use
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // mock command line arguments
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let cli = match Cli::try_parse_from([
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"rustle", // executable name'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"--line-number",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"--before-context",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"1",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"--after-context",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"1",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"(all)|(will)", // pattern'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // file(s)...
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"poem.txt",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"bad_file.txt", // intention failure'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"scoped_threads.txt",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ']) {'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(cli) => cli,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(e) => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'eprintln!("Error parsing command line arguments: {e:?}");'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: exit(1);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // map of filename/file contents to simulate opening a file
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let mock_disk = HashMap::from([
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"poem.txt",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"I have a little shadow that goes in and out with me,'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: And what can be the use of him is more than I can see.
+  prefs: []
+  type: TYPE_NORMAL
+- en: He is very, very like me from the heels up to the head;
+  prefs: []
+  type: TYPE_NORMAL
+- en: And I see him jump before me, when I jump into my bed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The funniest thing about him is the way he likes to grow -
+  prefs: []
+  type: TYPE_NORMAL
+- en: Not at all like proper children, which is always very slow;
+  prefs: []
+  type: TYPE_NORMAL
+- en: For he sometimes shoots up taller like an india-rubber ball,
+  prefs: []
+  type: TYPE_NORMAL
+- en: And he sometimes gets so little that there's none of him at all.",
+  prefs: []
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"scoped_threads.txt",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"When we work with scoped threads, the compiler can clearly see,'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if the variables we want to use will be available to me.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Because of this visibility, I'm runtime error free!
+  prefs: []
+  type: TYPE_NORMAL
+- en: And issues in my code will be exposed by rustc.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If this sort of safety is provided at native speeds,
+  prefs: []
+  type: TYPE_NORMAL
+- en: there's simply no compelling case to stick with cpp!",
+  prefs: []
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ']);'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // get values from clap
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let pattern = cli.pattern; let line_number = cli.line_number; let before_context
+    = cli.before_context as usize; let after_context = cli.after_context as usize;    let
+    files = cli.files;
+  prefs: []
+  type: TYPE_NORMAL
+- en: // compile the regular expression let regex = match Regex::new(&pattern) { Ok(re)
+    => re, // bind re to regex Err(e) => { eprintln!("{e}"); // write to standard
+    error exit(1); } };
+  prefs: []
+  type: TYPE_NORMAL
+- en: thread::scope(|s| {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'let handles: Vec<_> = files'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .iter()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .map(|file| {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let filename = match file.to_str() {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Some(filename) => filename,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: None => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: return Err(RustleFailure {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'error: format!('
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"Invalid filename: {}",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: file.display()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // attempt to open the file
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //let lines = match File::open(filename) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //    // convert the poem into lines
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //    Ok(file) => read_file(file),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //    Err(e) => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '//        eprintln!("Error opening {filename}: {e}");'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //        exit(1);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //    }
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //};
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if !mock_disk.contains_key(filename) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: return Err(RustleFailure {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'error: format!("File not found: {}", filename),'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '});'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(filename)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .map_ok(|filename| {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // only spawn a thread for accessible file
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: s.spawn(|| {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let contents = mock_disk.get(filename).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let mock_file = std::io::Cursor::new(contents);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let lines = read_file(mock_file);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // store the 0-based line number for any matched line
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let match_lines = find_matching_lines(&lines, &regex);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // create intervals of the form [a,b] with the before/after
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // context
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let intervals = match create_intervals(
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: match_lines,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: before_context,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: after_context,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(intervals) => intervals,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(_) => return Err(RustleFailure {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'error: String::from('
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"An error occurred while creating intervals",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}),'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // merge overlapping intervals
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let intervals = merge_intervals(intervals);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(RustleSuccess { intervals, lines })
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .collect();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // process all the results
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: for handle in handles {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let result = match handle {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(scoped_join_handle) => scoped_join_handle,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(e) => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: eprintln!("{}", e.error);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: continue;
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if let Ok(result) = result.join() {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: match result {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(result) => print_results(
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: result.intervals,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: result.lines,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: line_number,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(e) => eprintln!("{}", e.error),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '});'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: pub mod interval {
+  prefs: []
+  type: TYPE_NORMAL
+- en: '/// A list specifying general categories of Interval errors. #[derive(Debug)]
+    pub enum IntervalError { /// Start is not less than or equal to end StartEndRangeInvalid,
+    /// Two intervals to be merged do not overlap NonOverlappingInterval, }   ///
+    A closed-interval [`start`, `end`] type used for representing a range of /// values
+    between `start` and `end` inclusively. /// /// # Examples /// /// You can create
+    an `Interval` using `new`. /// /// [PRE1] #[derive(Debug, PartialEq)] pub struct
+    Interval<T> { pub start: T, pub end: T, }   impl<T: Copy + PartialOrd> Interval<T>
+    { /// Creates a new `Interval` set to `start` and `end`. /// /// # Examples ///
+    /// [PRE2] pub fn new(start: T, end: T) -> Result<Self, IntervalError> { if start
+    <= end { Ok(Self { start, end }) } else { Err(IntervalError::StartEndRangeInvalid)
+    } }   /// Checks if two intervals overlap. Overlapping intervals have at least
+    /// one point in common. /// /// # Examples /// /// [PRE3] /// /// [PRE4] ///
+    /// [PRE5] pub fn overlaps(&self, other: &Interval<T>) -> bool { self.end >= other.start
+    }   /// Merges two intervals returning a new `Interval`. /// /// The merged `Interval`
+    range includes the union of ranges from each /// `Interval`. /// /// # Examples
+    /// /// [PRE6] pub fn merge(&self, other: &Self) -> Result<Self, IntervalError>
+    { if self.overlaps(other) { Ok(Self { start: self.start, end: other.end, }) }
+    else { Err(IntervalError::NonOverlappingInterval) } } }   use std::fmt; impl<T:
+    fmt::Display> fmt::Display for Interval<T> { fn fmt(&self, f: &mut std::fmt::Formatter<''_>)
+    -> fmt::Result { write!(f, "[{}, {}]", self.start, self.end) } }   use std::cmp::Ordering;
+    impl<T: PartialEq + PartialOrd> PartialOrd for Interval<T> { fn partial_cmp(&self,
+    other: &Self) -> Option<Ordering> { if self == other { Some(Ordering::Equal) }
+    else if self.end < other.start { Some(Ordering::Less) } else if self.start > other.end
+    { Some(Ordering::Greater) } else { None // Intervals overlap } } } }'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: Missing Error Output
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs:
+  - PREF_BQ
+  type: TYPE_PRE
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: The error message for the bad file doesn't appear in the playground output because
+    standard error output isn't captured.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Our rustle program is now multithreaded and processes all the input files in
+    parallel! Let's walk through the code changes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`mock_disk`](#mock_disk)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The `mock_disk` [`HashMap`](https://doc.rust-lang.org/std/collections/struct.HashMap.html)
+    simulates disk access to check if a file exists and is accessible. The filename
+    serves as the key, while the file's contents are the value. This approach aids
+    in testing and development, but its use here is solely for Rust playground compatibility.
+    To ensure the creation of multiple threads, I added a new poem written by `yours
+    truly`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`thread::scope`](#threadscope)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Iterate over all files specified on the command line using the `map` iterator
+    adapter, which returns a `Result`. The `Ok` variant holds the filename if valid,
+    while the `Error` holds the error for an invalid filename.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'The `map_ok` iterator adapter processes each `Result`, calling the provided
+    closure on any `Ok` values, allowing us to ignore any invalid filenames. The provided
+    `Scope` (`s`) spawns one thread per file for processing. The closure returns a
+    `Result`: `Err` with an error message in a `RustleFailure` struct if processing
+    fails, or `Ok` with a `RustleSuccess` struct containing intervals and lines from
+    the input file if successful.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Use `collect` to create a vector (`Vec`) of results from each file iteration,
+    binding it to `handles`.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Finally, iterate over the elements in the `handles` vector using a for loop.
+    Print any errors to standard error, and pass successful pattern matching results
+    to the `print_results` function for output to standard output.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[`find_matching_lines`](#find_matching_lines)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Since each thread needs access to the `regex` object, the value is borrowed
+    instead of moved.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Summary](#summary)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Ownership and type systems are powerful tools for managing memory safety and
+    concurrency issues. By leveraging ownership and type checking, many concurrency
+    errors in Rust are caught at compile time rather than at runtime.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Unlike non-scoped threads, scoped threads can borrow non-`'static` data because
+    the scope ensures all threads are joined before it ends.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Exercise](#exercise)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: The fork/join model implemented is suboptimal because it waits for all threads
+    to finish and join before printing any results. To address this, we can use the
+    [`mpsc`](https://doc.rust-lang.org/std/sync/mpsc/index.html) (multiple producer,
+    single consumer) module, which allows threads to send results to a central receiver
+    as soon as they are ready. This enables the program to start outputting results
+    immediately, enhancing its responsiveness and efficiency. Modify the program to
+    make use of `mpsc`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**HINT**: The final solution should have a structure similar to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '#![allow(unused_imports)]'
+  prefs: []
+  type: TYPE_NORMAL
+- en: use clap::Parser;
+  prefs: []
+  type: TYPE_NORMAL
+- en: use interval::{Interval, IntervalError};
+  prefs: []
+  type: TYPE_NORMAL
+- en: use itertools::Itertools;
+  prefs: []
+  type: TYPE_NORMAL
+- en: use regex::Regex;
+  prefs: []
+  type: TYPE_NORMAL
+- en: use std::collections::HashMap;
+  prefs: []
+  type: TYPE_NORMAL
+- en: use std::fs::File;
+  prefs: []
+  type: TYPE_NORMAL
+- en: use std::io::Read;
+  prefs: []
+  type: TYPE_NORMAL
+- en: use std::io::{BufRead, BufReader};
+  prefs: []
+  type: TYPE_NORMAL
+- en: use std::path::PathBuf;
+  prefs: []
+  type: TYPE_NORMAL
+- en: use std::process::exit;
+  prefs: []
+  type: TYPE_NORMAL
+- en: use std::thread;
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'fn find_matching_lines(lines: &[String], regex: &Regex) -> Vec<usize> {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: lines
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .iter()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .enumerate()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .filter_map(|(i, line)| match regex.is_match(line) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: true => Some(i),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: false => None,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .collect() // turns anything iterable into a collection
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: fn create_intervals(
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'lines: Vec<usize>,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'before_context: usize,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'after_context: usize,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ) -> Result<Vec<Interval<usize>>, IntervalError> {
+  prefs: []
+  type: TYPE_NORMAL
+- en: lines
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .iter()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .map(|line| {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let start = line.saturating_sub(before_context);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let end = line.saturating_add(after_context);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Interval::new(start, end)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .collect()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'fn merge_intervals(intervals: Vec<Interval<usize>>) -> Vec<Interval<usize>>
+    {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: // merge overlapping intervals
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: intervals
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .into_iter()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .coalesce(|p, c| p.merge(&c).map_err(|_| (p, c)))
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .collect()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: fn print_results(
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'intervals: Vec<Interval<usize>>,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'lines: Vec<String>,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'line_number: bool,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ) {
+  prefs: []
+  type: TYPE_NORMAL
+- en: for interval in intervals {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: for (line_no, line) in lines
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .iter()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .enumerate()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .take(interval.end + 1)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .skip(interval.start)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '{'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if line_number {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'print!("{}: ", line_no + 1);'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: println!("{}", line);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'fn read_file(file: impl Read) -> Vec<String> {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: BufReader::new(file).lines().map_while(Result::ok).collect()
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '#[derive(Parser)]'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '#[command(version, about, long_about = None)]'
+  prefs: []
+  type: TYPE_NORMAL
+- en: struct Cli {
+  prefs: []
+  type: TYPE_NORMAL
+- en: /// Prefix each line of output with the 1-based line number within its
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// input file.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '#[arg(short, long, default_value_t = false)]'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'line_number: bool,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// Print num lines of trailing context before matching lines.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '#[arg(short, long, default_value_t = 0, value_name = "num")]'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'before_context: u8,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// Print num lines of trailing context after matching lines.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '#[arg(short, long, default_value_t = 0, value_name = "num")]'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'after_context: u8,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// The regular expression to match.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '#[arg(required = true)]'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'pattern: String,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// List of files to search.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '#[arg(required = true)]'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'files: Vec<PathBuf>,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: // Result from a thread
+  prefs: []
+  type: TYPE_NORMAL
+- en: struct RustleSuccess {
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'intervals: Vec<Interval<usize>>,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'lines: Vec<String>,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: // Result from a failed thread
+  prefs: []
+  type: TYPE_NORMAL
+- en: struct RustleFailure {
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'error: String,'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: fn main() {
+  prefs: []
+  type: TYPE_NORMAL
+- en: // let cli = Cli::parse(); // for production use
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // mock command line arguments
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let cli = match Cli::try_parse_from([
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"rustle", // executable name'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"--line-number",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"--before-context",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"1",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"--after-context",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"1",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"(all)|(will)", // pattern'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // file(s)...
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"poem.txt",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"bad_file.txt", // intention failure'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"scoped_threads.txt",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ']) {'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(cli) => cli,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(e) => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'eprintln!("Error parsing command line arguments: {e:?}");'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: exit(1);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // map of filename/file contents to simulate opening a file
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let mock_disk = HashMap::from([
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"poem.txt",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"I have a little shadow that goes in and out with me,'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: And what can be the use of him is more than I can see.
+  prefs: []
+  type: TYPE_NORMAL
+- en: He is very, very like me from the heels up to the head;
+  prefs: []
+  type: TYPE_NORMAL
+- en: And I see him jump before me, when I jump into my bed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The funniest thing about him is the way he likes to grow -
+  prefs: []
+  type: TYPE_NORMAL
+- en: Not at all like proper children, which is always very slow;
+  prefs: []
+  type: TYPE_NORMAL
+- en: For he sometimes shoots up taller like an india-rubber ball,
+  prefs: []
+  type: TYPE_NORMAL
+- en: And he sometimes gets so little that there's none of him at all.",
+  prefs: []
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"scoped_threads.txt",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"When we work with scoped threads, the compiler can clearly see,'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if the variables we want to use will be available to me.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Because of this visibility, I'm runtime error free!
+  prefs: []
+  type: TYPE_NORMAL
+- en: And issues in my code will be exposed by rustc.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If this sort of safety is provided at native speeds,
+  prefs: []
+  type: TYPE_NORMAL
+- en: there's simply no compelling case to stick with cpp!",
+  prefs: []
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ']);'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // get values from clap
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let pattern = cli.pattern;
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let line_number = cli.line_number;
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let before_context = cli.before_context as usize;
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let after_context = cli.after_context as usize;
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let files = cli.files;
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // compile the regular expression
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let regex = match Regex::new(&pattern) {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(re) => re, // bind re to regex
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(e) => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: eprintln!("{e}"); // write to standard error
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: exit(1);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: thread::scope(|s| {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'let handles: Vec<_> = files'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .iter()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .map(|file| {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let filename = match file.to_str() {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Some(filename) => filename,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: None => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: return Err(RustleFailure {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'error: format!('
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"Invalid filename: {}",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: file.display()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // attempt to open the file
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //let lines = match File::open(filename) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //    // convert the poem into lines
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //    Ok(file) => read_file(file),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //    Err(e) => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '//        eprintln!("Error opening {filename}: {e}");'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //        exit(1);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //    }
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: //};
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if !mock_disk.contains_key(filename) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: return Err(RustleFailure {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'error: format!("File not found: {}", filename),'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '});'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(filename)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .map_ok(|filename| {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // only spawn a thread for accessible file
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: s.spawn(|| {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let contents = mock_disk.get(filename).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let mock_file = std::io::Cursor::new(contents);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let lines = read_file(mock_file);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // store the 0-based line number for any matched line
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let match_lines = find_matching_lines(&lines, &regex);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // create intervals of the form [a,b] with the before/after
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // context
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let intervals = match create_intervals(
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: match_lines,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: before_context,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: after_context,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(intervals) => intervals,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(_) => return Err(RustleFailure {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'error: String::from('
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"An error occurred while creating intervals",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}),'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // merge overlapping intervals
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let intervals = merge_intervals(intervals);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(RustleSuccess { intervals, lines })
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: .collect();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // process all the results
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: for handle in handles {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let result = match handle {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(scoped_join_handle) => scoped_join_handle,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(e) => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: eprintln!("{}", e.error);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: continue;
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if let Ok(result) = result.join() {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: match result {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(result) => print_results(
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: result.intervals,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: result.lines,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: line_number,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(e) => eprintln!("{}", e.error),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '});'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: pub mod interval {
+  prefs: []
+  type: TYPE_NORMAL
+- en: /// A list specifying general categories of Interval errors.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '#[derive(Debug)]'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: pub enum IntervalError {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// Start is not less than or equal to end
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: StartEndRangeInvalid,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// Two intervals to be merged do not overlap
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: NonOverlappingInterval,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// A closed-interval [`start`, `end`] type used for representing a range of
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// values between `start` and `end` inclusively.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '/// # Examples'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// You can create an `Interval` using `new`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE11]
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '#[derive(Debug, PartialEq)]'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: pub struct Interval<T> {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'pub start: T,'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'pub end: T,'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'impl<T: Copy + PartialOrd> Interval<T> {'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// Creates a new `Interval` set to `start` and `end`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '/// # Examples'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE12]
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'pub fn new(start: T, end: T) -> Result<Self, IntervalError> {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if start <= end {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(Self { start, end })
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '} else {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(IntervalError::StartEndRangeInvalid)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// Checks if two intervals overlap. Overlapping intervals have at
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// least one point in common.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '/// # Examples'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE13]
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE14]
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE15]
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'pub fn overlaps(&self, other: &Interval<T>) -> bool {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: self.end >= other.start
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// Merges two intervals returning a new `Interval`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// The merged `Interval` range includes the union of ranges from each
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// `Interval`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '/// # Examples'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ///
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: /// [PRE16]
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'pub fn merge(&self, other: &Self) -> Result<Self, IntervalError> {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if self.overlaps(other) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(Self {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'start: self.start,'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'end: other.end,'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '} else {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(IntervalError::NonOverlappingInterval)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: use std::fmt;
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'impl<T: fmt::Display> fmt::Display for Interval<T> {'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'fn fmt(&self, f: &mut std::fmt::Formatter<''_>) -> fmt::Result {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: write!(f, "[{}, {}]", self.start, self.end)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: use std::cmp::Ordering;
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'impl<T: PartialEq + PartialOrd> PartialOrd for Interval<T> {'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'fn partial_cmp(&self, other: &Self) -> Option<Ordering> {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if self == other {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Some(Ordering::Equal)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '} else if self.end < other.start {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Some(Ordering::Less)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '} else if self.start > other.end {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Some(Ordering::Greater)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '} else {'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: None // Intervals overlap
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: <details><summary>Solution</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '#![allow(unused_imports)] use clap::Parser; use interval::{Interval, IntervalError};
+    use itertools::Itertools; use regex::Regex; use std::collections::HashMap; use
+    std::fs::File; use std::io::Read; use std::io::{BufRead, BufReader}; use std::path::PathBuf;
+    use std::process::exit; use std::sync::mpsc::channel;'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'use std::thread;   fn find_matching_lines(lines: &[String], regex: &Regex)
+    -> Vec<usize> {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: lines .iter() .enumerate() .filter_map(|(i, line)| match regex.is_match(line)
+    { true => Some(i), false => None, }) .collect() // turns anything iterable into
+    a collection }   fn create_intervals(
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'lines: Vec<usize>, before_context: usize, after_context: usize, ) -> Result<Vec<Interval<usize>>,
+    IntervalError> {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'lines .iter() .map(|line| { let start = line.saturating_sub(before_context);
+    let end = line.saturating_add(after_context); Interval::new(start, end) }) .collect()
+    }   fn merge_intervals(intervals: Vec<Interval<usize>>) -> Vec<Interval<usize>>
+    {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: // merge overlapping intervals intervals .into_iter() .coalesce(|p, c| p.merge(&c).map_err(|_|
+    (p, c))) .collect() }   fn print_results(
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'intervals: Vec<Interval<usize>>, lines: Vec<String>, line_number: bool, ) {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'for interval in intervals { for (line_no, line) in lines .iter() .enumerate()
+    .take(interval.end + 1) .skip(interval.start) { if line_number { print!("{}: ",
+    line_no + 1); } println!("{}", line); } } }   fn read_file(file: impl Read) ->
+    Vec<String> {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'BufReader::new(file).lines().map_while(Result::ok).collect() }   #[derive(Parser)]
+    #[command(version, about, long_about = None)] struct Cli {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '/// Prefix each line of output with the 1-based line number within its ///
+    input file. #[arg(short, long, default_value_t = false)] line_number: bool,   ///
+    Print num lines of trailing context before matching lines. #[arg(short, long,
+    default_value_t = 0, value_name = "num")] before_context: u8,   /// Print num
+    lines of trailing context after matching lines. #[arg(short, long, default_value_t
+    = 0, value_name = "num")] after_context: u8,   /// The regular expression to match.
+    #[arg(required = true)] pattern: String,   /// List of files to search. #[arg(required
+    = true)] files: Vec<PathBuf>, }   // Result from a thread struct RustleSuccess
+    {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'intervals: Vec<Interval<usize>>, lines: Vec<String>, }   // Result from a failed
+    thread struct RustleFailure {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'error: String, }'
+  prefs: []
+  type: TYPE_NORMAL
+- en: fn main() {
+  prefs: []
+  type: TYPE_NORMAL
+- en: '// let cli = Cli::parse(); // for production use // mock command line arguments
+    let cli = match Cli::try_parse_from([ "rustle", // executable name "--line-number",
+    "--before-context", "1", "--after-context", "1", "(all)|(will)", // pattern //
+    file(s)... "poem.txt", "bad_file.txt", // intention failure "scoped_threads.txt",
+    ]) { Ok(cli) => cli, Err(e) => { eprintln!("Error parsing command line arguments:
+    {e:?}"); exit(1); } };   // map of filename/file contents to simulate opening
+    a file let mock_disk = HashMap::from([ ( "poem.txt", "I have a little shadow that
+    goes in and out with me, And what can be the use of him is more than I can see.
+    He is very, very like me from the heels up to the head; And I see him jump before
+    me, when I jump into my bed.   The funniest thing about him is the way he likes
+    to grow - Not at all like proper children, which is always very slow; For he sometimes
+    shoots up taller like an india-rubber ball, And he sometimes gets so little that
+    there''s none of him at all.",'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ), ( "scoped_threads.txt", "When we work with scoped threads, the compiler can
+    clearly see, if the variables we want to use will be available to me. Because
+    of this visibility, I'm runtime error free! And issues in my code will be exposed
+    by rustc. If this sort of safety is provided at native speeds, there's simply
+    no compelling case to stick with cpp!",
+  prefs: []
+  type: TYPE_NORMAL
+- en: ), ]);   // get values from clap let pattern = cli.pattern; let line_number
+    = cli.line_number; let before_context = cli.before_context as usize; let after_context
+    = cli.after_context as usize; let files = cli.files;   // compile the regular
+    expression let regex = match Regex::new(&pattern) { Ok(re) => re, // bind re to
+    regex Err(e) => { eprintln!("{e}"); // write to standard error exit(1); } };      //
+    create the mpsc channel
+  prefs: []
+  type: TYPE_NORMAL
+- en: let (tx, rx) = channel::<Result<RustleSuccess, RustleFailure>>();
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // create a non-scoped thread for processing incoming messages
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let handle = thread::spawn(move || {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // process all the results
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: while let Ok(result) = rx.recv() {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: match result {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(result) => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: print_results(result.intervals, result.lines, line_number)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(e) => eprintln!("{}", e.error),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '});'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: thread::scope(|s| {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: for file in &files {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: s.spawn(|| {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // check if valid filename
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let filename = match file.to_str() {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Some(filename) => filename,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: None => {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: return tx.send(Err(RustleFailure {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'error: format!('
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"Invalid filename: {}",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: file.display()
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}))'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // attempt to open the file
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '//let handle = match File::open(filename) { //    Ok(handle) => handle, //    Err(e)
+    => { //        return tx.send(Err(RustleFailure { //            error: format!("Error
+    opening {filename}: {e}"), //        })) //    } //};                if !mock_disk.contains_key(filename)
+    {'
+  prefs: []
+  type: TYPE_NORMAL
+- en: return tx.send(Err(RustleFailure {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'error: format!("File not found: {}", filename),'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}));'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // process a file
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let contents = mock_disk.get(filename).unwrap();
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let mock_file = std::io::Cursor::new(contents);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let lines = read_file(mock_file);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // store the 0-based line number for any matched line
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let match_lines = find_matching_lines(&lines, &regex);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // create intervals of the form [a,b] with the before/after context
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let intervals =
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: match create_intervals(
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: match_lines,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: before_context,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: after_context,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Ok(intervals) => intervals,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Err(_) => return tx.send(Err(RustleFailure {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'error: String::from('
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '"An error occurred while creating intervals",'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '})),'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '};'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // merge overlapping intervals
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let intervals = merge_intervals(intervals);
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: tx.send(Ok(RustleSuccess { intervals, lines }))
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '});'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '});'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // drop the last sender to stop rx from waiting for messages
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: drop(tx);
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: // prevent main from returning until all results are processed
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let _ = handle.join();
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: pub mod interval {
+  prefs: []
+  type: TYPE_NORMAL
+- en: '/// A list specifying general categories of Interval errors. #[derive(Debug)]
+    pub enum IntervalError { /// Start is not less than or equal to end StartEndRangeInvalid,
+    /// Two intervals to be merged do not overlap NonOverlappingInterval, }   ///
+    A closed-interval [`start`, `end`] type used for representing a range of /// values
+    between `start` and `end` inclusively. /// /// # Examples /// /// You can create
+    an `Interval` using `new`. /// /// [PRE19] #[derive(Debug, PartialEq)] pub struct
+    Interval<T> { pub start: T, pub end: T, }   impl<T: Copy + PartialOrd> Interval<T>
+    { /// Creates a new `Interval` set to `start` and `end`. /// /// # Examples ///
+    /// [PRE20] pub fn new(start: T, end: T) -> Result<Self, IntervalError> { if start
+    <= end { Ok(Self { start, end }) } else { Err(IntervalError::StartEndRangeInvalid)
+    } }   /// Checks if two intervals overlap. Overlapping intervals have at /// least
+    one point in common. /// /// # Examples /// /// [PRE21] /// /// [PRE22] /// ///
+    [PRE23] pub fn overlaps(&self, other: &Interval<T>) -> bool { self.end >= other.start
+    }   /// Merges two intervals returning a new `Interval`. /// /// The merged `Interval`
+    range includes the union of ranges from each /// `Interval`. /// /// # Examples
+    /// /// [PRE24] pub fn merge(&self, other: &Self) -> Result<Self, IntervalError>
+    { if self.overlaps(other) { Ok(Self { start: self.start, end: other.end, }) }
+    else { Err(IntervalError::NonOverlappingInterval) } } }   use std::fmt; impl<T:
+    fmt::Display> fmt::Display for Interval<T> { fn fmt(&self, f: &mut std::fmt::Formatter<''_>)
+    -> fmt::Result { write!(f, "[{}, {}]", self.start, self.end) } }   use std::cmp::Ordering;
+    impl<T: PartialEq + PartialOrd> PartialOrd for Interval<T> { fn partial_cmp(&self,
+    other: &Self) -> Option<Ordering> { if self == other { Some(Ordering::Equal) }
+    else if self.end < other.start { Some(Ordering::Less) } else if self.start > other.end
+    { Some(Ordering::Greater) } else { None // Intervals overlap } } } }'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]</details>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Next](#next)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Wrapping things up!
+  prefs: []
+  type: TYPE_NORMAL

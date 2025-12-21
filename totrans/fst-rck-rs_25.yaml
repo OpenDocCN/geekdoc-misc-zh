@@ -1,0 +1,43 @@
+- en: Project Management
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/project_management.html](https://freddiehaddad.github.io/fast-track-to-rust/project_management.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: As your programs grow in size, it becomes crucial to organize your code effectively.
+    By grouping related functionalities and separating distinct features, you make
+    it easier to locate the code responsible for a specific feature and to modify
+    how that feature operates. Let's look at how a Rust project can be organized.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Paraphrasing the Rust documentation, Rust offers several features to help you
+    manage your code''s organization, including which details are exposed, which are
+    private, and what names are in each scope of your programs. These features, often
+    collectively referred to as the module system, include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Packages**: A Cargo feature that lets you build, test, and share crates.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Crates**: A tree of modules that produces a library or executable.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Modules** and **use**: Allow you to control the organization, scope, and
+    privacy of paths.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Paths**: A way of naming an item, such as a struct, function, or module.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: All the details about managing projects can be found in the [Managing Growing
+    Projects with Packages, Crates, and Modules](https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html#managing-growing-projects-with-packages-crates-and-modules)
+    section of [The Rust Programming Language](https://doc.rust-lang.org/book/title-page.html)
+    documentation.
+  prefs: []
+  type: TYPE_NORMAL

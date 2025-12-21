@@ -1,0 +1,350 @@
+- en: Control Flow
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/control_flow.html](https://freddiehaddad.github.io/fast-track-to-rust/control_flow.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Some of the common methods in Rust for controlling the flow of a program include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`if`](https://doc.rust-lang.org/reference/expressions/if-expr.html#if-expressions)
+    and [`if let`](https://doc.rust-lang.org/reference/expressions/if-expr.html#if-let-expressions)
+    expressions'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Loop expressions](https://doc.rust-lang.org/reference/expressions/loop-expr.html)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`match` expressions](https://doc.rust-lang.org/reference/expressions/match-expr.html)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: These methods help you manage the execution flow and make your code more efficient
+    and readable.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We will use a `for` loop to iterate over all the lines in the poem, checking
+    each for the substring specified by `pattern`. Each line will be evaluated using
+    a `match` expression.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: fn main() {
+  prefs: []
+  type: TYPE_NORMAL
+- en: let pattern = "him";
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let poem = "I have a little shadow that goes in and out with me,
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: And what can be the use of him is more than I can see.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: He is very, very like me from the heels up to the head;
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: And I see him jump before me, when I jump into my bed.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: The funniest thing about him is the way he likes to grow -
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Not at all like proper children, which is always very slow;
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: For he sometimes shoots up taller like an india-rubber ball,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: And he sometimes gets so little that there's none of him at all.";
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: for line in poem.lines() {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: match line.contains(pattern) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: true => println!("{line}"),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: false => (),
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[`for` Loops](#for-loops)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: The syntax of a `for` loop should look familiar. However, something interesting
+    is happening on that line. Notice the method call `poem.lines()`. You might have
+    thought poem was a string literal. How can it have methods? Well, as you guessed
+    and as was mentioned earlier, string slices are more than just string literals.
+    We'll explore them in more detail, so keep that in mind.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The purpose of the loop is quite clear: it iterates over each line in the poem.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`match` Expressions](#match-expressions)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'You might have already figured it out, but the `match` expression is similar
+    to an `if` expression in that it introduces a branch in the code execution. However,
+    it has a very powerful feature: when used, the compiler ensures that all possible
+    results of the [*scrutinee*](https://doc.rust-lang.org/reference/glossary.html#scrutinee)
+    are covered. This aspect of [`match` expressions](https://doc.rust-lang.org/reference/expressions/match-expr.html)
+    guarantees that all cases are handled.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Let's ensure we fully understand this. In the code snippet, comment out line
+    16 by prefixing it with `//`, and then run the code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Friendly compiler errors
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Take a moment to appreciate just how helpful this compiler error is. The Rust
+    compiler is truly your friend!
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The compiler error message is informing you that:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The `contains` method returns a boolean value.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The `false` case is not covered.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The Rust compiler can provide more information via `rustc --explain E0004`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let''s see what the Rust compiler has to say:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`match` arms have the following structure:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[`()` Unit Type](#-unit-type)'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: In situations where we don't want to perform any action, such as in the `false`
+    arm, we can use the empty unit type `()`. We'll explore this more as we progress
+    through the course.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Summary](#summary)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 'In this section, we:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Explored `for` loop expressions.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Examined `match` expressions.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Learned how the Rust compiler provides helpful error messages.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Were introduced to the empty unit type `()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Exercise](#exercise)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Replace the `match` expression with an [`if`](https://doc.rust-lang.org/reference/expressions/if-expr.html#if-expressions)
+    expression.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: <details><summary>Solution</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: fn main() {
+  prefs: []
+  type: TYPE_NORMAL
+- en: let pattern = "him";
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: let poem = "I have a little shadow that goes in and out with me,
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: And what can be the use of him is more than I can see.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: He is very, very like me from the heels up to the head;
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: And I see him jump before me, when I jump into my bed.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: The funniest thing about him is the way he likes to grow -
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Not at all like proper children, which is always very slow;
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: For he sometimes shoots up taller like an india-rubber ball,
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: And he sometimes gets so little that there's none of him at all.";
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: for line in poem.lines() {
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: if line.contains(pattern) {
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: println!("{line}");
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '}'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]</details>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Next](#next)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Take a break if you need, and then let's continue!
+  prefs: []
+  type: TYPE_NORMAL
