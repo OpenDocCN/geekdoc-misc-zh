@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Closures</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Closures</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/closures.html">https://freddiehaddad.github.io/fast-track-to-rust/closures.html</a></blockquote>
+                        
+<p>In Rust, <a href="https://doc.rust-lang.org/book/ch13-01-closures.html">closures</a> are functions that can capture their surrounding
+environment, clearly express the programmer's intent, and achieve this with
+low-level performance. They are quite common in functional programming
+languages.</p>
+<p>Closures in Rust have some distinct characteristics:</p>
+<ul>
+<li>Parameters are enclosed with <code>||</code> instead of <code>()</code>.</li>
+<li>Curly braces <code>{}</code> around the function body are optional for single-line
+expressions.</li>
+</ul>
+<h2 id="returning-to-our-loop"><a class="header" href="#returning-to-our-loop">Returning to our Loop</a></h2>
+<pre><pre class="playground"><code class="language-rust editable edition2021">fn main() {
+    let pattern = "him";
+    let poem = "I have a little shadow that goes in and out with me,
+                And what can be the use of him is more than I can see.
+                He is very, very like me from the heels up to the head;
+                And I see him jump before me, when I jump into my bed.
+
+                The funniest thing about him is the way he likes to grow -
+                Not at all like proper children, which is always very slow;
+                For he sometimes shoots up taller like an india-rubber ball,
+                And he sometimes gets so little that there's none of him at all.";
+
+    for (line_no, line) in
+        poem.lines()
+            .enumerate()
+            .filter_map(|(i, line)| match line.contains(pattern) {
+                true =&gt; Some((i + 1, line)),
+                false =&gt; None,
+            })
+    {
+        println!("{line_no}: {line}");
+    }
+}</code></pre></pre>
+<p>In the code snippet, the closure is:</p>
+<pre><code class="language-rust  noplayground">|(i, line)| match line.contains(pattern) {
+    true =&gt; Some((i + 1, line)),
+    false =&gt; None,
+}</code></pre>
+<h2 id="filter_map"><a class="header" href="#filter_map"><code>filter_map</code></a></h2>
+<p>The <a href="https://doc.rust-lang.org/std/iter/struct.FilterMap.html"><code>filter_map</code></a> <sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> function creates an iterator that both filters and maps.
+It calls a closure and filters out the results that are <code>None</code>, leaving us with
+an iterator of tuples containing the line number and line for all matches of our
+pattern. When the <code>for</code> loop consumes the iterator, we only need to print the
+results, as we are left with only the lines that contained the pattern!</p>
+<blockquote>
+<p>Recall that <code>enumerate</code> returns an iterator of <code>tuple</code>s. <code>filter_map</code> receives
+the <code>tuple</code> as the argument to the closure.</p>
+</blockquote>
+<h1 id="exercise"><a class="header" href="#exercise">Exercise</a></h1>
+<ul>
+<li>Replace <code>filter_map</code> with <code>map</code> and <code>filter</code> to achieve the same output.
+Notice how <code>filter_map</code> results in more efficient and concise code.</li>
+</ul>
+<details>
+<summary>Solution</summary>
+<pre><pre class="playground"><code class="language-rust editable edition2021">fn main() {
+    let pattern = "him";
+    let poem = "I have a little shadow that goes in and out with me,
+                And what can be the use of him is more than I can see.
+                He is very, very like me from the heels up to the head;
+                And I see him jump before me, when I jump into my bed.
+
+                The funniest thing about him is the way he likes to grow -
+                Not at all like proper children, which is always very slow;
+                For he sometimes shoots up taller like an india-rubber ball,
+                And he sometimes gets so little that there's none of him at all.";
+
+    for (line_no, line) in poem
+        .lines()
+        .enumerate()
+        .map(|(i, line)| (i + 1, line))
+        .filter(|(_line_no, line)| line.contains(pattern))
+    {
+        println!("{line_no}: {line}");
+    }
+}</code></pre></pre>
+<blockquote>
+<p>The underscore <code>_</code> prefix in <code>_line_no</code> is how we tell the Rust compiler that
+we are intentionally ignoring the first argument. Without it the compiler will
+complain.</p>
+</blockquote>
+</details>
+<h1 id="summary"><a class="header" href="#summary">Summary</a></h1>
+<p>In this section we:</p>
+<ul>
+<li>introduced the <code>Option</code> <code>enum</code></li>
+<li>learned about closures</li>
+<li>worked with iterators</li>
+<li>learned about the <code>mut</code> keyword</li>
+</ul>
+<h1 id="next"><a class="header" href="#next">Next</a></h1>
+<p>Onward to collections!</p>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>Separate <code>filter</code> and <code>map</code> iterators also exist. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

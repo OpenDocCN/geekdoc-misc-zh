@@ -1,1 +1,0 @@
-["```rs\npub fn scope<'env, F, T>(f: F) -> T\nwhere\n    F: for<'scope> FnOnce(&'scope Scope<'scope, 'env>) -> T,\n```", "```rs\n\n```", "```rs\n\n```"]

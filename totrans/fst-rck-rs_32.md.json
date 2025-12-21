@@ -1,1 +1,0 @@
-["```rs\nlet pattern = \"[Ee]xample\";\nlet re = Regex::new(pattern);\n```", "```rs\nfn new(re: &str) -> Result<Regex, Error>\n```", "```rs\n\n```", "```rs\n\n```", "```rs\n\n```", "```rs\n\n```"]

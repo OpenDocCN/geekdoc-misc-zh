@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Ownership</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Ownership</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/ownership.html">https://freddiehaddad.github.io/fast-track-to-rust/ownership.html</a></blockquote>
+                        
+<p>Ownership and borrowing are fundamental principles in Rust that ensure memory
+safety without needing a garbage collector. Ownership dictates how memory is
+managed, while borrowing allows you to reference data without taking ownership.
+Understanding these concepts is crucial for writing efficient and safe Rust
+programs.</p>
+<p>The Rust documentation provides an in-depth exploration of these topics in
+<a href="https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html">Understanding Ownership</a>, and it's highly recommended to spend some time
+reading that material. For now, let's focus on the core principles of ownership.</p>
+<h2 id="core-principles"><a class="header" href="#core-principles">Core Principles</a></h2>
+<p>Keep these rules about ownership in mind as we progress through the course:</p>
+<ul>
+<li>Each value in Rust has an owner.</li>
+<li>There can only be one owner at a time.</li>
+<li>When the owner goes out of scope, the value is <em>dropped</em>.<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup></li>
+</ul>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>The term <em>dropped</em> means the memory is freed and the object's lifetime has
+ended. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

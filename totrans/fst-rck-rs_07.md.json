@@ -1,1 +1,0 @@
-["```rs\n$ cargo clean\n     Removed 23 files, 2.9MiB total \n```", "```rs\n.\n+ Cargo.lock\n+ Cargo.toml\n+ src\n  + main.rs \n```", "```rs\n\n```", "```rs\n\n```"]

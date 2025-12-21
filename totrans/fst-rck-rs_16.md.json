@@ -1,1 +1,0 @@
-["```rs\n\n```", "```rs\n\n```", "```rs\n|(i, line)| match line.contains(pattern) {\n    true => Some((i + 1, line)),\n    false => None,\n}\n```", "```rs\n\n```", "```rs\n\n```"]
