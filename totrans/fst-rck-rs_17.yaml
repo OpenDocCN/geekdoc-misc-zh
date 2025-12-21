@@ -1,108 +1,161 @@
 - en: Collections
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 集合
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/collections.html](https://freddiehaddad.github.io/fast-track-to-rust/collections.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/collections.html](https://freddiehaddad.github.io/fast-track-to-rust/collections.html)
 - en: Rust's standard library features some highly powerful and useful data structures,
     referred to as [collections](https://doc.rust-lang.org/std/collections/index.html).
     While we'll explore one of them in this course, it's definitely worth spending
     time reviewing the entire collections library.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 的标准库提供了一些非常强大和有用的数据结构，被称为 [集合](https://doc.rust-lang.org/std/collections/index.html)。虽然我们将在本课程中探索其中之一，但花时间审查整个集合库绝对是值得的。
 - en: 'The collections are commonly grouped into four categories:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 集合通常分为四个类别：
 - en: 'Sequences: [Vec](https://doc.rust-lang.org/std/vec/struct.Vec.html), [VecDeque](https://doc.rust-lang.org/std/collections/struct.VecDeque.html),
     [LinkedList](https://doc.rust-lang.org/std/collections/struct.LinkedList.html)'
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 序列：[Vec](https://doc.rust-lang.org/std/vec/struct.Vec.html), [VecDeque](https://doc.rust-lang.org/std/collections/struct.VecDeque.html),
+    [LinkedList](https://doc.rust-lang.org/std/collections/struct.LinkedList.html)
 - en: 'Maps: [HashMap](https://doc.rust-lang.org/std/collections/hash_map/struct.HashMap.html),
     [BTreeMap](https://doc.rust-lang.org/std/collections/struct.BTreeMap.html)'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 映射：[HashMap](https://doc.rust-lang.org/std/collections/hash_map/struct.HashMap.html),
+    [BTreeMap](https://doc.rust-lang.org/std/collections/struct.BTreeMap.html)
 - en: 'Sets: [HashSet](https://doc.rust-lang.org/std/collections/hash_set/struct.HashSet.html),
     [BTreeSet](https://doc.rust-lang.org/std/collections/struct.BTreeSet.html)'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 集合：[HashSet](https://doc.rust-lang.org/std/collections/hash_set/struct.HashSet.html),
+    [BTreeSet](https://doc.rust-lang.org/std/collections/struct.BTreeSet.html)
 - en: 'Misc: [BinaryHeap](https://doc.rust-lang.org/std/collections/struct.BinaryHeap.html)'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'Misc: [二叉堆](https://doc.rust-lang.org/std/collections/struct.BinaryHeap.html)'
 - en: '[Rustle](#rustle)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Rustle](#rustle)'
 - en: Currently, our rustle program only outputs the line number and the matching
     line for each pattern match. It doesn't yet support printing lines before or after
     the match. So far, we haven't had a straightforward way to implement this functionality,
     and there are several challenges we need to address.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 目前，我们的 rustle 程序仅输出每个模式匹配的行号和匹配行。它还不支持打印匹配前后的行。到目前为止，我们还没有一种直接的方法来实现这一功能，并且我们需要解决几个挑战。
 - en: '[Handling Context](#handling-context)'
+  id: totrans-10
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[处理上下文](#handling-context)'
 - en: The `--before-context` option requires us to print preceding lines when we encounter
     a match. This necessitates a mechanism to reference those lines. However, we should
     only print each line once to avoid duplicating lines when consecutive lines within
     the context contain matches.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '`--before-context` 选项要求我们在遇到匹配时打印前面的行。这需要一个机制来引用这些行。然而，我们应该只打印每一行一次，以避免在上下文中连续行包含匹配时重复打印行。'
 - en: 'Consider the poem from our code:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑我们代码中的这首诗：
 - en: '[PRE0]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'If the pattern is "him" and the number of lines to print before each match
     is set to 2 (`--before-context=2`), without a method to track printed lines, we
     would end up with the following output:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果模式是 "him" 并且设置要打印的每行匹配前前的行数为 2 (`--before-context=2`)，如果没有跟踪打印行的方法，我们最终会得到以下输出：
 - en: '[PRE1]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'This is not the behavior we want from our rustle program. Instead, we aim for
     the following output:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 这不是我们 rustle 程序想要的行为。相反，我们希望得到以下输出：
 - en: '[PRE2]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: A similar issue arises with `--after-context`. Our solution involves using a
     vector and tuples (since we are now familiar with them) to create intervals over
     the ranges of lines we want to print.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 与 `--after-context` 也有类似的问题。我们的解决方案涉及使用向量以及元组（因为我们现在熟悉它们）来创建我们想要打印的行范围的区间。
 - en: '[Accessing Lines from the Input](#accessing-lines-from-the-input)'
+  id: totrans-19
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[从输入访问行](#accessing-lines-from-the-input)'
 - en: The context problem indicates that we need a method to reference a range of
     lines around each match. We'll address this by storing the lines in a collection
     from the Rust standard library called a vector `Vec<T>`.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 上下文问题表明我们需要一种方法来引用每个匹配周围的行范围。我们将通过将行存储在 Rust 标准库中的一个名为向量 `Vec<T>` 的集合中来解决这个问题。
 - en: '[Tracking the Lines Surrounding Each Match](#tracking-the-lines-surrounding-each-match)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[跟踪每个匹配周围的行](#tracking-the-lines-surrounding-each-match)'
 - en: Since we are familiar with them, we can use a `tuple` to represent the starting
     and ending intervals around each match. We'll need to track these intervals and
     merge overlapping ones to avoid printing the same line multiple times. Once again,
     a vector will be useful!
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于我们熟悉它们，我们可以使用 `tuple` 来表示每个匹配周围的起始和结束区间。我们需要跟踪这些区间并合并重叠的区间，以避免多次打印相同的行。再次强调，向量将非常有用！
 - en: '[Next](#next)'
+  id: totrans-23
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一页](#next)'
 - en: Let's start coding!
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们开始编码！

@@ -1,113 +1,170 @@
 - en: Closures
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 闭包
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/closures.html](https://freddiehaddad.github.io/fast-track-to-rust/closures.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/closures.html](https://freddiehaddad.github.io/fast-track-to-rust/closures.html)
 - en: In Rust, [closures](https://doc.rust-lang.org/book/ch13-01-closures.html) are
     functions that can capture their surrounding environment, clearly express the
     programmer's intent, and achieve this with low-level performance. They are quite
     common in functional programming languages.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Rust 中，[闭包](https://doc.rust-lang.org/book/ch13-01-closures.html) 是可以捕获其周围环境的函数，可以清晰地表达程序员的意图，并以低级性能实现这一点。它们在函数式编程语言中相当常见。
 - en: 'Closures in Rust have some distinct characteristics:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 中的闭包有一些独特的特性：
 - en: Parameters are enclosed with `||` instead of `()`.
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 参数用 `||` 而不是 `()` 括起来。
 - en: Curly braces `{}` around the function body are optional for single-line expressions.
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 函数体周围的括号 `{}` 对于单行表达式是可选的。
 - en: '[Returning to our Loop](#returning-to-our-loop)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[回到我们的循环](#returning-to-our-loop)'
 - en: '[PRE0]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'In the code snippet, the closure is:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 在代码片段中，闭包是：
 - en: '[PRE1]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[`filter_map`](#filter_map)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[filter_map](#filter_map)'
 - en: The [`filter_map`](https://doc.rust-lang.org/std/iter/struct.FilterMap.html)
     ^([1](#footnote-1)) function creates an iterator that both filters and maps. It
     calls a closure and filters out the results that are `None`, leaving us with an
     iterator of tuples containing the line number and line for all matches of our
     pattern. When the `for` loop consumes the iterator, we only need to print the
     results, as we are left with only the lines that contained the pattern!
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '`filter_map` 函数 ([1](#footnote-1)) 创建了一个同时过滤和映射的迭代器。它调用一个闭包，并过滤掉结果中的 `None`，留下包含所有匹配模式行号和行的元组的迭代器。当
+    `for` 循环消耗迭代器时，我们只需要打印结果，因为我们只剩下包含模式的行！'
 - en: Recall that `enumerate` returns an iterator of `tuple`s. `filter_map` receives
     the `tuple` as the argument to the closure.
+  id: totrans-12
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 回想一下，`enumerate` 返回一个元组的迭代器。`filter_map` 接收元组作为闭包的参数。
 - en: '[Exercise](#exercise)'
+  id: totrans-13
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: Replace `filter_map` with `map` and `filter` to achieve the same output. Notice
     how `filter_map` results in more efficient and concise code.
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将 `filter_map` 替换为 `map` 和 `filter` 以实现相同的结果。注意 `filter_map` 如何产生更高效和简洁的代码。
 - en: <details><summary>Solution</summary>
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: <details><summary>解决方案</summary>
 - en: '[PRE2]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The underscore `_` prefix in `_line_no` is how we tell the Rust compiler that
     we are intentionally ignoring the first argument. Without it the compiler will
     complain.</details>
+  id: totrans-17
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`_line_no` 中的下划线 `_` 前缀是我们告诉 Rust 编译器我们有意忽略第一个参数的方式。如果没有它，编译器将会报错。</details>'
 - en: '[Summary](#summary)'
+  id: totrans-18
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: 'In this section we:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中我们：
 - en: introduced the `Option` `enum`
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 引入了 `Option` 枚举
 - en: learned about closures
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 学习了闭包
 - en: worked with iterators
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用了迭代器
 - en: learned about the `mut` keyword
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 学习了 `mut` 关键字
 - en: '[Next](#next)'
+  id: totrans-24
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一页](#next)'
 - en: Onward to collections!
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来是集合！
 - en: '* * *'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: Separate `filter` and `map` iterators also exist. [↩](#fr-1-1)
+  id: totrans-27
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 存在独立的 `filter` 和 `map` 迭代器。 [↩](#fr-1-1)

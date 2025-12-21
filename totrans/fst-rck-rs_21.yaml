@@ -1,178 +1,268 @@
 - en: Borrowing
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 借用
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/borrowing.html](https://freddiehaddad.github.io/fast-track-to-rust/borrowing.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/borrowing.html](https://freddiehaddad.github.io/fast-track-to-rust/borrowing.html)
 - en: Given the error in the previous section about borrowing a value after it has
     been moved, let's now focus on how to *borrow* a value.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上一节关于在移动值之后借用值的错误中，现在让我们专注于如何 *借用* 一个值。
 - en: '[References](#references)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[引用](#references)'
 - en: Recall from the section on the [string slice `str`](types.html#string-slice-str)
     that we said it's usually seen in it's *borrowed* form `&str`. The `&` operator^([1](#footnote-1))
     in the prefix position represents a borrow. In `find_matching_lines`, `pattern`
     is *borrowed*.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 回想一下在 [字符串切片 `str`](types.html#string-slice-str) 的部分，我们说它通常以 *借用* 的形式 `&str`
+    出现。前缀位置中的 `&` 操作符^([1](#footnote-1)) 表示一个借用。在 `find_matching_lines` 中，`pattern`
+    是 *借用* 的。
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[Borrowing `lines`](#borrowing-lines)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[借用 `lines`](#borrowing-lines)'
 - en: In `find_matching_lines`, we can *borrow* `lines` by prefixing the parameter's
     type with an `&`, changing it to `&Vec<&str>`, and by prefixing the variable `lines`
     in `main` to `&lines`. After making these changes and re-running the program,
     we can see that it now works.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `find_matching_lines` 中，我们可以通过在参数类型前加一个 `&`，将其改为 `&Vec<&str>`，并在 `main` 中将变量
+    `lines` 前加一个 `&` 来 *借用* `lines`。在做出这些更改并重新运行程序后，我们可以看到它现在可以正常工作了。
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[Continuing to Refactor](#continuing-to-refactor)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[继续重构](#continuing-to-refactor)'
 - en: 'Let''s create another function to handle the creation of our intervals. Here
     is the function signature:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们创建另一个函数来处理我们区间的创建。以下是函数签名：
 - en: '[PRE2]'
+  id: totrans-11
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'This is the code that we''ll transfer into the new function:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们将转移到新函数中的代码：
 - en: '[PRE3]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Here is the revised code with the changes implemented. Review it and run the
     code.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是实施更改后的修订代码。请审查并运行代码。
 - en: '[PRE4]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Moving vs Borrowing
+  id: totrans-16
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 移动与借用
 - en: ''
+  id: totrans-17
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: Why is it possible to *move* `match_lines` without causing an error?
+  id: totrans-18
   prefs:
   - PREF_BQ
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为什么可以 *移动* `match_lines` 而不会导致错误？
 - en: Considering heap allocations, what advantages might there be in moving `match_lines`
     instead of *borrowing* it?
+  id: totrans-19
   prefs:
   - PREF_BQ
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 考虑堆分配，移动 `match_lines` 而不是 *借用* 它可能有哪些优势？
 - en: '[Exercise](#exercise)'
+  id: totrans-20
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: Develop a function named merge_intervals and transfer the specified code from
     main into this function, making any necessary updates. Construct another function
     called print_results and relocate the specified code from main into this function,
     updating it as needed.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 开发一个名为 `merge_intervals` 的函数，并将指定的代码从 `main` 中移动到这个函数中，进行必要的更新。构建另一个名为 `print_results`
+    的函数，并将指定的代码从 `main` 中移动到这个函数中，根据需要更新。
 - en: Create a function named `merge_intervals` and move the specified code from `main`
     into this function, making any necessary updates.
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建一个名为 `merge_intervals` 的函数，并将指定的代码从 `main` 中移动到这个函数中，进行必要的更新。
 - en: '[PRE5]'
+  id: totrans-23
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Create another function called `print_results` and move the specified code from
     `main` into this function, updating it as needed.
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建另一个名为 `print_results` 的函数，并将指定的代码从 `main` 中移动到这个函数中，根据需要更新它。
 - en: '[PRE6]'
+  id: totrans-25
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Modify `main` to utilize these newly created functions.
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 修改 `main` 以利用这些新创建的函数。
 - en: You can complete these exercises by updating the most recent version of the
     code provided above.
+  id: totrans-27
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 您可以通过更新上面提供的最新版本代码来完成这些练习。
 - en: <details><summary>Solution</summary>
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: <details><summary>解决方案</summary>
 - en: '[PRE7]</details>'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: '[PRE7]</details>'
 - en: '[Summary](#summary)'
+  id: totrans-30
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: 'Although the concepts of ownership and borrowing are relatively straightforward,
     they can be frustrating when learning Rust. Reading through the official documentation
     on [Understanding Ownership](https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html)
     will certainly help overcome this challenge. Keep the following points in mind
     as you continue on your journey with Rust:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 虽然所有权和借用的概念相对简单，但在学习 Rust 时可能会令人沮丧。阅读官方文档中的[理解所有权](https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html)将肯定有助于克服这一挑战。在继续
+    Rust 之旅时，请记住以下要点：
 - en: '**Ownership Rules**'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: '**所有权规则**'
 - en: Each value in Rust has an owner.
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在 Rust 中，每个值都有一个所有者。
 - en: There can only be one owner at a time.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一次只能有一个所有者。
 - en: When the owner goes out of scope, the value is dropped.
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当所有者超出作用域时，值将被丢弃。
 - en: '**Borrowing Rules**'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: '**借用规则**'
 - en: At any given time, you can have either one mutable reference or any number of
     immutable references.
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在任何给定时间，您只能有一个可变引用或任意数量的不可变引用。
 - en: References must always be valid.
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 参考文献必须始终有效。
 - en: '[Next](#next)'
+  id: totrans-39
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一节](#next)'
 - en: With our new understanding of ownership and borrowing, let's switch our focus
     to error handling.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们对所有权和借用有了新的理解之后，让我们将重点转向错误处理。
 - en: '* * *'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: The `&` operator can have different meanings depending on the context. For example,
     when used an infix operator, it becomes a bitwise AND. [↩](#fr-1-1)
+  id: totrans-42
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`&` 运算符根据上下文可以有不同的含义。例如，当用作中缀运算符时，它变为位与运算。 [↩](#fr-1-1)'

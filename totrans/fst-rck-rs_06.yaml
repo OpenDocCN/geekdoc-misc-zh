@@ -1,100 +1,146 @@
 - en: Package Creation
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 包创建
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/package_creation.html](https://freddiehaddad.github.io/fast-track-to-rust/package_creation.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/package_creation.html](https://freddiehaddad.github.io/fast-track-to-rust/package_creation.html)
 - en: 'Let''s make sure all the prerequisites are in place. You should have followed
     the [installation](installation.html) instructions to prepare your development
     environment. After those steps are complete, you should be able to run the following
     commands:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们确保所有先决条件都已就绪。你应该已经遵循了[安装](installation.html)说明来准备你的开发环境。完成这些步骤后，你应该能够运行以下命令：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The version numbers might be different, but the output should look relatively
     similar.
+  id: totrans-4
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 版本号可能不同，但输出应该相对相似。
 - en: If the above commands worked, you're ready to go!
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果上述命令都成功了，你就准备就绪了！
 - en: 'Use `cargo new rustle` to create a new Rust package named `rustle` for our
     project:'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 使用 `cargo new rustle` 为我们的项目创建一个名为 `rustle` 的新 Rust 包：
 - en: '[PRE1]'
+  id: totrans-7
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Navigate to the `rustle` directory and use `cargo run` to build and run the
     program:'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 导航到 `rustle` 目录并使用 `cargo run` 来构建和运行程序：
 - en: '[PRE2]'
+  id: totrans-9
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Explore some of the other actions you can perform with `cargo` using `cargo
     --help`.
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 使用 `cargo --help` 探索你可以使用 `cargo` 执行的其他操作。
 - en: '`cargo build` - compile the current package'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`cargo build` - 编译当前包'
 - en: '`cargo build --release` - build the project in release mode (with optimizations)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`cargo build --release` - 以发布模式（带有优化）构建项目'
 - en: '`cargo check` - analyze the current package and report errors (no object files
     generated)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`cargo check` - 分析当前包并报告错误（不生成目标文件）'
 - en: '`cargo test` - run unit tests'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`cargo test` - 运行单元测试'
 - en: and more...
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 和更多...
 - en: '[Summary](#summary)'
+  id: totrans-16
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: 'In this section, we:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们：
 - en: Created a package.
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建了一个包。
 - en: Compiled and ran the boilerplate code.
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 编译并运行了样板代码。
 - en: Learned a bit about Cargo.
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对 Cargo 有了一些了解。
 - en: '[Next](#next)'
+  id: totrans-21
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一节](#next)'
 - en: Let's see what `cargo new` actually did!
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看 `cargo new` 实际上做了什么！

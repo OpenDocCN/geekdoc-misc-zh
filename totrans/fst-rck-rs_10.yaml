@@ -1,164 +1,247 @@
 - en: Control Flow
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 控制流程
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/control_flow.html](https://freddiehaddad.github.io/fast-track-to-rust/control_flow.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/control_flow.html](https://freddiehaddad.github.io/fast-track-to-rust/control_flow.html)
 - en: 'Some of the common methods in Rust for controlling the flow of a program include:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust中用于控制程序流程的一些常见方法包括：
 - en: '[`if`](https://doc.rust-lang.org/reference/expressions/if-expr.html#if-expressions)
     and [`if let`](https://doc.rust-lang.org/reference/expressions/if-expr.html#if-let-expressions)
     expressions'
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`if`](https://doc.rust-lang.org/reference/expressions/if-expr.html#if-expressions)
+    和 [`if let`](https://doc.rust-lang.org/reference/expressions/if-expr.html#if-let-expressions)
+    表达式'
 - en: '[Loop expressions](https://doc.rust-lang.org/reference/expressions/loop-expr.html)'
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[循环表达式](https://doc.rust-lang.org/reference/expressions/loop-expr.html)'
 - en: '[`match` expressions](https://doc.rust-lang.org/reference/expressions/match-expr.html)'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`match` 表达式](https://doc.rust-lang.org/reference/expressions/match-expr.html)'
 - en: These methods help you manage the execution flow and make your code more efficient
     and readable.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些方法帮助你管理执行流程，使你的代码更高效、更易读。
 - en: We will use a `for` loop to iterate over all the lines in the poem, checking
     each for the substring specified by `pattern`. Each line will be evaluated using
     a `match` expression.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将使用`for`循环遍历诗中的所有行，检查每一行是否包含由`pattern`指定的子串。每一行将使用`match`表达式进行评估。
 - en: '[PRE0]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[`for` Loops](#for-loops)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`for` 循环](#for-loops)'
 - en: The syntax of a `for` loop should look familiar. However, something interesting
     is happening on that line. Notice the method call `poem.lines()`. You might have
     thought poem was a string literal. How can it have methods? Well, as you guessed
     and as was mentioned earlier, string slices are more than just string literals.
     We'll explore them in more detail, so keep that in mind.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: '`for`循环的语法应该看起来很熟悉。然而，在这一行发生了一些有趣的事情。注意方法调用`poem.lines()`。你可能认为诗是一个字符串字面量。它怎么能有方法呢？好吧，正如你所猜测的，以及之前提到的，字符串切片不仅仅是字符串字面量。我们将更详细地探讨它们，所以请记住这一点。'
 - en: 'The purpose of the loop is quite clear: it iterates over each line in the poem.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 循环的目的非常明确：它遍历诗中的每一行。
 - en: '[`match` Expressions](#match-expressions)'
+  id: totrans-12
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`match` 表达式](#match-expressions)'
 - en: 'You might have already figured it out, but the `match` expression is similar
     to an `if` expression in that it introduces a branch in the code execution. However,
     it has a very powerful feature: when used, the compiler ensures that all possible
     results of the [*scrutinee*](https://doc.rust-lang.org/reference/glossary.html#scrutinee)
     are covered. This aspect of [`match` expressions](https://doc.rust-lang.org/reference/expressions/match-expr.html)
     guarantees that all cases are handled.'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能已经猜到了，但`match`表达式与`if`表达式类似，因为它在代码执行中引入了一个分支。然而，它有一个非常强大的功能：当使用时，编译器确保所有可能的[*scrutinee*](https://doc.rust-lang.org/reference/glossary.html#scrutinee)结果都被覆盖。这个方面保证了[`match`表达式](https://doc.rust-lang.org/reference/expressions/match-expr.html)中所有情况都被处理。
 - en: Let's ensure we fully understand this. In the code snippet, comment out line
     16 by prefixing it with `//`, and then run the code.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们确保我们完全理解这一点。在代码片段中，通过在行16前加上`//`来注释掉它，然后运行代码。
 - en: Friendly compiler errors
+  id: totrans-15
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 友好的编译器错误
 - en: ''
+  id: totrans-16
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: Take a moment to appreciate just how helpful this compiler error is. The Rust
     compiler is truly your friend!
+  id: totrans-17
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 抽时间来欣赏一下这个编译器错误是多么的有帮助。Rust编译器真的是你的朋友！
 - en: '[PRE1]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'The compiler error message is informing you that:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器错误信息正在通知你：
 - en: The `contains` method returns a boolean value.
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`contains`方法返回一个布尔值。'
 - en: The `false` case is not covered.
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 没有涵盖`false`情况。
 - en: The Rust compiler can provide more information via `rustc --explain E0004`.
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Rust编译器可以通过`rustc --explain E0004`提供更多信息。
 - en: 'Let''s see what the Rust compiler has to say:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看Rust编译器会说什么：
 - en: '[PRE2]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`match` arms have the following structure:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '`match`分支具有以下结构：'
 - en: '[PRE3]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[`()` Unit Type](#-unit-type)'
+  id: totrans-27
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[()` 单元类型](#-unit-type)'
 - en: In situations where we don't want to perform any action, such as in the `false`
     arm, we can use the empty unit type `()`. We'll explore this more as we progress
     through the course.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们不想执行任何操作的情况下，例如在`false`分支中，我们可以使用空单元类型`()`。随着课程的进行，我们将进一步探讨这一点。
 - en: '[Summary](#summary)'
+  id: totrans-29
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[摘要](#summary)'
 - en: 'In this section, we:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们：
 - en: Explored `for` loop expressions.
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 探索了`for`循环表达式。
 - en: Examined `match` expressions.
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 检查了`match`表达式。
 - en: Learned how the Rust compiler provides helpful error messages.
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 学习了Rust编译器如何提供有用的错误信息。
 - en: Were introduced to the empty unit type `()`.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 介绍了空单元类型`()`。
 - en: '[Exercise](#exercise)'
+  id: totrans-35
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: Replace the `match` expression with an [`if`](https://doc.rust-lang.org/reference/expressions/if-expr.html#if-expressions)
     expression.
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将 `match` 表达式替换为 `if` 表达式。
 - en: <details><summary>Solution</summary>
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: <details><summary>解决方案</summary>
 - en: '[PRE4]</details>'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: '[PRE4]</details>'
 - en: '[Next](#next)'
+  id: totrans-39
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一页](#next)'
 - en: Take a break if you need, and then let's continue!
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果需要，请休息一下，然后我们继续！

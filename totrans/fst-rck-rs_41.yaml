@@ -1,93 +1,141 @@
 - en: Attributes
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 属性
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/attributes.html](https://freddiehaddad.github.io/fast-track-to-rust/attributes.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/attributes.html](https://freddiehaddad.github.io/fast-track-to-rust/attributes.html)
 - en: Throughout this course, we've been using [attributes](https://doc.rust-lang.org/reference/attributes.html),
     but we haven't delved into them yet. Let's briefly discuss the attributes you've
     encountered and provide some useful resources for further exploration.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本课程中，我们一直在使用 [属性](https://doc.rust-lang.org/reference/attributes.html)，但我们还没有深入探讨。让我们简要地讨论一下你遇到过的属性，并提供一些有用的资源以供进一步探索。
 - en: 'At a high level, an attribute is metadata applied to a crate, module, or item.
     This metadata serves various purposes. Attributes follow this syntax:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 在高层次上，属性是应用于 crate、模块或项目的元数据。这些元数据服务于各种目的。属性遵循以下语法：
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Attributes come in two forms: `InnerAttribute` and `OuterAttribute`. The difference
     between them is that an `InnerAttribute` includes a bang (`!`) between the `#`
     and the `[`. An `InnerAttribute` applies to the item it is declared within, while
     an `OuterAttribute` applies to whatever follows it.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性有两种形式：`InnerAttribute` 和 `OuterAttribute`。它们之间的区别在于 `InnerAttribute` 在 `#`
+    和 `[` 之间包含一个感叹号 (`!`)。`InnerAttribute` 适用于其声明的项目，而 `OuterAttribute` 适用于其后面的任何内容。
 - en: '[Inner Attributes](#inner-attributes)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[内部属性](#inner-attributes)'
 - en: For example, in our rustle program, we've used the inner attribute `#![allow(unused_imports)]`.
     By default, the Rust compiler issues warnings if your program imports packages
     via `use` but doesn't actually utilize them. Our program imports the `File` module
     with `use std::fs::File;`, but since we are using `Cursor` for development and
     have commented out the file I/O code, the compiler complains about the unused
     import. This attribute disables that warning for the crate.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，在我们的 rustle 程序中，我们使用了内联属性 `#![allow(unused_imports)]`。默认情况下，Rust 编译器如果发现你的程序通过
+    `use` 导入的包实际上没有使用，会发出警告。我们的程序通过 `use std::fs::File;` 导入了 `File` 模块，但由于我们正在使用 `Cursor`
+    进行开发，并且已经注释掉了文件 I/O 代码，编译器会抱怨未使用的导入。这个属性禁用了这个警告。
 - en: '[Outer Attributes](#outer-attributes)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[外部属性](#outer-attributes)'
 - en: Recall in the last section, we derived the `Debug` and `PartialEq` traits. We
     achieved this using the `#[derive(...)]` attribute. Notice how this attribute
     is placed directly before the definition of the `Interval` `struct`. This is an
     example of an `OuterAttribute`.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 回想一下，在上一个章节中，我们通过 `#[derive(...)]` 属性推导了 `Debug` 和 `PartialEq` 特性。我们通过将这个属性直接放置在
+    `Interval` 结构体的定义之前来实现这一点。这是一个 `OuterAttribute` 的例子。
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[Classification of Attributes](#classification-of-attributes)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[属性分类](#classification-of-attributes)'
 - en: 'Attributes are commonly grouped into the following categories:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性通常被分为以下几类：
 - en: '[Built-in attributes](https://doc.rust-lang.org/reference/attributes.html#built-in-attributes-index)'
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[内置属性](https://doc.rust-lang.org/reference/attributes.html#built-in-attributes-index)'
 - en: '[Macro attributes](https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros)'
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[宏属性](https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros)'
 - en: '[Derive macro helper attributes](https://doc.rust-lang.org/reference/procedural-macros.html#derive-macro-helper-attributes)'
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[派生宏辅助属性](https://doc.rust-lang.org/reference/procedural-macros.html#derive-macro-helper-attributes)'
 - en: '[Tool attributes](https://doc.rust-lang.org/reference/attributes.html#tool-attributes)'
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[工具属性](https://doc.rust-lang.org/reference/attributes.html#tool-attributes)'
 - en: '[Summary](#summary)'
+  id: totrans-17
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[摘要](#summary)'
 - en: '[The Rust Reference](https://doc.rust-lang.org/reference/) provides an in-depth
     look at [attributes](https://doc.rust-lang.org/reference/attributes.html), and
     you are encouraged to explore it for a comprehensive understanding of their uses.
     Additionally, [Rust By Example](https://doc.rust-lang.org/rust-by-example/) offers
     extra material and illustrates various [use cases](https://doc.rust-lang.org/rust-by-example/attribute.html).'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '[Rust 参考文档](https://doc.rust-lang.org/reference/) 对 [属性](https://doc.rust-lang.org/reference/attributes.html)
+    进行了深入探讨，你被鼓励去探索它以获得对它们用途的全面理解。此外，[Rust By Example](https://doc.rust-lang.org/rust-by-example/)
+    提供了额外的材料，并展示了各种 [用例](https://doc.rust-lang.org/rust-by-example/attribute.html)。'
 - en: '[Next](#next)'
+  id: totrans-19
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一节](#next)'
 - en: Attributes offer even greater utility, which we'll explore through command line
     argument parsing!
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性提供了更大的实用性，我们将通过命令行参数解析来探讨这一点！

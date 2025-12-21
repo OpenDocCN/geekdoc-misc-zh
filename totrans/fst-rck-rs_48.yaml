@@ -1,34 +1,51 @@
 - en: Rustle
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: Rustle
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/rustle.html](https://freddiehaddad.github.io/fast-track-to-rust/rustle.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/rustle.html](https://freddiehaddad.github.io/fast-track-to-rust/rustle.html)
 - en: As we reach the end of this journey, I am pleased to present the final version
     of the rustle program, ready for production use. To compile a release version,
     be sure to use `cargo build --release`. I hope you have enjoyed this journey as
     much as I have enjoyed guiding you through it. Thank you very much for completing
     the course. Have fun on your Rust journey!
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 随着我们到达这次旅程的终点，我很高兴向大家展示 rustle 程序的最终版本，它已准备好投入生产使用。要编译发布版本，请确保使用 `cargo build
+    --release`。我希望您和我一样享受这次旅程。非常感谢您完成这门课程。祝您在 Rust 之旅中玩得开心！
 - en: '[Fork/Join Solution](#forkjoin-solution)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Fork/Join 解决方案](#forkjoin-solution)'
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[MPSC Solution](#mpsc-solution)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[MPSC 解决方案](#mpsc-solution)'
 - en: '[PRE1]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: You can find both versions of the rustle program we built together during this
     course [here](https://github.com/freddiehaddad/rustle).
+  id: totrans-7
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 您可以在[这里](https://github.com/freddiehaddad/rustle)找到我们在本课程中共同构建的 rustle 程序的两个版本。

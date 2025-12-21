@@ -1,30 +1,43 @@
 - en: File I/O
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 文件输入/输出
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/file_io.html](https://freddiehaddad.github.io/fast-track-to-rust/file_io.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/file_io.html](https://freddiehaddad.github.io/fast-track-to-rust/file_io.html)
 - en: Our rustle program wouldn't be complete without the ability to search text files.
     Given the potential for I/O errors, adding this capability now is convenient as
     we explore error handling and the `Result` type. This also introduces us to additional
     packages in Rust's standard library.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果没有搜索文本文件的能力，我们的 rustle 程序将不完整。考虑到 I/O 错误的可能性，现在添加此功能很方便，因为我们正在探索错误处理和 `Result`
+    类型。这也让我们了解了 Rust 标准库中的其他包。
 - en: Up to this point, we've been able to use string literals in our rustle program
     because dynamic memory allocation wasn't needed. However, now that we will be
     reading from a file, dynamic memory allocation becomes necessary. The string slice
     is no longer sufficient, so we need to utilize the [`String`](https://doc.rust-lang.org/rust-by-example/std/str.html)
     ^([1](#footnote-1)) type in Rust.
+  id: totrans-3
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 到目前为止，我们能够在 rustle 程序中使用字符串字面量，因为不需要动态内存分配。然而，现在我们将从文件中读取，动态内存分配变得必要。字符串切片不再足够，因此我们需要利用
+    Rust 中的 `String` 类型。
 - en: Storing Data on the Heap
+  id: totrans-4
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在堆上存储数据
 - en: ''
+  id: totrans-5
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -32,28 +45,43 @@
     [`Box`](https://doc.rust-lang.org/std/boxed/struct.Box.html) type is commonly
     used. You can find numerous examples on its usage in the [documentation on the
     `Box` type](https://doc.rust-lang.org/book/ch15-01-box.html).
+  id: totrans-6
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 如果你需要直接在堆上分配内存，通常使用 `Box` 类型。你可以在 [关于 `Box` 类型的文档](https://doc.rust-lang.org/book/ch15-01-box.html)
+    中找到其使用的许多示例。
 - en: Let's start by creating a function that reads a file and returns a vector of
     strings (`Vec<String>`) where each string represents a line. Here is the function
     signature:^([2](#footnote-2)) ^([3](#footnote-3))
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们从创建一个读取文件并返回一个字符串向量 (`Vec<String>`) 的函数开始，其中每个字符串代表一行。以下是函数签名：^([1](#footnote-1))
+    ^([2](#footnote-2))
 - en: '[PRE0]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'This is the code that we''ll add to the `read_file` function:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们将添加到 `read_file` 函数中的代码：
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The `read_file` function accepts a file handle and utilizes [`BufReader`](https://doc.rust-lang.org/std/io/struct.BufReader.html)
     to efficiently read the file line by line, storing each line in a vector of strings
     (`Vec<String>`), which it then returns to the caller.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '`read_file` 函数接受一个文件句柄，并使用 `BufReader` 有效地逐行读取文件，将每一行存储在字符串向量 (`Vec<String>`)
+    中，然后将其返回给调用者。'
 - en: Many less efficient methods for reading a file and storing the results in a
     collection typically involve iterating over each line, converting it to a string,
     and then pushing the string into a vector. This approach requires intermediate
@@ -61,133 +89,201 @@
     line read from the file potentially involves a system call. The [`BufReader`](https://doc.rust-lang.org/std/io/struct.BufReader.html)
     uses an internal buffer to read large chunks of data from the file, minimizing
     both memory allocations and system calls.
+  id: totrans-12
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 读取文件并将结果存储在集合中的许多低效方法通常涉及遍历每一行，将其转换为字符串，然后将字符串推送到向量中。这种方法需要中间内存分配，对于大文件来说可能会变得昂贵。此外，从文件中读取的每一行都可能涉及系统调用。`BufReader`
+    使用内部缓冲区从文件中读取大量数据，从而最小化内存分配和系统调用。
 - en: 'The modifications to the `main` function:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: '`main` 函数的修改：'
 - en: '[PRE2]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Unpacking the Code](#unpacking-the-code)'
+  id: totrans-15
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[解包代码](#unpacking-the-code)'
 - en: There's a lot going on here, so let's break it down step by step.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里有很多内容，让我们一步一步地分解。
 - en: '[`read_file`](#read_file)'
+  id: totrans-17
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`read_file`](#read_file)'
 - en: '[PRE3]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '**`BufReader`**: `BufReader::new(file)` creates a buffered reader from the
     provided `File`. This helps in efficiently reading the file line by line.'
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**`BufReader`**: `BufReader::new(file)` 从提供的 `File` 创建一个缓冲读取器。这有助于有效地逐行读取文件。'
 - en: '**`lines()`**: The `lines()` method on `BufReader` returns an iterator over
     the lines in the file. Because reading from a file can file, each line is wrapped
     in a `Result`, which can be either `Ok` (containing the line) or `Err` (containing
     an error).'
+  id: totrans-20
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**`lines()`**: `BufReader` 上的 `lines()` 方法返回文件中行的迭代器。由于从文件读取可能会出错，因此每行都被包装在一个
+    `Result` 中，该 `Result` 可以是 `Ok`（包含行内容）或 `Err`（包含错误）。'
 - en: '**`map_while(Result::ok)`**: The `map_while` method is used to transform the
     iterator. It applies the `Result::ok` function to each item, which converts `Ok(line)`
     to `Some(line)` and `Err(_)` to `None`. The iteration stops when the first `None`
     is encountered. Here are the relevant parts from the [source code](https://doc.rust-lang.org/std/result/enum.Result.html),
     cleaned up for readability:'
+  id: totrans-21
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**`map_while(Result::ok)`**: `map_while` 方法用于转换迭代器。它将 `Result::ok` 函数应用于每个项目，将
+    `Ok(line)` 转换为 `Some(line)`，将 `Err(_)` 转换为 `None`。遇到第一个 `None` 时迭代停止。以下是 [源代码](https://doc.rust-lang.org/std/result/enum.Result.html)
+    的相关部分，为了可读性进行了整理：'
 - en: '[PRE4]'
+  id: totrans-22
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: This conversion is necessary because the map method requires the closure to
     return an `Option`. Converting `Err` to `None` drops the error value and causes
     `map_while` to stop yielding.
+  id: totrans-23
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 这种转换是必要的，因为 map 方法需要闭包返回一个 `Option`。将 `Err` 转换为 `None` 会丢弃错误值，并导致 `map_while`
+    停止产生。
 - en: '**`collect()`**: The `collect()` method gathers all the `Some(line)` values
     into a `Vec<String>` that gets returned to the caller.'
+  id: totrans-24
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**`collect()`**: `collect()` 方法将所有 `Some(line)` 值收集到一个返回给调用者的 `Vec<String>`
+    中。'
 - en: '[`main`](#main)'
+  id: totrans-25
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[main](#main)'
 - en: In the `main` function, we attempt to open a file, which can fail for various
     reasons. If the `Result` is `Ok`, we call `read_file` with the file value. Since
     we don't need the file handle afterward, borrowing isn't necessary. If an error
     occurs while opening the file, we use the `eprintln!` macro to print the error
     to standard error and then exit.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `main` 函数中，我们尝试打开一个文件，这可能由于各种原因而失败。如果 `Result` 是 `Ok`，我们使用文件值调用 `read_file`。由于我们之后不需要文件句柄，因此不需要借用。如果在打开文件时发生错误，我们使用
+    `eprintln!` 宏将错误打印到标准错误，然后退出。
 - en: '[Putting it All Together](#putting-it-all-together)'
+  id: totrans-27
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[整合一切](#putting-it-all-together)'
 - en: 'Here are the changes with the unrelated parts of the program hidden:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是隐藏了程序无关部分的更改：
 - en: '[PRE5]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Don't forget, you can reveal the hidden parts by clicking *Show hidden lines*.
+  id: totrans-30
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 不要忘记，你可以通过点击 *显示隐藏行* 来揭示隐藏的部分。
 - en: '[Summary](#summary)'
+  id: totrans-31
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[摘要](#summary)'
 - en: Rust requires acknowledging and handling errors before code compilation, ensuring
     robustness.
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Rust 需要在代码编译前承认和处理错误，以确保稳健性。
 - en: Errors are categorized into recoverable (e.g., file not found) and unrecoverable
     (e.g., out-of-bounds access).
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 错误被分为可恢复的（例如，文件未找到）和不可恢复的（例如，越界访问）。
 - en: Rust uses `Result<T, E>` for recoverable errors and `panic!` for unrecoverable
     errors, unlike other languages that use exceptions.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Rust 使用 `Result<T, E>` 来处理可恢复的错误，并使用 `panic!` 来处理不可恢复的错误，这与使用异常的其他语言不同。
 - en: '[Next](#next)'
+  id: totrans-35
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一页](#next)'
 - en: To continue using the Rust Playground, opening an actual file isn't going to
     work. Let's see how we can leverage an in-memory buffer to represent an open file.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 要继续使用 Rust Playground，打开实际文件是不行的。让我们看看我们如何利用内存缓冲区来表示一个打开的文件。
 - en: '* * *'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: Strings are implemented as `Vec<u8>` in Rust. Reference the [API](https://doc.rust-lang.org/stable/std/string/index.html)
     for details. [↩](#fr-1-1)
+  id: totrans-38
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 在 Rust 中，字符串实现为 `Vec<u8>`。有关详细信息，请参考 [API](https://doc.rust-lang.org/stable/std/string/index.html)。
+    [↩](#fr-1-1)
 - en: Unfortunately, the Rust Playground doesn't support opening files, so you'll
     need to run this part of the code on your local machine. [↩](#fr-2-1)
+  id: totrans-39
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 不幸的是，Rust Playground 不支持打开文件，因此你需要在你本地机器上运行这段代码。 [↩](#fr-2-1)
 - en: Rust offers several useful macros that are handy for developing and prototyping
     your program. [`todo!()`](https://doc.rust-lang.org/std/macro.todo.html) is one
     of them, and another is [`unimplemented!()`](https://doc.rust-lang.org/std/macro.unimplemented.html).
     [↩](#fr-3-1)
+  id: totrans-40
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: Rust 提供了几个有用的宏，这些宏对于开发和原型设计你的程序非常有用。其中之一是 `todo!()`（[todo!()](https://doc.rust-lang.org/std/macro.todo.html)），另一个是
+    `unimplemented!()`（[unimplemented!()](https://doc.rust-lang.org/std/macro.unimplemented.html)）。
+    [↩](#fr-3-1)

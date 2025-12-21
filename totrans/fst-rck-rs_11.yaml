@@ -1,216 +1,338 @@
 - en: Types
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 类型
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/types.html](https://freddiehaddad.github.io/fast-track-to-rust/types.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/types.html](https://freddiehaddad.github.io/fast-track-to-rust/types.html)
 - en: 'Let''s take a moment to discuss the different types we''ve encountered:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们花一点时间来讨论一下我们遇到的不同类型：
 - en: The empty unit type `()` is used when a function or expression does not return
     a value. It's essentially a placeholder indicating the absence of a meaningful
     value.
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 空单元类型 `()` 用于函数或表达式不返回值的情况。它本质上是一个占位符，表示没有有意义的价值。
 - en: String slices `&str` are references to a portion of a string. They allow you
     to work with parts of a string without needing to own the entire string, making
     them efficient and flexible.
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串切片 `&str` 是对字符串一部分的引用。它们允许你处理字符串的一部分，而无需拥有整个字符串，这使得它们既高效又灵活。
 - en: Signed 32-bit integers `i32` are integers that can store both positive and negative
     values within a specific range. They are commonly used for numerical operations
     where the size of the number is known and fits within the 32-bit limit.
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有符号32位整数 `i32` 可以在特定范围内存储正负值。它们通常用于已知大小且适合32位限制的数值操作。
 - en: Understanding these types will help us write more efficient and effective Rust
     code as we continue to build our rustle program.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 理解这些类型将帮助我们编写更高效和有效的Rust代码，随着我们继续构建rustle程序。
 - en: '[String Slice `str`](#string-slice-str)'
+  id: totrans-7
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[字符串切片 `str`](#string-slice-str)'
 - en: The most interesting type is probably `str`. `str` is a primitive string type
     in Rust, and it's usually seen in its borrowed^([1](#footnote-1)) form `&str`.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 最有趣的可能就是 `str` 类型。`str` 是Rust中的原始字符串类型，通常以借用形式 `&str` 出现。
 - en: 'You can think of a string slice as an object with two components:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以将字符串切片想象成一个具有两个组件的对象：
 - en: '| field | value |'
+  id: totrans-10
   prefs: []
   type: TYPE_TB
+  zh: '| 字段 | 值 |'
 - en: '| --- | --- |'
+  id: totrans-11
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| `ptr` | `address` |'
+  id: totrans-12
   prefs: []
   type: TYPE_TB
+  zh: '| `ptr` | `地址` |'
 - en: '| `len` | `unsigned integer` |'
+  id: totrans-13
   prefs: []
   type: TYPE_TB
+  zh: '| `len` | `无符号整数` |'
 - en: Imagine a block of memory starting at address `0x10` containing the bytes for
     the string literal `"rust"`. This block of memory would store the individual bytes
     representing each character in the string. In this case, the memory would contain
     the bytes for `'r'`, `'u'`, `'s'`, and `'t'`, sequentially stored starting from
     address 0x10.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 想象一个从地址 `0x10` 开始的内存块，包含字符串字面量 `"rust"` 的字节。这个内存块将存储表示字符串中每个字符的单独字节。在这种情况下，内存将包含
+    `'r'`、`'u'`、`'s'` 和 `'t'` 的字节，从地址0x10开始顺序存储。
 - en: 'This visualization helps in understanding how string literals are stored and
     accessed in memory:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种可视化有助于理解字符串字面量如何在内存中存储和访问：
 - en: '| 0x10 | 0x11 | 0x12 | 0x13 |'
+  id: totrans-16
   prefs: []
   type: TYPE_TB
+  zh: '| 0x10 | 0x11 | 0x12 | 0x13 |'
 - en: '| --- | --- | --- | --- |'
+  id: totrans-17
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- |'
 - en: '| r | u | s | t |'
+  id: totrans-18
   prefs: []
   type: TYPE_TB
+  zh: '| r | u | s | t |'
 - en: 'When we bind the string literal `"rust"` to the variable `language`:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们将字符串字面量 `"rust"` 绑定到变量 `language` 时：
 - en: '[PRE0]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The memory would look like:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 内存看起来会是这样：
 - en: '| field | value |'
+  id: totrans-22
   prefs: []
   type: TYPE_TB
+  zh: '| 字段 | 值 |'
 - en: '| --- | --- |'
+  id: totrans-23
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| `ptr` | `0x10` |'
+  id: totrans-24
   prefs: []
   type: TYPE_TB
+  zh: '| `ptr` | `0x10` |'
 - en: '| `len` | `4` |'
+  id: totrans-25
   prefs: []
   type: TYPE_TB
+  zh: '| `len` | `4` |'
 - en: '[Primitive Types](#primitive-types)'
+  id: totrans-26
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[原始类型](#primitive-types)'
 - en: 'Here are some additional [primitive types](https://doc.rust-lang.org/std/index.html#primitives)
     in Rust:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是Rust中的一些其他[原始类型](https://doc.rust-lang.org/std/index.html#primitives)：
 - en: '| type | description |'
+  id: totrans-28
   prefs: []
   type: TYPE_TB
+  zh: '| 类型 | 描述 |'
 - en: '| --- | --- |'
+  id: totrans-29
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| array | A fixed-size array, denoted `[T; N]`, for the element type, `T`,
     and the non-negative compile-time constant size, `N`. |'
+  id: totrans-30
   prefs: []
   type: TYPE_TB
+  zh: '| 数组 | 一个固定大小的数组，表示为 `[T; N]`，其中 `T` 是元素类型，`N` 是非负编译时常量大小。 |'
 - en: '| `bool` | The boolean type. |'
+  id: totrans-31
   prefs: []
   type: TYPE_TB
+  zh: '| `bool` | 布尔类型。 |'
 - en: '| `char` | A character type. |'
+  id: totrans-32
   prefs: []
   type: TYPE_TB
+  zh: '| `char` | 字符类型。 |'
 - en: '| `f32` | A 32-bit floating-point type (specifically, the "binary32" type defined
     in IEEE 754-2008). |'
+  id: totrans-33
   prefs: []
   type: TYPE_TB
+  zh: '| `f32` | 32位浮点类型（具体来说，是IEEE 754-2008中定义的“binary32”类型）。 |'
 - en: '| `f64` | A 64-bit floating-point type (specifically, the "binary64" type defined
     in IEEE 754-2008). |'
+  id: totrans-34
   prefs: []
   type: TYPE_TB
+  zh: '| `f64` | 64位浮点类型（具体来说，是IEEE 754-2008中定义的“binary64”类型）。 |'
 - en: '| `i8` | The 8-bit signed integer type. |'
+  id: totrans-35
   prefs: []
   type: TYPE_TB
+  zh: '| `i8` | 8位有符号整数类型。 |'
 - en: '| `i16` | The 16-bit signed integer type. |'
+  id: totrans-36
   prefs: []
   type: TYPE_TB
+  zh: '| `i16` | 16位有符号整数类型。 |'
 - en: '| `i32` | The 32-bit signed integer type. |'
+  id: totrans-37
   prefs: []
   type: TYPE_TB
+  zh: '| `i32` | 32位有符号整数类型。 |'
 - en: '| `i64` | The 64-bit signed integer type. |'
+  id: totrans-38
   prefs: []
   type: TYPE_TB
+  zh: '| `i64` | 64位有符号整数类型。 |'
 - en: '| `i128` | The 128-bit signed integer type. |'
+  id: totrans-39
   prefs: []
   type: TYPE_TB
+  zh: '| `i128` | 128位有符号整数类型。 |'
 - en: '| `isize` | The pointer-sized signed integer type. |'
+  id: totrans-40
   prefs: []
   type: TYPE_TB
+  zh: '| `isize` | 指针大小的有符号整数类型。 |'
 - en: '| `str` | String slices. |'
+  id: totrans-41
   prefs: []
   type: TYPE_TB
+  zh: '| `str` | 字符串切片。 |'
 - en: '| `u8` | The 8-bit unsigned integer type. |'
+  id: totrans-42
   prefs: []
   type: TYPE_TB
+  zh: '| `u8` | 8位无符号整数类型。 |'
 - en: '| `u16` | The 16-bit unsigned integer type. |'
+  id: totrans-43
   prefs: []
   type: TYPE_TB
+  zh: '| `u16` | 16位无符号整数类型。 |'
 - en: '| `u32` | The 32-bit unsigned integer type. |'
+  id: totrans-44
   prefs: []
   type: TYPE_TB
+  zh: '| `u32` | 32位无符号整数类型。 |'
 - en: '| `u64` | The 64-bit unsigned integer type. |'
+  id: totrans-45
   prefs: []
   type: TYPE_TB
+  zh: '| `u64` | 64位无符号整数类型。 |'
 - en: '| `u128` | The 128-bit unsigned integer type. |'
+  id: totrans-46
   prefs: []
   type: TYPE_TB
+  zh: '| `u128` | 128 位无符号整数类型。|'
 - en: '| `usize` | The pointer-sized unsigned integer type. |'
+  id: totrans-47
   prefs: []
   type: TYPE_TB
+  zh: '| `usize` | 指针大小的无符号整数类型。|'
 - en: '[User-defined Types](#user-defined-types)'
+  id: totrans-48
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[用户定义的类型](#user-defined-types)'
 - en: 'In addition to the primitive types, Rust supports [user-defined types](https://doc.rust-lang.org/reference/types.html).
     We''ll cover them in more detail as we build our rustle program. But to satisfy
     your curiosity, some of the user-defined types include:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了原始类型之外，Rust 支持 [用户定义的类型](https://doc.rust-lang.org/reference/types.html)。随着我们构建
+    rustle 程序，我们将更详细地介绍它们。但为了满足你的好奇心，一些用户定义的类型包括：
 - en: '| type | description |'
+  id: totrans-50
   prefs: []
   type: TYPE_TB
+  zh: '| 类型 | 描述 |'
 - en: '| --- | --- |'
+  id: totrans-51
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| `struct` | A heterogeneous product of other types, called the *fields* of
     the type.^([2](#footnote-2)) |'
+  id: totrans-52
   prefs: []
   type: TYPE_TB
+  zh: '| `struct` | 其他类型的异构积，称为类型的 *字段*.^([2](#footnote-2)) |'
 - en: '| `enum` | An enumerated type is a nominal, heterogeneous disjoint union type,
     denoted by the name of an enum item.^([3](#footnote-3)) |'
+  id: totrans-53
   prefs: []
   type: TYPE_TB
+  zh: '| `enum` | 枚举类型是一种命名、异构的互斥联合类型，由枚举项的名称表示.^([3](#footnote-3)) |'
 - en: '| `union` | A union type is a nominal, heterogeneous C-like union, denoted
     by the name of a union item. |'
+  id: totrans-54
   prefs: []
   type: TYPE_TB
+  zh: '| `union` | 联合类型是一种命名、异构的类似 C 的联合类型，由联合项的名称表示。|'
 - en: These user-defined types allow for more complex and expressive code, enabling
     you to model real-world concepts more effectively. We'll explore these in greater
     depth as we progress through our project.
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些用户定义的类型允许编写更复杂和表达性更强的代码，使你能够更有效地模拟现实世界中的概念。随着我们项目的进展，我们将更深入地探讨这些内容。
 - en: '* * *'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: We'll explore what borrowing means during the course. [↩](#fr-1-1)
+  id: totrans-57
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 我们将在课程中探讨借用（borrowing）的含义。[↩](#fr-1-1)
 - en: '`struct` types are analogous to `struct` types in C. [↩](#fr-2-1)'
+  id: totrans-58
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`struct` 类型类似于 C 中的 `struct` 类型。[↩](#fr-2-1)'
 - en: The `enum` type is analogous to a data constructor declaration in Haskell, or
     a *pick ADT* in Limbo. [↩](#fr-3-1)
+  id: totrans-59
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 枚举类型类似于 Haskell 中的数据构造器声明，或者 Limbo 中的 *选择 ADT*。[↩](#fr-3-1)

@@ -1,33 +1,47 @@
 - en: Dependencies
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 依赖项
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/dependencies.html](https://freddiehaddad.github.io/fast-track-to-rust/dependencies.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/dependencies.html](https://freddiehaddad.github.io/fast-track-to-rust/dependencies.html)
 - en: '[crates.io](https://crates.io/) is the central [package registry](https://doc.rust-lang.org/cargo/appendix/glossary.html#registry)
     for the Rust community, serving as a hub to discover and download packages. `cargo`
     supports adding and managing [dependencies](https://doc.rust-lang.org/cargo/guide/dependencies.html)
     for you and is configured to use the [package registry](https://doc.rust-lang.org/cargo/appendix/glossary.html#registry)
     by default.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '[crates.io](https://crates.io/) 是Rust社区的中央[包注册中心](https://doc.rust-lang.org/cargo/appendix/glossary.html#registry)，作为发现和下载包的中心，`cargo`支持为您添加和管理[依赖项](https://doc.rust-lang.org/cargo/guide/dependencies.html)，并且默认配置为使用[包注册中心](https://doc.rust-lang.org/cargo/appendix/glossary.html#registry)。'
 - en: 'We''re going to explore a few crates in this course:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本课程中，我们将探索几个crate：
 - en: '**[regex](https://crates.io/crates/regex)**: An implementation of regular expressions
     for Rust'
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**[regex](https://crates.io/crates/regex)**: Rust的正则表达式实现'
 - en: '**[itertools](https://crates.io/crates/itertools)**: Extra iterator adaptors,
     iterator methods, free functions, and macros'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**[itertools](https://crates.io/crates/itertools)**: 额外的迭代器适配器、迭代器方法、自由函数和宏'
 - en: '**[clap](https://crates.io/crates/clap)**: A simple to use, efficient, and
     full-featured Command Line Argument Parser'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**[clap](https://crates.io/crates/clap)**: 一个简单易用、高效且功能齐全的命令行参数解析器'

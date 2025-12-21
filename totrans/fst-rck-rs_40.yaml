@@ -1,110 +1,156 @@
 - en: Traits
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 特性
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/traits.html](https://freddiehaddad.github.io/fast-track-to-rust/traits.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/traits.html](https://freddiehaddad.github.io/fast-track-to-rust/traits.html)
 - en: 'In the previous section, we specified trait bounds to restrict the types that
     can be used with our `Interval`. Let''s formalize what a trait is:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上一节中，我们指定了特性界限来限制可以与我们的`Interval`一起使用的类型。让我们正式化一下什么是特性：
 - en: 'A trait is officially defined as a collection of methods for an unknown type:
     `Self`.^([1](#footnote-1))'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 特性正式定义为未知类型`Self`的方法集合：`Self`.^([1](#footnote-1))
 - en: In simpler terms, a trait allows you to define shared behavior in an abstract
     way. It specifies a set of methods that a type must implement, similar to interfaces
     in other programming languages.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 简单来说，特性允许您以抽象的方式定义共享行为。它指定了一组类型必须实现的方法，类似于其他编程语言中的接口。
 - en: The [Rust By Example](https://doc.rust-lang.org/rust-by-example/) book includes
     many examples of [traits](https://doc.rust-lang.org/rust-by-example/trait.html)
     and explores their usage in depth. Reviewing this material is highly recommended.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 《Rust By Example》一书包含了众多[特性](https://doc.rust-lang.org/rust-by-example/trait.html)的示例，并深入探讨了它们的用法。强烈建议复习这些材料。
 - en: 'The compiler can automatically provide basic implementations for certain traits
     using the derive (`#[derive]`) [attribute](https://doc.rust-lang.org/reference/attributes.html).
     However, if more complex behavior is needed, these traits can still be manually
     implemented. Here is a list of derivable traits:'
+  id: totrans-6
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 编译器可以使用派生（`#[derive]`）[属性](https://doc.rust-lang.org/reference/attributes.html)自动为某些特性提供基本实现。然而，如果需要更复杂的行为，这些特性仍然可以手动实现。以下是可以派生的特性列表：
 - en: 'Comparison traits: [`Eq`](https://doc.rust-lang.org/std/cmp/trait.Eq.html),
     [`PartialEq`](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html), Ord, [`PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html).'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 比较特性：`Eq`([`Eq`](https://doc.rust-lang.org/std/cmp/trait.Eq.html))、`PartialEq`([`PartialEq`](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html))、`Ord`、`PartialOrd`([`PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html))。
 - en: '[`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html), to create
     `T` from `&T` via a copy.'
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[克隆](https://doc.rust-lang.org/std/clone/trait.Clone.html)，通过复制从`&T`创建`T`。'
 - en: '[`Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html), to give a type
     *copy semantics* instead of *move semantics*.'
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[拷贝](https://doc.rust-lang.org/std/marker/trait.Copy.html)，为类型提供*拷贝语义*而不是*移动语义*。'
 - en: '[`Hash`](https://doc.rust-lang.org/std/hash/trait.Hash.html), to compute a
     hash from `&T`.'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[哈希](https://doc.rust-lang.org/std/hash/trait.Hash.html)，从`&T`计算哈希。'
 - en: '[`Default`](https://doc.rust-lang.org/std/default/trait.Default.html), to create
     an empty instance of a data type.'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[默认值](https://doc.rust-lang.org/std/default/trait.Default.html)，创建数据类型的空实例。'
 - en: '[`Debug`](https://doc.rust-lang.org/std/fmt/trait.Debug.html), to format a
     value using the `{:?}` formatter.'
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[调试](https://doc.rust-lang.org/std/fmt/trait.Debug.html)，使用`{:?}`格式化器格式化值。'
 - en: '[Deriving a Trait](#deriving-a-trait)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[派生特性](#deriving-a-trait)'
 - en: Someone using our `Interval` might find it helpful to have an easy way to compare
     them. For instance, a user may want to check if two intervals are equal. The [`PartialEq`](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html)
     trait, part of the [`cmp`](https://doc.rust-lang.org/std/cmp/index.html) module,
     specifies two methods that any type must define to implement the `PartialEq` trait.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用我们的`Interval`的人可能会发现有一个简单的方法来比较它们很有帮助。例如，用户可能想检查两个区间是否相等。`PartialEq`特性，是`cmp`模块的一部分，指定了任何类型必须定义以实现`PartialEq`特性的两个方法。
 - en: '[PRE0]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Notice the comment above the `ne` method that says "Provided method." This indicates
     that if we manually implement this trait, we only need to provide an implementation
     for `eq`.
+  id: totrans-16
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 注意`ne`方法上面的注释说“提供方法”。这表明如果我们手动实现这个特性，我们只需要为`eq`提供一个实现。
 - en: Here's our revised `Interval` with support for `PartialEq`, thanks to the derive
     attribute and the Rust compiler. Give it a try!
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们的修改后的`Interval`，它支持`PartialEq`，归功于派生属性和Rust编译器。试试看吧！
 - en: The `Debug` trait has also been derived, enabling intervals to be printed in
     a programmer-facing context using the `:?` operator. This common pattern in Rust
     provides more helpful output in the program below.
+  id: totrans-18
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`Debug`特性也已派生，使得区间可以在程序员面向的环境中通过`:?`运算符打印。这种在Rust中常见的模式在下面的程序中提供了更有帮助的输出。'
 - en: '[PRE1]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The [`unwrap()`](https://doc.rust-lang.org/std/result/enum.Result.html#method.unwrap)
     method is implemented by `Result` and other types like `Option`. For `Result`,
     it returns the `Ok` value or panics if the value is `Err`. Its usage is generally
     discouraged and is only used here for brevity.
+  id: totrans-20
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`unwrap()` 方法由 `Result` 和其他类型如 `Option` 实现。对于 `Result`，它返回 `Ok` 值或者在值为 `Err`
+    时引发恐慌。通常不建议使用 `unwrap()`，这里仅为了简洁而使用。'
 - en: Operator Overloading
+  id: totrans-21
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 操作符重载
 - en: ''
+  id: totrans-22
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -113,115 +159,174 @@
     all the detailed information in the [Operator Overloading](https://doc.rust-lang.org/rust-by-example/trait/ops.html)
     section of the [Rust by Example](https://doc.rust-lang.org/rust-by-example/) book
     and in the [`ops`](https://doc.rust-lang.org/std/ops/index.html) module.
+  id: totrans-23
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 你可能已经注意到了使用 `==` 和 `!=` 进行区间比较的区别。这是因为 Rust 支持操作符重载！你可以在 [Rust by Example](https://doc.rust-lang.org/rust-by-example/)
+    书籍的 [操作符重载](https://doc.rust-lang.org/rust-by-example/trait/ops.html) 部分和 `ops`
+    模块（[ops](https://doc.rust-lang.org/std/ops/index.html)）中找到所有详细的信息。
 - en: '[Implementing a Trait](#implementing-a-trait)'
+  id: totrans-24
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[实现特质](#implementing-a-trait)'
 - en: Just as comparing traits for equality can be helpful, so can generating a user-facing
     representation of an `Interval`. By implementing the [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html)
     trait, we can achieve this quite efficiently. Additionally, implementing the `Display`
     trait automatically implements the [`ToString`](https://doc.rust-lang.org/std/string/trait.ToString.html)
     trait, enabling the use of the `to_string()` method. Let's enhance our `Interval`
     code to print an interval in the form `[x, y]`.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 就像比较特质以检查相等性可能很有帮助一样，生成 `Interval` 的用户界面表示也可能很有用。通过实现 `Display` 特质，我们可以非常高效地实现这一点。此外，实现
+    `Display` 特质还会自动实现 `ToString` 特质，使得可以使用 `to_string()` 方法。让我们增强我们的 `Interval` 代码，以便以
+    `[x, y]` 的形式打印区间。
 - en: 'Here''s the trait definition for `Display`:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 下面是 `Display` 特质的定义：
 - en: '[PRE2]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The `<'_>` suffix next to `Formatter` is known as *lifetime annotation syntax*.^([2](#footnote-2))
+  id: totrans-28
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`Formatter` 旁边的 `<''_>` 后缀被称为 *生命周期注解语法*。^([2](#footnote-2))'
 - en: Here's our revised `Interval` with the `Display` trait implemented. Give it
     a try!
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 下面是我们修改后的 `Interval`，实现了 `Display` 特性。试试看吧！
 - en: '[PRE3]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[Summary](#summary)'
+  id: totrans-31
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: Our interval module has been enhanced to support several new capabilities.
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们的区间模块已经增强，支持了几个新功能。
 - en: We can print programmer-facing intervals using the `Debug` trait and user-facing
     intervals using the `Display` trait.
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以使用 `Debug` 特质打印面向程序员的区间，使用 `Display` 特质打印面向用户的区间。
 - en: We have limited support for comparing intervals through the `PartialEq` and
     `PartialOrd` traits.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们对通过 `PartialEq` 和 `PartialOrd` 特质比较区间有限的支持。
 - en: A trait defines shared behavior abstractly, specifying methods a type must implement,
     similar to interfaces in other languages.
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个特质以抽象的方式定义了共享行为，指定了一个类型必须实现的方法，类似于其他语言中的接口。
 - en: The compiler can automatically provide basic implementations for certain traits
     using the `#[derive]` attribute.
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 编译器可以使用 `#[derive]` 属性自动为某些特质提供基本实现。
 - en: Rust includes support for operator overloading.
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Rust 支持操作符重载。
 - en: '[Exercise](#exercise)'
+  id: totrans-38
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: Implement the [`PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html)
     trait for `Interval`. To keep the code simple, you can return `None` for overlapping
     intervals.
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为 `Interval` 实现 `PartialOrd` 特质。为了使代码简单，对于重叠的区间可以返回 `None`。
 - en: '[PRE4]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: <details><summary>Solution</summary>
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: <details><summary>解决方案</summary>
 - en: '[PRE5]</details>'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: '[PRE5]</details>'
 - en: '[Next](#next)'
+  id: totrans-43
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一节](#next)'
 - en: Now that we've covered traits, let's ensure our projects are synchronized before
     we proceed to exploring attributes.
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们已经介绍了特质，在继续探索属性之前，让我们确保我们的项目是同步的。
 - en: 'Here''s the completed code:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 下面是完成后的代码：
 - en: '[PRE6]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '* * *'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: https://doc.rust-lang.org/rust-by-example/trait.html [↩](#fr-1-1)
+  id: totrans-48
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: https://doc.rust-lang.org/rust-by-example/trait.html [↩](#fr-1-1)
 - en: This is a separate topic that you can learn more about in the [Validating References
     with Lifetimes](https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html) section
     of the [Rust Programming Language](https://doc.rust-lang.org/stable/book/) and
     the [Lifetimes](https://doc.rust-lang.org/rust-by-example/scope/lifetime.html)
     section of [Rust By Example](https://doc.rust-lang.org/rust-by-example/). [↩](#fr-2-1)
+  id: totrans-49
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 这是一个单独的主题，你可以在[Rust编程语言](https://doc.rust-lang.org/stable/book/)的[使用生命周期验证引用](https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html)部分和[Rust
+    By Example](https://doc.rust-lang.org/rust-by-example/)的[生命周期](https://doc.rust-lang.org/rust-by-example/scope/lifetime.html)部分中了解更多信息。[↩](#fr-2-1)

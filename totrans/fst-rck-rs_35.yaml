@@ -1,112 +1,162 @@
 - en: Enum
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 枚举
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/enum.html](https://freddiehaddad.github.io/fast-track-to-rust/enum.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/enum.html](https://freddiehaddad.github.io/fast-track-to-rust/enum.html)
 - en: An *[enumeration](https://doc.rust-lang.org/reference/items/enumerations.html)*,
     commonly known as an *[enum](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html)*,
     is declared using the keyword `enum`. Compared to other languges, enums in Rust
     offer greater flexibility and power. For instance, they support generics (as seen
     with the `Option` `enum`) and can encapsulate values within their variants! ^([1](#footnote-1))
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个*[枚举](https://doc.rust-lang.org/reference/items/enumerations.html)*，通常称为*[枚举类型](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html)*，使用关键字`enum`进行声明。与其它语言相比，Rust中的枚举提供了更大的灵活性和功能。例如，它们支持泛型（如`Option`枚举所示）并且可以在其变体中封装值！^([1](#footnote-1))
 - en: '[Using an `enum` for Errors](#using-an-enum-for-errors)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[使用枚举处理错误](#using-an-enum-for-errors)'
 - en: For our rustle program, we'll create an `enum` to represent possible errors
     during `Interval` operations. For example, when a user creates an `Interval`,
     the starting value must be less than or equal to the ending value. Additionally,
     if a user wants to merge two intervals, they must overlap. If these conditions
     aren't met, we'll return an error (`Err`) using one of our `enum` variants.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于我们的rustle程序，我们将创建一个枚举来表示在`Interval`操作期间可能出现的错误。例如，当用户创建一个`Interval`时，起始值必须小于或等于结束值。此外，如果用户想要合并两个区间，它们必须重叠。如果这些条件不满足，我们将使用我们的枚举变体之一返回错误（`Err`）。
 - en: '[Defining an `enum`](#defining-an-enum)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[定义枚举](#defining-an-enum)'
 - en: 'Below is the `IntervalError` `enum`, which lists the errors that we may need
     to return:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 下面是`IntervalError`枚举，它列出了我们可能需要返回的错误：
 - en: '[PRE0]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[Updating our Interval](#updating-our-interval)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[更新我们的区间](#updating-our-interval)'
 - en: 'First, we''ll change the return type for the function `new` and the method
     `merge` to a `Result` with the `Ok` variant being an `Interval` and the `Err`
     variant the appropriate `IntervalError`:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们将函数`new`和方法`merge`的返回类型更改为`Result`类型，其中`Ok`变体是`Interval`，而`Err`变体是适当的`IntervalError`：
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[PRE2]'
+  id: totrans-11
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Observe how an `Interval` is created in `new` as opposed to `merge`. Since the
     parameter names in new precisely match the fields in the `Interval` `struct` definition,
     you can omit the field specifiers. This technique is referred to as *field init
     shorthand* syntax. ^([2](#footnote-2))
+  id: totrans-12
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 观察到`Interval`是在`new`中创建的，而不是在`merge`中。由于`new`中的参数名称与`Interval`结构定义中的字段完全匹配，因此可以省略字段指定符。这种技术被称为*字段初始化简写*语法。^([2](#footnote-2))
 - en: '[Updating Rustle](#updating-rustle)'
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[更新Rustle](#updating-rustle)'
 - en: With the `Interval` changes implemented, we need to update the `create_intervals`
     and `merge_intervals` functions to accommodate the `Result` return type.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 在实现了`Interval`更改后，我们需要更新`create_intervals`和`merge_intervals`函数以适应`Result`返回类型。
 - en: '[PRE3]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: In `create_intervals`, the only change was the return type, which changed from
     `Vec<Interval>` to `Result<Vec<Interval>, IntervalError>`. You might wonder why
     this works. The concise answer is that the `Result` type implements the [`FromIterator`](https://doc.rust-lang.org/std/iter/trait.FromIterator.html)
     trait.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 在`create_intervals`中，唯一的变化是返回类型，它从`Vec<Interval>`更改为`Result<Vec<Interval>, IntervalError>`。你可能会想知道为什么这行得通。简洁的答案是`Result`类型实现了`FromIterator`特质。
 - en: Imagine an intermediary collection of `Result` values created from calls to
     `Interval::new(start, end)`. The `FromIterator` trait implementation allows an
     iterator over `Result` values to be collected *into* a `Result` containing a collection
     of the underlying values or an `Err`. ^([3](#footnote-3)) In other words, the
     value contained in the `Result` returned by `Interval::new(start, end)` is stored
     in the `Vec<Interval>` collection which is then wrapped in a `Result`.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 想象一下，从对`Interval::new(start, end)`的调用中创建了一个中间的`Result`值集合。`FromIterator`特质的实现允许对`Result`值的迭代器进行收集，*进入*一个包含底层值集合或`Err`的`Result`。换句话说，`Interval::new(start,
+    end)`返回的`Result`中的值存储在`Vec<Interval>`集合中，然后被`Result`包装。
 - en: We'll be exploring traits in the next section.
+  id: totrans-18
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在下一节中，我们将探讨特质。
 - en: '[PRE4]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: In `merge_intervals`, the only change required is to the closure used in `coalesce`.
     We attempt to merge two intervals and invoke the [`or`](https://doc.rust-lang.org/std/result/enum.Result.html#method.or)
     method of `Result`. If the merge is successful, returning `Ok`, the value is passed
     back to `coalesce`. Otherwise, the `Err((p, c))` value provided to `or` is returned.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `merge_intervals` 中，所需更改仅限于 `coalesce` 中使用的闭包。我们尝试合并两个区间，并调用 `Result` 的 `or`
+    方法。如果合并成功，返回 `Ok`，并将值传递回 `coalesce`。否则，返回给 `or` 的 `Err((p, c))` 值。
 - en: '`Result` methods like `map_err`, `or`, and `or_else` are often used in error
     handling because they allow benign errors to be managed while letting successful
     results pass through. Since the `merge` method only merges overlapping intervals,
     we replace the `Err` variant it returns with the tuple `(p, c)` needed by `coalesce`.'
+  id: totrans-21
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`Result` 方法如 `map_err`、`or` 和 `or_else` 常用于错误处理，因为它们允许管理良性错误，同时让成功的结果通过。由于
+    `merge` 方法只合并重叠的区间，我们用 `coalesce` 所需的元组 `(p, c)` 替换了它返回的 `Err` 变体。'
 - en: Eager vs Lazy Evaluation
+  id: totrans-22
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 贪婪评估 vs 惰性评估
 - en: ''
+  id: totrans-23
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -116,109 +166,159 @@
     are eagerly evaluated. If you're passing the result of a function call, it's better
     to use [`or_else`](https://doc.rust-lang.org/std/result/enum.Result.html#method.or_else),
     which is lazily evaluated.
+  id: totrans-24
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 根据用例，不同的 `Result` 方法可能更高效。阅读文档以确定最佳选择很重要。例如，传递给 `or` 的参数会被贪婪评估。[`or`](https://doc.rust-lang.org/std/result/enum.Result.html#method.or)。如果你传递的是函数调用的结果，最好使用
+    `or_else`，它是惰性评估的。
 - en: The final change required is in `main`. Since `create_intervals` now returns
     a `Result`, we use a `match` expression to check if the operation was successful.
     In the case of an `Err`, since it's unrecoverable, we print an error message and
     exit.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 需要做的最后一个更改是在 `main` 中。由于 `create_intervals` 现在返回 `Result`，我们使用 `match` 表达式来检查操作是否成功。在
+    `Err` 的情况下，由于它是不可恢复的，我们打印错误消息并退出。
 - en: '[PRE5]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[Updating Rustle](#updating-rustle-1)'
+  id: totrans-27
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[更新 Rustle](#updating-rustle-1)'
 - en: With our changes in place, our Interval now supports error handling via `Result`
     and our rustle program properly handles any errors.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们做出更改后，我们的 Interval 现在支持通过 `Result` 进行错误处理，并且我们的 rustle 程序正确处理了任何错误。
 - en: '[PRE6]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[Summary](#summary)'
+  id: totrans-30
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: 'The decision to use the [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html)
     type for error handling in Rust provides a robust and flexible way of managing
     errors such as:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Rust 中使用 `Result` 类型进行错误处理的决定提供了一种强大且灵活的错误管理方式，例如：
 - en: '**Explicit Error Handling**: Using `Result` makes error handling explicit.
     Functions that can fail return a `Result`, which forces the caller to handle the
     potential error, making the code more reliable and less prone to unexpected failures.'
+  id: totrans-32
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**显式错误处理**：使用 `Result` 使错误处理变得显式。可能失败的函数返回 `Result`，这迫使调用者处理潜在的错误，使代码更可靠，更不容易出现意外的失败。'
 - en: '**Recoverable Errors**: The `Result` type allows for recoverable errors. By
     returning a `Result`, the function gives the caller the option to handle the error
     in a way that makes sense for their specific context, rather than immediately
     terminating the program.'
+  id: totrans-33
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**可恢复的错误**：`Result` 类型允许可恢复的错误。通过返回 `Result`，函数给调用者提供了以适合其特定上下文的方式处理错误的选择，而不是立即终止程序。'
 - en: '**Type Safety**: Rust''s type system ensures that errors are handled correctly.
     The `Result` type is part of this system, helping to prevent common errors like
     null pointer dereferencing and making the code safer and more predictable.'
+  id: totrans-34
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**类型安全**：Rust 的类型系统确保错误被正确处理。`Result` 类型是这个系统的一部分，有助于防止常见的错误，如空指针解引用，并使代码更安全、更可预测。'
 - en: '**Composability**: The `Result` type implements traits like `FromIterator`,
     which allows for powerful and flexible error handling patterns. This makes it
     easier to work with collections of results and to propagate errors through multiple
     layers of function calls.'
+  id: totrans-35
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**可组合性**：`Result` 类型实现了 `FromIterator` 等特质，这允许强大的灵活的错误处理模式。这使得处理结果集合和通过多层函数调用传播错误变得更容易。'
 - en: Overall, the use of `Result` aligns with Rust's goals of safety, concurrency,
     and performance, providing a clear and structured way to handle errors.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 总体而言，使用 `Result` 与 Rust 的目标（安全性、并发性和性能）相一致，提供了一种清晰和结构化的错误处理方式。
 - en: '[Exercise](#exercise)'
+  id: totrans-37
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: Replace `Result::or` with `Result::map_err` in `merge_intervals`.
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在`merge_intervals`中将`Result::or`替换为`Result::map_err`。
 - en: <details><summary>Solution</summary>
+  id: totrans-39
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: <details><summary>解决方案</summary>
 - en: '[PRE7]</details>'
+  id: totrans-40
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '[PRE7]</details>'
 - en: '[PRE8]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[Next](#next)'
+  id: totrans-42
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一步](#next)'
 - en: With our Interval complete, let's make it a module!
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的区间（Interval）完成之后，让我们将其变成一个模块！
 - en: '* * *'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: Refer to the documentation on [enum values](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html#enum-values).
     [↩](#fr-1-1)
+  id: totrans-45
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 请参考关于[枚举值](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html#enum-values)的文档。[↩](#fr-1-1)
 - en: Refer to the documentation on *[field init shorthand](https://doc.rust-lang.org/book/ch05-01-defining-structs.html#using-the-field-init-shorthand)*
     syntax. [↩](#fr-2-1)
+  id: totrans-46
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 请参考关于*[字段初始化缩写](https://doc.rust-lang.org/book/ch05-01-defining-structs.html#using-the-field-init-shorthand)*语法的文档。[↩](#fr-2-1)
 - en: Refer to the documentation on [Collecting into a `Result`](https://doc.rust-lang.org/std/result/#collecting-into-result)
     for detailed explanation. [↩](#fr-3-1)
+  id: totrans-47
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 请参考关于[收集到`Result`中](https://doc.rust-lang.org/std/result/#collecting-into-result)的文档以获取详细解释。[↩](#fr-3-1)

@@ -1,39 +1,57 @@
 - en: Crates
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: Crates
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/crates.html](https://freddiehaddad.github.io/fast-track-to-rust/crates.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[https://freddiehaddad.github.io/fast-track-to-rust/crates.html](https://freddiehaddad.github.io/fast-track-to-rust/crates.html)'
 - en: Crates are the smallest units of code that the Rust compiler processes at a
     time. For instance, the rustle program we're developing is recognized as a crate
     by the Rust compiler.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: Crates 是 Rust 编译器一次处理的代码的最小单位。例如，我们正在开发的 rustle 程序被 Rust 编译器识别为一个 crate。
 - en: '[Types of Crates](#types-of-crates)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Crates 类型](#types-of-crates)'
 - en: 'Crates are available in two types: binary and library. The compiler identifies
     the type of crate being compiled based on the presence of either a `main.rs` or
     `lib.rs` file.'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: Crates 有两种类型：二进制和库。编译器根据是否存在 `main.rs` 或 `lib.rs` 文件来识别正在编译的 crate 的类型。
 - en: '[Binary Crates](#binary-crates)'
+  id: totrans-5
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[二进制 Crates](#binary-crates)'
 - en: Binary crates contain a `main.rs` file in the `src` directory, feature a `main`
     function, and are compiled into an executable.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 二进制 Crates 包含 `src` 目录中的 `main.rs` 文件，具有 `main` 函数，并且会被编译成可执行文件。
 - en: '[Library Crates](#library-crates)'
+  id: totrans-7
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[库 Crates](#library-crates)'
 - en: Library crates contain a `lib.rs` file in the `src` directory, lack a main function,
     and do not compile into an executable. Instead, they are designed to be shared
     with other projects.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 库 Crates 包含 `src` 目录中的 `lib.rs` 文件，没有主函数，并且不会编译成可执行文件。相反，它们被设计成可以与其他项目共享。

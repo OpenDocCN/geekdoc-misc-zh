@@ -1,32 +1,48 @@
 - en: Installation
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 安装
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/installation.html](https://freddiehaddad.github.io/fast-track-to-rust/installation.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/installation.html](https://freddiehaddad.github.io/fast-track-to-rust/installation.html)
 - en: Most exercises in this book can be completed in your web browser, with a few
     exceptions. However, it is recommended to install the Rust development toolchain
     on your system. Once installed, you'll have everything you need to build and run
     Rust code locally.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 本书中的大多数练习都可以在您的网络浏览器中完成，但有少数例外。然而，建议在您的系统上安装 Rust 开发工具链。一旦安装完成，您将拥有构建和本地运行 Rust
+    代码所需的一切。
 - en: Installation is accomplished using `rustup`, the Rust toolchain installer. Once
     completed, you'll have `rustup`, `cargo`, and `rustc`.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 安装是通过使用 `rustup`，Rust 工具链安装程序来完成的。一旦完成，您将拥有 `rustup`、`cargo` 和 `rustc`。
 - en: Follow the instructions at [https://rustup.rs/](https://rustup.rs/) to complete
     the installation.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 按照位于 [https://rustup.rs/](https://rustup.rs/) 的说明完成安装。
 - en: '[Configuring your IDE](#configuring-your-ide)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[配置您的 IDE](#configuring-your-ide)'
 - en: It is recommended (but not required) to configure your editor to work with Rust.
     With Cargo installed, most editors, such as VS Code, will automatically install
     [rust-analyzer](https://rust-analyzer.github.io/), the LSP implementation for
     the Rust programming language.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 建议但不是必需的，将您的编辑器配置为与 Rust 一起使用。安装 Cargo 后，大多数编辑器，如 VS Code，将自动安装 [rust-analyzer](https://rust-analyzer.github.io/)，这是
+    Rust 编程语言的 LSP 实现。

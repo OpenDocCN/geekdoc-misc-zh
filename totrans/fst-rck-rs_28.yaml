@@ -1,46 +1,68 @@
 - en: Modules
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 模块
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/modules.html](https://freddiehaddad.github.io/fast-track-to-rust/modules.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/modules.html](https://freddiehaddad.github.io/fast-track-to-rust/modules.html)
 - en: '*Modules* help us organize code within a crate for better readability and easy
     reuse. They also allow us to control the *privacy* of items, as code within a
     module is private by default. Private items are internal implementation details
     not accessible from outside. We can choose to make modules and their items public,
     exposing them for external code to use and depend on.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '*模块*帮助我们组织crate内的代码，以实现更好的可读性和易于重用。它们还允许我们控制项目的*隐私性*，因为模块内的代码默认是私有的。私有项是内部实现细节，不可从外部访问。我们可以选择使模块及其项公开，以便外部代码使用和依赖。'
 - en: Refer to the section on [Defining Modules to Control Scope and Privacy](https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html#defining-modules-to-control-scope-and-privacy)
     in the Rust documentation.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 请参考Rust文档中关于[定义模块以控制作用域和隐私](https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html#defining-modules-to-control-scope-and-privacy)的部分。
 - en: '[Summary](#summary)'
+  id: totrans-4
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[摘要](#summary)'
 - en: 'In this section, we were introduced to:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们介绍了以下内容：
 - en: 'Crates: A tree of modules that produces a library or executable'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: crate：一个生成库或可执行文件的模块树
 - en: 'Packages: A Cargo feature that lets you build, test, and share crates'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包：一个允许你构建、测试和共享crate的货物特性
 - en: 'Modules: Let you control the organization of your project'
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块：让你控制项目的组织
 - en: '[Next](#next)'
+  id: totrans-9
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一节](#next)'
 - en: With a basic understanding of crates, packages, and modules, let's utilize one
     for regular expression support.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 在对crate、包和模块有基本了解之后，让我们利用其中一个来支持正则表达式。

@@ -1,23 +1,32 @@
 - en: Error Handling
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 错误处理
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/error_handling.html](https://freddiehaddad.github.io/fast-track-to-rust/error_handling.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/error_handling.html](https://freddiehaddad.github.io/fast-track-to-rust/error_handling.html)
 - en: Many programs use mechanisms like exceptions for handling errors, but Rust takes
     a different approach. Rust doesn't have exceptions. Instead, it uses the [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html)
     type for recoverable errors and the `panic!` macro for unrecoverable errors. Similar
     to the [`Option`](https://doc.rust-lang.org/std/option/enum.Option.html) `enum`
     we previously discussed, [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html)
     is another `enum`.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 许多程序使用异常等机制来处理错误，但 Rust 采用不同的方法。Rust 没有异常。相反，它使用 `Result` 类型来处理可恢复错误，并使用 `panic!`
+    宏来处理不可恢复错误。类似于我们之前讨论的 `Option` `enum`，`Result` 是另一个 `enum`。
 - en: '[`Result<T, E>`](#resultt-e)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`Result<T, E>`](#resultt-e)'
 - en: '`Result<T, E>` is the type used for returning and propagating errors. Similar
     to `Option`, it has two variants: `Ok(T)`, which represents success and contains
     a value, and `Err(E)`, which represents an error and contains an error value.
@@ -25,45 +34,71 @@
     soon. For now, it''s important to know that `T` represents the type of the value
     returned in a success case within the `Ok` variant, and `E` represents the type
     of the error returned in a failure case within the `Err` variant.'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Result<T, E>` 是用于返回和传播错误的类型。类似于 `Option`，它有两个变体：`Ok(T)`，表示成功并包含一个值，以及 `Err(E)`，表示错误并包含一个错误值。`T`
+    和 `E` 是我们将很快详细讨论的泛型类型参数。现在，重要的是要知道 `T` 代表在 `Ok` 变体中成功情况下返回的值的类型，而 `E` 代表在 `Err`
+    变体中失败情况下返回的错误类型。'
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[Additional Resources](#additional-resources)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[附加资源](#additional-resources)'
 - en: Several sections in the Rust documentation thoroughly cover [error handling](https://doc.rust-lang.org/book/ch09-00-error-handling.html).
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 文档的几个部分详细介绍了 [错误处理](https://doc.rust-lang.org/book/ch09-00-error-handling.html)。
 - en: 'Here are some useful links:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里有一些有用的链接：
 - en: '[Unrecoverable Errors with panic!](https://doc.rust-lang.org/book/ch09-01-unrecoverable-errors-with-panic.html):
     Useful information on how to troubleshoot code that panics.'
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[使用 panic! 的不可恢复错误](https://doc.rust-lang.org/book/ch09-01-unrecoverable-errors-with-panic.html)：有关如何调试引发
+    panic 的代码的有用信息。'
 - en: '[Recoverable Errors with Result](https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html):
     Deep dive into `Result` and general error handling.'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[使用 Result 的可恢复错误](https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html)：深入探讨
+    `Result` 和通用错误处理。'
 - en: '[To panic! or Not to panic!](https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html):
     General guidelines on how to decide whether to panic in library code.'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[惊慌失措！还是不惊慌？](https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html)：关于在库代码中如何决定是否惊慌的通用指南。'
 - en: '[The question mark operator](https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-question-mark-operator):
     Useful for propagating errors to the calling function.^([1](#footnote-1))'
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[问号运算符](https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-question-mark-operator)：用于将错误传播到调用函数的有用工具.^([1](#footnote-1))'
 - en: '* * *'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: We'll cover the question mark operator `?` when we refactor the code. [↩](#fr-1-1)
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 我们将在重构代码时介绍问号运算符 `?`。[↩](#fr-1-1)

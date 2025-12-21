@@ -1,38 +1,58 @@
 - en: use-ing Dependencies
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 使用进行时态的依赖关系
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/useing_dependencies.html](https://freddiehaddad.github.io/fast-track-to-rust/useing_dependencies.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/useing_dependencies.html](https://freddiehaddad.github.io/fast-track-to-rust/useing_dependencies.html)
 - en: Now that we've added the `regex` crate as a dependency, we are ready to *use*
     it (pun intended). You can refer to the crate by the full path name `regex::Regex`
     (crate::module) or, more commonly, by bringing the module into scope with the
     `use`^([1](#footnote-1)) keyword.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们已经将 `regex` 包作为依赖项添加，我们准备好*使用*它（有意为之）。你可以通过完整路径名 `regex::Regex`（包::模块）来引用它，或者更常见的是，通过使用
+    `use`^([1](#footnote-1)) 关键字将模块引入作用域。
 - en: 'We''ve been doing this in our rustle program:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在 rustle 程序中就是这样做的：
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: By bringing the module into scope with `use regex::Regex;`, we can reference
     it with `Regex`.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过使用 `use regex::Regex;` 将模块引入作用域，我们可以用 `Regex` 来引用它。
 - en: Now that we know how to add dependencies to our project and use them, it's time
     to add support for regular expressions!
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们已经知道了如何向我们的项目添加依赖项并使用它们，是时候添加对正则表达式的支持了！
 - en: '* * *'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: The [`use`](https://doc.rust-lang.org/std/keyword.use.html) keyword can do more
     than just bring things into scope, so be sure to check the documentation on [use
     declarations](https://doc.rust-lang.org/reference/items/use-declarations.html)
     for more details on [`use`](https://doc.rust-lang.org/std/keyword.use.html). [↩](#fr-1-1)
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`use` 关键字不仅能将事物引入作用域，所以请确保查看有关 [use 声明](https://doc.rust-lang.org/reference/items/use-declarations.html)
+    的文档以获取关于 `use` 的更多详细信息。[↩](#fr-1-1)'

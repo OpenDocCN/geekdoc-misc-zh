@@ -1,82 +1,124 @@
 - en: Variables
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 变量
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/variables.html](https://freddiehaddad.github.io/fast-track-to-rust/variables.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/variables.html](https://freddiehaddad.github.io/fast-track-to-rust/variables.html)
 - en: Rust is a statically typed language, meaning that all variables have a type,
     and this type must be known at compile time. The `let` keyword is used to declare
     variables, or more precisely, for variable binding.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust是一种静态类型语言，这意味着所有变量都有类型，并且这种类型必须在编译时已知。`let`关键字用于声明变量，或者更准确地说，用于变量绑定。
 - en: 'The anatomy of a `let` statement^([1](#footnote-1)) ^([2](#footnote-2)):'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: '`let`语句的结构^([1](#footnote-1)) ^([2](#footnote-2))：'
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[Type Inference](#type-inference)'
+  id: totrans-5
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[类型推断](#type-inference)'
 - en: Since `y` is passed as an argument to the `print_value` function, which requires
     a signed 32-bit integer, the compiler infers its type. Therefore, the explicit
     type declaration for `x` can be omitted.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于`y`作为参数传递给需要32位有符号整数的`print_value`函数，编译器推断出其类型。因此，可以省略`x`的显式类型声明。
 - en: '[PRE1]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[Rustle Variables](#rustle-variables)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[Rustle变量](#rustle-variables)'
 - en: To begin with our rustle program, we'll avoid handling user input via command
     line arguments for now. Instead, we'll hard code some strings and perform some
     simple *rustling*. Let's use the famous poem *My Shadow* by the poet Robert Louis
     Stevenson as our input.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 要开始我们的rustle程序，我们目前将避免通过命令行参数处理用户输入。相反，我们将硬编码一些字符串并执行一些简单的*rustling*。让我们使用诗人罗伯特·路易斯·斯蒂文森的著名诗作《我的影子》作为我们的输入。
 - en: '[PRE2]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The next step is to search the poem for occurrences of the pattern and print
     the results. To achieve this, we'll need to learn a bit about control flow.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一步是搜索诗中该模式的出现并打印结果。为了实现这一点，我们需要学习一些关于控制流的知识。
 - en: '[Summary](#summary)'
+  id: totrans-12
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: 'In this section, we:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们：
 - en: Learned how to declare variables.
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 学习了如何声明变量。
 - en: Explored Rust's type inference.
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 探索了Rust的类型推断。
 - en: '[Next](#next)'
+  id: totrans-16
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一步](#next)'
 - en: Onward to control flow.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来是控制流。
 - en: '* * *'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '[`let` statements](https://doc.rust-lang.org/reference/statements.html#let-statements)
     support more advanced features that are not being covered yet. [↩](#fr-1-1)'
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[`let`语句](https://doc.rust-lang.org/reference/statements.html#let-statements)支持尚未涵盖的更高级功能。[↩](#fr-1-1)'
 - en: In many cases, the compiler can infer the type allowing you to omit it. [↩](#fr-2-1)
+  id: totrans-20
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 在许多情况下，编译器可以推断类型，允许你省略它。[↩](#fr-2-1)

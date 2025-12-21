@@ -1,42 +1,60 @@
 - en: Concurrency
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 并发
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/concurrency.html](https://freddiehaddad.github.io/fast-track-to-rust/concurrency.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/concurrency.html](https://freddiehaddad.github.io/fast-track-to-rust/concurrency.html)
 - en: We're nearing the end of the course, and there's no better way to wrap things
     up than with concurrency! Rust, like many other languages, includes a native [thread](https://doc.rust-lang.org/std/thread/)
     module for spawning threads and performing tasks in parallel. However, numerous
     crates build on Rust's native multithreading capabilities, simplifying the process
     and offering various threading patterns.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们即将结束这门课程，没有比并发更好的方式来总结内容了！Rust，像许多其他语言一样，包含一个用于创建线程和并行执行任务的本地[线程](https://doc.rust-lang.org/std/thread/)模块。然而，许多crate建立在Rust的本地多线程能力之上，简化了过程并提供各种线程模式。
 - en: For instance, if you've programmed in Go, you're likely familiar with channels
     for moving data between `goroutines`. Similarly, if you've worked with JavaScript,
     you probably know about `async` and `await`. Both of these paradigms, along with
     many others, are available as crates in Rust.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，如果你在Go中编程，你可能会熟悉用于在`goroutines`之间移动数据的通道。同样，如果你与JavaScript合作过，你可能知道`async`和`await`。这两种范式，以及许多其他范式，在Rust中都可以作为crate使用。
 - en: 'Here''s a few examples worth exploring:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里有一些值得探索的例子：
 - en: '**[crossbeam](https://crates.io/crates/crossbeam)**: A set of tools for concurrent
     programming'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**[crossbeam](https://crates.io/crates/crossbeam)**：一套用于并发编程的工具'
 - en: '**[rayon](https://crates.io/crates/rayon)**: A data-parallelism library for
     Rust.'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**[rayon](https://crates.io/crates/rayon)**：一个用于Rust的数据并行库。'
 - en: '**[tokio](https://crates.io/crates/tokio)**: An event-driven, non-blocking
     I/O platform for writing asynchronous I/O backed applications.'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**[tokio](https://crates.io/crates/tokio)**：一个用于编写异步I/O后端应用程序的事件驱动、非阻塞I/O平台。'
 - en: Let's dive into multithreading!
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们深入探讨多线程！

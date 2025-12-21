@@ -1,32 +1,48 @@
 - en: Shortcuts
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 快捷键
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/shortcuts.html](https://freddiehaddad.github.io/fast-track-to-rust/shortcuts.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/shortcuts.html](https://freddiehaddad.github.io/fast-track-to-rust/shortcuts.html)
 - en: This course, developed with [mdbook](https://github.com/rust-lang/mdBook), features
     efficient keyboard shortcuts for streamlined navigation.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 本课程由 [mdbook](https://github.com/rust-lang/mdBook) 开发，提供了高效的键盘快捷键以实现流畅的导航。
 - en: '[Keyboard Shortcuts](#keyboard-shortcuts)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[键盘快捷键](#keyboard-shortcuts)'
 - en: '`Arrow-Left`: Navigate to the previous page.'
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`箭头左`: 导航到上一页。'
 - en: '`Arrow-Right`: Navigate to the next page.'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`箭头右`: 导航到下一页。'
 - en: '`s`: Activate the search bar.'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`s`: 激活搜索栏。'
 - en: '`Ctrl+Enter`: Execute the code in the focused code block.'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Ctrl+Enter`: 执行焦点代码块中的代码。'

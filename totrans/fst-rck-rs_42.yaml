@@ -1,112 +1,166 @@
 - en: Command Line Arguments
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 命令行参数
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/clap.html](https://freddiehaddad.github.io/fast-track-to-rust/clap.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[原文链接](https://freddiehaddad.github.io/fast-track-to-rust/clap.html)'
 - en: In the [`Cargo.toml`](cargo_toml.html) section, you were asked to add the [`clap`](https://crates.io/crates/clap)
     crate as a dependency to support command line argument parsing for our rustle
     program. With our current understanding of attributes, it's an ideal time to utilize
     this crate by extending our rustle program to handle command line arguments.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `Cargo.toml` 部分中，你被要求添加 `clap`（[链接](https://crates.io/crates/clap)）crate 作为依赖项以支持我们的
+    rustle 程序的命令行参数解析。根据我们对属性的当前理解，现在是利用这个 crate 通过扩展我们的 rustle 程序来处理命令行参数的理想时机。
 - en: One method for defining command line arguments with `clap` involves using custom
     attributes. This is why we specified the derive feature in the dependency.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用 `clap` 定义命令行参数的一种方法涉及使用自定义属性。这就是为什么我们在依赖项中指定了 derive 功能。
 - en: 'If you didn''t complete the exercise and are working through this course locally,
     you can add the dependency to the rustle crate with:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你没有完成练习并且在本地上正在学习这门课程，你可以通过以下方式将依赖项添加到 rustle crate 中：
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[Advanced Attributes](#advanced-attributes)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[高级属性](#advanced-attributes)'
 - en: The topic of [macro attributes](https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros)
     and [derive macro helper attributes](https://doc.rust-lang.org/reference/procedural-macros.html#derive-macro-helper-attributes)
     is quite advanced and beyond the scope of this course. Therefore, we won't delve
     into their inner workings in depth. However, keep this section in mind as you
     continue your Rust journey, because the time will likely come when you will need
     to implement similar attributes yourself for code generation.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于 [宏属性](https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros)
+    和 [derive 宏辅助属性](https://doc.rust-lang.org/reference/procedural-macros.html#derive-macro-helper-attributes)
+    的主题相当高级，超出了本课程的范畴。因此，我们不会深入探讨它们的内部工作原理。然而，在你继续 Rust 之旅时，请记住这一部分，因为很可能你将需要自己实现类似的属性以进行代码生成。
 - en: '[Extending rustle](#extending-rustle)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[扩展 rustle](#extending-rustle)'
 - en: We're going to add command line argument support to our program. However, we'll
     continue to mock the command line arguments to keep developing this course online.
     After configuring `clap`, this will be the auto-generated help (i.e., typing `rustle
     --help` in the terminal).
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将向我们的程序添加命令行参数支持。然而，我们将继续模拟命令行参数以保持这门课程在线开发。在配置 `clap` 之后，这将自动生成的帮助信息（即在终端中输入
+    `rustle --help`）。
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The `CLAP` documentation is very extensive and includes plenty of examples to
     learn from. If you find yourself building a CLI application, you will most certainly
     want to reference the [documentation](https://crates.io/crates/clap).
+  id: totrans-11
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`CLAP` 文档非常详尽，包含了许多学习示例。如果你在构建 CLI 应用程序，你肯定会想参考[文档](https://crates.io/crates/clap)。'
 - en: 'Here''s the updated version of rustle with command line argument support added:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是添加了命令行参数支持的 rustle 的更新版本：
 - en: '[PRE2]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Summary](#summary)'
+  id: totrans-14
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[摘要](#summary)'
 - en: 'We made some minor code changes along with configuring `clap`. Most of it should
     be straightforward by now, so we''ll focus on the new aspects:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在配置 `clap` 的同时做了一些小的代码更改。其中大部分现在应该都很直接，所以我们将关注新的方面：
 - en: The [`PathBuf`](https://doc.rust-lang.org/std/path/struct.PathBuf.html) module
     facilitates cross-platform path manipulation. Since our rustle program requires
     files to search, it's better to use `PathBuf` for handling that input.
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`PathBuf` 模块简化了跨平台的路径操作。由于我们的 rustle 程序需要搜索文件，因此使用 `PathBuf` 来处理这些输入会更好。'
 - en: We updated `print_results` to take a new boolean argument, `line_number`, which
     specifies whether or not to print line numbers in the output. If `true`, the `print!`
     macro is used to output the line number without emitting a newline.
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们更新了 `print_results`，使其接受一个新的布尔参数 `line_number`，该参数指定是否在输出中打印行号。如果为 `true`，则使用
+    `print!` 宏输出行号而不输出换行符。
 - en: We used `clap` attributes to derive our command line arguments. The `clap` [documentation](https://crates.io/crates/clap)
     covers these attributes in full detail.
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们使用 `clap` 属性来推导我们的命令行参数。`clap` [文档](https://crates.io/crates/clap) 详细介绍了这些属性。
 - en: In `main`, we mock command line arguments with an array of string slices that
     gets parsed by `clap`.
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在 `main` 中，我们使用一个字符串切片数组模拟命令行参数，该数组由 `clap` 解析。
 - en: The `match` expression is for development purposes. If we made any mistakes
     in our mock command line arguments, we would catch the error and print it.
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`match` 表达式仅用于开发目的。如果我们对模拟的命令行参数有任何错误，我们会捕获错误并打印出来。'
 - en: Since we defined the `before_context` and `after_context` variables as `u8`
     in the `Cli` structure but use `usize` throughout the code, an explicit cast using
     [`as`](https://doc.rust-lang.org/std/keyword.as.html) is necessary when assigning
     these values to local variables.
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由于我们在 `Cli` 结构体中将 `before_context` 和 `after_context` 变量定义为 `u8`，但在整个代码中使用 `usize`，因此在将这些值赋给局部变量时需要使用
+    `as` [关键字](https://doc.rust-lang.org/std/keyword.as.html) 进行显式转换。
 - en: '[Next](#next)'
+  id: totrans-22
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一页](#next)'
 - en: Onward to concurrency!
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 前进到并发编程！

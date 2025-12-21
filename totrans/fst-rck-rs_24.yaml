@@ -1,18 +1,28 @@
 - en: Cursor
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 光标
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/cursor.html](https://freddiehaddad.github.io/fast-track-to-rust/cursor.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/cursor.html](https://freddiehaddad.github.io/fast-track-to-rust/cursor.html)
 - en: Our production rustle program now has the capability to access real files. However,
     the Rust Playground does not support opening files directly. To ensure this course
     remains functional in your web browser, we need to use an in-memory buffer to
     simulate a file. This technique of mocking an open file is also commonly used
     in unit testing, making it a valuable concept to explore.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: Our production rustle program now has the capability to access real files. However,
+    the Rust Playground does not support opening files directly. To ensure this course
+    remains functional in your web browser, we need to use an in-memory buffer to
+    simulate a file. This technique of mocking an open file is also commonly used
+    in unit testing, making it a valuable concept to explore.
 - en: The [`Cursor`](https://doc.rust-lang.org/std/io/struct.Cursor.html) ^([1](#footnote-1))
     is used with in-memory buffers to provide [`Read`](https://doc.rust-lang.org/std/io/trait.Read.html)
     or [`Write`](https://doc.rust-lang.org/std/io/trait.Write.html) functionality.
@@ -20,70 +30,122 @@
     implement the [`Read`](https://doc.rust-lang.org/std/io/trait.Read.html) trait.
     For now, think of a [trait](https://doc.rust-lang.org/book/ch10-02-traits.html)
     as an interface in object-oriented programming languages, with some differences.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: The [`光标`](https://doc.rust-lang.org/std/io/struct.Cursor.html) ^([1](#footnote-1))
+    is used with in-memory buffers to provide [`读取`](https://doc.rust-lang.org/std/io/trait.Read.html)
+    or [`写入`](https://doc.rust-lang.org/std/io/trait.Write.html) functionality. Without
+    digressing too much, the `BufReader` we are using works on objects that implement
+    the [`读取`](https://doc.rust-lang.org/std/io/trait.Read.html) trait. For now, think
+    of a [trait](https://doc.rust-lang.org/book/ch10-02-traits.html) as an interface
+    in object-oriented programming languages, with some differences.
 - en: '[Mocking a File with Cursor](#mocking-a-file-with-cursor)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[使用光标模拟文件](#mocking-a-file-with-cursor)'
 - en: We only need to make a few changes to our program to utilize `Cursor`. Let's
     start by updating the `read_file` function to accept any object that implements
     the `Read` trait as an argument.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: We only need to make a few changes to our program to utilize `Cursor`. Let's
+    start by updating the `read_file` function to accept any object that implements
+    the `Read` trait as an argument.
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Next, we'll reintroduce our famous poem and use it as our in-memory buffer to
     represent our file.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: Next, we'll reintroduce our famous poem and use it as our in-memory buffer to
+    represent our file.
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Finally, we comment out the lines that handled opening a file and calling `read_file`,
     and instead, we directly call `read_file` with `mock_file`.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: Finally, we comment out the lines that handled opening a file and calling `read_file`,
+    and instead, we directly call `read_file` with `mock_file`.
 - en: '[PRE2]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Putting it All Together](#putting-it-all-together)'
+  id: totrans-11
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[整合一切](#putting-it-all-together)'
 - en: With these changes applied to our rustle program, we can once again utilize
     the Rust Playground to extend its functionality and continue learning Rust.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: With these changes applied to our rustle program, we can once again utilize
+    the Rust Playground to extend its functionality and continue learning Rust.
 - en: '[PRE3]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: What? You don't believe me! Give it a whirl and see for yourself!
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: What? You don't believe me! Give it a whirl and see for yourself!
 - en: Since we commented out the file handling code, some previously necessary imports
     are now unused. The `#![allow(unused_imports)]` attribute in Rust instructs the
     compiler to permit these unused imports without issuing warnings. We'll delve
     deeper into attributes when we discuss custom types and implement command line
     argument support.
+  id: totrans-15
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: Since we commented out the file handling code, some previously necessary imports
+    are now unused. The `#![allow(unused_imports)]` attribute in Rust instructs the
+    compiler to permit these unused imports without issuing warnings. We'll delve
+    deeper into attributes when we discuss custom types and implement command line
+    argument support.
 - en: '[Next](#next)'
+  id: totrans-16
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一节](#next)'
 - en: We're ready to add support for regular expressions for pattern matching. We'll
     take a brief detour to learn about project management in Rust, which will allow
     us to use packages (also known as crates) to add this functionality.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: We're ready to add support for regular expressions for pattern matching. We'll
+    take a brief detour to learn about project management in Rust, which will allow
+    us to use packages (also known as crates) to add this functionality.
 - en: '* * *'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: A Cursor wraps an in-memory buffer and provides it with a [`Seek`](https://doc.rust-lang.org/std/io/trait.Seek.html)
     implementation. [↩](#fr-1-1)
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: A Cursor wraps an in-memory buffer and provides it with a [`Seek`](https://doc.rust-lang.org/std/io/trait.Seek.html)
+    implementation. [↩](#fr-1-1)

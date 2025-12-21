@@ -1,72 +1,106 @@
 - en: Conclusion
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 结论
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/conclusion.html](https://freddiehaddad.github.io/fast-track-to-rust/conclusion.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/conclusion.html](https://freddiehaddad.github.io/fast-track-to-rust/conclusion.html)
 - en: Congratulations on reaching the end of the course! I truly hope you found this
     material helpful as you continue your journey as a Rust developer. Hopefully,
     you've gained a solid understanding of some foundational concepts in Rust that
     many beginners find challenging. What we've covered here is just the beginning.
     There are many more topics to explore! Stay curious and enjoy the journey. Rust
     is the future!
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 恭喜您完成了这门课程！我真心希望您在继续作为Rust开发者旅程的过程中，发现这些材料对您有所帮助。希望您已经对Rust中一些初学者认为具有挑战性的基础概念有了坚实的理解。我们在这里所涵盖的只是冰山一角。还有更多主题等待探索！保持好奇心，享受旅程。Rust是未来！
 - en: 'Here are some resources used throughout this course, listed alphabetically:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里列出了本课程中使用的资源，按字母顺序排列：
 - en: '[The Cargo Book](https://doc.rust-lang.org/cargo/index.html)'
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Cargo手册](https://doc.rust-lang.org/cargo/index.html)'
 - en: '[Compiler Error Code Index](https://doc.rust-lang.org/error_codes/error-index.html)'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[编译器错误代码索引](https://doc.rust-lang.org/error_codes/error-index.html)'
 - en: '[Learn Rust](https://www.rust-lang.org/learn)'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[学习Rust](https://www.rust-lang.org/learn)'
 - en: '[Office Rust Site](https://www.rust-lang.org/)'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Office Rust网站](https://www.rust-lang.org/)'
 - en: '[Rust By Example](https://doc.rust-lang.org/rust-by-example/)'
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Rust By Example](https://doc.rust-lang.org/rust-by-example/)'
 - en: '[Rust Playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021)'
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Rust沙盒](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021)'
 - en: '[The Rust Programming Language](https://doc.rust-lang.org/stable/book/)'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Rust编程语言](https://doc.rust-lang.org/stable/book/)'
 - en: '[The Rust Standard Library](https://doc.rust-lang.org/std/index.html)'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Rust标准库](https://doc.rust-lang.org/std/index.html)'
 - en: '[The Rustc Book](https://doc.rust-lang.org/rustc/index.html)'
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Rustc手册](https://doc.rust-lang.org/rustc/index.html)'
 - en: '[The Rustdoc Book](https://doc.rust-lang.org/rustdoc/index.html)'
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Rustdoc手册](https://doc.rust-lang.org/rustdoc/index.html)'
 - en: '[A Note About Copilot](#a-note-about-copilot)'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[关于Copilot的说明](#a-note-about-copilot)'
 - en: The content in this book is the author's own words. However, some of the content
     was improved with the assistance of Copilot to enhance clarity and maintain a
     consistent writing style throughout the book.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 本书中的内容是作者自己的话。然而，其中一些内容在Copilot的帮助下得到了改进，以提高清晰度并保持全书一致的写作风格。
 - en: If you find that anything appears to be copied from another source without proper
     accreditation, please start a [discussion on GitHub](https://github.com/freddiehaddad/fast-track-to-rust/discussions).
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您发现任何内容似乎未经适当认可就来自其他来源，请开始在GitHub上[发起讨论](https://github.com/freddiehaddad/fast-track-to-rust/discussions)。

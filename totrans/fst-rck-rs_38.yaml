@@ -1,29 +1,41 @@
 - en: Generic Types
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 泛型类型
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/generic_types.html](https://freddiehaddad.github.io/fast-track-to-rust/generic_types.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/generic_types.html](https://freddiehaddad.github.io/fast-track-to-rust/generic_types.html)
 - en: Many programming languages include tools for effectively handling the duplication
     of concepts, and Rust is no exception. Rust offers powerful support for generics,
     a topic that could easily warrant its own book. However, since we're on the Fast
     Track to Rust, we'll focus on the core concepts of generics and traits by making
     the `interval` module from the previous section generic.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 许多编程语言都包括有效处理概念重复的工具，Rust也不例外。Rust为泛型提供了强大的支持，这个话题几乎可以写成一整本书。然而，由于我们正在快速学习Rust，我们将通过将上一节中的`interval`模块泛型化，来关注泛型和特质的核心理念。
 - en: We've already been working with generics throughout this course, using types
     such as `Vec<T>`, `Option<T>`, and `Result<T, E>`.
+  id: totrans-3
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在本课程中，我们已经开始使用泛型，例如`Vec<T>`、`Option<T>`和`Result<T, E>`。
 - en: Similar to our approach in the previous section, we'll examine the helpful compiler
     errors as we work towards making the `interval` module generic. The rationale
     behind exposing you to these compiler errors is to illustrate how beneficial the
     compiler can be when working with the language.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 与上一节中的方法类似，我们在努力使`interval`模块通用化的过程中，将检查这些有用的编译器错误。让你接触这些编译器错误的理由是为了说明编译器在处理语言时是多么有益。
 - en: Let's get started!
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们开始吧！

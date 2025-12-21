@@ -1,18 +1,26 @@
 - en: Packages
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 包
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/packages.html](https://freddiehaddad.github.io/fast-track-to-rust/packages.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/packages.html](https://freddiehaddad.github.io/fast-track-to-rust/packages.html)
 - en: A package is a collection of one or more crates that provide a set of functionalities.
     It includes a `Cargo.toml` file that outlines how to build those crates. A package
     can contain multiple binary crates, but only one library crate at most. However,
     a package must contain at least one crate, whether it's a library or binary crate.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 包是由一个或多个提供一组功能的单元组成的集合。它包含一个`Cargo.toml`文件，概述了如何构建这些单元。一个包可以包含多个二进制单元，但最多只能有一个库单元。然而，一个包必须至少包含一个单元，无论是库单元还是二进制单元。
 - en: Refer to the section on [Packages and Crates](https://doc.rust-lang.org/book/ch07-01-packages-and-crates.html#packages-and-crates)
     in the Rust documentation.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 请参考 Rust 文档中的[包和单元](https://doc.rust-lang.org/book/ch07-01-packages-and-crates.html#packages-and-crates)部分。

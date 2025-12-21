@@ -1,11 +1,15 @@
 - en: Custom Types
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 自定义类型
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/custom_types.html](https://freddiehaddad.github.io/fast-track-to-rust/custom_types.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/custom_types.html](https://freddiehaddad.github.io/fast-track-to-rust/custom_types.html)
 - en: 'Rust provides two options for creating custom types: [`enum`](https://doc.rust-lang.org/reference/items/enumerations.html)
     and [`struct`](https://doc.rust-lang.org/reference/items/structs.html). The key
     difference between them is that enums have a fixed set of variants, meaning they
@@ -13,16 +17,22 @@
     On the other hand, [`struct`](https://doc.rust-lang.org/reference/items/structs.html)
     is not limited to a set of possible values. Structures allow for packaging related
     values into meaningful groups.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust提供了两种创建自定义类型的方法：`enum`（[枚举](https://doc.rust-lang.org/reference/items/enumerations.html)）和`struct`（[结构体](https://doc.rust-lang.org/reference/items/structs.html)）。它们之间的关键区别在于枚举有一个固定的变体集合，这意味着它们用于指示一个值是特定集合中可能值之一。另一方面，`struct`（[结构体](https://doc.rust-lang.org/reference/items/structs.html)）不限于一组可能的值。结构体允许将相关的值打包成有意义的组。
 - en: We've already encountered enums when we looked at `Option` and `Result`.
+  id: totrans-3
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 当我们查看`Option`和`Result`时，我们已经遇到了枚举。
 - en: In our current rustle program, we use tuples to represent intervals. In this
     section, we'll replace tuples with a custom `Interval` type using a [`struct`](https://doc.rust-lang.org/reference/items/structs.html),
     and enhance it by adding methods for various operations. Finally, we'll define
     an [`enum`](https://doc.rust-lang.org/reference/items/enumerations.html) to represent
     potential error values when creating and interacting with intervals.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们当前的rustle程序中，我们使用元组来表示区间。在本节中，我们将使用`struct`（[结构体](https://doc.rust-lang.org/reference/items/structs.html)）来替换元组，并为其添加各种操作的方法来增强它。最后，我们将定义一个`enum`（[枚举](https://doc.rust-lang.org/reference/items/enumerations.html)）来表示在创建和交互区间时可能出现的错误值。

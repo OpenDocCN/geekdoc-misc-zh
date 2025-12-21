@@ -1,64 +1,93 @@
 - en: Welcome to Fast Track to Rust
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 欢迎来到 Fast Track to Rust
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/index.html](https://freddiehaddad.github.io/fast-track-to-rust/index.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/index.html](https://freddiehaddad.github.io/fast-track-to-rust/index.html)
 - en: This course is designed to introduce you to the Rust programming language by
     building an actual program. We'll be developing a grep-like program, called rustle^([1](#footnote-1))
     with a minimal subset of the features found in the [GNU](https://www.gnu.org/)
     ^([2](#footnote-2)) [grep](https://www.gnu.org/software/grep/manual/grep.html)
     ^([3](#footnote-3)) utility. This means we'll start with what we know and iterate
     upon the design as we learn more about the language.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 本课程旨在通过构建一个实际程序来向您介绍 Rust 编程语言。我们将开发一个类似 grep 的程序，称为 rustle^([1](#footnote-1))，它具有
+    [GNU](https://www.gnu.org/) ^([2](#footnote-2)) [grep](https://www.gnu.org/software/grep/manual/grep.html)
+    ^([3](#footnote-3)) 工具中找到的最小功能集。这意味着我们将从已知的内容开始，随着对语言的了解加深，我们将迭代设计。
 - en: 'The official URL for this online course is: [https://freddiehaddad.github.io/fast-track-to-rust](https://freddiehaddad.github.io/fast-track-to-rust)'
+  id: totrans-3
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 本在线课程的官方网址是：[https://freddiehaddad.github.io/fast-track-to-rust](https://freddiehaddad.github.io/fast-track-to-rust)
 - en: ''
+  id: totrans-4
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: 'The source code can be found at: [https://github.com/freddiehaddad/fast-track-to-rust](https://github.com/freddiehaddad/fast-track-to-rust)'
+  id: totrans-5
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 源代码可以在以下位置找到：[https://github.com/freddiehaddad/fast-track-to-rust](https://github.com/freddiehaddad/fast-track-to-rust)
 - en: The goal is to teach you Rust, so it's assumed you don't know anything about
     the language. However, it's also assumed that you have experience programming
     in other languages like C++, and are familiar with multithreading, data structures,
     and program memory organization (i.e., heap, stack, etc.).
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 目标是教会您 Rust，因此假设您对该语言一无所知。然而，也假设您有在其他语言（如 C++）中编程的经验，并且熟悉多线程、数据结构和程序内存组织（即堆、栈等）。
 - en: This course moves relatively quickly. Most topics are covered enough to provide
     a fundamental understanding. As you progress, references to the official Rust
     [documentation](https://doc.rust-lang.org/book/title-page.html) are provided for
     further exploration.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 本课程进展相对较快。大多数主题都涵盖了足够的内容，以提供基本理解。随着您的进步，将提供官方 Rust [文档](https://doc.rust-lang.org/book/title-page.html)的引用，以便进一步探索。
 - en: Enough chit chat, let's get started!
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 足够闲聊了，让我们开始吧！
 - en: '![Fast Track to Rust Logo](../Images/78d3819ae7275566f3e27d1c2dd2384a.png)'
+  id: totrans-9
   prefs: []
   type: TYPE_IMG
+  zh: '![Fast Track to Rust Logo](../Images/78d3819ae7275566f3e27d1c2dd2384a.png)'
 - en: '* * *'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: The name Rustle was chosen because it's a play on the word "rust" and represents
     the sound of leaves rustling as the program searches through data. [↩](#fr-1-1)
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 选择 Rustle 这个名字是因为它与“rust”这个词的谐音，代表着程序在搜索数据时树叶沙沙作响的声音。[↩](#fr-1-1)
 - en: GNU is an collection of free software commonly used as an operating system.
     The family of operating systems, known as Linux, are built from them. [↩](#fr-2-1)
+  id: totrans-12
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: GNU 是一组常用的免费软件集合，通常用作操作系统。被称为 Linux 的操作系统家族就是由它们构建的。[↩](#fr-2-1)
 - en: Grep searches one or more input files for lines containing a match to a specified
     pattern. By default, grep outputs the matching lines. [↩](#fr-3-1)
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: Grep 搜索一个或多个输入文件，查找包含指定模式的行。默认情况下，grep 输出匹配的行。[↩](#fr-3-1)

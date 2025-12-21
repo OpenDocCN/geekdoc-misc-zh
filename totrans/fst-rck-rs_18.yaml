@@ -1,127 +1,184 @@
 - en: Vec
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: Vec
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/vec.html](https://freddiehaddad.github.io/fast-track-to-rust/vec.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/vec.html](https://freddiehaddad.github.io/fast-track-to-rust/vec.html)
 - en: A `Vec`, short for vector, is a contiguous growable array type, written as `Vec<T>`.
     Although we haven't covered user-defined types yet, `Vec` is implemented using
     a `struct`.^([1](#footnote-1)) It supports many familiar operations like `push`,
     `pop`, and `len`, but also includes some operations you might not be familiar
     with.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Vec`，即向量，是一种连续可增长的数组类型，写作`Vec<T>`。尽管我们还没有介绍用户自定义类型，但`Vec`是通过一个`struct`实现的。^([1](#footnote-1))
+    它支持许多熟悉的操作，如`push`、`pop`和`len`，但也包括一些你可能不熟悉的操作。'
 - en: '[Storing our Lines in a Vector](#storing-our-lines-in-a-vector)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[将我们的行存储在向量中](#storing-our-lines-in-a-vector)'
 - en: Let's populate a vector with the input we've been using so far in our rustle
     program. There are several ways to create a vector, and the [documentation](https://doc.rust-lang.org/std/vec/struct.Vec.html)
     provides plenty of examples. We'll explore a few of them.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们在rustle程序中迄今为止使用的输入中填充一个向量。创建向量有几种方法，[文档](https://doc.rust-lang.org/std/vec/struct.Vec.html)提供了大量的示例。我们将探索其中的一些。
 - en: '[Using `push`](#using-push)'
+  id: totrans-5
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[使用`push`](#using-push)'
 - en: 'Someone with a C++ background might be inclined to achieve this using a variant
     of the following form:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 拥有C++背景的人可能会倾向于使用以下形式的变体来实现这一点：
 - en: Hidden code
+  id: totrans-7
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 隐藏代码
 - en: ''
+  id: totrans-8
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: To make reading the code easier, only the new parts are visible. You can view
     previously seen code by clicking the *Show hidden lines* button when hovering
     over the code block.
+  id: totrans-9
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 为了使代码更容易阅读，只有新部分是可见的。你可以通过在代码块上悬停并点击“显示隐藏行”按钮来查看之前看到的代码。
 - en: '[PRE0]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: We haven't discussed traits yet, so for now, just know that `:?` specifies formatting
     the output with the `Debug`^([2](#footnote-2)) trait. The vector type implements
     the `fmt::Debug` trait.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还没有讨论特性，所以现在只需知道`:?`指定使用`Debug`^([2](#footnote-2))特性来格式化输出。向量类型实现了`fmt::Debug`特性。
 - en: '[Using an Iterator](#using-an-iterator)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[使用迭代器](#using-an-iterator)'
 - en: 'While using `push` is functionally correct, it introduces a mutable variable
     unnecessarily. An idiomatic solution would look like this:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 虽然使用`push`在功能上是正确的，但它不必要地引入了一个可变变量。一种惯用的解决方案看起来像这样：
 - en: '[PRE1]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Favoring immutability
+  id: totrans-15
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 优先考虑不可变性
 - en: ''
+  id: totrans-16
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: The concept of being *immutable by default* is one of the many ways Rust encourages
     you to write code that leverages its safety features and supports easy concurrency.
+  id: totrans-17
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 默认不可变的概念是Rust鼓励你编写利用其安全特性并支持易于并发的代码的许多方式之一。
 - en: '[Tracking all Matches](#tracking-all-matches)'
+  id: totrans-18
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[跟踪所有匹配项](#tracking-all-matches)'
 - en: Now that we have a vector containing all the lines in our poem, let's create
     another vector to hold the line numbers where the pattern was found.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们已经有一个包含我们诗歌中所有行的向量，让我们再创建一个向量来存储找到模式的行号。
 - en: '[PRE2]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Instead of using `from_iter`, you can also use `collect`.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了使用`from_iter`，你还可以使用`collect`。
 - en: The inferred type (`_`) in `Vec<_>` *asks* the compiler to infer the type if
     possible based on the surrounding context.^([2](#footnote-2))
+  id: totrans-22
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在`Vec<_>`中的推断类型（`_`）*要求*编译器根据周围环境推断类型（如果可能的话）。^([2](#footnote-2))
 - en: '[Creating Intervals from Matched Lines](#creating-intervals-from-matched-lines)'
+  id: totrans-23
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[从匹配行创建区间](#creating-intervals-from-matched-lines)'
 - en: The `map` function invokes the `closure` once for each value in the vector,
     passing `line_no` (the line number) to the function. We use this to identify the
     lines before and after the match that we want to print. To handle potential out-of-bounds
     indexing, we use `saturating_add` and `saturating_sub`.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: '`map`函数对向量中的每个值调用一次闭包，将`line_no`（行号）传递给函数。我们使用这个来识别我们想要打印的匹配之前和之后的行。为了处理潜在的越界索引，我们使用`saturating_add`和`saturating_sub`。'
 - en: '[PRE3]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[Merging Intervals](#merging-intervals)'
+  id: totrans-26
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[合并区间](#merging-intervals)'
 - en: Merging overlapping intervals is straightforward because they are already sorted,
     and the ending value of the next interval must be greater than the current one.
     We could store the merged intervals in a new Vector, but that would be inefficient.
     Instead, we'll make our `intervals` vector mutable and take advantage of the `dedup_by`
     iterator adaptor to perform the merge.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 合并重叠的区间很简单，因为它们已经排序，下一个区间的结束值必须大于当前值。我们可以将合并后的区间存储在一个新的Vector中，但这将是不高效的。相反，我们将使我们的`intervals`向量可变，并利用`dedup_by`迭代器适配器来执行合并。
 - en: '[PRE4]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: The [`dedup_by`](https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.dedup_by)
     iterator adaptor removes consecutive identical elements based on a provided closure.
     It starts by calling the closure with the first (`prev`) and second (`next`) elements
@@ -129,84 +186,126 @@
     is advanced, and the closure is called with the new elements. If the closure returns
     `true`, only `next` is advanced. This behavior allows us to update `prev` to be
     the merged interval, enabling efficient merging of overlapping intervals.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: '[dedup_by](https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.dedup_by)迭代器适配器根据提供的闭包移除基于连续相同元素的迭代器。它首先使用集合中的第一个（`prev`）和第二个（`next`）元素调用闭包。如果闭包返回`false`，则`prev`变为`next`，`next`前进，并使用新元素调用闭包。如果闭包返回`true`，则只前进`next`。这种行为允许我们将`prev`更新为合并的区间，从而实现重叠区间的有效合并。'
 - en: Tuple fields are accessed using a 0-based index, just like array elements.
+  id: totrans-30
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 元组字段使用基于0的索引访问，就像数组元素一样。
 - en: '[Print the Results](#print-the-results)'
+  id: totrans-31
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[打印结果](#print-the-results)'
 - en: With our intervals merged, we can now print out the results correctly!
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的区间合并后，现在可以正确地打印出结果了！
 - en: '[PRE5]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[We Did It!](#we-did-it)'
+  id: totrans-34
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[我们做到了！](#we-did-it)'
 - en: We have a working rustle program! Take some time to review everything we've
     covered so far. The rest of the course is going to move quickly.
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们有一个工作的rustle程序！花些时间回顾一下我们到目前为止所涵盖的内容。接下来的课程将会很快地推进。
 - en: '[Summary](#summary)'
+  id: totrans-36
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: 'We covered quite a bit in this section:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们涵盖了相当多的内容：
 - en: '`collect` converts any iterable into a collection.'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`collect`可以将任何可迭代对象转换为集合。'
 - en: '`saturating_add` and `saturating_sub` prevent overflow.'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`saturating_add`和`saturating_sub`可以防止溢出。'
 - en: '`skip` creates an iterator that skips elements until `n` elements are skipped
     or the end of the iterator is reached, whichever comes first.'
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`skip`创建一个迭代器，它跳过元素，直到跳过了`n`个元素或者到达迭代器的末尾，以先到者为准。'
 - en: '`take` creates an iterator that yields elements until `n` elements are yielded
     or the end of the iterator is reached, whichever comes first.'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`take`创建一个迭代器，它会产生元素，直到产生了`n`个元素或者到达迭代器的末尾，以先到者为准。'
 - en: The `println!` macro supports the [`:?`](https://doc.rust-lang.org/std/fmt/index.html#fmtdisplay-vs-fmtdebug)
     format specifier, which is intended to help with debugging Rust code. All public
     types should implement the `fmt::Debug trait`.^([3](#footnote-3))
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`println!`宏支持`[?:](https://doc.rust-lang.org/std/fmt/index.html#fmtdisplay-vs-fmtdebug)`格式说明符，该说明符旨在帮助调试Rust代码。所有公共类型都应该实现`fmt::Debug
+    trait`。^([3](#footnote-3))'
 - en: '[Next](#next)'
+  id: totrans-43
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一页](#next)'
 - en: Let's dive into the concepts of ownership and borrowing.
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们深入探讨所有权和借用概念。
 - en: '* * *'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: Refer to the [`Vec` source code](https://doc.rust-lang.org/src/alloc/vec/mod.rs.html)
     see it's full implementation. The `struct` definition is on line [397](https://doc.rust-lang.org/src/alloc/vec/mod.rs.html#397).
     [↩](#fr-1-1)
+  id: totrans-46
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 请参考[Vec源代码](https://doc.rust-lang.org/src/alloc/vec/mod.rs.html)以查看其完整实现。`struct`定义在第[397行](https://doc.rust-lang.org/src/alloc/vec/mod.rs.html#397)。[↩](#fr-1-1)
 - en: The [Inferred type](https://doc.rust-lang.org/reference/types/inferred.html?highlight=Vec%3C_%3E#inferred-type)
     is part of the type system in Rust. [↩](#fr-2-1) [↩2](#fr-2-2)
+  id: totrans-47
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[推断类型](https://doc.rust-lang.org/reference/types/inferred.html?highlight=Vec%3C_%3E#inferred-type)是Rust类型系统的一部分。[↩](#fr-2-1)
+    [↩2](#fr-2-2)'
 - en: Details about the `Debug` trait can be found [here](https://doc.rust-lang.org/std/fmt/trait.Debug.html).
     [↩](#fr-3-1)
+  id: totrans-48
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 关于`Debug`特质的详细信息可以在[这里](https://doc.rust-lang.org/std/fmt/trait.Debug.html)找到。[↩](#fr-3-1)

@@ -1,217 +1,327 @@
 - en: Interval
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 区间
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/interval.html](https://freddiehaddad.github.io/fast-track-to-rust/interval.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/interval.html](https://freddiehaddad.github.io/fast-track-to-rust/interval.html)
 - en: The current version of our `Interval` is limited to the `usize` type. If we
     want to support floating point values, negative integers, or other exotic numeric
     types, it won't work. We're going to address this by making it compatible with
     any numeric type, with some restrictions.^([1](#footnote-1))
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们当前版本的`Interval`仅限于`usize`类型。如果我们想支持浮点值、负整数或其他奇特的数值类型，它将不起作用。我们将通过使其与任何数值类型兼容来解决此问题，但有一些限制.^([1](#footnote-1))
 - en: '[Generic Data Type](#generic-data-type)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[泛型数据类型](#generic-data-type)'
 - en: The current definition of our `Interval` `struct` specifies the field types
     as `usize`. To redefine the `struct` to use a generic type parameter for its fields,
     we use the `<>` syntax.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们当前`Interval` `struct`的定义指定了字段类型为`usize`。为了重新定义`struct`以使用其字段的泛型类型参数，我们使用`<>`语法。
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: By using a single generic type to define `Interval<T>`, we indicate that the
     `Interval<T>` `struct` is generic over some type `T`, and the fields `start` and
     `end` are both of that same type, whatever it may be. If we attempt to create
     an instance of `Interval<T>` with fields of different types, our code won't compile.
     To support different types for the fields, we would need to specify additional
     generic types, such as `struct Interval<T, U>`.
+  id: totrans-6
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 通过使用单个泛型类型来定义`Interval<T>`，我们表明`Interval<T>` `struct`是泛型类型`T`的，并且字段`start`和`end`都是同一类型，无论它是什么。如果我们尝试使用不同类型的字段创建`Interval<T>`的实例，我们的代码将无法编译。为了支持不同类型的字段，我们需要指定额外的泛型类型，例如`struct
+    Interval<T, U>`。
 - en: You've probably guessed it already, but this code won't compile. Take a moment
     to think about why that might be, and then run the code to see what the compiler
     has to say.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能已经猜到了，但这段代码无法编译。花点时间想想为什么可能会这样，然后运行代码看看编译器有什么要说的。
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: As you guessed it, there's a lot of compiler errors and they're very helpful!
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 如你所料，有很多编译器错误，而且它们非常有帮助！
 - en: '[E0107](https://doc.rust-lang.org/stable/error_codes/E0107.html): missing generics
     for `struct` `Interval`'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[E0107](https://doc.rust-lang.org/stable/error_codes/E0107.html): `struct`
+    `Interval`缺少泛型'
 - en: Let's walk through the errors one by one. The first error informs us that the
     return value on line 26 references a generic type but fails to specify one. It
     shows the definition of the type on line 141 and provides a helpful tip for how
     to correct it. The compiler suggests appending `<T>` to `Interval` and specifying
     the type for `T`, which in our case will be `usize`.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们逐个分析错误。第一个错误告诉我们，第26行的返回值引用了一个泛型类型，但没有指定它。它显示了第141行的类型定义，并提供了如何纠正它的有用提示。编译器建议将`<T>`附加到`Interval`并指定`T`的类型，在我们的情况下将是`usize`。
 - en: '[PRE2]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The fix should be relatively straightforward to understand, as we've used the
     same approach for other generic types we've worked with. Let's apply the fix to
     all the functions and try again!
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 修复方法应该相对容易理解，因为我们已经为其他我们处理过的泛型类型使用了相同的方法。让我们将修复应用到所有函数并再次尝试！
 - en: '[PRE3]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: As expected, we still have some more compiler errors to work through and these
     lead us into how we implement methods for a generic type!
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 如预期的那样，我们还有一些编译器错误需要解决，这些错误引导我们了解了如何为泛型类型实现方法！
 - en: '[PRE4]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Inherent Implementation](#inherent-implementation)'
+  id: totrans-17
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[固有实现](#inherent-implementation)'
 - en: 'There are two main types of implementation we define: inherent implementations
     (standalone) and trait implementations.^([2](#footnote-2)) We''ll focus on inherent
     implementation first and explore trait implementations towards the end of this
     section.'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们定义了两种主要的实现类型：固有实现（独立）和特性实现.^([2](#footnote-2)) 我们将首先关注固有实现，并在本节末尾探讨特性实现。
 - en: 'We need to update our `impl` block to support generic type parameters for our
     generic type, and the syntax is as follows:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们需要更新我们的`impl`块以支持泛型类型参数，其语法如下：
 - en: '[PRE5]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Here are the necessary changes. Review them and run the program again.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是必要的更改。请审查它们，然后再次运行程序。
 - en: '[PRE6]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Well, that didn''t work! Now we have two new compiler errors:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 嗯，这没有起作用！现在我们有两个新的编译器错误：
 - en: '[E0369]: binary operation `<=` cannot be applied to type `T`'
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[E0369]: 二元运算符`<=`不能应用于类型`T`'
 - en: '[E0507]: cannot move out of `self.start` which is behind a shared reference'
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[E0507]: 无法从共享引用后面的`self.start`移动'
 - en: That's okay, because these errors are a perfect segue into trait bounds!
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 这没关系，因为这些错误完美地过渡到了特性边界！
 - en: '[Trait Bounds](#trait-bounds)'
+  id: totrans-27
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[特性边界](#trait-bounds)'
 - en: 'The compiler generated a few very helpful error messages, which we can categorize
     into two types, both of which suggest the use of trait bounds:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器生成了一些非常有用的错误信息，我们可以将其分为两类，这两类都建议使用特质界限：
 - en: '[PRE7]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: With an introduction to trait bounds, everything will become clear. Let's begin
     with the first error. The compiler indicates that a comparison between two generic
     types is being attempted in the `new` function, and not all types support this
     capability. In other words, not all types implement the [`PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html)
     trait, which is necessary for using comparison operators like `<=` and `>=`.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 在介绍了特质界限之后，一切都将变得清晰。让我们从第一个错误开始。编译器指示在 `new` 函数中尝试对两个泛型类型进行比较，而并非所有类型都支持这种能力。换句话说，并非所有类型都实现了
+    `PartialOrd` 特质，这是使用比较运算符如 `<=` 和 `>=` 所必需的。
 - en: For those with an object-oriented programming background, a trait can be thought
     of as similar to an interface.
+  id: totrans-31
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 对于有面向对象编程背景的人来说，可以将特质（trait）视为与接口（interface）类似。
 - en: '[PRE8]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Since our `Interval` `struct` is generic over `T`, the types for `start` and
     `end` can be anything, including types that aren't comparable. Therefore, the
     compiler is instructing us to restrict `T` to any type that implements the [`PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html)
     trait. In other words, we need to place a *bound* on `T`.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于我们的 `Interval` `struct` 是泛型 `T` 的，因此 `start` 和 `end` 的类型可以是任何类型，包括不可比较的类型。因此，编译器指示我们将
+    `T` 限制为任何实现了 `PartialOrd` 特质的类型。换句话说，我们需要对 `T` 设置一个 *限制*。
 - en: 'The next error requires us to revisit the topic of move semantics in Rust.
     Except for primitive types, most standard library types and those found in third-party
     crates do not implement the [`Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html)
     trait. In other words, they do not have *copy semantics*. Let''s examine the function
     where the error occurs:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一个错误需要我们重新审视 Rust 中的移动语义（move semantics）问题。除了原始类型外，大多数标准库类型以及第三方 crate 中的类型都没有实现
+    `Copy` 特质。换句话说，它们没有 *复制语义*。让我们检查出现错误的函数：
 - en: '[PRE9]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: The `merge` function borrows the values for `self` and `other`. If the two intervals
     overlap, a new interval is returned with the values copied into it. Since we have
     been using `usize`, a type that implements the `Copy` trait, this worked. To ensure
     it continues to work, we need to place another bound on `T`, limiting it to types
     that implement the `Copy` trait.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: '`merge` 函数借用 `self` 和 `other` 的值。如果两个区间重叠，则返回一个新的区间，并将值复制到其中。由于我们一直在使用 `usize`
+    类型，这是一个实现了 `Copy` 特质的类型，所以这可以工作。为了确保它继续工作，我们需要对 `T` 设置另一个限制，限制它为实现了 `Copy` 特质的类型。'
 - en: The compiler also mentions the [`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html)
     trait, which allows for explicit duplication of an object via the `clone` method.
     This means we could specify the trait bound as `Clone` instead of `Copy` and update
     the method to explicitly call `clone`.
+  id: totrans-37
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 编译器还提到了 `Clone` 特质，该特质允许通过 `clone` 方法显式地复制一个对象。这意味着我们可以将特质界限指定为 `Clone` 而不是
+    `Copy`，并更新方法以显式调用 `clone`。
 - en: With an understanding of trait bounds, let's examine how to impose these restrictions
     on our `Interval`. Does the program work now?
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 在理解了特质界限之后，让我们来看看如何将这些建限应用于我们的 `Interval`。现在程序工作了吗？
 - en: '[PRE10]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: Voila! And we now have a generic `Interval` module that can support any type
     implementing the `Copy` and `PartialOrd` traits!
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 哇！现在我们有一个通用的 `Interval` 模块，它可以支持任何实现了 `Copy` 和 `PartialOrd` 特质的类型！
 - en: '[Exercise](#exercise)'
+  id: totrans-41
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: Modify the program to use the `Clone` trait instead of `Copy`.
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将程序修改为使用 `Clone` 特质而不是 `Copy` 特质。
 - en: <details><summary>Solution</summary>
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: <details><summary>解决方案</summary>
 - en: '[PRE11]</details>'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '[PRE11]</details>'
 - en: '[PRE12]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '[Next](#next)'
+  id: totrans-46
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一步](#next)'
 - en: Let's dive deeper into traits!
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们更深入地探讨特质！
 - en: '* * *'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: The restrictions we place on the supported types are known as [trait bounds](https://doc.rust-lang.org/reference/trait-bounds.html).
     [↩](#fr-1-1)
+  id: totrans-49
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 我们对支持类型施加的限制称为 [特质界限](https://doc.rust-lang.org/reference/trait-bounds.html)。[↩](#fr-1-1)
 - en: For more information on `impl Trait` syntax, see the [Rust book](https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits)
     [↩](#fr-2-1)
+  id: totrans-50
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 有关 `impl Trait` 语法的信息，请参阅 [Rust 书籍](https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits)
+    [↩](#fr-2-1)

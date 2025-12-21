@@ -1,52 +1,80 @@
 - en: Option
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 选项
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/option.html](https://freddiehaddad.github.io/fast-track-to-rust/option.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/option.html](https://freddiehaddad.github.io/fast-track-to-rust/option.html)
 - en: The `Option` type represents an optional value that can either be `Some` with
     a value or `None`. They are prevalent in Rust and serve various purposes. Options
     are often used with pattern matching (i.e., `match` expression). The documentation
     for [`Option`](https://doc.rust-lang.org/std/option/) provides extensive details
     on its usage.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Option` 类型表示一个可选值，它可以是一个带有值的 `Some`，或者是一个 `None`。在 Rust 中它们很常见，并且服务于各种目的。选项通常与模式匹配（即
+    `match` 表达式）一起使用。`Option` 的文档（[`Option`](https://doc.rust-lang.org/std/option/)）提供了关于其使用的详细信息。'
 - en: '`Some(T)` and `None` are two variants of the `Option<T>` [`enum`](https://doc.rust-lang.org/std/keyword.enum.html).^([1](#footnote-1))'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Some(T)` 和 `None` 是 `Option<T>` 枚举的两种变体。[^([1](#footnote-1))]'
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: We haven't discussed [generics](https://doc.rust-lang.org/rust-by-example/generics.html#generics)
     yet. For now, just note that the `T` in the `enum` represents any type.
+  id: totrans-5
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 我们还没有讨论 [泛型](https://doc.rust-lang.org/rust-by-example/generics.html#generics)。现在，只需注意
+    `enum` 中的 `T` 代表任何类型。
 - en: '[Returning to our Loop](#returning-to-our-loop)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[回到我们的循环](#returning-to-our-loop)'
 - en: In the code snippet, we check if the pattern is a substring of the current line.
     If it is, we return a `tuple` with the line number (`i+1`)^([2](#footnote-2))
     and the `line`, enclosed within the `Some` variant of the `Option` `enum`. If
     not, we return the `None` variant.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 在代码片段中，我们检查模式是否是当前行的子串。如果是，我们返回一个包含行号（`i+1`）和 `line` 的元组，这些内容被封装在 `Option` 枚举的
+    `Some` 变体中。如果不是，我们返回 `None` 变体。
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '* * *'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '[`enum`](https://doc.rust-lang.org/std/keyword.enum.html)s in Rust are similar
     to those of other compiled languages like C, but have important differences that
     make them considerably more powerful. [↩](#fr-1-1)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: Rust 中的 `[enum](https://doc.rust-lang.org/std/keyword.enum.html)` 与其他编译语言（如
+    C）中的类似，但它们有重要的区别，这使得它们更加强大。[↩](#fr-1-1)
 - en: Recall that grep uses 1-based line numbering. `enumerate` begins at 0\. [↩](#fr-2-1)
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 回想一下，grep 使用基于 1 的行编号。`enumerate` 从 0 开始。[↩](#fr-2-1)

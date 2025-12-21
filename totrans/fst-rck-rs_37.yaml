@@ -1,51 +1,73 @@
 - en: Scope and Privacy
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 作用域和隐私
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/scope_and_privacy.html](https://freddiehaddad.github.io/fast-track-to-rust/scope_and_privacy.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/scope_and_privacy.html](https://freddiehaddad.github.io/fast-track-to-rust/scope_and_privacy.html)
 - en: We're going to convert all our `Interval` related code into a module. To define
     a module, we use the `mod` keyword followed by the module's name and enclose the
     body within curly braces.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将把所有与`Interval`相关的代码转换为模块。要定义一个模块，我们使用`mod`关键字后跟模块的名称，并在花括号内封装模块体。
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Here's the new version of our rustle program with the `Interval` related parts
     moved inside the `interval` module. In addition, comments have been added to the
     module which will be used to generate documentation in an upcoming section. Go
     ahead and run the code to see it in action!
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们的rustle程序的新版本，其中与`Interval`相关的部分已移动到`interval`模块内部。此外，模块中已添加注释，这些注释将在即将到来的部分中用于生成文档。运行代码看看效果吧！
 - en: '[PRE1]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Uh-oh! Looks like we have all kinds of compiler errors! Among the chaos is two
     different errors having to do with scope and privacy.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 哎呀！看起来我们有很多编译器错误！在混乱中，有两个与作用域和隐私有关的错误。
 - en: '[E0412](https://doc.rust-lang.org/stable/error_codes/E0412.html): cannot find
     type `Interval` in this scope'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[E0412](https://doc.rust-lang.org/stable/error_codes/E0412.html)：在此作用域中找不到类型`Interval`'
 - en: '[E0433](https://doc.rust-lang.org/stable/error_codes/E0433.html): failed to
     resolve: use of undeclared type `Interval`'
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[E0433](https://doc.rust-lang.org/stable/error_codes/E0433.html)：无法解析：使用未声明的类型`Interval`'
 - en: Remember you can always use `rustc --explain EXXXX` which provides a detailed
     explanation of an error message.
+  id: totrans-9
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 记住，你总是可以使用`rustc --explain EXXXX`来获取错误消息的详细解释。
 - en: '[Scope](#scope)'
+  id: totrans-10
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[作用域](#scope)'
 - en: The first error indicates that the `Interval` type is not in scope. This is
     because it is now part of the `interval` module. To access it, we can use the
     full path name `interval::Interval` or create a shortcut with `use`. Since we
@@ -53,31 +75,46 @@
     we'll take advantage of `use`. Additionally, we need access to `IntervalError`,
     so we'll bring that into scope at the same time. When bringing multiple types
     into scope, we can wrap them in `{}` and separate them with `,`.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 第一个错误表明`Interval`类型不在作用域内。这是因为它现在是`interval`模块的一部分。要访问它，我们可以使用完整的路径名`interval::Interval`或使用`use`创建快捷方式。由于我们不希望在代码中替换每个`Interval`的出现，我们将利用`use`。此外，我们需要访问`IntervalError`，所以我们将同时将其引入作用域。在引入多个类型到作用域时，我们可以将它们包裹在`{}`中，并用逗号分隔。
 - en: With that change in place, run the code again.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这个更改到位后，再次运行代码。
 - en: '[PRE2]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Bugger! More compiler errors!
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 糟糕！更多编译器错误！
 - en: '[Privacy](#privacy)'
+  id: totrans-15
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[隐私](#privacy)'
 - en: Before we defined the `interval` module, all the types and their methods were
     public. However, once we enclosed everything in a module, they became private!
     By default, code within a module is private from its parent modules. To make a
     module public, we need to declare it with `pub mod` instead of just `mod`. Let's
     add the `pub` prefix and run the program again.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们定义`interval`模块之前，所有类型及其方法都是公共的。然而，一旦我们将所有内容封装在模块中，它们就变成了私有的！默认情况下，模块内的代码对其父模块是私有的。要使模块公开，我们需要使用`pub
+    mod`来声明它，而不是仅仅使用`mod`。让我们添加`pub`前缀并再次运行程序。
 - en: '[PRE3]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: More compiler errors! Who would have thought creating a module could be this
     complicated? The reason for this series of errors is to help us understand module
     scope and privacy. The emerging pattern is that modules default everything to
@@ -85,103 +122,152 @@
     within the module must also be explicitly declared public if that is the intended
     design. So, let's prefix the methods and types with `pub` and hopefully achieve
     a successful compile!
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多编译器错误！谁能想到创建一个模块会这么复杂？这一系列错误的原因是帮助我们理解模块的作用域和隐私。出现的模式是模块默认将所有内容设置为私有。仅仅声明模块为公共是不够的；模块内的每个类型和方法都必须显式声明为公共，如果这是预期的设计。所以，让我们在方法和类型前加上`pub`前缀，并希望成功编译！
 - en: '[PRE4]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Alright, last time, I promise! As a final note on privacy, and as the compiler
     error pointed out, even the fields of a `struct` are private by default. So, the
     last step is to make the fields public. Let's do that and finally achieve a successful
     compile. Fingers crossed!
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 好吧，上一次，我保证！最后关于隐私的笔记，正如编译器错误所指出的，`struct`的字段默认是私有的。所以，最后一步是将字段公开。让我们这样做，并最终成功编译。祝我们好运！
 - en: '[PRE5]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Finally, the code compiles! Now, you might be wondering why we didn''t have
     to declare the `enum` variants as public. If you are, good catch! The reason is
     that there are two exceptions to Rust''s *everything is private*^([1](#footnote-1))
     behavior:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，代码编译成功了！现在，你可能想知道为什么我们不需要将 `enum` 变体声明为公开。如果你这么想，那是个很好的发现！原因是存在两个例外于Rust的
+    *一切默认为私有*^([1](#footnote-1)) 行为：
 - en: Associated items in a `pub` Trait are public by default.
+  id: totrans-23
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 在 `pub` Trait 中的关联项默认是公开的。
 - en: '`enum` variants in a `pub enum` are public by default.'
+  id: totrans-24
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 在 `pub enum` 中的 `enum` 变体默认是公开的。
 - en: '[Summary](#summary)'
+  id: totrans-25
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[摘要](#summary)'
 - en: This section focused heavily on emphasizing Rust's *everything is private* default
     behavior when it comes to modules. As you develop software, use privacy to your
     advantage and carefully decide what parts of the API should be made public.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节重点强调了Rust在模块方面的 *一切默认为私有* 的行为。在开发软件时，利用隐私优势，并仔细决定API的哪些部分应该公开。
 - en: Rust goes into great detail with regard to project management. As you create
     your own modules and crates, reviewing the section on [Managing Growing Projects
     with Packages, Crates, and Modules](https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html)
     will be extremely valuable.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust在项目管理方面非常详细。当你创建自己的模块和crate时，回顾 [使用包、crate和模块管理增长项目](https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html)
+    这一部分将非常有价值。
 - en: '[Exercises](#exercises)'
+  id: totrans-28
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[练习](#exercises)'
 - en: These exercises must be completed locally.
+  id: totrans-29
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 这些练习必须在本地完成。
 - en: 'Move the `interval` module out of `main.rs` and into a separate file. Explore
     two approaches:'
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将 `interval` 模块从 `main.rs` 移出，放入一个单独的文件中。探索两种方法：
 - en: First, create a file `interval.rs` in the `src` directory.
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 首先，在 `src` 目录下创建一个名为 `interval.rs` 的文件。
 - en: Next, create a directory under `src` called `interval` and move `interval.rs`
     inside.
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 接下来，在 `src` 目录下创建一个名为 `interval` 的目录，并将 `interval.rs` 移动到其中。
 - en: '**Advanced**: Creating an external crate'
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**高级**: 创建外部crate'
 - en: Create a library crate `cargo new --lib interval` and move the interval code
     into it.
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 创建一个名为 `interval` 的库crate，使用 `cargo new --lib interval` 命令，并将区间代码移动到其中。
 - en: If you haven't already, create a binary crate `cargo new rustle` and update
     the `Cargo.toml` file to use the external crate from the previous step. Refer
     to the section on [Specifying Dependencies](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html)
     in [The Cargo Book](https://doc.rust-lang.org/cargo/) for guidance.
+  id: totrans-35
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 如果你还没有创建，请创建一个名为 `rustle` 的二进制crate，并更新 `Cargo.toml` 文件以使用上一步骤中的外部crate。有关指导，请参阅
+    [The Cargo Book](https://doc.rust-lang.org/cargo/) 中的 [指定依赖项](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html)
+    部分。
 - en: '[Next](#next)'
+  id: totrans-36
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一步](#next)'
 - en: Now, let's dive into generic types and make our `Interval` generic!
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，让我们深入了解泛型类型，并使我们的 `Interval` 泛型化！
 - en: '* * *'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: Refer to the [Visibility and Privacy](https://doc.rust-lang.org/reference/visibility-and-privacy.html)
     reference for details. [↩](#fr-1-1)
+  id: totrans-39
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 有关详细信息，请参阅 [可见性和隐私](https://doc.rust-lang.org/reference/visibility-and-privacy.html)
+    参考。[↩](#fr-1-1)

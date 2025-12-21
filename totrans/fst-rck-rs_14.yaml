@@ -1,61 +1,95 @@
 - en: Iterators
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 迭代器
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/iterators.html](https://freddiehaddad.github.io/fast-track-to-rust/iterators.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/iterators.html](https://freddiehaddad.github.io/fast-track-to-rust/iterators.html)
 - en: Iterators are pervasive in Rust, and delving into them in full detail would
     necessitate renaming this course to **Slow Track to Rust**. We'll cover the basics
     and direct you to the documentation for all the intricate details about [iterators](https://doc.rust-lang.org/book/ch13-02-iterators.html#processing-a-series-of-items-with-iterators).
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 迭代器在 Rust 中无处不在，要全面深入地探讨它们，可能需要将这门课程更名为 **慢速 Rust 进阶之路**。我们将介绍基础知识，并指导您查阅关于
+    [迭代器](https://doc.rust-lang.org/book/ch13-02-iterators.html#processing-a-series-of-items-with-iterators)
+    的所有复杂细节的文档。
 - en: The [Control Flow](./control_flow.html) section explained that the call to `lines()`
     in the `for` loop returns an iterator. We say that the `for` loop *consumes* the
     iterator. However, in Rust, we can do much more than just consume iterators!
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: '[控制流](./control_flow.html) 部分解释说，在 `for` 循环中对 `lines()` 的调用返回一个迭代器。我们说 `for`
+    循环 *消费* 迭代器。然而，在 Rust 中，我们可以做比仅仅消费迭代器更多的事情！'
 - en: '[Iterator Adaptors](#iterator-adaptors)'
+  id: totrans-4
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[迭代器适配器](#iterator-adaptors)'
 - en: New iterators can be created using [iterator adaptors](https://doc.rust-lang.org/book/ch13-02-iterators.html?search=#methods-that-produce-other-iterators).
     These adaptors generate new iterators that modify some aspect of the original.
     Let's use one to print line numbers.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 可以使用 [迭代器适配器](https://doc.rust-lang.org/book/ch13-02-iterators.html?search=#methods-that-produce-other-iterators)
+    创建新的迭代器。这些适配器生成新的迭代器，修改原始迭代器的某些方面。让我们使用一个来打印行号。
 - en: The `enumerate` function creates an iterator that yields the current iteration
     count along with the value from the previous iterator, as tuples^([1](#footnote-1))
     in the form `(index, value)`. In the loop, the type for `i` is `usize`, and the
     type for `line` is `&str`.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: '`enumerate` 函数创建一个迭代器，它返回当前迭代计数以及前一个迭代器的值，以 `(index, value)` 的元组形式。在循环中，`i`
+    的类型是 `usize`，而 `line` 的类型是 `&str`。'
 - en: '[PRE0]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[Advanced Iterators](#advanced-iterators)'
+  id: totrans-8
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[高级迭代器](#advanced-iterators)'
 - en: We can take it a step further by using the `filter_map` iterator adapter to
     return an iterator that includes only the items we want!
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过使用 `filter_map` 迭代器适配器来进一步操作，返回只包含我们想要的项目的迭代器！
 - en: '[PRE1]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Whoa! What just happened? We're on the fast track to learning Rust, so we're
     picking up the pace! Let's break this down because this code snippet needs some
     unpacking.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 哇！刚才发生了什么？我们正在快速学习 Rust，所以我们要加快速度！让我们来分解一下，因为这段代码需要一些解释。
 - en: '* * *'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: A [tuple](https://doc.rust-lang.org/rust-by-example/primitives/tuples.html#tuples)
     is a collection of values of different types and is constructed using parentheses
     `()`. [↩](#fr-1-1)
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 一个 [元组](https://doc.rust-lang.org/rust-by-example/primitives/tuples.html#tuples)
+    是由不同类型的值组成的集合，它使用括号 `()` 构建而成。[↩](#fr-1-1)

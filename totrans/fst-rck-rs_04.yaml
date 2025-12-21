@@ -1,37 +1,57 @@
 - en: Rust Playground
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: Rust Playground
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/rust_playground.html](https://freddiehaddad.github.io/fast-track-to-rust/rust_playground.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/rust_playground.html](https://freddiehaddad.github.io/fast-track-to-rust/rust_playground.html)
 - en: In addition to running and editing code in the browser, you might find the [Rust
     Playground](https://play.rust-lang.org/) helpful. It's a web interface for running
     Rust code.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了在浏览器中运行和编辑代码外，您可能还会发现 [Rust Playground](https://play.rust-lang.org/) 有用。这是一个运行
+    Rust 代码的网页界面。
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[Exercise](#exercise)'
+  id: totrans-4
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: Hover the mouse over the code block and click the arrow button to run the code.
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将鼠标悬停在代码块上并点击箭头按钮以运行代码。
 - en: Modify the `"Welcome to Fast Track to Rust!"` string and re-run the code.
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 修改字符串 `"Welcome to Fast Track to Rust!"` 并重新运行代码。
 - en: Revert your changes by hovering your mouse over the code block and clicking
     the *Undo changes* button.
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过将鼠标悬停在代码块上并点击 *撤销更改* 按钮来撤销您的更改。
 - en: Run the hello world program in the [playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&code=fn+main%28%29+%7B%0A++++println%21%28%22Welcome+to+Fast+Track+to+Rust%21%22%29%3B%0A%7D).
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在 [playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&code=fn+main%28%29+%7B%0A++++println%21%28%22Welcome+to+Fast+Track+to+Rust%21%22%29%3B%0A%7D)
+    中运行 hello world 程序。

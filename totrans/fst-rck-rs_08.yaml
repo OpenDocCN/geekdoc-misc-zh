@@ -1,29 +1,44 @@
 - en: Language Basics
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 语言基础
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/language_basics.html](https://freddiehaddad.github.io/fast-track-to-rust/language_basics.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/language_basics.html](https://freddiehaddad.github.io/fast-track-to-rust/language_basics.html)
 - en: Rust includes the primitive types,^([1](#footnote-1)) statements, and expressions^([2](#footnote-2))
     you're already familiar with. However, it also incorporates some powerful concepts
     from functional languages that we will explore throughout this course. To begin
     with our rustle program, we'll keep things simple and gradually refactor the code
     to introduce more of what Rust has to offer. Let's start with variables.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: Rust 包含了您已经熟悉的原始类型、^([1](#footnote-1)) 语句和^([2](#footnote-2)) 表达式。然而，它还融合了一些来自函数式语言的有力概念，这些概念我们将在本课程中探讨。为了开始我们的
+    rustle 程序，我们将保持简单，并逐步重构代码以介绍 Rust 提供的更多功能。让我们从变量开始。
 - en: '* * *'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: Details about the built-in types in Rust can be found in the official [Rust
     documentation](https://doc.rust-lang.org/reference/types.html). [↩](#fr-1-1)
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: Rust 内置类型的相关详细信息可以在官方 [Rust 文档](https://doc.rust-lang.org/reference/types.html)
+    中找到。[↩](#fr-1-1)
 - en: Details about language statements and expressions can be found in the official
     [Rust documentation](https://doc.rust-lang.org/reference/statements-and-expressions.html).
     [↩](#fr-2-1)
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 语言语句和表达式的详细信息可以在官方 [Rust 文档](https://doc.rust-lang.org/reference/statements-and-expressions.html)
+    中找到。[↩](#fr-2-1)

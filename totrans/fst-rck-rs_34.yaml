@@ -1,277 +1,411 @@
 - en: Struct
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 结构体
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/struct.html](https://freddiehaddad.github.io/fast-track-to-rust/struct.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/struct.html](https://freddiehaddad.github.io/fast-track-to-rust/struct.html)
 - en: We're going to create a type to represent an interval. Rust follows a standardized
     naming convention for types, where structures use `UpperCamelCase`^([1](#footnote-1))
     for "type-level" constructs. Therefore, we'll name our `struct` `Interval`.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将创建一个类型来表示一个区间。Rust 对类型遵循标准化的命名约定，其中结构体使用 `UpperCamelCase`^([1](#footnote-1))
+    来表示“类型级别”结构。因此，我们将命名我们的 `struct` 为 `Interval`。
 - en: '[Defining our Struct](#defining-our-struct)'
+  id: totrans-3
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[定义我们的结构体](#defining-our-struct)'
 - en: 'Our closed interval is going to represent the start and end of the lines to
     print:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们封闭的区间将表示要打印的行的开始和结束：
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[Defining Behavior](#defining-behavior)'
+  id: totrans-6
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[定义行为](#defining-behavior)'
 - en: 'Functions and methods are added by defining them inside an `impl` block:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过在 `impl` 块内定义它们来添加函数和方法：
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[The `new` Function](#the-new-function)'
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[`new` 函数](#the-new-function)'
 - en: As it is common convention in Rust to define a function called `new` for creating
     an object, we'll begin by defining one to return an `Interval`.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Rust 中，定义一个名为 `new` 的函数来创建对象是常见的约定，我们将首先定义一个返回 `Interval` 的函数。
 - en: '[PRE2]'
+  id: totrans-11
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The keyword `Self`
+  id: totrans-12
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 关键字 `Self`
 - en: ''
+  id: totrans-13
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: The `Self` keywords in the return type and the body of the function are aliases
     for the type specified after the `impl` keyword, which in this case is `Interval`.
     While the type can be explicitly stated, the common convention is to use `Self`.
+  id: totrans-14
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 函数返回类型和函数体中的 `Self` 关键字是 `impl` 关键字后面指定的类型的别名，在这个例子中是 `Interval`。虽然可以显式指定类型，但常见的约定是使用
+    `Self`。
 - en: Exclusion of the `return` keyword and (`;`)
+  id: totrans-15
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 省略 `return` 关键字和 (`;`)
 - en: ''
+  id: totrans-16
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: The `return` keyword is unnecessary when the returned value is the final expression
     in a function. In this scenario, the semicolon (`;`) is omitted. ^([2](#footnote-2))
+  id: totrans-17
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 当返回值是函数中的最后一个表达式时，不需要使用 `return` 关键字。在这种情况下，分号 (`;`) 被省略。^([2](#footnote-2))
 - en: '[Methods](#methods)'
+  id: totrans-18
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[方法](#methods)'
 - en: Recall from our rustle program that we merged overlapping intervals to prevent
     printing the same line multiple times. It would be useful to create a method to
     check if two intervals overlap and another method to merge overlapping intervals.
     Let's outline these methods!
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 从我们的 rustle 程序中回忆，我们合并了重叠区间以防止打印相同的行多次。创建一个检查两个区间是否重叠的方法以及另一个合并重叠区间的方法将非常有用。让我们概述这些方法！
 - en: '[PRE3]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: The `todo!()` and `unimplemented!()` macros can be useful if you are prototyping
     and just want a placeholder to let your code pass type analysis.
+  id: totrans-21
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`todo!()` 和 `unimplemented!()` 宏在原型设计时非常有用，如果你只是想要一个占位符来让代码通过类型分析。'
 - en: '[The `self` Method Receiver](#the-self-method-receiver)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`self` 方法接收者](#the-self-method-receiver)'
 - en: You're probably accustomed to using the implicit `this` pointer (a hidden first
     parameter) in your class methods. In Rust, the [`self`](https://doc.rust-lang.org/std/keyword.self.html)
     keyword is used to represent the receiver of a method and the convention is to
     omit the type for this parameter. Depending on the intended behavior, it can be
     specified as `self`, `&self` or `&mut self`.^([3](#footnote-3))
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能习惯于在类方法中使用隐式的 `this` 指针（一个隐藏的第一个参数）。在 Rust 中，使用 `self` 关键字来表示方法的接收者，并且约定省略此参数的类型。根据预期的行为，它可以指定为
+    `self`、`&self` 或 `&mut self`。^([3](#footnote-3))
 - en: 'Omitting the type after `self` is syntactic sugar. It''s short for `self: Self`.
     As `Self` is an alias to the actual type, the full expansion would be `self: Interval`,
     `self: &Interval` or `self: &mut Interval`.'
+  id: totrans-24
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '在 `self` 后面省略类型是语法糖。它等价于 `self: Self`。由于 `Self` 是实际类型的别名，完整的展开将是 `self: Interval`、`self:
+    &Interval` 或 `self: &mut Interval`。'
 - en: '[Implementing the Methods](#implementing-the-methods)'
+  id: totrans-25
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[实现方法](#implementing-the-methods)'
 - en: Remember that our rustle program processes lines sequentially. This allows us
     to optimize the detection of overlapping intervals. However, this approach limits
     the versatility of our `Interval` type. As an exercise, you can work on making
     it more generic.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 记住，我们的 rustle 程序是按顺序处理行的。这允许我们优化重叠区间的检测。然而，这种方法限制了我们的 `Interval` 类型的通用性。作为一个练习，你可以尝试使其更加通用。
 - en: '[`overlaps`](#overlaps)'
+  id: totrans-27
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[重叠](#overlaps)'
 - en: The `overlaps` method is fairly straightforward. We check if the `end` of the
     first interval is greater than or equal to the `start` of the next interval. The
     only caveat is the order of the comparison.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: '`overlaps` 方法相当直接。我们检查第一个区间的 `end` 是否大于或等于下一个区间的 `start`。唯一的注意事项是比较的顺序。'
 - en: '[PRE4]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[`merge`](#merge)'
+  id: totrans-30
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[合并](#merge)'
 - en: 'The `merge` method returns a new `Interval` using the `start` of the first
     interval and the `end` of the second. The same caveat applies: the receiver must
     be the interval that comes first in the sequence.'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: '`merge` 方法使用第一个区间的 `start` 和第二个区间的 `end` 返回一个新的 `Interval`。同样，接收者必须是序列中先出现的区间。'
 - en: In both cases, an immutable borrow for both intervals is sufficient since we
     do not need to mutate either value.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这两种情况下，对两个区间进行不可变借用就足够了，因为我们不需要对任何值进行修改。
 - en: '[PRE5]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[Implementing `merge_intervals`](#implementing-merge_intervals)'
+  id: totrans-34
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[实现 `merge_intervals`](#implementing-merge_intervals)'
 - en: 'Rust programmers coming from a C++ background might be inclined to implement
     this function using some variation of the following algorithm:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自 C++ 背景的 Rust 程序员可能会倾向于使用以下算法的某种变体来实现此函数：
 - en: '[PRE6]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'While functionally correct, Rust features powerful crates that can make implementing
     this behavior more concise. One such crate is [`Itertools`](https://docs.rs/itertools/latest/itertools),
     which provides extra iterator adaptors. To use this crate, specify it as a dependency
     in `Crates.toml` and include it in `main.rs` with `use itertools::Itertools`.
     Let''s see how the [`coalesce`](https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.coalesce)
     adaptor can simplify the code:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 虽然功能上是正确的，但 Rust 提供了强大的 crate，可以使实现此行为更加简洁。其中一个这样的 crate 是 `Itertools`，它提供了额外的迭代器适配器。要使用此
+    crate，请在 `Crates.toml` 中将其指定为依赖项，并在 `main.rs` 中包含它，使用 `use itertools::Itertools`。让我们看看
+    `coalesce` 适配器如何简化代码：
 - en: '[PRE7]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '`into_iter`'
+  id: totrans-39
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`into_iter`'
 - en: ''
+  id: totrans-40
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: In both implementations, we use `into_iter`, which creates a consuming iterator
     that moves each value out of the vector from start to end. This is another example
     of how we can take advantage of move semantics.
+  id: totrans-41
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在两种实现中，我们使用 `into_iter`，它创建了一个消耗性迭代器，从开始到结束将每个值从向量中移动出来。这是我们可以利用移动语义的另一个例子。
 - en: ''
+  id: totrans-42
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: 'NOTE: Because the iterator consumes the data, the vector cannot be used afterward.'
+  id: totrans-43
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: NOTE：由于迭代器消耗数据，因此之后不能使用该向量。
 - en: '[Updating Rustle](#updating-rustle)'
+  id: totrans-44
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[更新 Rustle](#updating-rustle)'
 - en: It's time to update our rustle program to utilize our new type. Additionally,
     a few minor changes have been made to enhance the design, demonstrate some additional
     language features, and leverage move semantics. Give the program a run!
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 是时候更新我们的 rustle 程序以利用我们的新类型了。此外，还进行了一些小的更改，以增强设计，展示一些额外的语言特性，并利用移动语义。运行一下程序吧！
 - en: '[PRE8]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[Summarizing the Changes](#summarizing-the-changes)'
+  id: totrans-47
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '[总结更改](#summarizing-the-changes)'
 - en: Our rustle program now makes use of our custom type and includes a few other
     enhancements.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们现在使用的 rustle 程序利用了我们的自定义类型，并包含了一些其他增强功能。
 - en: 'Let''s review the changes:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们回顾一下更改：
 - en: '`create_intervals` was updated with the following changes:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: '`create_intervals` 已更新，具体更改如下：'
 - en: The return type was changed to `Vec<Interval>`
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回类型已更改为 `Vec<Interval>`
 - en: The tuple created from `start` and `end` are now used to create an `Interval`
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由 `start` 和 `end` 创建的元组现在用于创建一个 `Interval`
 - en: '`merge_intervals` was updated with the following changes:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: '`merge_intervals` 已更新，具体更改如下：'
 - en: The argument `intervals` now has a type of `Vec<Interval>` and is *moved* instead
     of the mutable borrow
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 参数 `intervals` 现在的类型为 `Vec<Interval>`，并且是 *移动* 而不是可变借用
 - en: '`dedup_by` was replaced with `coalesce`'
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dedup_by` 已被 `coalesce` 替换'
 - en: '`print_results` was updated with the following changes:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: '`print_results` 已更新，具体更改如下：'
 - en: The argument `intervals` is now a `Vec<Interval>`
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 参数 `intervals` 现在是 `Vec<Interval>`
 - en: The `take` and `skip` iterator adaptors were updated to use the fields from
     the `Interval`
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`take` 和 `skip` 迭代器适配器已更新，以使用 `Interval` 的字段'
 - en: Each interval is *dropped* at the end of the loop iteration when written as
     `for interval in intervals`. If the loop were written as `for interval in &intervals`,
     we would *borrow* each value. The same applies if we had written the loop as `for
     interval in intervals.iter()`. The former is syntactic sugar for the latter.^([4](#footnote-4))
+  id: totrans-59
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在将每个区间作为 `for interval in intervals` 写入时，循环迭代结束时都会 *丢弃* 区间。如果循环写成 `for interval
+    in &intervals`，我们会 *借用* 每个值。同样，如果我们将其写成 `for interval in intervals.iter()`，也是这样。前者是后者的语法糖。[^4](#footnote-4)
 - en: '* * *'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: Casing conforms to [RFC 430](https://github.com/rust-lang/rfcs/blob/master/text/0430-finalizing-naming-conventions.md)
     (C-CASE). [↩](#fr-1-1)
+  id: totrans-61
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 命名约定符合 [RFC 430](https://github.com/rust-lang/rfcs/blob/master/text/0430-finalizing-naming-conventions.md)
+    (C-CASE)。[↩](#fr-1-1)
 - en: Exclusion of `return` is discussed [here](https://doc.rust-lang.org/std/keyword.return.html).
     [↩](#fr-2-1)
+  id: totrans-62
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 关于 `return` 的排除在此处讨论。[↩](#fr-2-1)
 - en: Method syntax is covered in full detail [here](https://doc.rust-lang.org/book/ch05-03-method-syntax.html).
     [↩](#fr-3-1)
+  id: totrans-63
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 方法语法在[这里](https://doc.rust-lang.org/book/ch05-03-method-syntax.html)有详细的介绍。[↩](#fr-3-1)
 - en: Details about consuming collections with `for in` and `into_iter` can be found
     [here](https://doc.rust-lang.org/rust-by-example/flow_control/for.html). [↩](#fr-4-1)
+  id: totrans-64
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 关于使用 `for in` 和 `into_iter` 消费集合的详细信息可以在[这里](https://doc.rust-lang.org/rust-by-example/flow_control/for.html)找到。[↩](#fr-4-1)

@@ -1,116 +1,166 @@
 - en: Multithreaded Rustle
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 多线程 Rustle
 - en: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/multithreaded_rustle.html](https://freddiehaddad.github.io/fast-track-to-rust/multithreaded_rustle.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://freddiehaddad.github.io/fast-track-to-rust/multithreaded_rustle.html](https://freddiehaddad.github.io/fast-track-to-rust/multithreaded_rustle.html)
 - en: With our understanding of scoped vs non-scoped threads, we are now prepared
     to correctly update rustle to process each file specified on the command line
     in a separate thread.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过对作用域线程与非作用域线程的理解，我们现在准备正确更新 rustle，以便在单独的线程中处理命令行上指定的每个文件。
 - en: Here's the updated version of the program with the changes visible.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是程序更新的版本，其中可见更改。
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Missing Error Output
+  id: totrans-5
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 缺少错误输出
 - en: ''
+  id: totrans-6
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-7
   prefs:
   - PREF_BQ
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: ''
+  id: totrans-8
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: The error message for the bad file doesn't appear in the playground output because
     standard error output isn't captured.
+  id: totrans-9
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 坏文件的错误消息没有出现在 playground 输出中，因为标准错误输出没有被捕获。
 - en: Our rustle program is now multithreaded and processes all the input files in
     parallel! Let's walk through the code changes.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们现在的 rustle 程序是多线程的，并并行处理所有输入文件！让我们回顾一下代码更改。
 - en: '[`mock_disk`](#mock_disk)'
+  id: totrans-11
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`mock_disk`](#mock_disk)'
 - en: The `mock_disk` [`HashMap`](https://doc.rust-lang.org/std/collections/struct.HashMap.html)
     simulates disk access to check if a file exists and is accessible. The filename
     serves as the key, while the file's contents are the value. This approach aids
     in testing and development, but its use here is solely for Rust playground compatibility.
     To ensure the creation of multiple threads, I added a new poem written by `yours
     truly`.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '`mock_disk` [`HashMap`](https://doc.rust-lang.org/std/collections/struct.HashMap.html)
+    模拟磁盘访问以检查文件是否存在并可访问。文件名作为键，而文件内容作为值。这种方法有助于测试和开发，但在这里的使用仅限于与 Rust playground 兼容。为了确保创建多个线程，我添加了一首由“我”本人创作的诗。'
 - en: '[`thread::scope`](#threadscope)'
+  id: totrans-13
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`thread::scope`](#threadscope)'
 - en: Iterate over all files specified on the command line using the `map` iterator
     adapter, which returns a `Result`. The `Ok` variant holds the filename if valid,
     while the `Error` holds the error for an invalid filename.
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 使用 `map` 迭代器适配器遍历命令行上指定的所有文件，该适配器返回一个 `Result`。`Ok` 变体包含有效的文件名，而 `Error` 变体包含无效文件名的错误。
 - en: 'The `map_ok` iterator adapter processes each `Result`, calling the provided
     closure on any `Ok` values, allowing us to ignore any invalid filenames. The provided
     `Scope` (`s`) spawns one thread per file for processing. The closure returns a
     `Result`: `Err` with an error message in a `RustleFailure` struct if processing
     fails, or `Ok` with a `RustleSuccess` struct containing intervals and lines from
     the input file if successful.'
+  id: totrans-15
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`map_ok` 迭代器适配器处理每个 `Result`，对任何 `Ok` 值调用提供的闭包，使我们能够忽略任何无效的文件名。提供的 `Scope`
+    (`s`) 为每个文件生成一个线程以进行处理。闭包返回一个 `Result`：如果处理失败，则返回包含错误消息的 `RustleFailure` 结构体的
+    `Err`，如果成功，则返回包含输入文件中的区间和行的 `RustleSuccess` 结构体的 `Ok`。'
 - en: Use `collect` to create a vector (`Vec`) of results from each file iteration,
     binding it to `handles`.
+  id: totrans-16
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 使用 `collect` 从每个文件迭代创建结果向量（`Vec`），并将其绑定到 `handles`。
 - en: Finally, iterate over the elements in the `handles` vector using a for loop.
     Print any errors to standard error, and pass successful pattern matching results
     to the `print_results` function for output to standard output.
+  id: totrans-17
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 最后，使用 for 循环遍历 `handles` 向量中的元素。将任何错误打印到标准错误，并将成功的模式匹配结果传递给 `print_results`
+    函数以输出到标准输出。
 - en: '[`find_matching_lines`](#find_matching_lines)'
+  id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[`find_matching_lines`](#find_matching_lines)'
 - en: Since each thread needs access to the `regex` object, the value is borrowed
     instead of moved.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于每个线程都需要访问 `regex` 对象，因此值是借用而不是移动。
 - en: '[Summary](#summary)'
+  id: totrans-20
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[总结](#summary)'
 - en: Ownership and type systems are powerful tools for managing memory safety and
     concurrency issues. By leveraging ownership and type checking, many concurrency
     errors in Rust are caught at compile time rather than at runtime.
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有权和类型系统是管理内存安全和并发问题的强大工具。通过利用所有权和类型检查，Rust 中的许多并发错误在编译时而不是在运行时被捕获。
 - en: Unlike non-scoped threads, scoped threads can borrow non-`'static` data because
     the scope ensures all threads are joined before it ends.
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与非作用域线程不同，作用域线程可以借用非 `'static` 数据，因为作用域确保在它结束之前所有线程都已连接。
 - en: '[Exercise](#exercise)'
+  id: totrans-23
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[练习](#exercise)'
 - en: The fork/join model implemented is suboptimal because it waits for all threads
     to finish and join before printing any results. To address this, we can use the
     [`mpsc`](https://doc.rust-lang.org/std/sync/mpsc/index.html) (multiple producer,
@@ -118,27 +168,43 @@
     as soon as they are ready. This enables the program to start outputting results
     immediately, enhancing its responsiveness and efficiency. Modify the program to
     make use of `mpsc`.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 实现的fork/join模型是次优的，因为它在打印任何结果之前等待所有线程完成并加入。为了解决这个问题，我们可以使用`mpsc`（多个生产者，单个消费者）模块，它允许线程在准备好结果后立即将结果发送到中央接收器。这使得程序能够立即开始输出结果，提高了其响应性和效率。修改程序以使用`mpsc`。
 - en: '**HINT**: The final solution should have a structure similar to:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '**提示**：最终解决方案的结构应类似于：'
 - en: '[PRE2]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[PRE3]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: <details><summary>Solution</summary>
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: <details><summary>解决方案</summary>
 - en: '[PRE4]</details>'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: '[PRE4]</details>'
 - en: '[Next](#next)'
+  id: totrans-30
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '[下一页](#next)'
 - en: Wrapping things up!
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 总结一下！
