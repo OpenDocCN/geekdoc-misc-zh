@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Crates</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Crates</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/crates.html">https://freddiehaddad.github.io/fast-track-to-rust/crates.html</a></blockquote>
+                        
+<p>Crates are the smallest units of code that the Rust compiler processes at a
+time. For instance, the rustle program we're developing is recognized as a crate
+by the Rust compiler.</p>
+<h2 id="types-of-crates"><a class="header" href="#types-of-crates">Types of Crates</a></h2>
+<p>Crates are available in two types: binary and library. The compiler identifies
+the type of crate being compiled based on the presence of either a <code>main.rs</code> or
+<code>lib.rs</code> file.</p>
+<h3 id="binary-crates"><a class="header" href="#binary-crates">Binary Crates</a></h3>
+<p>Binary crates contain a <code>main.rs</code> file in the <code>src</code> directory, feature a <code>main</code>
+function, and are compiled into an executable.</p>
+<h3 id="library-crates"><a class="header" href="#library-crates">Library Crates</a></h3>
+<p>Library crates contain a <code>lib.rs</code> file in the <code>src</code> directory, lack a main
+function, and do not compile into an executable. Instead, they are designed to
+be shared with other projects.</p>
+
+                        
+</body>
+</html>

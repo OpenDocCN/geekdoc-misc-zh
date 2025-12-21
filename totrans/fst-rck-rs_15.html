@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Option</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Option</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/option.html">https://freddiehaddad.github.io/fast-track-to-rust/option.html</a></blockquote>
+                        
+<p>The <code>Option</code> type represents an optional value that can either be <code>Some</code> with a
+value or <code>None</code>. They are prevalent in Rust and serve various purposes. Options
+are often used with pattern matching (i.e., <code>match</code> expression). The
+documentation for <a href="https://doc.rust-lang.org/std/option/"><code>Option</code></a> provides extensive details on its usage.</p>
+<p><code>Some(T)</code> and <code>None</code> are two variants of the <code>Option&lt;T&gt;</code> <a href="https://doc.rust-lang.org/std/keyword.enum.html"><code>enum</code></a>.<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup></p>
+<pre><code class="language-rust noplayground">pub enum Option&lt;T&gt; {
+    None,
+    Some(T),
+}</code></pre>
+<blockquote>
+<p>We haven't discussed <a href="https://doc.rust-lang.org/rust-by-example/generics.html#generics">generics</a> yet. For now, just note that the <code>T</code> in the
+<code>enum</code> represents any type.</p>
+</blockquote>
+<h2 id="returning-to-our-loop"><a class="header" href="#returning-to-our-loop">Returning to our Loop</a></h2>
+<p>In the code snippet, we check if the pattern is a substring of the current line.
+If it is, we return a <code>tuple</code> with the line number (<code>i+1</code>)<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup> and the <code>line</code>,
+enclosed within the <code>Some</code> variant of the <code>Option</code> <code>enum</code>. If not, we return the
+<code>None</code> variant.</p>
+<pre><code class="language-rust noplayground">    for (line_no, line) in
+        poem.lines()
+            .enumerate()
+            .filter_map(|(i, line)| match line.contains(pattern) {
+                true =&gt; Some((i + 1, line)),
+                false =&gt; None,
+            })
+    {
+        println!("{line_no}: {line}");
+    }</code></pre>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p><a href="https://doc.rust-lang.org/std/keyword.enum.html"><code>enum</code></a>s in Rust are similar to those of other compiled languages like C,
+but have important differences that make them considerably more powerful. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-2">
+<p>Recall that grep uses 1-based line numbering. <code>enumerate</code> begins at 0. <a href="#fr-2-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Regular Expressions</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Regular Expressions</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/regular_expression.html">https://freddiehaddad.github.io/fast-track-to-rust/regular_expression.html</a></blockquote>
+                        
+<p>With the <code>Regex</code> crate added to our project, we'll replace the <code>pattern</code> string
+slice we've been using with a regular expression.</p>
+<h2 id="using-regex"><a class="header" href="#using-regex">Using Regex</a></h2>
+<p>The <code>Regex</code> modules defines a <code>new</code> method that takes a regular expression,
+attempts to compile it, and returns a <code>Regex</code> object.<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup></p>
+<pre><code class="language-rust noplayground">let pattern = "[Ee]xample";
+let re = Regex::new(pattern);</code></pre>
+<p>Since compiling a regular expression can fail (e.g., due to an invalid pattern),
+<code>new</code> returns a <code>Result</code>. Here is the function signature for <code>new</code><sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup>:</p>
+<pre><code class="language-rust noplayground">fn new(re: &amp;str) -&gt; Result&lt;Regex, Error&gt;</code></pre>
+<p>The function signature indicates that the <code>Ok</code> variant returns a <code>Regex</code>, while
+the <code>Err</code> variant returns an <code>Error</code>. Since our rustle program can't continue
+with an invalid regular expression, we need to catch that case, display a
+helpful error message, and exit the program.</p>
+<p>Let's put all this together:</p>
+<pre><pre class="playground"><code class="language-rust editable edition2021">extern crate regex; // this is needed for the playground
+use regex::Regex;
+use std::process::exit;
+
+
+fn main() {
+    let pattern = "(missing the closing parenthesis"; // invalid expression
+
+    // compile the regular expression
+    match Regex::new(pattern) {
+        // the underscore (_) means we are ignoring the value returned by new
+        Ok(_) =&gt; println!("{pattern} is a valid regular expression!"),
+
+        // e is the error value returned by new
+        Err(e) =&gt; {
+            eprintln!("{e}"); // eprintln! writes to standard error
+            exit(1);          // exit with error code 1
+        }
+    };
+}</code></pre></pre>
+<p>Run the code to see the error. Then, correct the it by adding the missing
+parenthesis <code>)</code> and re-run the code.</p>
+<h2 id="updating-rustle"><a class="header" href="#updating-rustle">Updating Rustle</a></h2>
+<p>We now have enough context to modify our rustle program to include regular
+expression support. Below are the changes, with the unrelated parts of the
+program hidden:</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+</span><span class="boring">use std::fs::File;
+</span><span class="boring">use std::io::Read;
+</span><span class="boring">use std::io::{BufRead, BufReader};
+</span><span class="boring">use std::process::exit;
+</span><span class="boring">extern crate regex; // this is needed for the playground
+</span>use regex::Regex;
+
+fn find_matching_lines(lines: &amp;[String], regex: Regex) -&gt; Vec&lt;usize&gt; {
+    lines
+        .iter()
+        .enumerate()
+        .filter_map(|(i, line)| match regex.is_match(line) {
+            true =&gt; Some(i),
+            false =&gt; None,
+        })
+        .collect() // turns anything iterable into a collection
+}
+
+<span class="boring">fn create_intervals(
+</span><span class="boring">    lines: Vec&lt;usize&gt;,
+</span><span class="boring">    before_context: usize,
+</span><span class="boring">    after_context: usize,
+</span><span class="boring">) -&gt; Vec&lt;(usize, usize)&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .map(|line| {
+</span><span class="boring">            (
+</span><span class="boring">                line.saturating_sub(before_context),
+</span><span class="boring">                line.saturating_add(after_context),
+</span><span class="boring">            )
+</span><span class="boring">        })
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn merge_intervals(intervals: &amp;mut Vec&lt;(usize, usize)&gt;) {
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    intervals.dedup_by(|next, prev| {
+</span><span class="boring">        if prev.1 &lt; next.0 {
+</span><span class="boring">            false
+</span><span class="boring">        } else {
+</span><span class="boring">            prev.1 = next.1;
+</span><span class="boring">            true
+</span><span class="boring">        }
+</span><span class="boring">    })
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn print_results(intervals: Vec&lt;(usize, usize)&gt;, lines: Vec&lt;String&gt;) {
+</span><span class="boring">    for (start, end) in intervals {
+</span><span class="boring">        for (line_no, line) in
+</span><span class="boring">            lines.iter().enumerate().take(end + 1).skip(start)
+</span><span class="boring">        {
+</span><span class="boring">            println!("{}: {}", line_no + 1, line)
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn read_file(file: impl Read) -&gt; Vec&lt;String&gt; {
+</span><span class="boring">    BufReader::new(file).lines().map_while(Result::ok).collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+<span class="boring">    let poem = "I have a little shadow that goes in and out with me,
+</span><span class="boring">                And what can be the use of him is more than I can see.
+</span><span class="boring">                He is very, very like me from the heels up to the head;
+</span><span class="boring">                And I see him jump before me, when I jump into my bed.
+</span><span class="boring">
+</span><span class="boring">                The funniest thing about him is the way he likes to grow -
+</span><span class="boring">                Not at all like proper children, which is always very slow;
+</span><span class="boring">                For he sometimes shoots up taller like an india-rubber ball,
+</span><span class="boring">                And he sometimes gets so little that there's none of him at all.";
+</span><span class="boring">
+</span><span class="boring">    let mock_file = std::io::Cursor::new(poem);
+</span><span class="boring">
+</span><span class="boring">    // command line arguments
+</span><span class="boring">    let pattern = "(all)|(little)";
+</span><span class="boring">    let before_context = 1;
+</span><span class="boring">    let after_context = 1;
+</span><span class="boring">
+</span><span class="boring">    // attempt to open the file
+</span><span class="boring">    let lines = read_file(mock_file);
+</span><span class="boring">    //let lines = match File::open(filename) {
+</span><span class="boring">    //    // convert the poem into lines
+</span><span class="boring">    //    Ok(file) =&gt; read_file(file),
+</span><span class="boring">    //    Err(e) =&gt; {
+</span><span class="boring">    //        eprintln!("Error opening {filename}: {e}");
+</span><span class="boring">    //        exit(1);
+</span><span class="boring">    //    }
+</span><span class="boring">    //};
+</span><span class="boring">
+</span>    // compile the regular expression
+    let regex = match Regex::new(pattern) {
+        Ok(re) =&gt; re, // bind re to regex
+        Err(e) =&gt; {
+            eprintln!("{e}"); // write to standard error
+            exit(1);
+        }
+    };
+
+    // store the 0-based line number for any matched line
+    let match_lines = find_matching_lines(&amp;lines, regex);
+<span class="boring">
+</span><span class="boring">    // create intervals of the form [a,b] with the before/after context
+</span><span class="boring">    let mut intervals =
+</span><span class="boring">        create_intervals(match_lines, before_context, after_context);
+</span><span class="boring">
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    merge_intervals(&amp;mut intervals);
+</span><span class="boring">
+</span><span class="boring">    // print the lines
+</span><span class="boring">    print_results(intervals, lines);
+</span>}</code></pre></pre>
+<blockquote>
+<p>Don't forget, you can reveal the hidden parts by clicking <em>Show hidden lines</em>.</p>
+</blockquote>
+<p>The <code>let regex = match Regex::new(pattern)</code> variable binding expression might
+seem a bit unusual. The pattern is discussed in the Rust documentation section
+on <a href="https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#recoverable-errors-with-result">Recoverable Errors with Result</a>. To briefly explain: When the result is
+<code>Ok</code>, this code extracts the inner <code>re</code> value from the <code>Ok</code> variant and moves it
+to the variable <code>regex</code>.</p>
+<h1 id="next"><a class="header" href="#next">Next</a></h1>
+<p>Onward to creating our own module!</p>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>The <code>Regex</code> crate includes excellent
+<a href="https://docs.rs/regex/latest/regex/">documentation</a> and detailed
+<a href="https://docs.rs/regex/latest/regex/#examples">examples</a> to learn from. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-2">
+<p>The source code for <code>new</code> can be found
+<a href="https://docs.rs/regex/latest/src/regex/regex/string.rs.html#180-182">here</a>. <a href="#fr-2-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

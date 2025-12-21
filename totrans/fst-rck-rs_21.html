@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Borrowing</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Borrowing</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/borrowing.html">https://freddiehaddad.github.io/fast-track-to-rust/borrowing.html</a></blockquote>
+                        
+<p>Given the error in the previous section about borrowing a value after it has
+been moved, let's now focus on how to <em>borrow</em> a value.</p>
+<h2 id="references"><a class="header" href="#references">References</a></h2>
+<p>Recall from the section on the <a href="types.html#string-slice-str">string slice <code>str</code></a> that we said it's usually
+seen in it's <em>borrowed</em> form <code>&amp;str</code>. The <code>&amp;</code> operator<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> in the prefix position
+represents a borrow. In <code>find_matching_lines</code>, <code>pattern</code> is <em>borrowed</em>.</p>
+<pre><code class="language-rust noplayground">fn find_matching_lines(lines: Vec&lt;&amp;str&gt;, pattern: &amp;str) -&gt; Vec&lt;usize&gt;</code></pre>
+<h2 id="borrowing-lines"><a class="header" href="#borrowing-lines">Borrowing <code>lines</code></a></h2>
+<p>In <code>find_matching_lines</code>, we can <em>borrow</em> <code>lines</code> by prefixing the parameter's
+type with an <code>&amp;</code>, changing it to <code>&amp;Vec&lt;&amp;str&gt;</code>, and by prefixing the variable
+<code>lines</code> in <code>main</code> to <code>&amp;lines</code>. After making these changes and re-running the
+program, we can see that it now works.</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+</span><span class="boring">
+</span>fn find_matching_lines(lines: &amp;Vec&lt;&amp;str&gt;, pattern: &amp;str) -&gt; Vec&lt;usize&gt; {
+    lines
+        .iter()
+        .enumerate()
+        .filter_map(|(i, line)| match line.contains(pattern) {
+            true =&gt; Some(i),
+            false =&gt; None,
+        })
+        .collect() // turns anything iterable into a collection
+}
+
+fn main() {
+    let poem = "I have a little shadow that goes in and out with me,
+                And what can be the use of him is more than I can see.
+                He is very, very like me from the heels up to the head;
+                And I see him jump before me, when I jump into my bed.
+
+                The funniest thing about him is the way he likes to grow -
+                Not at all like proper children, which is always very slow;
+                For he sometimes shoots up taller like an india-rubber ball,
+                And he sometimes gets so little that there's none of him at all.";
+
+    // command line arguments
+    let pattern = "all";
+    let before_context = 1;
+    let after_context = 1;
+
+    // convert the poem into lines
+    let lines = Vec::from_iter(poem.lines());
+
+    // store the 0-based line number for any matched line
+    let match_lines = find_matching_lines(&amp;lines, pattern);
+
+    // create intervals of the form [a,b] with the before/after context
+    let mut intervals: Vec&lt;_&gt; = match_lines
+        .iter()
+        .map(|line| {
+            (
+                line.saturating_sub(before_context),
+                line.saturating_add(after_context),
+            )
+        })
+        .collect();
+
+    // merge overlapping intervals
+    intervals.dedup_by(|next, prev| {
+        if prev.1 &lt; next.0 {
+            false
+        } else {
+            prev.1 = next.1;
+            true
+        }
+    });
+
+    // print the lines
+    for (start, end) in intervals {
+        for (line_no, line) in
+            lines.iter().enumerate().take(end + 1).skip(start)
+        {
+            println!("{}: {}", line_no + 1, line)
+        }
+    }
+}</code></pre></pre>
+<h2 id="continuing-to-refactor"><a class="header" href="#continuing-to-refactor">Continuing to Refactor</a></h2>
+<p>Let's create another function to handle the creation of our intervals. Here is
+the function signature:</p>
+<pre><code class="language-rust noplayground">fn create_intervals(
+    lines: Vec&lt;usize&gt;,
+    before_context: usize,
+    after_context: usize,
+) -&gt; Vec&lt;(usize, usize)&gt;</code></pre>
+<p>This is the code that we'll transfer into the new function:</p>
+<pre><code class="language-rust noplayground">// create intervals of the form [a,b] with the before/after context
+let mut intervals: Vec&lt;_&gt; = match_lines
+    .iter()
+    .map(|line| {
+        (
+            line.saturating_sub(before_context),
+            line.saturating_add(after_context),
+        )
+    })
+    .collect();</code></pre>
+<p>Here is the revised code with the changes implemented. Review it and run the
+code.</p>
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">use std::iter::FromIterator; // this line addresses a rust playground bug
+</span><span class="boring">
+</span>fn find_matching_lines(lines: &amp;Vec&lt;&amp;str&gt;, pattern: &amp;str) -&gt; Vec&lt;usize&gt; {
+    lines
+        .iter()
+        .enumerate()
+        .filter_map(|(i, line)| match line.contains(pattern) {
+            true =&gt; Some(i),
+            false =&gt; None,
+        })
+        .collect() // turns anything iterable into a collection
+}
+
+fn create_intervals(
+    lines: Vec&lt;usize&gt;,
+    before_context: usize,
+    after_context: usize,
+) -&gt; Vec&lt;(usize, usize)&gt; {
+    lines
+        .iter()
+        .map(|line| {
+            (
+                line.saturating_sub(before_context),
+                line.saturating_add(after_context),
+            )
+        })
+        .collect()
+}
+
+fn main() {
+    let poem = "I have a little shadow that goes in and out with me,
+                And what can be the use of him is more than I can see.
+                He is very, very like me from the heels up to the head;
+                And I see him jump before me, when I jump into my bed.
+
+                The funniest thing about him is the way he likes to grow -
+                Not at all like proper children, which is always very slow;
+                For he sometimes shoots up taller like an india-rubber ball,
+                And he sometimes gets so little that there's none of him at all.";
+
+    // command line arguments
+    let pattern = "all";
+    let before_context = 1;
+    let after_context = 1;
+
+    // convert the poem into lines
+    let lines = Vec::from_iter(poem.lines());
+
+    // store the 0-based line number for any matched line
+    let match_lines = find_matching_lines(&amp;lines, pattern);
+
+    // create intervals of the form [a,b] with the before/after context
+    let mut intervals =
+        create_intervals(match_lines, before_context, after_context);
+
+    // merge overlapping intervals
+    intervals.dedup_by(|next, prev| {
+        if prev.1 &lt; next.0 {
+            false
+        } else {
+            prev.1 = next.1;
+            true
+        }
+    });
+
+    // print the lines
+    for (start, end) in intervals {
+        for (line_no, line) in
+            lines.iter().enumerate().take(end + 1).skip(start)
+        {
+            println!("{}: {}", line_no + 1, line)
+        }
+    }
+}</code></pre></pre>
+<blockquote>
+<p>Moving vs Borrowing</p>
+<ul>
+<li>Why is it possible to <em>move</em> <code>match_lines</code> without causing an error?</li>
+<li>Considering heap allocations, what advantages might there be in moving
+<code>match_lines</code> instead of <em>borrowing</em> it?</li>
+</ul>
+</blockquote>
+<h1 id="exercise"><a class="header" href="#exercise">Exercise</a></h1>
+<p>Develop a function named merge_intervals and transfer the specified code from
+main into this function, making any necessary updates. Construct another
+function called print_results and relocate the specified code from main into
+this function, updating it as needed.</p>
+<ul>
+<li>Create a function named <code>merge_intervals</code> and move the specified code from
+<code>main</code> into this function, making any necessary updates.
+<pre><code class="language-rust noplayground">// merge overlapping intervals
+intervals.dedup_by(|next, prev| {
+    if prev.1 &lt; next.0 {
+        false
+    } else {
+        prev.1 = next.1;
+        true
+    }
+});</code></pre>
+</li>
+<li>Create another function called <code>print_results</code> and move the specified code
+from <code>main</code> into this function, updating it as needed.
+<pre><code class="language-rust noplayground">// print the lines
+for (start, end) in intervals {
+    for (line_no, line) in
+        lines.iter().enumerate().take(end + 1).skip(start)
+    {
+        println!("{}: {}", line_no + 1, line)
+    }
+}</code></pre>
+</li>
+<li>Modify <code>main</code> to utilize these newly created functions.</li>
+</ul>
+<blockquote>
+<p>You can complete these exercises by updating the most recent version of the
+code provided above.</p>
+</blockquote>
+<details>
+<summary>Solution</summary>
+<pre><pre class="playground"><code class="language-rust edition2021">use std::iter::FromIterator; // this line addresses a rust playground bug
+
+fn find_matching_lines(lines: &amp;Vec&lt;&amp;str&gt;, pattern: &amp;str) -&gt; Vec&lt;usize&gt; {
+    lines
+        .iter()
+        .enumerate()
+        .filter_map(|(i, line)| match line.contains(pattern) {
+            true =&gt; Some(i),
+            false =&gt; None,
+        })
+        .collect() // turns anything iterable into a collection
+}
+
+fn create_intervals(
+    lines: Vec&lt;usize&gt;,
+    before_context: usize,
+    after_context: usize,
+) -&gt; Vec&lt;(usize, usize)&gt; {
+    lines
+        .iter()
+        .map(|line| {
+            (
+                line.saturating_sub(before_context),
+                line.saturating_add(after_context),
+            )
+        })
+        .collect()
+}
+
+fn merge_intervals(intervals: &amp;mut Vec&lt;(usize, usize)&gt;) {
+    // merge overlapping intervals
+    intervals.dedup_by(|next, prev| {
+        if prev.1 &lt; next.0 {
+            false
+        } else {
+            prev.1 = next.1;
+            true
+        }
+    })
+}
+
+fn print_results(intervals: Vec&lt;(usize, usize)&gt;, lines: Vec&lt;&amp;str&gt;) {
+    for (start, end) in intervals {
+        for (line_no, line) in
+            lines.iter().enumerate().take(end + 1).skip(start)
+        {
+            println!("{}: {}", line_no + 1, line)
+        }
+    }
+}
+
+fn main() {
+    let poem = "I have a little shadow that goes in and out with me,
+                And what can be the use of him is more than I can see.
+                He is very, very like me from the heels up to the head;
+                And I see him jump before me, when I jump into my bed.
+
+                The funniest thing about him is the way he likes to grow -
+                Not at all like proper children, which is always very slow;
+                For he sometimes shoots up taller like an india-rubber ball,
+                And he sometimes gets so little that there's none of him at all.";
+
+    // command line arguments
+    let pattern = "all";
+    let before_context = 1;
+    let after_context = 1;
+
+    // convert the poem into lines
+    let lines = Vec::from_iter(poem.lines());
+
+    // store the 0-based line number for any matched line
+    let match_lines = find_matching_lines(&amp;lines, pattern);
+
+    // create intervals of the form [a,b] with the before/after context
+    let mut intervals =
+        create_intervals(match_lines, before_context, after_context);
+
+    // merge overlapping intervals
+    merge_intervals(&amp;mut intervals);
+
+    // print the lines
+    print_results(intervals, lines);
+}</code></pre></pre>
+</details>
+<h1 id="summary"><a class="header" href="#summary">Summary</a></h1>
+<p>Although the concepts of ownership and borrowing are relatively straightforward,
+they can be frustrating when learning Rust. Reading through the official
+documentation on <a href="https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html">Understanding Ownership</a> will certainly help overcome this
+challenge. Keep the following points in mind as you continue on your journey
+with Rust:</p>
+<p><strong>Ownership Rules</strong></p>
+<ul>
+<li>Each value in Rust has an owner.</li>
+<li>There can only be one owner at a time.</li>
+<li>When the owner goes out of scope, the value is dropped.</li>
+</ul>
+<p><strong>Borrowing Rules</strong></p>
+<ul>
+<li>At any given time, you can have either one mutable reference or any number of
+immutable references.</li>
+<li>References must always be valid.</li>
+</ul>
+<h1 id="next"><a class="header" href="#next">Next</a></h1>
+<p>With our new understanding of ownership and borrowing, let's switch our focus to
+error handling.</p>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>The <code>&amp;</code> operator can have different meanings depending on the context. For
+example, when used an infix operator, it becomes a bitwise AND. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

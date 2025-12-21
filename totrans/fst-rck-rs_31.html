@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>use-ing Dependencies</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>use-ing Dependencies</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/useing_dependencies.html">https://freddiehaddad.github.io/fast-track-to-rust/useing_dependencies.html</a></blockquote>
+                        
+<p>Now that we've added the <code>regex</code> crate as a dependency, we are ready to <em>use</em> it
+(pun intended). You can refer to the crate by the full path name <code>regex::Regex</code>
+(crate::module) or, more commonly, by bringing the module into scope with the
+<code>use</code><sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> keyword.</p>
+<p>We've been doing this in our rustle program:</p>
+<pre><code class="language-rust noplayground">use std::fs::File;
+use std::io::Read;
+use std::io::{BufRead, BufReader};
+use std::process::exit;</code></pre>
+<p>By bringing the module into scope with <code>use regex::Regex;</code>, we can reference it
+with <code>Regex</code>.</p>
+<p>Now that we know how to add dependencies to our project and use them, it's time
+to add support for regular expressions!</p>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>The <a href="https://doc.rust-lang.org/std/keyword.use.html"><code>use</code></a> keyword can do more than just bring things into scope, so be
+sure to check the documentation on <a href="https://doc.rust-lang.org/reference/items/use-declarations.html">use declarations</a> for more details on
+<a href="https://doc.rust-lang.org/std/keyword.use.html"><code>use</code></a>. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

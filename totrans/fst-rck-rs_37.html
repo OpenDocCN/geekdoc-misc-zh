@@ -1,0 +1,1200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Scope and Privacy</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Scope and Privacy</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/scope_and_privacy.html">https://freddiehaddad.github.io/fast-track-to-rust/scope_and_privacy.html</a></blockquote>
+                        
+<p>We're going to convert all our <code>Interval</code> related code into a module. To define
+a module, we use the <code>mod</code> keyword followed by the module's name and enclose the
+body within curly braces.</p>
+<pre><code class="language-rust noplayground">mod interval {
+    // module body
+}</code></pre>
+<p>Here's the new version of our rustle program with the <code>Interval</code> related parts
+moved inside the <code>interval</code> module. In addition, comments have been added to the
+module which will be used to generate documentation in an upcoming section. Go
+ahead and run the code to see it in action!</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+</span><span class="boring">extern crate regex; // this is needed for the playground
+</span><span class="boring">use itertools::Itertools;
+</span><span class="boring">use regex::Regex;
+</span><span class="boring">use std::fs::File;
+</span><span class="boring">use std::io::Read;
+</span><span class="boring">use std::io::{BufRead, BufReader};
+</span><span class="boring">use std::process::exit;
+</span><span class="boring">
+</span><span class="boring">fn find_matching_lines(lines: &amp;[String], regex: Regex) -&gt; Vec&lt;usize&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .enumerate()
+</span><span class="boring">        .filter_map(|(i, line)| match regex.is_match(line) {
+</span><span class="boring">            true =&gt; Some(i),
+</span><span class="boring">            false =&gt; None,
+</span><span class="boring">        })
+</span><span class="boring">        .collect() // turns anything iterable into a collection
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn create_intervals(
+</span><span class="boring">    lines: Vec&lt;usize&gt;,
+</span><span class="boring">    before_context: usize,
+</span><span class="boring">    after_context: usize,
+</span><span class="boring">) -&gt; Result&lt;Vec&lt;Interval&gt;, IntervalError&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .map(|line| {
+</span><span class="boring">            let start = line.saturating_sub(before_context);
+</span><span class="boring">            let end = line.saturating_add(after_context);
+</span><span class="boring">            Interval::new(start, end)
+</span><span class="boring">        })
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn merge_intervals(intervals: Vec&lt;Interval&gt;) -&gt; Vec&lt;Interval&gt; {
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    intervals
+</span><span class="boring">        .into_iter()
+</span><span class="boring">        .coalesce(|p, c| p.merge(&amp;c).map_err(|_| (p, c)))
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn print_results(intervals: Vec&lt;Interval&gt;, lines: Vec&lt;String&gt;) {
+</span><span class="boring">    for interval in intervals {
+</span><span class="boring">        for (line_no, line) in lines
+</span><span class="boring">            .iter()
+</span><span class="boring">            .enumerate()
+</span><span class="boring">            .take(interval.end + 1)
+</span><span class="boring">            .skip(interval.start)
+</span><span class="boring">        {
+</span><span class="boring">            println!("{}: {}", line_no + 1, line)
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn read_file(file: impl Read) -&gt; Vec&lt;String&gt; {
+</span><span class="boring">    BufReader::new(file).lines().map_while(Result::ok).collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
+</span><span class="boring">                And what can be the use of him is more than I can see.
+</span><span class="boring">                He is very, very like me from the heels up to the head;
+</span><span class="boring">                And I see him jump before me, when I jump into my bed.
+</span><span class="boring">
+</span><span class="boring">                The funniest thing about him is the way he likes to grow -
+</span><span class="boring">                Not at all like proper children, which is always very slow;
+</span><span class="boring">                For he sometimes shoots up taller like an india-rubber ball,
+</span><span class="boring">                And he sometimes gets so little that there's none of him at all.";
+</span><span class="boring">
+</span><span class="boring">    let mock_file = std::io::Cursor::new(poem);
+</span><span class="boring">
+</span><span class="boring">    // command line arguments
+</span><span class="boring">    let pattern = "(all)|(little)";
+</span><span class="boring">    let before_context = 1;
+</span><span class="boring">    let after_context = 1;
+</span><span class="boring">
+</span><span class="boring">    // attempt to open the file
+</span><span class="boring">    let lines = read_file(mock_file);
+</span><span class="boring">    //let lines = match File::open(filename) {
+</span><span class="boring">    //    // convert the poem into lines
+</span><span class="boring">    //    Ok(file) =&gt; read_file(file),
+</span><span class="boring">    //    Err(e) =&gt; {
+</span><span class="boring">    //        eprintln!("Error opening {filename}: {e}");
+</span><span class="boring">    //        exit(1);
+</span><span class="boring">    //    }
+</span><span class="boring">    //};
+</span><span class="boring">
+</span><span class="boring">    // compile the regular expression
+</span><span class="boring">    let regex = match Regex::new(pattern) {
+</span><span class="boring">        Ok(re) =&gt; re, // bind re to regex
+</span><span class="boring">        Err(e) =&gt; {
+</span><span class="boring">            eprintln!("{e}"); // write to standard error
+</span><span class="boring">            exit(1);
+</span><span class="boring">        }
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    // store the 0-based line number for any matched line
+</span><span class="boring">    let match_lines = find_matching_lines(&amp;lines, regex);
+</span><span class="boring">
+</span><span class="boring">    // create intervals of the form [a,b] with the before/after context
+</span><span class="boring">    let intervals =
+</span><span class="boring">        match create_intervals(match_lines, before_context, after_context) {
+</span><span class="boring">            Ok(intervals) =&gt; intervals,
+</span><span class="boring">            Err(_) =&gt; {
+</span><span class="boring">                eprintln!("An error occurred while creating intervals");
+</span><span class="boring">                exit(1);
+</span><span class="boring">            }
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    let intervals = merge_intervals(intervals);
+</span><span class="boring">
+</span><span class="boring">    // print the lines
+</span><span class="boring">    print_results(intervals, lines);
+</span><span class="boring">}
+</span><span class="boring">
+</span>mod interval {
+    /// A list specifying general categories of Interval errors.
+    enum IntervalError {
+        /// Start is not less than or equal to end
+        StartEndRangeInvalid,
+        /// Two intervals to be merged do not overlap
+        NonOverlappingInterval,
+    }
+
+    /// A closed-interval [`start`, `end`] type used for representing a range of
+    /// values between `start` and `end` inclusively.
+    ///
+    /// # Examples
+    ///
+    /// You can create an `Interval` using `new`.
+    ///
+    /// ```rust
+    /// let interval = Interval::new(1, 10).unwrap();
+    /// assert_eq!(interval.start, 1);
+    /// assert_eq!(interval.end, 10);
+    /// ```
+    struct Interval {
+        start: usize,
+        end: usize,
+    }
+
+    impl Interval {
+        /// Creates a new `Interval` set to `start` and `end`.
+        ///
+        /// # Examples
+        ///
+        /// ```rust
+        /// let interval = Interval::new(1, 10).unwrap();
+        /// assert_eq!(interval.start, 1);
+        /// assert_eq!(interval.end, 10);
+        /// ```
+        fn new(start: usize, end: usize) -&gt; Result&lt;Self, IntervalError&gt; {
+            if start &lt;= end {
+                Ok(Self { start, end })
+            } else {
+                Err(IntervalError::StartEndRangeInvalid)
+            }
+        }
+
+        /// Checks if two intervals overlap. Overlapping intervals have at least
+        /// one point in common.
+        ///
+        /// # Examples
+        ///
+        /// ```rust
+        /// let a = Interval::new(1, 3).unwrap();
+        /// let b = Interval::new(3, 5).unwrap();
+        /// assert_eq!(a.overlaps(&amp;b), true);
+        /// assert_eq!(b.overlaps(&amp;a), true);
+        /// ```
+        ///
+        /// ```rust
+        /// let a = Interval::new(1, 5).unwrap();
+        /// let b = Interval::new(2, 4).unwrap();
+        /// assert_eq!(a.overlaps(&amp;b), true);
+        /// assert_eq!(b.overlaps(&amp;a), true);
+        /// ```
+        ///
+        /// ```rust
+        /// let a = Interval::new(1, 3).unwrap();
+        /// let b = Interval::new(4, 6).unwrap();
+        /// assert_eq!(a.overlaps(&amp;b), false);
+        /// assert_eq!(b.overlaps(&amp;a), true);
+        /// ```
+        fn overlaps(&amp;self, other: &amp;Interval) -&gt; bool {
+            self.end &gt;= other.start
+        }
+
+        /// Merges two intervals returning a new `Interval`.
+        ///
+        /// The merged `Interval` range includes the union of ranges from each
+        /// `Interval`.
+        ///
+        /// # Examples
+        ///
+        /// ```rust
+        /// let a = Interval::new(1, 3).unwrap();
+        /// let b = Interval::new(3, 5).unwrap();
+        /// let c = a.merge(&amp;b).unwrap();
+        /// assert_eq!(c.start, 1);
+        /// assert_eq!(c.end, 5);
+        /// ```
+        fn merge(&amp;self, other: &amp;Self) -&gt; Result&lt;Self, IntervalError&gt; {
+            if self.overlaps(other) {
+                Ok(Self {
+                    start: self.start,
+                    end: other.end,
+                })
+            } else {
+                Err(IntervalError::NonOverlappingInterval)
+            }
+        }
+    }
+}</code></pre></pre>
+<p>Uh-oh! Looks like we have all kinds of compiler errors! Among the chaos is two
+different errors having to do with scope and privacy.</p>
+<ul>
+<li><a href="https://doc.rust-lang.org/stable/error_codes/E0412.html">E0412</a>: cannot find type <code>Interval</code> in this scope</li>
+<li><a href="https://doc.rust-lang.org/stable/error_codes/E0433.html">E0433</a>: failed to resolve: use of undeclared type <code>Interval</code></li>
+</ul>
+<blockquote>
+<p>Remember you can always use <code>rustc --explain EXXXX</code> which provides a detailed
+explanation of an error message.</p>
+</blockquote>
+<h2 id="scope"><a class="header" href="#scope">Scope</a></h2>
+<p>The first error indicates that the <code>Interval</code> type is not in scope. This is
+because it is now part of the <code>interval</code> module. To access it, we can use the
+full path name <code>interval::Interval</code> or create a shortcut with <code>use</code>. Since we
+don't want to replace every occurrence of <code>Interval</code> in our code with
+<code>interval::Interval</code>, we'll take advantage of <code>use</code>. Additionally, we need
+access to <code>IntervalError</code>, so we'll bring that into scope at the same time. When
+bringing multiple types into scope, we can wrap them in <code>{}</code> and separate them
+with <code>,</code>.</p>
+<p>With that change in place, run the code again.</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+</span><span class="boring">extern crate regex; // this is needed for the playground
+</span>use interval::{Interval, IntervalError};
+<span class="boring">use itertools::Itertools;
+</span><span class="boring">use regex::Regex;
+</span><span class="boring">use std::fs::File;
+</span><span class="boring">use std::io::Read;
+</span><span class="boring">use std::io::{BufRead, BufReader};
+</span><span class="boring">use std::process::exit;
+</span><span class="boring">
+</span><span class="boring">fn find_matching_lines(lines: &amp;[String], regex: Regex) -&gt; Vec&lt;usize&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .enumerate()
+</span><span class="boring">        .filter_map(|(i, line)| match regex.is_match(line) {
+</span><span class="boring">            true =&gt; Some(i),
+</span><span class="boring">            false =&gt; None,
+</span><span class="boring">        })
+</span><span class="boring">        .collect() // turns anything iterable into a collection
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn create_intervals(
+</span><span class="boring">    lines: Vec&lt;usize&gt;,
+</span><span class="boring">    before_context: usize,
+</span><span class="boring">    after_context: usize,
+</span><span class="boring">) -&gt; Result&lt;Vec&lt;Interval&gt;, IntervalError&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .map(|line| {
+</span><span class="boring">            let start = line.saturating_sub(before_context);
+</span><span class="boring">            let end = line.saturating_add(after_context);
+</span><span class="boring">            Interval::new(start, end)
+</span><span class="boring">        })
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn merge_intervals(intervals: Vec&lt;Interval&gt;) -&gt; Vec&lt;Interval&gt; {
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    intervals
+</span><span class="boring">        .into_iter()
+</span><span class="boring">        .coalesce(|p, c| p.merge(&amp;c).map_err(|_| (p, c)))
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn print_results(intervals: Vec&lt;Interval&gt;, lines: Vec&lt;String&gt;) {
+</span><span class="boring">    for interval in intervals {
+</span><span class="boring">        for (line_no, line) in lines
+</span><span class="boring">            .iter()
+</span><span class="boring">            .enumerate()
+</span><span class="boring">            .take(interval.end + 1)
+</span><span class="boring">            .skip(interval.start)
+</span><span class="boring">        {
+</span><span class="boring">            println!("{}: {}", line_no + 1, line)
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn read_file(file: impl Read) -&gt; Vec&lt;String&gt; {
+</span><span class="boring">    BufReader::new(file).lines().map_while(Result::ok).collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
+</span><span class="boring">                And what can be the use of him is more than I can see.
+</span><span class="boring">                He is very, very like me from the heels up to the head;
+</span><span class="boring">                And I see him jump before me, when I jump into my bed.
+</span><span class="boring">
+</span><span class="boring">                The funniest thing about him is the way he likes to grow -
+</span><span class="boring">                Not at all like proper children, which is always very slow;
+</span><span class="boring">                For he sometimes shoots up taller like an india-rubber ball,
+</span><span class="boring">                And he sometimes gets so little that there's none of him at all.";
+</span><span class="boring">
+</span><span class="boring">    let mock_file = std::io::Cursor::new(poem);
+</span><span class="boring">
+</span><span class="boring">    // command line arguments
+</span><span class="boring">    let pattern = "(all)|(little)";
+</span><span class="boring">    let before_context = 1;
+</span><span class="boring">    let after_context = 1;
+</span><span class="boring">
+</span><span class="boring">    // attempt to open the file
+</span><span class="boring">    let lines = read_file(mock_file);
+</span><span class="boring">    //let lines = match File::open(filename) {
+</span><span class="boring">    //    // convert the poem into lines
+</span><span class="boring">    //    Ok(file) =&gt; read_file(file),
+</span><span class="boring">    //    Err(e) =&gt; {
+</span><span class="boring">    //        eprintln!("Error opening {filename}: {e}");
+</span><span class="boring">    //        exit(1);
+</span><span class="boring">    //    }
+</span><span class="boring">    //};
+</span><span class="boring">
+</span><span class="boring">    // compile the regular expression
+</span><span class="boring">    let regex = match Regex::new(pattern) {
+</span><span class="boring">        Ok(re) =&gt; re, // bind re to regex
+</span><span class="boring">        Err(e) =&gt; {
+</span><span class="boring">            eprintln!("{e}"); // write to standard error
+</span><span class="boring">            exit(1);
+</span><span class="boring">        }
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    // store the 0-based line number for any matched line
+</span><span class="boring">    let match_lines = find_matching_lines(&amp;lines, regex);
+</span><span class="boring">
+</span><span class="boring">    // create intervals of the form [a,b] with the before/after context
+</span><span class="boring">    let intervals =
+</span><span class="boring">        match create_intervals(match_lines, before_context, after_context) {
+</span><span class="boring">            Ok(intervals) =&gt; intervals,
+</span><span class="boring">            Err(_) =&gt; {
+</span><span class="boring">                eprintln!("An error occurred while creating intervals");
+</span><span class="boring">                exit(1);
+</span><span class="boring">            }
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    let intervals = merge_intervals(intervals);
+</span><span class="boring">
+</span><span class="boring">    // print the lines
+</span><span class="boring">    print_results(intervals, lines);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">mod interval {
+</span><span class="boring">    /// A list specifying general categories of Interval errors.
+</span><span class="boring">    enum IntervalError {
+</span><span class="boring">        /// Start is not less than or equal to end
+</span><span class="boring">        StartEndRangeInvalid,
+</span><span class="boring">        /// Two intervals to be merged do not overlap
+</span><span class="boring">        NonOverlappingInterval,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    /// A closed-interval [`start`, `end`] type used for representing a range of
+</span><span class="boring">    /// values between `start` and `end` inclusively.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Examples
+</span><span class="boring">    ///
+</span><span class="boring">    /// You can create an `Interval` using `new`.
+</span><span class="boring">    ///
+</span><span class="boring">    /// ```rust
+</span><span class="boring">    /// let interval = Interval::new(1, 10).unwrap();
+</span><span class="boring">    /// assert_eq!(interval.start, 1);
+</span><span class="boring">    /// assert_eq!(interval.end, 10);
+</span><span class="boring">    /// ```
+</span><span class="boring">    struct Interval {
+</span><span class="boring">        start: usize,
+</span><span class="boring">        end: usize,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    impl Interval {
+</span><span class="boring">        /// Creates a new `Interval` set to `start` and `end`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let interval = Interval::new(1, 10).unwrap();
+</span><span class="boring">        /// assert_eq!(interval.start, 1);
+</span><span class="boring">        /// assert_eq!(interval.end, 10);
+</span><span class="boring">        /// ```
+</span><span class="boring">        fn new(start: usize, end: usize) -&gt; Result&lt;Self, IntervalError&gt; {
+</span><span class="boring">            if start &lt;= end {
+</span><span class="boring">                Ok(Self { start, end })
+</span><span class="boring">            } else {
+</span><span class="boring">                Err(IntervalError::StartEndRangeInvalid)
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        /// Checks if two intervals overlap. Overlapping intervals have at least
+</span><span class="boring">        /// one point in common.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(3, 5).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), true);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 5).unwrap();
+</span><span class="boring">        /// let b = Interval::new(2, 4).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), true);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(4, 6).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), false);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        fn overlaps(&amp;self, other: &amp;Interval) -&gt; bool {
+</span><span class="boring">            self.end &gt;= other.start
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        /// Merges two intervals returning a new `Interval`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// The merged `Interval` range includes the union of ranges from each
+</span><span class="boring">        /// `Interval`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(3, 5).unwrap();
+</span><span class="boring">        /// let c = a.merge(&amp;b).unwrap();
+</span><span class="boring">        /// assert_eq!(c.start, 1);
+</span><span class="boring">        /// assert_eq!(c.end, 5);
+</span><span class="boring">        /// ```
+</span><span class="boring">        fn merge(&amp;self, other: &amp;Self) -&gt; Result&lt;Self, IntervalError&gt; {
+</span><span class="boring">            if self.overlaps(other) {
+</span><span class="boring">                Ok(Self {
+</span><span class="boring">                    start: self.start,
+</span><span class="boring">                    end: other.end,
+</span><span class="boring">                })
+</span><span class="boring">            } else {
+</span><span class="boring">                Err(IntervalError::NonOverlappingInterval)
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+<p>Bugger! More compiler errors!</p>
+<h2 id="privacy"><a class="header" href="#privacy">Privacy</a></h2>
+<p>Before we defined the <code>interval</code> module, all the types and their methods were
+public. However, once we enclosed everything in a module, they became private!
+By default, code within a module is private from its parent modules. To make a
+module public, we need to declare it with <code>pub mod</code> instead of just <code>mod</code>. Let's
+add the <code>pub</code> prefix and run the program again.</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+</span><span class="boring">extern crate regex; // this is needed for the playground
+</span><span class="boring">use interval::{Interval, IntervalError};
+</span><span class="boring">use itertools::Itertools;
+</span><span class="boring">use regex::Regex;
+</span><span class="boring">use std::fs::File;
+</span><span class="boring">use std::io::Read;
+</span><span class="boring">use std::io::{BufRead, BufReader};
+</span><span class="boring">use std::process::exit;
+</span><span class="boring">
+</span><span class="boring">fn find_matching_lines(lines: &amp;[String], regex: Regex) -&gt; Vec&lt;usize&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .enumerate()
+</span><span class="boring">        .filter_map(|(i, line)| match regex.is_match(line) {
+</span><span class="boring">            true =&gt; Some(i),
+</span><span class="boring">            false =&gt; None,
+</span><span class="boring">        })
+</span><span class="boring">        .collect() // turns anything iterable into a collection
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn create_intervals(
+</span><span class="boring">    lines: Vec&lt;usize&gt;,
+</span><span class="boring">    before_context: usize,
+</span><span class="boring">    after_context: usize,
+</span><span class="boring">) -&gt; Result&lt;Vec&lt;Interval&gt;, IntervalError&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .map(|line| {
+</span><span class="boring">            let start = line.saturating_sub(before_context);
+</span><span class="boring">            let end = line.saturating_add(after_context);
+</span><span class="boring">            Interval::new(start, end)
+</span><span class="boring">        })
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn merge_intervals(intervals: Vec&lt;Interval&gt;) -&gt; Vec&lt;Interval&gt; {
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    intervals
+</span><span class="boring">        .into_iter()
+</span><span class="boring">        .coalesce(|p, c| p.merge(&amp;c).map_err(|_| (p, c)))
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn print_results(intervals: Vec&lt;Interval&gt;, lines: Vec&lt;String&gt;) {
+</span><span class="boring">    for interval in intervals {
+</span><span class="boring">        for (line_no, line) in lines
+</span><span class="boring">            .iter()
+</span><span class="boring">            .enumerate()
+</span><span class="boring">            .take(interval.end + 1)
+</span><span class="boring">            .skip(interval.start)
+</span><span class="boring">        {
+</span><span class="boring">            println!("{}: {}", line_no + 1, line)
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn read_file(file: impl Read) -&gt; Vec&lt;String&gt; {
+</span><span class="boring">    BufReader::new(file).lines().map_while(Result::ok).collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
+</span><span class="boring">                And what can be the use of him is more than I can see.
+</span><span class="boring">                He is very, very like me from the heels up to the head;
+</span><span class="boring">                And I see him jump before me, when I jump into my bed.
+</span><span class="boring">
+</span><span class="boring">                The funniest thing about him is the way he likes to grow -
+</span><span class="boring">                Not at all like proper children, which is always very slow;
+</span><span class="boring">                For he sometimes shoots up taller like an india-rubber ball,
+</span><span class="boring">                And he sometimes gets so little that there's none of him at all.";
+</span><span class="boring">
+</span><span class="boring">    let mock_file = std::io::Cursor::new(poem);
+</span><span class="boring">
+</span><span class="boring">    // command line arguments
+</span><span class="boring">    let pattern = "(all)|(little)";
+</span><span class="boring">    let before_context = 1;
+</span><span class="boring">    let after_context = 1;
+</span><span class="boring">
+</span><span class="boring">    // attempt to open the file
+</span><span class="boring">    let lines = read_file(mock_file);
+</span><span class="boring">    //let lines = match File::open(filename) {
+</span><span class="boring">    //    // convert the poem into lines
+</span><span class="boring">    //    Ok(file) =&gt; read_file(file),
+</span><span class="boring">    //    Err(e) =&gt; {
+</span><span class="boring">    //        eprintln!("Error opening {filename}: {e}");
+</span><span class="boring">    //        exit(1);
+</span><span class="boring">    //    }
+</span><span class="boring">    //};
+</span><span class="boring">
+</span><span class="boring">    // compile the regular expression
+</span><span class="boring">    let regex = match Regex::new(pattern) {
+</span><span class="boring">        Ok(re) =&gt; re, // bind re to regex
+</span><span class="boring">        Err(e) =&gt; {
+</span><span class="boring">            eprintln!("{e}"); // write to standard error
+</span><span class="boring">            exit(1);
+</span><span class="boring">        }
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    // store the 0-based line number for any matched line
+</span><span class="boring">    let match_lines = find_matching_lines(&amp;lines, regex);
+</span><span class="boring">
+</span><span class="boring">    // create intervals of the form [a,b] with the before/after context
+</span><span class="boring">    let intervals =
+</span><span class="boring">        match create_intervals(match_lines, before_context, after_context) {
+</span><span class="boring">            Ok(intervals) =&gt; intervals,
+</span><span class="boring">            Err(_) =&gt; {
+</span><span class="boring">                eprintln!("An error occurred while creating intervals");
+</span><span class="boring">                exit(1);
+</span><span class="boring">            }
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    let intervals = merge_intervals(intervals);
+</span><span class="boring">
+</span><span class="boring">    // print the lines
+</span><span class="boring">    print_results(intervals, lines);
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub mod interval {
+<span class="boring">    /// A list specifying general categories of Interval errors.
+</span><span class="boring">    enum IntervalError {
+</span><span class="boring">        /// Start is not less than or equal to end
+</span><span class="boring">        StartEndRangeInvalid,
+</span><span class="boring">        /// Two intervals to be merged do not overlap
+</span><span class="boring">        NonOverlappingInterval,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    /// A closed-interval [`start`, `end`] type used for representing a range of
+</span><span class="boring">    /// values between `start` and `end` inclusively.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Examples
+</span><span class="boring">    ///
+</span><span class="boring">    /// You can create an `Interval` using `new`.
+</span><span class="boring">    ///
+</span><span class="boring">    /// ```rust
+</span><span class="boring">    /// let interval = Interval::new(1, 10).unwrap();
+</span><span class="boring">    /// assert_eq!(interval.start, 1);
+</span><span class="boring">    /// assert_eq!(interval.end, 10);
+</span><span class="boring">    /// ```
+</span><span class="boring">    struct Interval {
+</span><span class="boring">        start: usize,
+</span><span class="boring">        end: usize,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    impl Interval {
+</span><span class="boring">        /// Creates a new `Interval` set to `start` and `end`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let interval = Interval::new(1, 10).unwrap();
+</span><span class="boring">        /// assert_eq!(interval.start, 1);
+</span><span class="boring">        /// assert_eq!(interval.end, 10);
+</span><span class="boring">        /// ```
+</span><span class="boring">        fn new(start: usize, end: usize) -&gt; Result&lt;Self, IntervalError&gt; {
+</span><span class="boring">            if start &lt;= end {
+</span><span class="boring">                Ok(Self { start, end })
+</span><span class="boring">            } else {
+</span><span class="boring">                Err(IntervalError::StartEndRangeInvalid)
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        /// Checks if two intervals overlap. Overlapping intervals have at least
+</span><span class="boring">        /// one point in common.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(3, 5).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), true);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 5).unwrap();
+</span><span class="boring">        /// let b = Interval::new(2, 4).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), true);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(4, 6).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), false);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        fn overlaps(&amp;self, other: &amp;Interval) -&gt; bool {
+</span><span class="boring">            self.end &gt;= other.start
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        /// Merges two intervals returning a new `Interval`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// The merged `Interval` range includes the union of ranges from each
+</span><span class="boring">        /// `Interval`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(3, 5).unwrap();
+</span><span class="boring">        /// let c = a.merge(&amp;b).unwrap();
+</span><span class="boring">        /// assert_eq!(c.start, 1);
+</span><span class="boring">        /// assert_eq!(c.end, 5);
+</span><span class="boring">        /// ```
+</span><span class="boring">        fn merge(&amp;self, other: &amp;Self) -&gt; Result&lt;Self, IntervalError&gt; {
+</span><span class="boring">            if self.overlaps(other) {
+</span><span class="boring">                Ok(Self {
+</span><span class="boring">                    start: self.start,
+</span><span class="boring">                    end: other.end,
+</span><span class="boring">                })
+</span><span class="boring">            } else {
+</span><span class="boring">                Err(IntervalError::NonOverlappingInterval)
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+<p>More compiler errors! Who would have thought creating a module could be this
+complicated? The reason for this series of errors is to help us understand
+module scope and privacy. The emerging pattern is that modules default
+everything to private. Simply declaring the module public isn't enough; every
+type and method within the module must also be explicitly declared public if
+that is the intended design. So, let's prefix the methods and types with <code>pub</code>
+and hopefully achieve a successful compile!</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+</span><span class="boring">extern crate regex; // this is needed for the playground
+</span><span class="boring">use interval::{Interval, IntervalError};
+</span><span class="boring">use itertools::Itertools;
+</span><span class="boring">use regex::Regex;
+</span><span class="boring">use std::fs::File;
+</span><span class="boring">use std::io::Read;
+</span><span class="boring">use std::io::{BufRead, BufReader};
+</span><span class="boring">use std::process::exit;
+</span><span class="boring">
+</span><span class="boring">fn find_matching_lines(lines: &amp;[String], regex: Regex) -&gt; Vec&lt;usize&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .enumerate()
+</span><span class="boring">        .filter_map(|(i, line)| match regex.is_match(line) {
+</span><span class="boring">            true =&gt; Some(i),
+</span><span class="boring">            false =&gt; None,
+</span><span class="boring">        })
+</span><span class="boring">        .collect() // turns anything iterable into a collection
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn create_intervals(
+</span><span class="boring">    lines: Vec&lt;usize&gt;,
+</span><span class="boring">    before_context: usize,
+</span><span class="boring">    after_context: usize,
+</span><span class="boring">) -&gt; Result&lt;Vec&lt;Interval&gt;, IntervalError&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .map(|line| {
+</span><span class="boring">            let start = line.saturating_sub(before_context);
+</span><span class="boring">            let end = line.saturating_add(after_context);
+</span><span class="boring">            Interval::new(start, end)
+</span><span class="boring">        })
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn merge_intervals(intervals: Vec&lt;Interval&gt;) -&gt; Vec&lt;Interval&gt; {
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    intervals
+</span><span class="boring">        .into_iter()
+</span><span class="boring">        .coalesce(|p, c| p.merge(&amp;c).map_err(|_| (p, c)))
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn print_results(intervals: Vec&lt;Interval&gt;, lines: Vec&lt;String&gt;) {
+</span><span class="boring">    for interval in intervals {
+</span><span class="boring">        for (line_no, line) in lines
+</span><span class="boring">            .iter()
+</span><span class="boring">            .enumerate()
+</span><span class="boring">            .take(interval.end + 1)
+</span><span class="boring">            .skip(interval.start)
+</span><span class="boring">        {
+</span><span class="boring">            println!("{}: {}", line_no + 1, line)
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn read_file(file: impl Read) -&gt; Vec&lt;String&gt; {
+</span><span class="boring">    BufReader::new(file).lines().map_while(Result::ok).collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
+</span><span class="boring">                And what can be the use of him is more than I can see.
+</span><span class="boring">                He is very, very like me from the heels up to the head;
+</span><span class="boring">                And I see him jump before me, when I jump into my bed.
+</span><span class="boring">
+</span><span class="boring">                The funniest thing about him is the way he likes to grow -
+</span><span class="boring">                Not at all like proper children, which is always very slow;
+</span><span class="boring">                For he sometimes shoots up taller like an india-rubber ball,
+</span><span class="boring">                And he sometimes gets so little that there's none of him at all.";
+</span><span class="boring">
+</span><span class="boring">    let mock_file = std::io::Cursor::new(poem);
+</span><span class="boring">
+</span><span class="boring">    // command line arguments
+</span><span class="boring">    let pattern = "(all)|(little)";
+</span><span class="boring">    let before_context = 1;
+</span><span class="boring">    let after_context = 1;
+</span><span class="boring">
+</span><span class="boring">    // attempt to open the file
+</span><span class="boring">    let lines = read_file(mock_file);
+</span><span class="boring">    //let lines = match File::open(filename) {
+</span><span class="boring">    //    // convert the poem into lines
+</span><span class="boring">    //    Ok(file) =&gt; read_file(file),
+</span><span class="boring">    //    Err(e) =&gt; {
+</span><span class="boring">    //        eprintln!("Error opening {filename}: {e}");
+</span><span class="boring">    //        exit(1);
+</span><span class="boring">    //    }
+</span><span class="boring">    //};
+</span><span class="boring">
+</span><span class="boring">    // compile the regular expression
+</span><span class="boring">    let regex = match Regex::new(pattern) {
+</span><span class="boring">        Ok(re) =&gt; re, // bind re to regex
+</span><span class="boring">        Err(e) =&gt; {
+</span><span class="boring">            eprintln!("{e}"); // write to standard error
+</span><span class="boring">            exit(1);
+</span><span class="boring">        }
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    // store the 0-based line number for any matched line
+</span><span class="boring">    let match_lines = find_matching_lines(&amp;lines, regex);
+</span><span class="boring">
+</span><span class="boring">    // create intervals of the form [a,b] with the before/after context
+</span><span class="boring">    let intervals =
+</span><span class="boring">        match create_intervals(match_lines, before_context, after_context) {
+</span><span class="boring">            Ok(intervals) =&gt; intervals,
+</span><span class="boring">            Err(_) =&gt; {
+</span><span class="boring">                eprintln!("An error occurred while creating intervals");
+</span><span class="boring">                exit(1);
+</span><span class="boring">            }
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    let intervals = merge_intervals(intervals);
+</span><span class="boring">
+</span><span class="boring">    // print the lines
+</span><span class="boring">    print_results(intervals, lines);
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub mod interval {
+<span class="boring">    /// A list specifying general categories of Interval errors.
+</span>    pub enum IntervalError {
+<span class="boring">        /// Start is not less than or equal to end
+</span><span class="boring">        StartEndRangeInvalid,
+</span><span class="boring">        /// Two intervals to be merged do not overlap
+</span><span class="boring">        NonOverlappingInterval,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    /// A closed-interval [`start`, `end`] type used for representing a range of
+</span><span class="boring">    /// values between `start` and `end` inclusively.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Examples
+</span><span class="boring">    ///
+</span><span class="boring">    /// You can create an `Interval` using `new`.
+</span><span class="boring">    ///
+</span><span class="boring">    /// ```rust
+</span><span class="boring">    /// let interval = Interval::new(1, 10).unwrap();
+</span><span class="boring">    /// assert_eq!(interval.start, 1);
+</span><span class="boring">    /// assert_eq!(interval.end, 10);
+</span><span class="boring">    /// ```
+</span>    pub struct Interval {
+<span class="boring">        start: usize,
+</span><span class="boring">        end: usize,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    impl Interval {
+</span><span class="boring">        /// Creates a new `Interval` set to `start` and `end`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let interval = Interval::new(1, 10).unwrap();
+</span><span class="boring">        /// assert_eq!(interval.start, 1);
+</span><span class="boring">        /// assert_eq!(interval.end, 10);
+</span><span class="boring">        /// ```
+</span>        pub fn new(start: usize, end: usize) -&gt; Result&lt;Self, IntervalError&gt; {
+<span class="boring">            if start &lt;= end {
+</span><span class="boring">                Ok(Self { start, end })
+</span><span class="boring">            } else {
+</span><span class="boring">                Err(IntervalError::StartEndRangeInvalid)
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        /// Checks if two intervals overlap. Overlapping intervals have at least
+</span><span class="boring">        /// one point in common.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(3, 5).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), true);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 5).unwrap();
+</span><span class="boring">        /// let b = Interval::new(2, 4).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), true);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(4, 6).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), false);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span>        pub fn overlaps(&amp;self, other: &amp;Interval) -&gt; bool {
+<span class="boring">            self.end &gt;= other.start
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        /// Merges two intervals returning a new `Interval`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// The merged `Interval` range includes the union of ranges from each
+</span><span class="boring">        /// `Interval`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(3, 5).unwrap();
+</span><span class="boring">        /// let c = a.merge(&amp;b).unwrap();
+</span><span class="boring">        /// assert_eq!(c.start, 1);
+</span><span class="boring">        /// assert_eq!(c.end, 5);
+</span><span class="boring">        /// ```
+</span>        pub fn merge(&amp;self, other: &amp;Self) -&gt; Result&lt;Self, IntervalError&gt; {
+<span class="boring">            if self.overlaps(other) {
+</span><span class="boring">                Ok(Self {
+</span><span class="boring">                    start: self.start,
+</span><span class="boring">                    end: other.end,
+</span><span class="boring">                })
+</span><span class="boring">            } else {
+</span><span class="boring">                Err(IntervalError::NonOverlappingInterval)
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+<p>Alright, last time, I promise! As a final note on privacy, and as the compiler
+error pointed out, even the fields of a <code>struct</code> are private by default. So, the
+last step is to make the fields public. Let's do that and finally achieve a
+successful compile. Fingers crossed!</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+</span><span class="boring">extern crate regex; // this is needed for the playground
+</span><span class="boring">use interval::{Interval, IntervalError};
+</span><span class="boring">use itertools::Itertools;
+</span><span class="boring">use regex::Regex;
+</span><span class="boring">use std::fs::File;
+</span><span class="boring">use std::io::Read;
+</span><span class="boring">use std::io::{BufRead, BufReader};
+</span><span class="boring">use std::process::exit;
+</span><span class="boring">
+</span><span class="boring">fn find_matching_lines(lines: &amp;[String], regex: Regex) -&gt; Vec&lt;usize&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .enumerate()
+</span><span class="boring">        .filter_map(|(i, line)| match regex.is_match(line) {
+</span><span class="boring">            true =&gt; Some(i),
+</span><span class="boring">            false =&gt; None,
+</span><span class="boring">        })
+</span><span class="boring">        .collect() // turns anything iterable into a collection
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn create_intervals(
+</span><span class="boring">    lines: Vec&lt;usize&gt;,
+</span><span class="boring">    before_context: usize,
+</span><span class="boring">    after_context: usize,
+</span><span class="boring">) -&gt; Result&lt;Vec&lt;Interval&gt;, IntervalError&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .map(|line| {
+</span><span class="boring">            let start = line.saturating_sub(before_context);
+</span><span class="boring">            let end = line.saturating_add(after_context);
+</span><span class="boring">            Interval::new(start, end)
+</span><span class="boring">        })
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn merge_intervals(intervals: Vec&lt;Interval&gt;) -&gt; Vec&lt;Interval&gt; {
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    intervals
+</span><span class="boring">        .into_iter()
+</span><span class="boring">        .coalesce(|p, c| p.merge(&amp;c).map_err(|_| (p, c)))
+</span><span class="boring">        .collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn print_results(intervals: Vec&lt;Interval&gt;, lines: Vec&lt;String&gt;) {
+</span><span class="boring">    for interval in intervals {
+</span><span class="boring">        for (line_no, line) in lines
+</span><span class="boring">            .iter()
+</span><span class="boring">            .enumerate()
+</span><span class="boring">            .take(interval.end + 1)
+</span><span class="boring">            .skip(interval.start)
+</span><span class="boring">        {
+</span><span class="boring">            println!("{}: {}", line_no + 1, line)
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn read_file(file: impl Read) -&gt; Vec&lt;String&gt; {
+</span><span class="boring">    BufReader::new(file).lines().map_while(Result::ok).collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
+</span><span class="boring">                And what can be the use of him is more than I can see.
+</span><span class="boring">                He is very, very like me from the heels up to the head;
+</span><span class="boring">                And I see him jump before me, when I jump into my bed.
+</span><span class="boring">
+</span><span class="boring">                The funniest thing about him is the way he likes to grow -
+</span><span class="boring">                Not at all like proper children, which is always very slow;
+</span><span class="boring">                For he sometimes shoots up taller like an india-rubber ball,
+</span><span class="boring">                And he sometimes gets so little that there's none of him at all.";
+</span><span class="boring">
+</span><span class="boring">    let mock_file = std::io::Cursor::new(poem);
+</span><span class="boring">
+</span><span class="boring">    // command line arguments
+</span><span class="boring">    let pattern = "(all)|(little)";
+</span><span class="boring">    let before_context = 1;
+</span><span class="boring">    let after_context = 1;
+</span><span class="boring">
+</span><span class="boring">    // attempt to open the file
+</span><span class="boring">    let lines = read_file(mock_file);
+</span><span class="boring">    //let lines = match File::open(filename) {
+</span><span class="boring">    //    // convert the poem into lines
+</span><span class="boring">    //    Ok(file) =&gt; read_file(file),
+</span><span class="boring">    //    Err(e) =&gt; {
+</span><span class="boring">    //        eprintln!("Error opening {filename}: {e}");
+</span><span class="boring">    //        exit(1);
+</span><span class="boring">    //    }
+</span><span class="boring">    //};
+</span><span class="boring">
+</span><span class="boring">    // compile the regular expression
+</span><span class="boring">    let regex = match Regex::new(pattern) {
+</span><span class="boring">        Ok(re) =&gt; re, // bind re to regex
+</span><span class="boring">        Err(e) =&gt; {
+</span><span class="boring">            eprintln!("{e}"); // write to standard error
+</span><span class="boring">            exit(1);
+</span><span class="boring">        }
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    // store the 0-based line number for any matched line
+</span><span class="boring">    let match_lines = find_matching_lines(&amp;lines, regex);
+</span><span class="boring">
+</span><span class="boring">    // create intervals of the form [a,b] with the before/after context
+</span><span class="boring">    let intervals =
+</span><span class="boring">        match create_intervals(match_lines, before_context, after_context) {
+</span><span class="boring">            Ok(intervals) =&gt; intervals,
+</span><span class="boring">            Err(_) =&gt; {
+</span><span class="boring">                eprintln!("An error occurred while creating intervals");
+</span><span class="boring">                exit(1);
+</span><span class="boring">            }
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">    // merge overlapping intervals
+</span><span class="boring">    let intervals = merge_intervals(intervals);
+</span><span class="boring">
+</span><span class="boring">    // print the lines
+</span><span class="boring">    print_results(intervals, lines);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub mod interval {
+</span><span class="boring">    /// A list specifying general categories of Interval errors.
+</span><span class="boring">    pub enum IntervalError {
+</span><span class="boring">        /// Start is not less than or equal to end
+</span><span class="boring">        StartEndRangeInvalid,
+</span><span class="boring">        /// Two intervals to be merged do not overlap
+</span><span class="boring">        NonOverlappingInterval,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    /// A closed-interval [`start`, `end`] type used for representing a range of
+</span><span class="boring">    /// values between `start` and `end` inclusively.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Examples
+</span><span class="boring">    ///
+</span><span class="boring">    /// You can create an `Interval` using `new`.
+</span><span class="boring">    ///
+</span><span class="boring">    /// ```rust
+</span><span class="boring">    /// let interval = Interval::new(1, 10).unwrap();
+</span><span class="boring">    /// assert_eq!(interval.start, 1);
+</span><span class="boring">    /// assert_eq!(interval.end, 10);
+</span><span class="boring">    /// ```
+</span><span class="boring">    pub struct Interval {
+</span>        pub start: usize,
+        pub end: usize,
+<span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    impl Interval {
+</span><span class="boring">        /// Creates a new `Interval` set to `start` and `end`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let interval = Interval::new(1, 10).unwrap();
+</span><span class="boring">        /// assert_eq!(interval.start, 1);
+</span><span class="boring">        /// assert_eq!(interval.end, 10);
+</span><span class="boring">        /// ```
+</span><span class="boring">        pub fn new(start: usize, end: usize) -&gt; Result&lt;Self, IntervalError&gt; {
+</span><span class="boring">            if start &lt;= end {
+</span><span class="boring">                Ok(Self { start, end })
+</span><span class="boring">            } else {
+</span><span class="boring">                Err(IntervalError::StartEndRangeInvalid)
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        /// Checks if two intervals overlap. Overlapping intervals have at least
+</span><span class="boring">        /// one point in common.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(3, 5).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), true);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 5).unwrap();
+</span><span class="boring">        /// let b = Interval::new(2, 4).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), true);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(4, 6).unwrap();
+</span><span class="boring">        /// assert_eq!(a.overlaps(&amp;b), false);
+</span><span class="boring">        /// assert_eq!(b.overlaps(&amp;a), true);
+</span><span class="boring">        /// ```
+</span><span class="boring">        pub fn overlaps(&amp;self, other: &amp;Interval) -&gt; bool {
+</span><span class="boring">            self.end &gt;= other.start
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        /// Merges two intervals returning a new `Interval`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// The merged `Interval` range includes the union of ranges from each
+</span><span class="boring">        /// `Interval`.
+</span><span class="boring">        ///
+</span><span class="boring">        /// # Examples
+</span><span class="boring">        ///
+</span><span class="boring">        /// ```rust
+</span><span class="boring">        /// let a = Interval::new(1, 3).unwrap();
+</span><span class="boring">        /// let b = Interval::new(3, 5).unwrap();
+</span><span class="boring">        /// let c = a.merge(&amp;b).unwrap();
+</span><span class="boring">        /// assert_eq!(c.start, 1);
+</span><span class="boring">        /// assert_eq!(c.end, 5);
+</span><span class="boring">        /// ```
+</span><span class="boring">        pub fn merge(&amp;self, other: &amp;Self) -&gt; Result&lt;Self, IntervalError&gt; {
+</span><span class="boring">            if self.overlaps(other) {
+</span><span class="boring">                Ok(Self {
+</span><span class="boring">                    start: self.start,
+</span><span class="boring">                    end: other.end,
+</span><span class="boring">                })
+</span><span class="boring">            } else {
+</span><span class="boring">                Err(IntervalError::NonOverlappingInterval)
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+<p>Finally, the code compiles! Now, you might be wondering why we didn't have to
+declare the <code>enum</code> variants as public. If you are, good catch! The reason is
+that there are two exceptions to Rust's <em>everything is private</em><sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> behavior:</p>
+<ol>
+<li>Associated items in a <code>pub</code> Trait are public by default.</li>
+<li><code>enum</code> variants in a <code>pub enum</code> are public by default.</li>
+</ol>
+<h1 id="summary"><a class="header" href="#summary">Summary</a></h1>
+<p>This section focused heavily on emphasizing Rust's <em>everything is private</em>
+default behavior when it comes to modules. As you develop software, use privacy
+to your advantage and carefully decide what parts of the API should be made
+public.</p>
+<p>Rust goes into great detail with regard to project management. As you create
+your own modules and crates, reviewing the section on
+<a href="https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html">Managing Growing Projects with Packages, Crates, and Modules</a> will be extremely
+valuable.</p>
+<h1 id="exercises"><a class="header" href="#exercises">Exercises</a></h1>
+<blockquote>
+<p>These exercises must be completed locally.</p>
+</blockquote>
+<ul>
+<li>Move the <code>interval</code> module out of <code>main.rs</code> and into a separate file. Explore
+two approaches:
+<ol>
+<li>First, create a file <code>interval.rs</code> in the <code>src</code> directory.</li>
+<li>Next, create a directory under <code>src</code> called <code>interval</code> and move
+<code>interval.rs</code> inside.</li>
+</ol>
+</li>
+<li><strong>Advanced</strong>: Creating an external crate
+<ol>
+<li>Create a library crate <code>cargo new --lib interval</code> and move the interval
+code into it.</li>
+<li>If you haven't already, create a binary crate <code>cargo new rustle</code> and update
+the <code>Cargo.toml</code> file to use the external crate from the previous step.
+Refer to the section on <a href="https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html">Specifying Dependencies</a> in <a href="https://doc.rust-lang.org/cargo/">The Cargo Book</a> for
+guidance.</li>
+</ol>
+</li>
+</ul>
+<h1 id="next"><a class="header" href="#next">Next</a></h1>
+<p>Now, let's dive into generic types and make our <code>Interval</code> generic!</p>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>Refer to the <a href="https://doc.rust-lang.org/reference/visibility-and-privacy.html">Visibility and Privacy</a> reference for details. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

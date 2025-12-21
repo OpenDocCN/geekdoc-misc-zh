@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Error Handling</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Error Handling</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/error_handling.html">https://freddiehaddad.github.io/fast-track-to-rust/error_handling.html</a></blockquote>
+                        
+<p>Many programs use mechanisms like exceptions for handling errors, but Rust takes
+a different approach. Rust doesn't have exceptions. Instead, it uses the
+<a href="https://doc.rust-lang.org/std/result/enum.Result.html"><code>Result</code></a> type for recoverable errors and the <code>panic!</code> macro for unrecoverable
+errors. Similar to the <a href="https://doc.rust-lang.org/std/option/enum.Option.html"><code>Option</code></a> <code>enum</code> we previously discussed, <a href="https://doc.rust-lang.org/std/result/enum.Result.html"><code>Result</code></a> is
+another <code>enum</code>.</p>
+<h2 id="resultt-e"><a class="header" href="#resultt-e"><code>Result&lt;T, E&gt;</code></a></h2>
+<p><code>Result&lt;T, E&gt;</code> is the type used for returning and propagating errors. Similar to
+<code>Option</code>, it has two variants: <code>Ok(T)</code>, which represents success and contains a
+value, and <code>Err(E)</code>, which represents an error and contains an error value. The
+<code>T</code> and <code>E</code> are generic type parameters that we'll discuss in more detail soon.
+For now, it's important to know that <code>T</code> represents the type of the value
+returned in a success case within the <code>Ok</code> variant, and <code>E</code> represents the type
+of the error returned in a failure case within the <code>Err</code> variant.</p>
+<pre><code class="language-rust noplayground">enum Result&lt;T, E&gt; {
+   Ok(T),
+   Err(E),
+}</code></pre>
+<h2 id="additional-resources"><a class="header" href="#additional-resources">Additional Resources</a></h2>
+<p>Several sections in the Rust documentation thoroughly cover <a href="https://doc.rust-lang.org/book/ch09-00-error-handling.html">error handling</a>.</p>
+<p>Here are some useful links:</p>
+<ul>
+<li><a href="https://doc.rust-lang.org/book/ch09-01-unrecoverable-errors-with-panic.html">Unrecoverable Errors with panic!</a>: Useful information on how to troubleshoot
+code that panics.</li>
+<li><a href="https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html">Recoverable Errors with Result</a>: Deep dive into <code>Result</code> and general error
+handling.</li>
+<li><a href="https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html">To panic! or Not to panic!</a>: General guidelines on how to decide whether to
+panic in library code.</li>
+<li><a href="https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-question-mark-operator">The question mark operator</a>: Useful for propagating errors to the calling
+function.<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup></li>
+</ul>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>We'll cover the question mark operator <code>?</code> when we refactor the code. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>
