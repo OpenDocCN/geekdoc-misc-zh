@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Mutability</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Mutability</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/mutability.html">https://freddiehaddad.github.io/fast-track-to-rust/mutability.html</a></blockquote>
+                        
+<p>Two lines of code were added to our rustle program on lines 13 and 18. The
+variable <code>i</code> will get incremented with each loop iteration and we'll use it to
+print the line number. Go ahead and run the code.</p>
+<pre class="playground"><code class="language-rust editable edition2021">fn main() {
+    let pattern = "him";
+    let poem = "I have a little shadow that goes in and out with me,
+                And what can be the use of him is more than I can see.
+                He is very, very like me from the heels up to the head;
+                And I see him jump before me, when I jump into my bed.
+
+                The funniest thing about him is the way he likes to grow -
+                Not at all like proper children, which is always very slow;
+                For he sometimes shoots up taller like an india-rubber ball,
+                And he sometimes gets so little that there's none of him at all.";
+
+    let i = 1;
+    for line in poem.lines() {
+        if line.contains(pattern) {
+            println!("{i}: {line}");
+        }
+        i += 1;
+    }
+}</code></pre>
+<p>Uh-oh! Something went wrong. Luckily, the compiler (<code>rustc</code>) emits very helpful
+error messages.<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> The variable <code>i</code> is immutable!</p>
+<h2 id="variables-and-mutability"><a class="header" href="#variables-and-mutability">Variables and Mutability</a></h2>
+<p>Variables in Rust are immutable by default. This design choice helps you write
+code that leverages Rust's memory safety and fearless concurrency features. For
+more details, you can refer to the section on <a href="https://doc.rust-lang.org/book/ch03-01-variables-and-mutability.html">variables and mutability</a> in the
+Rust documentation. While the language encourages immutability, there are
+situations where mutating values is necessary. In such cases, we use the <code>mut</code>
+keyword.</p>
+<pre><code class="language-rust noplayground">let mut i = 1;</code></pre>
+<p>Go ahead and add the <code>mut</code> keyword to line 13 and run the program again.</p>
+<p>We're going to explore cases where immutability is needed and appropriate.
+However, let's see how iterators can be used to avoid the need for a mutable
+counter.</p>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>A lot of effort has been put into making <code>rustc</code> have great error messages.
+To help understand how to interpret them, refer to the
+<a href="https://rustc-dev-guide.rust-lang.org/diagnostics.html#diagnostic-structure">diagnostic structure</a> in the documentation. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

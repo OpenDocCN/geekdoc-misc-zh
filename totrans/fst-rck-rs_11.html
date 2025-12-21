@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Types</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Types</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/types.html">https://freddiehaddad.github.io/fast-track-to-rust/types.html</a></blockquote>
+                        
+<p>Let's take a moment to discuss the different types we've encountered:</p>
+<ul>
+<li>The empty unit type <code>()</code> is used when a function or expression does not return
+a value. It's essentially a placeholder indicating the absence of a meaningful
+value.</li>
+<li>String slices <code>&amp;str</code> are references to a portion of a string. They allow you
+to work with parts of a string without needing to own the entire string,
+making them efficient and flexible.</li>
+<li>Signed 32-bit integers <code>i32</code> are integers that can store both positive and
+negative values within a specific range. They are commonly used for numerical
+operations where the size of the number is known and fits within the 32-bit
+limit.</li>
+</ul>
+<p>Understanding these types will help us write more efficient and effective Rust
+code as we continue to build our rustle program.</p>
+<h2 id="string-slice-str"><a class="header" href="#string-slice-str">String Slice <code>str</code></a></h2>
+<p>The most interesting type is probably <code>str</code>. <code>str</code> is a primitive string type in
+Rust, and it's usually seen in its borrowed<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> form <code>&amp;str</code>.</p>
+<p>You can think of a string slice as an object with two components:</p>
+<div class="table-wrapper"><table><thead><tr><th>field</th><th>value</th></tr></thead><tbody>
+<tr><td><code>ptr</code></td><td><code>address</code></td></tr>
+<tr><td><code>len</code></td><td><code>unsigned integer</code></td></tr>
+</tbody></table>
+</div>
+<p>Imagine a block of memory starting at address <code>0x10</code> containing the bytes for
+the string literal <code>"rust"</code>. This block of memory would store the individual
+bytes representing each character in the string. In this case, the memory would
+contain the bytes for <code>'r'</code>, <code>'u'</code>, <code>'s'</code>, and <code>'t'</code>, sequentially stored
+starting from address 0x10.</p>
+<p>This visualization helps in understanding how string literals are stored and
+accessed in memory:</p>
+<div class="table-wrapper"><table><thead><tr><th>0x10</th><th>0x11</th><th>0x12</th><th>0x13</th></tr></thead><tbody>
+<tr><td>r</td><td>u</td><td>s</td><td>t</td></tr>
+</tbody></table>
+</div>
+<p>When we bind the string literal <code>"rust"</code> to the variable <code>language</code>:</p>
+<pre><code class="language-rust noplayground">let language = "rust";</code></pre>
+<p>The memory would look like:</p>
+<div class="table-wrapper"><table><thead><tr><th>field</th><th>value</th></tr></thead><tbody>
+<tr><td><code>ptr</code></td><td><code>0x10</code></td></tr>
+<tr><td><code>len</code></td><td><code>4</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="primitive-types"><a class="header" href="#primitive-types">Primitive Types</a></h2>
+<p>Here are some additional <a href="https://doc.rust-lang.org/std/index.html#primitives">primitive types</a> in Rust:</p>
+<div class="table-wrapper"><table><thead><tr><th>type</th><th>description</th></tr></thead><tbody>
+<tr><td>array</td><td>A fixed-size array, denoted <code>[T; N]</code>, for the element type, <code>T</code>, and the non-negative compile-time constant size, <code>N</code>.</td></tr>
+<tr><td><code>bool</code></td><td>The boolean type.</td></tr>
+<tr><td><code>char</code></td><td>A character type.</td></tr>
+<tr><td><code>f32</code></td><td>A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE 754-2008).</td></tr>
+<tr><td><code>f64</code></td><td>A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE 754-2008).</td></tr>
+<tr><td><code>i8</code></td><td>The 8-bit signed integer type.</td></tr>
+<tr><td><code>i16</code></td><td>The 16-bit signed integer type.</td></tr>
+<tr><td><code>i32</code></td><td>The 32-bit signed integer type.</td></tr>
+<tr><td><code>i64</code></td><td>The 64-bit signed integer type.</td></tr>
+<tr><td><code>i128</code></td><td>The 128-bit signed integer type.</td></tr>
+<tr><td><code>isize</code></td><td>The pointer-sized signed integer type.</td></tr>
+<tr><td><code>str</code></td><td>String slices.</td></tr>
+<tr><td><code>u8</code></td><td>The 8-bit unsigned integer type.</td></tr>
+<tr><td><code>u16</code></td><td>The 16-bit unsigned integer type.</td></tr>
+<tr><td><code>u32</code></td><td>The 32-bit unsigned integer type.</td></tr>
+<tr><td><code>u64</code></td><td>The 64-bit unsigned integer type.</td></tr>
+<tr><td><code>u128</code></td><td>The 128-bit unsigned integer type.</td></tr>
+<tr><td><code>usize</code></td><td>The pointer-sized unsigned integer type.</td></tr>
+</tbody></table>
+</div>
+<h2 id="user-defined-types"><a class="header" href="#user-defined-types">User-defined Types</a></h2>
+<p>In addition to the primitive types, Rust supports <a href="https://doc.rust-lang.org/reference/types.html">user-defined types</a>. We'll
+cover them in more detail as we build our rustle program. But to satisfy your
+curiosity, some of the user-defined types include:</p>
+<div class="table-wrapper"><table><thead><tr><th>type</th><th>description</th></tr></thead><tbody>
+<tr><td><code>struct</code></td><td>A heterogeneous product of other types, called the <em>fields</em> of the type.<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup></td></tr>
+<tr><td><code>enum</code></td><td>An enumerated type is a nominal, heterogeneous disjoint union type, denoted by the name of an enum item.<sup class="footnote-reference" id="fr-3-1"><a href="#footnote-3">3</a></sup></td></tr>
+<tr><td><code>union</code></td><td>A union type is a nominal, heterogeneous C-like union, denoted by the name of a union item.</td></tr>
+</tbody></table>
+</div>
+<p>These user-defined types allow for more complex and expressive code, enabling
+you to model real-world concepts more effectively. We'll explore these in
+greater depth as we progress through our project.</p>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>We'll explore what borrowing means during the course. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-2">
+<p><code>struct</code> types are analogous to <code>struct</code> types in C. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="footnote-3">
+<p>The <code>enum</code> type is analogous to a data constructor declaration in Haskell,
+or a <em>pick ADT</em> in Limbo. <a href="#fr-3-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

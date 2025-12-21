@@ -1,1 +1,0 @@
-["```rs\nuse std::fs::File;\nuse std::io::Read;\nuse std::io::{BufRead, BufReader};\nuse std::process::exit;\n```"]

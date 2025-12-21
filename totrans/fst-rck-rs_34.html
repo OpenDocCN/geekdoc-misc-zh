@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Struct</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Struct</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/struct.html">https://freddiehaddad.github.io/fast-track-to-rust/struct.html</a></blockquote>
+                        
+<p>We're going to create a type to represent an interval. Rust follows a
+standardized naming convention for types, where structures use
+<code>UpperCamelCase</code><sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> for "type-level" constructs. Therefore, we'll name our
+<code>struct</code> <code>Interval</code>.</p>
+<h2 id="defining-our-struct"><a class="header" href="#defining-our-struct">Defining our Struct</a></h2>
+<p>Our closed interval is going to represent the start and end of the lines to
+print:</p>
+<pre><code class="language-rust noplayground">struct Interval {
+    start: usize,
+    end: usize,
+}</code></pre>
+<h2 id="defining-behavior"><a class="header" href="#defining-behavior">Defining Behavior</a></h2>
+<p>Functions and methods are added by defining them inside an <code>impl</code> block:</p>
+<pre><code class="language-rust noplayground">impl Interval {
+    // Methods definitions
+}</code></pre>
+<h2 id="the-new-function"><a class="header" href="#the-new-function">The <code>new</code> Function</a></h2>
+<p>As it is common convention in Rust to define a function called <code>new</code> for
+creating an object, we'll begin by defining one to return an <code>Interval</code>.</p>
+<pre><code class="language-rust noplayground">impl Interval {
+    fn new(start: usize, end: usize) -&gt; Self {
+        Self { start, end }
+    }
+}</code></pre>
+<blockquote>
+<p>The keyword <code>Self</code></p>
+<p>The <code>Self</code> keywords in the return type and the body of the function are
+aliases for the type specified after the <code>impl</code> keyword, which in this case is
+<code>Interval</code>. While the type can be explicitly stated, the common convention is
+to use <code>Self</code>.</p>
+</blockquote>
+<blockquote>
+<p>Exclusion of the <code>return</code> keyword and (<code>;</code>)</p>
+<p>The <code>return</code> keyword is unnecessary when the returned value is the final
+expression in a function. In this scenario, the semicolon (<code>;</code>) is omitted.
+<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup></p>
+</blockquote>
+<h2 id="methods"><a class="header" href="#methods">Methods</a></h2>
+<p>Recall from our rustle program that we merged overlapping intervals to prevent
+printing the same line multiple times. It would be useful to create a method to
+check if two intervals overlap and another method to merge overlapping
+intervals. Let's outline these methods!</p>
+<pre><code class="language-rust noplayground">fn overlaps(&amp;self, other: &amp;Interval) -&gt; bool {
+    todo!();
+}
+
+fn merge(&amp;self, other: &amp;Self) -&gt; Self {
+    todo!();
+}</code></pre>
+<blockquote>
+<p>The <code>todo!()</code> and <code>unimplemented!()</code> macros can be useful if you are
+prototyping and just want a placeholder to let your code pass type analysis.</p>
+</blockquote>
+<h3 id="the-self-method-receiver"><a class="header" href="#the-self-method-receiver">The <code>self</code> Method Receiver</a></h3>
+<p>You're probably accustomed to using the implicit <code>this</code> pointer (a hidden first
+parameter) in your class methods. In Rust, the <a href="https://doc.rust-lang.org/std/keyword.self.html"><code>self</code></a> keyword is used to
+represent the receiver of a method and the convention is to omit the type for
+this parameter. Depending on the intended behavior, it can be specified as
+<code>self</code>, <code>&amp;self</code> or <code>&amp;mut self</code>.<sup class="footnote-reference" id="fr-3-1"><a href="#footnote-3">3</a></sup></p>
+<blockquote>
+<p>Omitting the type after <code>self</code> is syntactic sugar. It's short for
+<code>self: Self</code>. As <code>Self</code> is an alias to the actual type, the full expansion
+would be <code>self: Interval</code>, <code>self: &amp;Interval</code> or <code>self: &amp;mut Interval</code>.</p>
+</blockquote>
+<h2 id="implementing-the-methods"><a class="header" href="#implementing-the-methods">Implementing the Methods</a></h2>
+<p>Remember that our rustle program processes lines sequentially. This allows us to
+optimize the detection of overlapping intervals. However, this approach limits
+the versatility of our <code>Interval</code> type. As an exercise, you can work on making
+it more generic.</p>
+<h3 id="overlaps"><a class="header" href="#overlaps"><code>overlaps</code></a></h3>
+<p>The <code>overlaps</code> method is fairly straightforward. We check if the <code>end</code> of the
+first interval is greater than or equal to the <code>start</code> of the next interval. The
+only caveat is the order of the comparison.</p>
+<pre><code class="language-rust noplayground">fn overlaps(&amp;self, other: &amp;Interval) -&gt; bool {
+    self.end &gt;= other.start
+}</code></pre>
+<h3 id="merge"><a class="header" href="#merge"><code>merge</code></a></h3>
+<p>The <code>merge</code> method returns a new <code>Interval</code> using the <code>start</code> of the first
+interval and the <code>end</code> of the second. The same caveat applies: the receiver must
+be the interval that comes first in the sequence.</p>
+<p>In both cases, an immutable borrow for both intervals is sufficient since we do
+not need to mutate either value.</p>
+<pre><code class="language-rust noplayground">fn merge(&amp;self, other: &amp;Self) -&gt; Self {
+    Interval::new(self.start, other.end)
+}</code></pre>
+<h3 id="implementing-merge_intervals"><a class="header" href="#implementing-merge_intervals">Implementing <code>merge_intervals</code></a></h3>
+<p>Rust programmers coming from a C++ background might be inclined to implement
+this function using some variation of the following algorithm:</p>
+<pre><code class="language-rust noplayground">fn merge_intervals(intervals: Vec&lt;Interval&gt;) -&gt; Vec&lt;Interval&gt; {
+    let mut merged_intervals: Vec&lt;Interval&gt; = Vec::new();
+
+    let mut iter = intervals.into_iter();
+    match iter.next() {
+        Some(interval) =&gt; merged_intervals.push(interval),
+        None =&gt; return merged_intervals,
+    };
+
+    for interval in iter {
+        if let Some(previous_interval) = merged_intervals.last() {
+            if previous_interval.overlaps(&amp;interval) {
+                let new_interval = previous_interval.merge(&amp;interval);
+                merged_intervals.pop();
+                merged_intervals.push(new_interval);
+            } else {
+                merged_intervals.push(interval);
+            }
+        }
+    }
+
+    merged_intervals
+}</code></pre>
+<p>While functionally correct, Rust features powerful crates that can make
+implementing this behavior more concise. One such crate is <a href="https://docs.rs/itertools/latest/itertools"><code>Itertools</code></a>, which
+provides extra iterator adaptors. To use this crate, specify it as a dependency
+in <code>Crates.toml</code> and include it in <code>main.rs</code> with <code>use itertools::Itertools</code>.
+Let's see how the <a href="https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.coalesce"><code>coalesce</code></a> adaptor can simplify the code:</p>
+<pre><code class="language-rust noplayground">use itertools::Itertools;
+
+fn merge_intervals(intervals: Vec&lt;Interval&gt;) -&gt; Vec&lt;Interval&gt; {
+    intervals
+        .into_iter()
+        .coalesce(|p, c| {
+            if p.overlaps(&amp;c) {
+                Ok(p.merge(&amp;c))
+            } else {
+                Err((p, c))
+            }
+        })
+        .collect()
+}</code></pre>
+<blockquote>
+<p><code>into_iter</code></p>
+<p>In both implementations, we use <code>into_iter</code>, which creates a consuming
+iterator that moves each value out of the vector from start to end. This is
+another example of how we can take advantage of move semantics.</p>
+<p>NOTE: Because the iterator consumes the data, the vector cannot be used
+afterward.</p>
+</blockquote>
+<h2 id="updating-rustle"><a class="header" href="#updating-rustle">Updating Rustle</a></h2>
+<p>It's time to update our rustle program to utilize our new type. Additionally, a
+few minor changes have been made to enhance the design, demonstrate some
+additional language features, and leverage move semantics. Give the program a
+run!</p>
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused_imports)]
+</span><span class="boring">extern crate regex; // this is needed for the playground
+</span>use itertools::Itertools;
+<span class="boring">use regex::Regex;
+</span><span class="boring">use std::fs::File;
+</span><span class="boring">use std::io::Read;
+</span><span class="boring">use std::io::{BufRead, BufReader};
+</span><span class="boring">use std::process::exit;
+</span><span class="boring">
+</span><span class="boring">fn find_matching_lines(lines: &amp;[String], regex: Regex) -&gt; Vec&lt;usize&gt; {
+</span><span class="boring">    lines
+</span><span class="boring">        .iter()
+</span><span class="boring">        .enumerate()
+</span><span class="boring">        .filter_map(|(i, line)| match regex.is_match(line) {
+</span><span class="boring">            true =&gt; Some(i),
+</span><span class="boring">            false =&gt; None,
+</span><span class="boring">        })
+</span><span class="boring">        .collect() // turns anything iterable into a collection
+</span><span class="boring">}
+</span>
+fn create_intervals(
+    lines: Vec&lt;usize&gt;,
+    before_context: usize,
+    after_context: usize,
+) -&gt; Vec&lt;Interval&gt; {
+    lines
+        .iter()
+        .map(|line| {
+            let start = line.saturating_sub(before_context);
+            let end = line.saturating_add(after_context);
+            Interval::new(start, end)
+        })
+        .collect()
+}
+
+fn merge_intervals(intervals: Vec&lt;Interval&gt;) -&gt; Vec&lt;Interval&gt; {
+    // merge overlapping intervals
+    intervals
+        .into_iter()
+        .coalesce(|p, c| {
+            if p.overlaps(&amp;c) {
+                Ok(p.merge(&amp;c))
+            } else {
+                Err((p, c))
+            }
+        })
+        .collect()
+}
+
+fn print_results(intervals: Vec&lt;Interval&gt;, lines: Vec&lt;String&gt;) {
+    for interval in intervals {
+        for (line_no, line) in lines
+            .iter()
+            .enumerate()
+            .take(interval.end + 1)
+            .skip(interval.start)
+        {
+            println!("{}: {}", line_no + 1, line)
+        }
+    }
+}
+
+<span class="boring">fn read_file(file: impl Read) -&gt; Vec&lt;String&gt; {
+</span><span class="boring">    BufReader::new(file).lines().map_while(Result::ok).collect()
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+<span class="boring">    let poem = "I have a little shadow that goes in and out with me,
+</span><span class="boring">                And what can be the use of him is more than I can see.
+</span><span class="boring">                He is very, very like me from the heels up to the head;
+</span><span class="boring">                And I see him jump before me, when I jump into my bed.
+</span><span class="boring">
+</span><span class="boring">                The funniest thing about him is the way he likes to grow -
+</span><span class="boring">                Not at all like proper children, which is always very slow;
+</span><span class="boring">                For he sometimes shoots up taller like an india-rubber ball,
+</span><span class="boring">                And he sometimes gets so little that there's none of him at all.";
+</span><span class="boring">
+</span><span class="boring">    let mock_file = std::io::Cursor::new(poem);
+</span><span class="boring">
+</span><span class="boring">    // command line arguments
+</span><span class="boring">    let pattern = "(all)|(little)";
+</span><span class="boring">    let before_context = 1;
+</span><span class="boring">    let after_context = 1;
+</span><span class="boring">
+</span><span class="boring">    // attempt to open the file
+</span><span class="boring">    let lines = read_file(mock_file);
+</span><span class="boring">    //let lines = match File::open(filename) {
+</span><span class="boring">    //    // convert the poem into lines
+</span><span class="boring">    //    Ok(file) =&gt; read_file(file),
+</span><span class="boring">    //    Err(e) =&gt; {
+</span><span class="boring">    //        eprintln!("Error opening {filename}: {e}");
+</span><span class="boring">    //        exit(1);
+</span><span class="boring">    //    }
+</span><span class="boring">    //};
+</span><span class="boring">
+</span><span class="boring">    // compile the regular expression
+</span><span class="boring">    let regex = match Regex::new(pattern) {
+</span><span class="boring">        Ok(re) =&gt; re, // bind re to regex
+</span><span class="boring">        Err(e) =&gt; {
+</span><span class="boring">            eprintln!("{e}"); // write to standard error
+</span><span class="boring">            exit(1);
+</span><span class="boring">        }
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    // store the 0-based line number for any matched line
+</span><span class="boring">    let match_lines = find_matching_lines(&amp;lines, regex);
+</span><span class="boring">
+</span><span class="boring">    // create intervals of the form [a,b] with the before/after context
+</span><span class="boring">    let intervals =
+</span><span class="boring">        create_intervals(match_lines, before_context, after_context);
+</span><span class="boring">
+</span>    // merge overlapping intervals
+    let intervals = merge_intervals(intervals);
+<span class="boring">
+</span><span class="boring">    // print the lines
+</span><span class="boring">    print_results(intervals, lines);
+</span>}
+
+struct Interval {
+    start: usize,
+    end: usize,
+}
+
+impl Interval {
+    fn new(start: usize, end: usize) -&gt; Self {
+        Self { start, end }
+    }
+
+    fn overlaps(&amp;self, other: &amp;Interval) -&gt; bool {
+        self.end &gt;= other.start
+    }
+
+    fn merge(&amp;self, other: &amp;Self) -&gt; Self {
+        Interval::new(self.start, other.end)
+    }
+}</code></pre>
+<h2 id="summarizing-the-changes"><a class="header" href="#summarizing-the-changes">Summarizing the Changes</a></h2>
+<p>Our rustle program now makes use of our custom type and includes a few other
+enhancements.</p>
+<p>Let's review the changes:</p>
+<p><code>create_intervals</code> was updated with the following changes:</p>
+<ul>
+<li>The return type was changed to <code>Vec&lt;Interval&gt;</code></li>
+<li>The tuple created from <code>start</code> and <code>end</code> are now used to create an <code>Interval</code></li>
+</ul>
+<p><code>merge_intervals</code> was updated with the following changes:</p>
+<ul>
+<li>The argument <code>intervals</code> now has a type of <code>Vec&lt;Interval&gt;</code> and is <em>moved</em>
+instead of the mutable borrow</li>
+<li><code>dedup_by</code> was replaced with <code>coalesce</code></li>
+</ul>
+<p><code>print_results</code> was updated with the following changes:</p>
+<ul>
+<li>The argument <code>intervals</code> is now a <code>Vec&lt;Interval&gt;</code></li>
+<li>The <code>take</code> and <code>skip</code> iterator adaptors were updated to use the fields from
+the <code>Interval</code></li>
+</ul>
+<blockquote>
+<p>Each interval is <em>dropped</em> at the end of the loop iteration when written as
+<code>for interval in intervals</code>. If the loop were written as
+<code>for interval in &amp;intervals</code>, we would <em>borrow</em> each value. The same applies
+if we had written the loop as <code>for interval in intervals.iter()</code>. The former
+is syntactic sugar for the latter.<sup class="footnote-reference" id="fr-4-1"><a href="#footnote-4">4</a></sup></p>
+</blockquote>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>Casing conforms to <a href="https://github.com/rust-lang/rfcs/blob/master/text/0430-finalizing-naming-conventions.md">RFC 430</a> (C-CASE). <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-2">
+<p>Exclusion of <code>return</code> is discussed
+<a href="https://doc.rust-lang.org/std/keyword.return.html">here</a>. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="footnote-3">
+<p>Method syntax is covered in full detail
+<a href="https://doc.rust-lang.org/book/ch05-03-method-syntax.html">here</a>. <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="footnote-4">
+<p>Details about consuming collections with <code>for in</code> and <code>into_iter</code> can be
+found
+<a href="https://doc.rust-lang.org/rust-by-example/flow_control/for.html">here</a>. <a href="#fr-4-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

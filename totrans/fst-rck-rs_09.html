@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Variables</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Variables</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/variables.html">https://freddiehaddad.github.io/fast-track-to-rust/variables.html</a></blockquote>
+                        
+<p>Rust is a statically typed language, meaning that all variables have a type, and
+this type must be known at compile time. The <code>let</code> keyword is used to declare
+variables, or more precisely, for variable binding.</p>
+<p>The anatomy of a <code>let</code> statement<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> <sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup>:</p>
+<pre><code class="language-rust noplayground">let identifier: type = expression;</code></pre>
+<h2 id="type-inference"><a class="header" href="#type-inference">Type Inference</a></h2>
+<p>Since <code>y</code> is passed as an argument to the <code>print_value</code> function, which requires
+a signed 32-bit integer, the compiler infers its type. Therefore, the explicit
+type declaration for <code>x</code> can be omitted.</p>
+<pre class="playground"><code class="language-rust editable edition2021">fn print_value(value: i32) {
+    println!("{value}");
+}
+
+fn main() {
+    let x: i32 = 10;
+    let y = 20;
+
+    print_value(x);
+    print_value(y);
+}</code></pre>
+<h2 id="rustle-variables"><a class="header" href="#rustle-variables">Rustle Variables</a></h2>
+<p>To begin with our rustle program, we'll avoid handling user input via command
+line arguments for now. Instead, we'll hard code some strings and perform some
+simple <em>rustling</em>. Let's use the famous poem <em>My Shadow</em> by the poet Robert
+Louis Stevenson as our input.</p>
+<pre class="playground"><code class="language-rust editable edition2021">fn main() {
+    let pattern = "him";
+    let poem = "I have a little shadow that goes in and out with me,
+                And what can be the use of him is more than I can see.
+                He is very, very like me from the heels up to the head;
+                And I see him jump before me, when I jump into my bed.
+
+                The funniest thing about him is the way he likes to grow -
+                Not at all like proper children, which is always very slow;
+                For he sometimes shoots up taller like an india-rubber ball,
+                And he sometimes gets so little that there's none of him at all.";
+}</code></pre>
+<p>The next step is to search the poem for occurrences of the pattern and print the
+results. To achieve this, we'll need to learn a bit about control flow.</p>
+<h1 id="summary"><a class="header" href="#summary">Summary</a></h1>
+<p>In this section, we:</p>
+<ul>
+<li>Learned how to declare variables.</li>
+<li>Explored Rust's type inference.</li>
+</ul>
+<h1 id="next"><a class="header" href="#next">Next</a></h1>
+<p>Onward to control flow.</p>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p><a href="https://doc.rust-lang.org/reference/statements.html#let-statements"><code>let</code> statements</a> support more advanced features that are not being covered
+yet. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-2">
+<p>In many cases, the compiler can infer the type allowing you to omit it. <a href="#fr-2-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>

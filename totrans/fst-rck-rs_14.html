@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Iterators</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>Iterators</h1>
+<blockquote>原文：<a href="https://freddiehaddad.github.io/fast-track-to-rust/iterators.html">https://freddiehaddad.github.io/fast-track-to-rust/iterators.html</a></blockquote>
+                        
+<p>Iterators are pervasive in Rust, and delving into them in full detail would
+necessitate renaming this course to <strong>Slow Track to Rust</strong>. We'll cover the
+basics and direct you to the documentation for all the intricate details about
+<a href="https://doc.rust-lang.org/book/ch13-02-iterators.html#processing-a-series-of-items-with-iterators">iterators</a>.</p>
+<p>The <a href="./control_flow.html">Control Flow</a> section explained that the call to
+<code>lines()</code> in the <code>for</code> loop returns an iterator. We say that the <code>for</code> loop
+<em>consumes</em> the iterator. However, in Rust, we can do much more than just consume
+iterators!</p>
+<h2 id="iterator-adaptors"><a class="header" href="#iterator-adaptors">Iterator Adaptors</a></h2>
+<p>New iterators can be created using <a href="https://doc.rust-lang.org/book/ch13-02-iterators.html?search=#methods-that-produce-other-iterators">iterator adaptors</a>. These adaptors generate
+new iterators that modify some aspect of the original. Let's use one to print
+line numbers.</p>
+<p>The <code>enumerate</code> function creates an iterator that yields the current iteration
+count along with the value from the previous iterator, as tuples<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> in the form
+<code>(index, value)</code>. In the loop, the type for <code>i</code> is <code>usize</code>, and the type for
+<code>line</code> is <code>&amp;str</code>.</p>
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
+</span><span class="boring">    let pattern = "him";
+</span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
+</span><span class="boring">                And what can be the use of him is more than I can see.
+</span><span class="boring">                He is very, very like me from the heels up to the head;
+</span><span class="boring">                And I see him jump before me, when I jump into my bed.
+</span><span class="boring">
+</span><span class="boring">                The funniest thing about him is the way he likes to grow -
+</span><span class="boring">                Not at all like proper children, which is always very slow;
+</span><span class="boring">                For he sometimes shoots up taller like an india-rubber ball,
+</span><span class="boring">                And he sometimes gets so little that there's none of him at all.";
+</span><span class="boring">
+</span>    for (i, line) in poem.lines().enumerate() {
+        if line.contains(pattern) {
+            println!("{}: {line}", i + 1);
+        }
+    }
+<span class="boring">}</span></code></pre>
+<h2 id="advanced-iterators"><a class="header" href="#advanced-iterators">Advanced Iterators</a></h2>
+<p>We can take it a step further by using the <code>filter_map</code> iterator adapter to
+return an iterator that includes only the items we want!</p>
+<pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
+</span><span class="boring">    let pattern = "him";
+</span><span class="boring">    let poem = "I have a little shadow that goes in and out with me,
+</span><span class="boring">                And what can be the use of him is more than I can see.
+</span><span class="boring">                He is very, very like me from the heels up to the head;
+</span><span class="boring">                And I see him jump before me, when I jump into my bed.
+</span><span class="boring">
+</span><span class="boring">                The funniest thing about him is the way he likes to grow -
+</span><span class="boring">                Not at all like proper children, which is always very slow;
+</span><span class="boring">                For he sometimes shoots up taller like an india-rubber ball,
+</span><span class="boring">                And he sometimes gets so little that there's none of him at all.";
+</span><span class="boring">
+</span>    for (line_no, line) in
+        poem.lines()
+            .enumerate()
+            .filter_map(|(i, line)| match line.contains(pattern) {
+                true =&gt; Some((i + 1, line)),
+                false =&gt; None,
+            })
+    {
+        println!("{line_no}: {line}");
+    }
+<span class="boring">}</span></code></pre>
+<p>Whoa! What just happened? We're on the fast track to learning Rust, so we're
+picking up the pace! Let's break this down because this code snippet needs some
+unpacking.</p>
+<hr/>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>A <a href="https://doc.rust-lang.org/rust-by-example/primitives/tuples.html#tuples">tuple</a> is a collection of values of different types and is constructed
+using parentheses <code>()</code>. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+                        
+</body>
+</html>
