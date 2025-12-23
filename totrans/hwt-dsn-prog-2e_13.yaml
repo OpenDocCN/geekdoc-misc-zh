@@ -1,61 +1,95 @@
 - en: 'Intermezzo 5: The Cost of Computation🔗'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 间奏曲5：计算的代价🔗
 - en: 原文：[https://htdp.org/2024-11-6/Book/i5-6.html](https://htdp.org/2024-11-6/Book/i5-6.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://htdp.org/2024-11-6/Book/i5-6.html](https://htdp.org/2024-11-6/Book/i5-6.html)
 - en: '|     [Concrete Time, Abstract Time](#%28part._.Concrete_.Time__.Abstract_.Time%29)
     |'
+  id: totrans-2
   prefs: []
   type: TYPE_TB
+  zh: '|   [具体时间，抽象时间](#%28part._.Concrete_.Time__.Abstract_.Time%29) |'
 - en: '|     [The Definition of “On the Order Of”](#%28part._.The_.Definition_of__.On_the_.Order_.Of_%29)
     |'
+  id: totrans-3
   prefs: []
   type: TYPE_TB
+  zh: '|   [“阶”的定义](#%28part._.The_.Definition_of__.On_the_.Order_.Of_%29) |'
 - en: '|     [Why Do Programs Use Predicates and Selectors?](#%28part._.Why_.Do_.Programs_.Use_.Predicates_and_.Selectors_%29)
     |'
+  id: totrans-4
   prefs: []
   type: TYPE_TB
+  zh: '|   [为什么程序使用谓词和选择器？](#%28part._.Why_.Do_.Programs_.Use_.Predicates_and_.Selectors_%29)
+    |'
 - en: '|  |'
+  id: totrans-5
   prefs: []
   type: TYPE_TB
+  zh: '|  |'
 - en: 'What do you know about program f once the following tests succeed:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下测试成功后，你对程序f了解多少：
 - en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (f 0) 0)
     |'
+  id: totrans-7
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (f 0) 0)
+    |'
 - en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (f 1) 1)
     |'
+  id: totrans-8
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (f 1) 1)
+    |'
 - en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (f 2) 8)
     |'
+  id: totrans-9
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (f 2) 8)
+    |'
 - en: 'If this question showed up on a standard test, you might respond with this:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果这个问题出现在标准测试中，你可能会这样回答：
 - en: ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (f x) ([expt](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._expt%29%29) x 3))
+  id: totrans-11
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (f x) ([expt](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._expt%29%29) x 3))
 - en: 'But nothing speaks against the following:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 但以下情况并没有什么不对：
 - en: ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (f x) ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) x 2) 8 ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) x x)))
+  id: totrans-13
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (f x) ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) x 2) 8 ([*](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2A%29%29) x x)))
 - en: Tests tell you only that a program works as expected on some inputs.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 测试只能告诉你程序在某些输入上按预期工作。
 - en: 'In the same spirit, timing the evaluation of a program application for specific
     inputs tells you how long it takes to compute the answers for those inputs—<wbr>and
     nothing else.You may also wish to reread [Local Definitions](part_three.html#%28part._sec~3alocal-definitions%29)
@@ -67,23 +101,30 @@
     programs: gcd, a structurally recursive program, and gcd-generative, an equivalent
     but generative-recursive program. The timing comparison suggests that the latter
     is much faster than the former.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 同样地，对特定输入的程序应用进行计时告诉你计算这些输入答案需要多长时间——仅此而已。你可能还希望重新阅读[局部定义](part_three.html#%28part._sec~3alocal-definitions%29)以及[项目：数据库](part_four.html#%28part._db._sec~3aproj-db%29)中关于完整性检查的讨论。你可能有两个程序——prog-linear和prog-square——当给定相同的输入时，它们会计算出相同的答案，你可能发现对于所有选择的输入，prog-linear总是比prog-square计算答案更快。[做出选择](part_five.html#%28part._sec~3achoice%29)展示了这样一对程序：gcd，一个结构递归程序，和gcd-generative，一个等效但生成递归的程序。时间比较表明，后者比前者快得多。
 - en: '![image](../Images/a9aff491c3ae10691102e52088eb2722.png)'
+  id: totrans-16
   prefs:
   - PREF_BQ
   - PREF_BQ
   - PREF_BQ
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![图片](../Images/a9aff491c3ae10691102e52088eb2722.png)'
 - en: ''
+  id: totrans-17
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: 'Figure 176: A comparison of two running time expressions'
+  id: totrans-18
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 图 176：两个运行时间表达式的比较
 - en: How confident are you that you wish to use prog-linear instead of prog-square?
     Consider the graph in [figure 176](#%28counter._%28figure._fig~3aperformance%29%29).
     In this graph, the x-axis records the size of the input—<wbr>say, the length of
@@ -96,8 +137,10 @@
     performance of prog-linear and prog-square only for input sizes in the shaded
     region and if your clients were to run your program mostly on inputs that fall
     in the nonshaded region, you would be delivering the wrong program.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 你有多自信地希望使用prog-linear而不是prog-square？考虑图 176[🔗](#%28counter._%28figure._fig~3aperformance%29%29)。在这个图中，x轴记录输入的大小——比如说，列表的长度——y轴记录计算特定大小输入答案所需的时间。假设直线代表prog-linear的运行时间，而曲线图代表prog-square。在阴影区域内，prog-linear的运行时间比prog-square长，但在这个区域的边缘，两条曲线相交，并且在这个区域右侧，prog-square的性能比prog-linear差。如果你出于任何原因只对阴影区域内的输入大小评估了prog-linear和prog-square的性能，并且如果你的客户主要在非阴影区域运行你的程序，那么你将交付错误的程序。
 - en: This intermezzo introduces the idea of algorithmic analysis, which allows programmers
     to make general statements about a program’s performance and everyone else about
     the growth of a function. We thank Prabhakar Ragde for sharing his notes on connecting
@@ -105,118 +148,184 @@
     and scientist must eventually become thoroughly familiar with this notion. It
     is the basis for analyzing performance attributes of programs. To understand the
     idea properly, you will need to work through a text book.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 这段间奏介绍了算法分析的概念，它允许程序员对程序的性能做出一般性陈述，并对函数的增长做出其他人可以理解的一般性陈述。我们感谢Prabhakar Ragde分享了他关于将本书的第一版与算法分析相结合的笔记。任何严肃的程序员和科学家最终都必须彻底熟悉这个概念。它是分析程序性能属性的基础。为了正确理解这个概念，你需要通过阅读教科书来实践。
 - en: Concrete Time, Abstract Time[🔗](#(part._.Concrete_.Time__.Abstract_.Time) "Link
     to here")
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 具体时间，抽象时间[🔗](#(part._.Concrete_.Time__.Abstract_.Time) "链接至此")
 - en: '[Making Choices](part_five.html#%28part._sec~3achoice%29) compares the running
     time of gcd and gcd-generative. In addition, it argues that the latter is better
     because it always uses fewer recursive steps than the former to compute an answer.
     We use this idea as the starting point to analyze the performance of how-many,
     a simple program from [Designing with Self-Referential Data Definitions](part_two.html#%28part._ch~3adesign-lists%29):'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '[做出选择](part_five.html#%28part._sec~3achoice%29)比较了gcd和gcd-generative的运行时间。此外，它认为后者更好，因为它总是比前者使用更少的递归步骤来计算答案。我们将这个想法作为起点来分析how-many的性能，这是一个来自[使用自引用数据定义进行设计](part_two.html#%28part._ch~3adesign-lists%29)的简单程序：'
 - en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (how-many a-list)
     |'
+  id: totrans-23
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (how-many a-list)
+    |'
 - en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     |'
+  id: totrans-24
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
 - en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) a-list) 0]
     |'
+  id: totrans-25
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) a-list) 0]
+    |'
 - en: '|     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) a-list)) 1)]))
     |'
+  id: totrans-26
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) a-list)) 1)]))
+    |'
 - en: 'Suppose we want to know how long it takes to compute the length of some unknown,
     non-empty list. Using the rules of computation from [Intermezzo 1: Beginning Student
     Language](i1-2.html), we can look at this process as a series of algebraic manipulations:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 假设我们想知道计算某些未知、非空列表长度需要多长时间。使用[间奏曲1：初学者语言](i1-2.html)中的计算规则，我们可以将这个过程视为一系列代数操作：
 - en: '| (how-many some-non-empty-list) |'
+  id: totrans-28
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| (how-many some-non-empty-list) |'
 - en: '| == |'
+  id: totrans-29
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == |'
 - en: '| ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     |'
+  id: totrans-30
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
 - en: '|   [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) some-non-empty-list) 0]
     |'
+  id: totrans-31
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) some-non-empty-list) 0]
+    |'
 - en: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)])
     |'
+  id: totrans-32
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)])
+    |'
 - en: '| == |'
+  id: totrans-33
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == |'
 - en: '| ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     |'
+  id: totrans-34
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
 - en: '|   [#false 0] |'
+  id: totrans-35
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   [#false 0] |'
 - en: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)])
     |'
+  id: totrans-36
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29)
+    (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)
+    some-non-empty-list)) 1)]) |'
 - en: '| == |'
+  id: totrans-37
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   == |'
 - en: '| ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     |'
+  id: totrans-38
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
 - en: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)])
     |'
+  id: totrans-39
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29)
+    (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)
+    some-non-empty-list)) 1)]) |'
 - en: '| == |'
+  id: totrans-40
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   == |'
 - en: '| ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)
     |'
+  id: totrans-41
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29)
+    (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)
+    some-non-empty-list)) 1) |'
 - en: The first step is to replace a-list in the definition of how-many with the actual
     argument, some-non-empty-list, which yields the first [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     expression. Next we must evaluate
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 第一步是将`how-many`定义中的`a-list`替换为实际参数`some-non-empty-list`，这会产生第一个[cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)表达式。接下来我们必须评估
 - en: ([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) some-non-empty-list)
+  id: totrans-43
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: ([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29)
+    some-non-empty-list)
 - en: 'By assumption the result is #false. The question is how long it takes to determine
     this result. While we don’t know the precise amount of time, it is safe to say
     that checking on the constructor of a list takes a small and fixed amount of time.
@@ -226,26 +335,34 @@
     line is dropped. Checking whether a [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     line starts with [else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
     is equally fast, which means we are left with'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 根据假设，结果是#false。问题是确定这个结果需要多长时间。虽然我们不知道确切的时间，但可以肯定的是，检查列表构造函数所需的时间是一小段固定的时间。实际上，这个假设也适用于下一步，当[cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)检查第一个条件的值时。由于它是#false，所以第一个[cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)行被忽略。检查一个[cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)行是否以[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)开头同样快，这意味着我们只剩下
 - en: ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)
+  id: totrans-45
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: ([+](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._%2B%29%29) (how-many ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) some-non-empty-list)) 1)
 - en: Finally we may safely assume that [rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)
     extracts the remainder of the list in a fixed amount of time, but otherwise it
     looks like we are stuck. To compute how long how-many takes to determine the length
     of some list, we need to know how long how-many takes to count the number of items
     in the rest of that list.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，我们可以安全地假设[rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)在固定的时间内提取列表的剩余部分，但除此之外，我们似乎陷入了困境。为了计算how-many需要多长时间来确定某个列表的长度，我们需要知道how-many需要多长时间来计算该列表剩余部分的项目数量。
 - en: Alternatively, if we assume that predicates and selectors take some fixed amount
     of time, the time it takes how-many to determine the length of a list depends
     on the number of recursive steps it takes. Somewhat more precisely, evaluating
     (how-many  some-list) takes roughly n times some fixed amount where n is the length
     of the list or, equivalently, the number of times the program recurs.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者，如果我们假设谓词和选择器需要固定的时间，那么how-many确定列表长度所需的时间取决于递归步骤的数量。更精确地说，评估(how-many some-list)大约需要n倍某个固定的时间，其中n是列表的长度，或者说程序递归的次数。
 - en: Generalizing from this example suggests that the running time depends on the
     size of the input and that the number of recursive steps is a good estimate for
     the length of an evaluation sequence. For this reason, computer scientists discuss
@@ -255,91 +372,135 @@
     example, the size of the input is the number of items on the list. Thus, a list
     of one item requires one recursive step, a list of two needs two steps, and for
     a list of n items, it’s n steps.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 从这个例子中推广，我们可以得出结论，运行时间取决于输入的大小，递归步骤的数量是评估序列长度的良好估计。因此，计算机科学家将程序的抽象运行时间讨论为输入大小和评估中递归步骤数量的关系。“抽象”是因为这个度量忽略了原始步骤所需时间的细节。在我们的第一个例子中，输入的大小是列表上的项目数量。因此，一个元素列表需要一次递归步骤，两个元素的列表需要两次步骤，对于n个元素的列表，则需要n次步骤。
 - en: Computer scientists use the phrase a program f takes “on the order of n steps”
     to formulate a claim about the abstract running time of f. To use the phrase correctly,
     it must come with an explanation of n, for example, “it counts the number of items
     on the given list” or “it is the number of digits in the given number.” Without
     such an explanation, the original phrase is actually meaningless.
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 计算机科学家使用“程序 f 按照n个步骤执行”这个短语来对 f 的抽象运行时间进行断言。为了正确使用这个短语，它必须附带对 n 的解释，例如，“它计算给定列表中的项目数量”或“它是给定数字中的数字数量。”没有这样的解释，原始短语实际上是没有意义的。
 - en: 'Not all programs have the kind of simple abstract running time as how-many.
     Take a look at the first recursive program in this book:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 并非所有程序都具有 how-many 那样的简单抽象运行时间。看看这本书中的第一个递归程序：
 - en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (contains-flatt? lo-names)
     |'
+  id: totrans-51
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([定义](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (contains-flatt? lo-names)
+    |'
 - en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     |'
+  id: totrans-52
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
 - en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) lo-names) #false]
     |'
+  id: totrans-53
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|     ([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) lo-names) #false]
+    |'
 - en: '|     [([cons?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons~3f%29%29) lo-names)
     |'
+  id: totrans-54
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|     ([cons?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons~3f%29%29) lo-names)
+    |'
 - en: '|      ([or](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29) ([string=?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._string~3d~3f%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) lo-names) ''flatt)
     |'
+  id: totrans-55
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|      ([or](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29) ([string=?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._string~3d~3f%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) lo-names) ''flatt)
+    |'
 - en: '|          (contains-flatt? ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) lo-names)))]))
     |'
+  id: totrans-56
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|          (contains-flatt? ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) lo-names)))]))
+    |'
 - en: For a list that starts with 'flatt, say,
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于以 'flatt 开头的列表，例如，
 - en: '| (contains-flatt? |'
+  id: totrans-58
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| (contains-flatt? |'
 - en: '|   ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) "flatt" "robot" "ball" "game-boy" "pokemon"))
     |'
+  id: totrans-59
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) "flatt" "robot" "ball" "game-boy" "pokemon"))
+    |'
 - en: the program requires no recursive steps. In contrast, if 'flatt occurs at the
     end of the list, as in,
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 程序不需要递归步骤。相比之下，如果列表末尾出现 'flatt，例如，
 - en: '| (contains-flatt? |'
+  id: totrans-61
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| (contains-flatt? |'
 - en: '|   ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) "robot" "ball" "game-boy" "pokemon" "flatt"))
     |'
+  id: totrans-62
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) "robot" "ball" "game-boy" "pokemon" "flatt"))
+    |'
 - en: 'the evaluation needs as many recursive steps as there are items in the list.This
     second analysis brings us to the second important idea of program analysis, namely,
     the kind of analysis that is performed:'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 评估所需的递归步骤数量与列表中的项目数量相同。这种第二种分析带我们来到了程序分析的第二重要思想，即所执行的分析类型：
 - en: A best-case analysis focuses on the class of inputs for which the program can
     easily find the answer. In our running example, a list that starts with 'flatt
     is the best kind of input.
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最佳情况分析关注程序可以轻松找到答案的输入类别。在我们的运行示例中，以 'flatt 开头的列表是最好的输入类型。
 - en: In turn, a worst-case analysis determines how badly a program performs for those
     inputs that stress it most. The contains-flatt? function exhibits its worst performance
     when 'flatt is at the end of the input list.
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 依次，最坏情况分析确定了程序在那些最考验它的输入上的表现有多糟糕。当 'flatt 在输入列表的末尾时，contains-flatt? 函数表现出最差性能。
 - en: Finally, an average analysis starts from the ideas that programmers cannot assume
     that inputs are always of the best possible shape and that they must hope that
     the inputs are not of the worst possible shape. In many cases, they must estimate
@@ -347,9 +508,12 @@
     'flatt somewhere in the middle of the input list. Thus, if the latter consists
     of n items, the average running time of contains-flatt? is ![image](../Images/5508a238d1d7a9aeb5f8be1db2873a99.png),
     that is, it recurs half as often as there are items on the input.
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最后，平均分析从程序员不能假设输入总是最佳形状的想法开始，他们必须希望输入不是最坏形状的想法。在许多情况下，他们必须估计程序的平均运行时间。例如，contains-flatt?
+    平均在输入列表的中间找到 'flatt。因此，如果后者由 n 个项目组成，contains-flatt? 的平均运行时间是 ![image](../Images/5508a238d1d7a9aeb5f8be1db2873a99.png)，也就是说，它递归的次数是输入项目数的一半。
 - en: Computer scientists therefore usually employ the “on the order of” phrase in
     conjunction with “on the average” or “in the worst case.”Returning to the idea
     that contains-flatt? uses, on the average, an “order of ![image](../Images/25a95a4fc3b6d221dc694d45b65e5155.png)
@@ -358,256 +522,403 @@
     predicates, selecting values, picking [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     clauses—<wbr>we can drop the division by 2. Here is why. By assumption, each basic
     step takes k units of time, meaning contains-flatt? takes time
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，计算机科学家通常将“在数量级上”这个短语与“平均”或“最坏情况”一起使用。“回到 contains-flatt? 使用平均的‘数量级为 ![image](../Images/25a95a4fc3b6d221dc694d45b65e5155.png)
+    步骤’的想法，使我们来到了抽象运行时间的另一个特征。因为它忽略了评估原始计算步骤的确切时间——检查谓词、选择值、选择 [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    子句——因此我们可以省略除以 2。原因如下。根据假设，每个基本步骤需要 k 个时间单位，这意味着 contains-flatt? 需要时间
 - en: '![image](../Images/7b6f64f587d83057a66e69eb8e58fdff.png)'
+  id: totrans-68
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/7b6f64f587d83057a66e69eb8e58fdff.png)'
 - en: 'If you had a newer computer, these basic computations may run twice as fast,
     in which case we would use ![image](../Images/359cbc0aab97b891e05e79cda6c20504.png)
     as the constant for basic work. Let’s call this constant c and calculate:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你有一台更先进的计算机，这些基本计算可能运行得快两倍，在这种情况下，我们会用 ![image](../Images/359cbc0aab97b891e05e79cda6c20504.png)
+    作为基本工作的常数。让我们把这个常数称为 c 并计算：
 - en: '![image](../Images/5a26809e35f0c3c2c64817c1fdb69718.png)'
+  id: totrans-70
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/5a26809e35f0c3c2c64817c1fdb69718.png)'
 - en: 'that is, the abstract running time is always n multiplied by a constant, and
     that’s all that matters to say “on the order of n.”Now consider our sorting program
     from [figure 72](part_two.html#%28counter._%28figure._fig~3asort%29%29). Here
     is a hand-evaluation for a small input, listing all recursive steps:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 即，抽象运行时间总是 n 乘以一个常数，这就是说“在 n 的数量级上”的全部内容。现在考虑我们的排序程序，见[图 72](part_two.html#%28counter._%28figure._fig~3asort%29%29)。这里是对一个小输入的手动评估，列出了所有的递归步骤：
 - en: '| ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 3 1 2))
     |'
+  id: totrans-72
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 3 1 2))
+    |'
 - en: '| == (insert 3 ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 2)))
     |'
+  id: totrans-73
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == (insert 3 ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 2)))
+    |'
 - en: '| == (insert 3 (insert 1 ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2))))
     |'
+  id: totrans-74
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == (insert 3 (insert 1 ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2))))
+    |'
 - en: '| == (insert 3 (insert 1 (insert 2 ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ''()))))
     |'
+  id: totrans-75
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == (insert 3 (insert 1 (insert 2 ([sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29) ''()))))
+    |'
 - en: '| == (insert 3 (insert 1 (insert 2 ''()))) |'
+  id: totrans-76
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == (insert 3 (insert 1 (insert 2 ''()))) |'
 - en: '| == (insert 3 (insert 1 ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2)))
     |'
+  id: totrans-77
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == (insert 3 (insert 1 ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2)))
+    |'
 - en: '| == (insert 3 ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) 2 (insert 1 ''())))
     |'
+  id: totrans-78
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == (insert 3 ([cons](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons%29%29) 2 (insert 1 ''())))
+    |'
 - en: '| == (insert 3 ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2 1))
     |'
+  id: totrans-79
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == (insert 3 ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2 1))
+    |'
 - en: '| == ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 3 2 1)
     |'
+  id: totrans-80
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 3 2 1)
+    |'
 - en: The evaluation shows how [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
     traverses the given list and how it sets up an application of insert for each
     number in the list. Put differently, [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
     is a two-phase program. During the first one, the recursive steps for [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
     set up as many applications of insert as there are items in the list. During the
     second phase, each application of insert traverses a sorted list.
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 评估显示了[sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)如何遍历给定的列表以及它是如何为列表中的每个数字设置insert应用的。换句话说，[sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)是一个两阶段程序。在第一阶段，[sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)的递归步骤设置了与列表中项目数量一样多的insert应用。在第二阶段，每个insert应用遍历一个已排序的列表。
 - en: Inserting an item is similar to finding one, so it is not surprising that the
     performance of insert and contains-flatt? are alike. The applications of insert
     to a list of l items triggers between 0 and l recursive steps. On the average,
     we assume it requires l/2, which means that insert takes “on the order of l steps”
     where l is the length of the given list.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 插入一个项目与查找一个项目类似，因此insert和contains-flatt?的性能相似并不令人惊讶。对包含l个项目的列表应用insert触发0到l次递归步骤。平均而言，我们假设它需要l/2次，这意味着insert需要“大约l步”，其中l是给定列表的长度。
 - en: The question is how long these lists are to which insert adds numbers. Generalizing
     from the above calculation, we can see that the first one is ![image](../Images/7a488e0678bcda587256627517a92a4a.png)
     items long, the second one ![image](../Images/ec4725047c34badcfb2e7caa70f865cc.png),
     and so on, all the way down to the empty list. Hence, we get that insert performs
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 问题是insert向这些列表添加数字时列表有多长。从上面的计算中推广，我们可以看到第一个列表有![image](../Images/7a488e0678bcda587256627517a92a4a.png)个项目长，第二个列表![image](../Images/ec4725047c34badcfb2e7caa70f865cc.png)，以此类推，直到空列表。因此，我们得到insert执行
 - en: '![image](../Images/cfa5b68dd2fd6fdc1de6fab57bf0c2e8.png)'
+  id: totrans-84
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/cfa5b68dd2fd6fdc1de6fab57bf0c2e8.png)'
 - en: meaning
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 意味着
 - en: '![image](../Images/224266712925f08d1b761cf89805625a.png)'
+  id: totrans-86
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/224266712925f08d1b761cf89805625a.png)'
 - en: represents the best “guess” at the average number of insertion steps. In this
     last term, n2 is the dominant factor, and so we say that a sorting process takes
     “on the order of n2 steps.” [Exercise 486](#%28counter._%28exercise._ex~3abig-o1%29%29)
     ask you to argue why it is correct to simplify this claim in this way.
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 表示对平均插入步骤数的最佳“猜测”。在这个最后项中，n2 是主导因素，所以我们说排序过程需要“大约 n2 步骤”。[练习 486](#%28counter._%28exercise._ex~3abig-o1%29%29)
+    要求你论证为什么可以这样简化这个说法。
 - en: See [exercise 486](#%28counter._%28exercise._ex~3abig-o1%29%29) for why this
     is the case.
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 参见 [练习 486](#%28counter._%28exercise._ex~3abig-o1%29%29) 了解为什么是这样。
 - en: We can also proceed with less formalism and rigor. Because [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
     uses insert once per item on the list, we get an “order of n” insert steps where
     n is the size of the list. Since insert needs ![image](../Images/8ba01d49527f7fea1f4be11045d5201a.png)
     steps, we now see that a sorting process needs ![image](../Images/69656ca4d5aa8de0cffbafb3c5ad4db2.png)
     steps or “on the order of n2.”
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以用更非正式和严谨的方法进行。因为 [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    在列表中的每个项目上只插入一次，所以我们得到一个“大约 n”的插入步骤，其中 n 是列表的大小。由于插入需要 ![image](../Images/8ba01d49527f7fea1f4be11045d5201a.png)
+    步骤，我们现在可以看到排序过程需要 ![image](../Images/69656ca4d5aa8de0cffbafb3c5ad4db2.png) 步骤或“大约
+    n2”。
 - en: Totaling it all up, we get that [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
     takes on the “order of n steps” plus n2 recursive steps in insert for a list of
     n items, which yields
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 将所有这些加起来，我们得到 [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    对 n 个项目的列表进行排序时，需要“大约 n 步骤”加上 n2 次递归步骤在插入中，这会产生
 - en: '![image](../Images/477edf0309fa95e801d23bc2bc64d404.png)'
+  id: totrans-91
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/477edf0309fa95e801d23bc2bc64d404.png)'
 - en: 'steps. See again [exercise 486](#%28counter._%28exercise._ex~3abig-o1%29%29)
     for details. Note This analysis assumes that comparing two items on the list takes
     a fixed amount of time. EndOur final example is the inf program from [Local Definitions](part_three.html#%28part._sec~3alocal-definitions%29):'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 步骤。参见 [练习 486](#%28counter._%28exercise._ex~3abig-o1%29%29) 了解详细信息。注意：此分析假设比较列表中的两个项目需要固定的时间量。结束我们的最后一个例子是来自
+    [局部定义](part_three.html#%28part._sec~3alocal-definitions%29) 的 inf 程序：
 - en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (inf l)
     |'
+  id: totrans-93
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (inf l)
+    |'
 - en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     |'
+  id: totrans-94
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
 - en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l)]
     |'
+  id: totrans-95
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l)]
+    |'
 - en: '|     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) (inf ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)))
     |'
+  id: totrans-96
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29)
+    ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29)
+    ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29)
+    l) (inf ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)
+    l)))) |'
 - en: '|               ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l)
     |'
+  id: totrans-97
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29)
+    l) |'
 - en: '|               (inf ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)))]))
     |'
+  id: totrans-98
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   (inf ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)
+    l))) |'
 - en: 'Let’s start with a small input: ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  3  2  1  0).
     We know that the result is 0. Here is the first important step of a hand-evaluation:'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们从一个小输入开始：([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)
+    3 2 1 0)。我们知道结果是 0。这是手工评估的第一步重要步骤：
 - en: '| (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 3 2 1 0))
     |'
+  id: totrans-100
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)
+    3 2 1 0)) |'
 - en: '| == |'
+  id: totrans-101
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == |'
 - en: '| ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) 3 (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0)))
     |'
+  id: totrans-102
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29)
+    ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29)
+    3 (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)
+    2 1 0)))) |'
 - en: '|     3 |'
+  id: totrans-103
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   3 |'
 - en: '|     (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0)))
     |'
+  id: totrans-104
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)
+    2 1 0))) |'
 - en: 'From here, we must evaluate the first recursive call. Because the result is
     0 and the condition is thus #false, we must evaluate the recursion in the else-branch
     as well.Once we do so, we see two evaluations of (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  0)):'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: '从这里，我们必须评估第一个递归调用。因为结果是 0，条件因此为 #false，我们必须在 else 分支中也评估递归。一旦我们这样做，我们会看到对 (inf
+    ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)
+    1 0)) 的两次评估：'
 - en: '| (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 2 1 0))
     |'
+  id: totrans-106
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)
+    2 1 0)) |'
 - en: '| == |'
+  id: totrans-107
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| == |'
 - en: '| ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) 2 (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 0))) 2 (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 0)))
     |'
+  id: totrans-108
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) 2 (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 0))) 2 (inf ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 1 0)))
+    |'
 - en: 'At this point we can generalize the pattern and summarize it in a table:'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这一点上，我们可以概括这个模式，并以表格的形式总结它：
 - en: '| original expression |  | requires two evaluations of |'
+  id: totrans-110
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| 原始表达式 |  | 需要两次评估 |'
 - en: '| (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  3  2  1  0))
     |  | (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0))
     |'
+  id: totrans-111
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  3  2  1  0))
+    |  | (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0))
+    |'
 - en: '| (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0))
     |  | (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  0))
     |'
+  id: totrans-112
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  2  1  0))
+    |  | (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  0))
+    |'
 - en: '| (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  0))
     |  | (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  0))
     |'
+  id: totrans-113
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  1  0))
+    |  | (inf  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  0))
+    |'
 - en: In total, the hand-evaluation requires eight recursive steps for a list of four
     items. If we added 4 to the front of the list, we would double the number of recursive
     steps again. Speaking algebraically, inf needs on the order of 2n recursive steps
     for a list of n numbers when the last number is the maximum, which is clearly
     the worst case for inf.
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 总的来说，手动评估一个包含四个元素的列表需要八个递归步骤。如果我们把4加到列表的开头，递归步骤的数量会再次翻倍。用代数表达，当最后一个数字是最大值时，inf
+    需要大约 2^n 次递归步骤来处理一个包含 n 个数字的列表，这显然是 inf 的最坏情况。
 - en: Stop! If you paid close attention, you know that the above suggestion is sloppy.
     The inf program really just needs ![image](../Images/c9554316c32d091d3282a0687bde3786.png)
     recursive steps for a list of n items. What is going on?
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 停止！如果你仔细观察，你会知道上面的建议是草率的。实际上，inf 程序只需要 ![图片](../Images/c9554316c32d091d3282a0687bde3786.png)
+    次递归步骤来处理一个包含 n 个项目的列表。发生了什么？
 - en: 'Remember that we don’t really measure the exact time when we say “on the order
     of.” Instead we skip over all built-in predicates, selectors, constructors, arithmetic,
     and so on and focus on recursive steps only. Now consider this calculation:'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 记住，当我们说“大约”时，我们并不是真的测量确切的时间。相反，我们跳过了所有内置的谓词、选择器、构造函数、算术等，只关注递归步骤。现在考虑这个计算：
 - en: '![image](../Images/e298cbb87cefdf15599b78a1d0b508ec.png)'
+  id: totrans-117
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![图片](../Images/e298cbb87cefdf15599b78a1d0b508ec.png)'
 - en: 'It shows that ![image](../Images/5ce18453da5db1101f45e5e86466d800.png) and
     ![image](../Images/bbe024a86b6d8940ebe582b4b6e81078.png) differ by a small factor:
     2, meaning “on the order of ![image](../Images/0d8f48d2f0ddc397a99bd2e738cf485c.png)
@@ -619,436 +930,638 @@
     inf, the analysis of inf’s abstract running time explains why the rewrite of inf
     with [local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
     reduces the running time. For convenience, we replicate this version here:'
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 它表明 ![image](../Images/5ce18453da5db1101f45e5e86466d800.png) 和 ![image](../Images/bbe024a86b6d8940ebe582b4b6e81078.png)
+    之间的差异是一个小的因子：2，这意味着“在![image](../Images/0d8f48d2f0ddc397a99bd2e738cf485c.png)步的量级”描述了在一个所有基本操作由
+    *SL 以“![image](../Images/80c37d30f0f754eb672fada31a6368cf.png)步的量级”运行的 inf 程序相比，运行速度减半的世界中的
+    inf。从这个意义上说，这两个表达式实际上意味着相同的事情。问题是它们究竟意味着什么，这正是下一节的主题。练习 484。虽然按降序排序的列表对于 inf 来说是最坏的可能输入，但
+    inf 的抽象运行时间分析解释了为什么使用 [局部](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29)
+    重写的 inf 可以减少运行时间。为了方便起见，我们在此复制这个版本：
 - en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (infL l)
     |'
+  id: totrans-119
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([定义](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (infL l)
+    |'
 - en: '|   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     |'
+  id: totrans-120
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([条件](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    |'
 - en: '|     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l)]
     |'
+  id: totrans-121
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|      [([空？](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l)]
+    |'
 - en: '|     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) s (infL ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l))))
     |'
+  id: totrans-122
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|      [[否则](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29) ([局部](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([定义](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) s (infL ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l))))
+    |'
 - en: '|             ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) s) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) s))]))
     |'
+  id: totrans-123
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([if](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._if%29%29) ([<](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) s) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) s))]))
+    |'
 - en: Hand-evaluate (infL  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  3  2  1  0)).
     Then argue that infL uses on the “order of n steps” in the best and the worst
     case. You may now wish to revisit [exercise 261](part_three.html#%28counter._%28exercise._ex~3alocal-interm1%29%29),
     which asks you to explore a similar problem.
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 手动评估 (infL  ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  3  2  1  0)).
+    然后论证 infL 在最好和最坏情况下使用的是“数量级为 n 的步骤”。你现在可能希望重新审视 [练习 261](part_three.html#%28counter._%28exercise._ex~3alocal-interm1%29%29)，它要求你探索一个类似的问题。
 - en: Exercise 485\. A number tree is either a number or a pair of number trees. Design
     sum-tree, which determines the sum of the numbers in a tree. What is its abstract
     running time? What is an acceptable measure of the size of such a tree? What is
     the worst possible shape of the tree? What’s the best possible shape?
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 练习 485. 一个数字树要么是一个数字，要么是一对数字树。设计一个求和树，它确定树中数字的总和。它的抽象运行时间是什么？这种树的合理大小度量是什么？树的最坏可能形状是什么？最好的可能形状是什么？
 - en: The Definition of “On the Order Of”[🔗](#(part._.The_.Definition_of__.On_the_.Order_.Of_)
     "Link to here")
+  id: totrans-126
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: “数量级”的定义[🔗](#(part._.The_.Definition_of__.On_the_.Order_.Of_) "链接到这里")
 - en: 'The preceding section alluded to all the key ingredients of the phrase “on
     the order of.” Now it is time to introduce a rigorous description of the phrase.
     Let’s start with the two ideas that the preceding section develops:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 前一节提到了“数量级”这个短语的所有关键成分。现在，是时候介绍这个短语的严格描述了。让我们从前一节提出的两个想法开始：
 - en: 'The abstract measurement of performance is a relationship between two quantities:
     the size of the input and the number of recursive steps needed to determine the
     answer. The relationship is actually a mathematical function that maps one natural
     number (the size of the input) to another (the time needed).'
+  id: totrans-128
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 性能的抽象度量是两个数量之间的关系：输入的大小和确定答案所需的递归步骤数。这种关系实际上是一个数学函数，它将一个自然数（输入的大小）映射到另一个（所需的时间）。
 - en: Hence, a general statement about the performance of a program is a statement
     about a function, and a comparison of the performance of two programs calls for
     the comparison of two such functions.
+  id: totrans-129
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 因此，关于程序性能的一般陈述是关于一个函数的陈述，而两个程序性能的比较需要比较两个这样的函数。
 - en: How do you decide whether one such function is “better” than another?
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 你如何决定一个这样的函数是否比另一个“更好”？
 - en: '[Exercise 245](part_three.html#%28counter._%28exercise._ex~3asem2-funcs%29%29)
     tackles a different question, namely, whether we can formulate a program that
     decides whether two other programs are equal. In this intermezzo, we are not writing
     a program; we are using plain mathematical arguments.'
+  id: totrans-131
   prefs:
   - PREF_BQ
   - PREF_BQ
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[练习 245](part_three.html#%28counter._%28exercise._ex~3asem2-funcs%29%29) 探讨了一个不同的问题，即我们是否可以制定一个程序来决定两个其他程序是否相等。在这个插曲中，我们不是编写程序；我们是在使用纯数学论证。'
 - en: 'Let’s return to the imaginary programs from the introduction: prog-linear and
     prog-square. They compute the same results but their performance differs. The
     prog-linear program requires “on the order of n steps” while prog-square uses
     “on the order of n2 steps.” Mathematically speaking, the performance function
     for prog-linear is'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们回到引言中的想象程序：prog-linear 和 prog-square。它们计算相同的结果，但它们的性能不同。prog-linear 程序需要“数量级为
+    n 的步骤”，而 prog-square 使用“数量级为 n^2 的步骤”。从数学的角度讲，prog-linear 的性能函数是
 - en: '![image](../Images/7872ca20539012e1646f6f1ee950c105.png)'
+  id: totrans-133
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/7872ca20539012e1646f6f1ee950c105.png)'
 - en: and prog-square’s associated performance function is
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 和 prog-square 相关的性能函数是
 - en: '![image](../Images/0d212a489cb59fa989f9a0327ba7f270.png)'
+  id: totrans-135
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/0d212a489cb59fa989f9a0327ba7f270.png)'
 - en: In these definitions, cL is the cost for each recursive step in prog-square
     and cS is the cost per step in prog-linear.
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这些定义中，cL 是 prog-square 中每步递归的成本，cS 是 prog-linear 中每步的成本。
 - en: 'Say we figure out that cL = 1000 and cS = 1. Then we can tabulate these abstract
     running times to make the comparison concrete:'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 假设我们计算出 cL = 1000 和 cS = 1。然后我们可以将这些抽象的运行时间列成表格，以便进行具体的比较：
 - en: '| n |  | 10 |  | 100 |  | 1000 |  | 2000 |'
+  id: totrans-138
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| n |  | 10 |  | 100 |  | 1000 |  | 2000 |'
 - en: '| prog-square |  | 100 |  | 10000 |  | 1000000 |  | 4000000 |'
+  id: totrans-139
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| prog-square |  | 100 |  | 10000 |  | 1000000 |  | 4000000 |'
 - en: '| prog-linear |  | 10000 |  | 100000 |  | 1000000 |  | 2000000 |'
+  id: totrans-140
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| prog-linear |  | 10000 |  | 100000 |  | 1000000 |  | 2000000 |'
 - en: Like the graphs in [figure 176](#%28counter._%28figure._fig~3aperformance%29%29),
     the table at first seems to say that prog-square is better than prog-linear, because
     for inputs of the same size n, prog-square’s result is smaller than prog-linear’s.
     But look at the last column in the table. Once the inputs are sufficiently large,
     prog-square’s advantage decreases until it disappears at an input size of 1000.
     Thereafter prog-square is always slower than prog-linear.
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 就像 [图 176](#%28counter._%28figure._fig~3aperformance%29%29) 中的图表一样，表格最初似乎表明
+    prog-square 比 prog-linear 更好，因为对于相同大小的输入 n，prog-square 的结果比 prog-linear 小。但看看表格的最后一列。一旦输入足够大，prog-square
+    的优势就会降低，直到在输入大小为 1000 时消失。此后，prog-square 总是比 prog-linear 慢。
 - en: This last insight is the key to the precise definition of the phrase “order
     of.” If a function f on the natural numbers produces larger numbers than some
     function g for all natural numbers, then f is clearly larger than g. But what
     if this comparison fails for just a few inputs, say for 1000 or 1000000, and holds
     for all others? In that case, we would still like to say f is better than g. And
     this brings us to the following definition.
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个最后的洞察是“阶”这个短语精确定义的关键。如果一个自然数上的函数 f 对于所有自然数都产生比某个函数 g 更大的数，那么 f 显然比 g 大。但如果这种比较对于只有少数几个输入失败，比如说
+    1000 或 1000000，而对于所有其他输入都成立呢？在这种情况下，我们仍然想说 f 比 g 好。这带我们来到了以下定义。
 - en: 'Definition Given a function g on the natural numbers, O(g) (pronounced: “big-O
     of g”) is a class of functions on natural numbers. A function f is a member of
     O(g) if there exist numbers c and bigEnough such that'
+  id: totrans-143
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 定义 给定自然数上的函数 g，O(g)（发音为：“大 O 的 g”）是自然数上的函数类。如果存在数字 c 和 bigEnough，使得
 - en: ''
+  id: totrans-144
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: for all ![image](../Images/b1f4ea947e0bebdf3a77119f9035dff0.png) it is true
     that ![image](../Images/60b70013d09d53654133a5da3b20eb87.png)
+  id: totrans-145
   prefs:
   - PREF_BQ
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 对于所有 ![image](../Images/b1f4ea947e0bebdf3a77119f9035dff0.png)，都存在 ![image](../Images/60b70013d09d53654133a5da3b20eb87.png)
 - en: ''
+  id: totrans-146
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: Terminology If ![image](../Images/5715013ca11c006bd73f6bde9538cbe8.png), we
     say f is no worse than g.
+  id: totrans-147
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 术语 如果 ![image](../Images/5715013ca11c006bd73f6bde9538cbe8.png)，我们说 f 至少和 g 一样好。
 - en: 'Naturally, we would love to illustrate this definition with the example of
     prog-linear and prog-square from above. Recall the performance functions for prog-linear
     and prog-square, with the constants plugged in:'
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: 自然地，我们愿意用上面提到的 prog-linear 和 prog-square 的例子来说明这个定义。回想一下 prog-linear 和 prog-square
+    的性能函数，常数已经填入：
 - en: '![image](../Images/89a7a208f6d30fcec2a433690df2dedb.png)'
+  id: totrans-149
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/89a7a208f6d30fcec2a433690df2dedb.png)'
 - en: and
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 和
 - en: '![image](../Images/388f25341d60c905bc40d2f0e15ce9ce.png)'
+  id: totrans-151
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/388f25341d60c905bc40d2f0e15ce9ce.png)'
 - en: 'The key is to find the magic numbers c and bigEnough such that ![image](../Images/09ee87a558b30b0a99d66a58eab19994.png),
     which would validate that prog-linear’s performance is no worse than prog-square’s.
     For now, we just tell you what these numbers are:'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 关键是要找到魔法数字 c 和 bigEnough，使得 ![image](../Images/09ee87a558b30b0a99d66a58eab19994.png)，这将会验证
+    prog-linear 的性能不会比 prog-square 差。目前，我们只告诉你这些数字是什么：
 - en: '![image](../Images/2fea098632d16316ffe703bf0ed4af2f.png)'
+  id: totrans-153
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/2fea098632d16316ffe703bf0ed4af2f.png)'
 - en: Using these numbers, we need to show that
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用这些数字，我们需要证明
 - en: '![image](../Images/c15a8148f5e1f2975690c852ba5f7840.png)'
+  id: totrans-155
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/c15a8148f5e1f2975690c852ba5f7840.png)'
 - en: 'for every single n larger than 1000. Here is how this kind of argument is spelled
     out:'
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于所有大于 1000 的 n。以下是这种论证的表述方式：
 - en: 'Pick some specific n0 that satisfies the condition:'
+  id: totrans-157
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 选择一些满足条件的特定 n0：
 - en: ''
+  id: totrans-158
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '![image](../Images/cf1da4c8f0de5bafdc4d8e77e3153fd3.png)'
+  id: totrans-159
   prefs:
   - PREF_BQ
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/cf1da4c8f0de5bafdc4d8e77e3153fd3.png)'
 - en: ''
+  id: totrans-160
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: 'We use the symbolic name n0 so that we don’t make any specific assumptions
     about it. Now recall from algebra that you can multiply both sides of the inequality
     with the same positive factor, and the inequality still holds. We use n0:'
+  id: totrans-161
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 我们使用符号名 n0，这样我们就不对它做出任何具体假设。现在回想一下代数，你可以将不等式的两边乘以相同的正因子，不等式仍然成立。我们使用 n0：
 - en: ''
+  id: totrans-162
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '![image](../Images/e1a8fc5a8c4d7483e6840b79c81d2129.png)'
+  id: totrans-163
   prefs:
   - PREF_BQ
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/e1a8fc5a8c4d7483e6840b79c81d2129.png)'
 - en: ''
+  id: totrans-164
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: 'At this point, it is time to observe that the left side of the inequality is
     just L(n0) and the right side is S(n0):'
+  id: totrans-165
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在这一点上，我们需要注意到不等式的左边仅仅是 L(n0)，而右边是 S(n0)：
 - en: ''
+  id: totrans-166
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '![image](../Images/e48be6976ea4af33e40ea8fb0ca2a9c9.png)'
+  id: totrans-167
   prefs:
   - PREF_BQ
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/e48be6976ea4af33e40ea8fb0ca2a9c9.png)'
 - en: ''
+  id: totrans-168
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: Since n0 is a generic number of the right kind, we have shown exactly what we
     wanted to show.
+  id: totrans-169
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 由于 n0 是一种通用的、正确的类型的数字，我们已经证明了我们想要证明的东西。
 - en: 'Usually you find bigEnough and c by working your way backward through such
     an argument. While this kind of mathematical reasoning is fascinating, we leave
     it to a course on algorithms.The definition of O also explains with mathematical
     rigor why we don’t have to pay attention to specific constants in our comparisons
     of abstract running times. Say we can make each basic step of prog-linear go twice
     as fast so that we have:'
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常，你会通过逆向推理找到 bigEnough 和 c。虽然这种数学推理很有趣，但我们将其留给算法课程。O 的定义也用数学的严谨性解释了为什么在我们比较抽象运行时间时不必关注特定的常数。比如说，我们可以让每个基本步骤的
+    prog-linear 运行速度提高两倍，所以我们有：
 - en: '![image](../Images/d1d04ed0d7c6258b06256e155bfff852.png)'
+  id: totrans-171
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/d1d04ed0d7c6258b06256e155bfff852.png)'
 - en: and
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: 和
 - en: '![image](../Images/70f1ba8139ede729e10e30d71781a7e8.png)'
+  id: totrans-173
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![image](../Images/70f1ba8139ede729e10e30d71781a7e8.png)'
 - en: The above argument goes through by doubling bigEnough to 2000.
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过将 bigEnough 加倍到 2000，上述论点成立。
 - en: Finally, most people use O together with a short-hand for stating functions.
     Thus they say how-many’s running time is O(n)—<wbr>because they tend to think
     of n as an abbreviation of the (mathematical) function id(n) = n. Similarly, this
     use yields the claim that [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)’s
     worst-case running time is O(n2) and inc’s is O(2n)—<wbr>again because n2 is short-hand
     for the function sqr(n) = n2 and 2n is short for expt(n) = 2n.
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，大多数人使用 O 与表示函数的缩写一起使用。因此，他们会说 how-many 的运行时间是 O(n)——<wbr>因为他们倾向于将 n 视为 (数学)
+    函数 id(n) = n 的缩写。同样，这种用法产生了 [sort](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._sort%29%29)
+    的最坏情况运行时间是 O(n2) 和 inc 的运行时间是 O(2n)——<wbr>再次是因为 n2 是函数 sqr(n) = n2 的缩写，而 2n 是
+    expt(n) = 2n 的缩写。
 - en: Stop! What does it mean to say that a function’s performance is O(1)?
+  id: totrans-176
   prefs: []
   type: TYPE_NORMAL
+  zh: 停止！说一个函数的性能是 O(1) 有什么意义？
 - en: Exercise 486\. In the first subsection, we stated that the function f(n) = n2
     + n belongs to the class O(n2). Determine the pair of numbers c and bigEnough
     that verify this claim.
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 练习 486。在第一小节中，我们指出函数 f(n) = n2 + n 属于 O(n2) 类。确定验证此声明的数字对 c 和 bigEnough。
 - en: Exercise 487\. Consider the functions f(n) = 2n and g(n) = 1000 n. Show that
     g belongs to O(f), which means that f is, abstractly speaking, more (or at least
     equally) expensive than g. If the input size is guaranteed to be between 3 and
     12, which function is better?
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
+  zh: 练习 487。考虑函数 f(n) = 2n 和 g(n) = 1000n。证明 g 属于 O(f)，这意味着在抽象意义上，f 比 g 更贵（或者至少与
+    g 相当）。如果输入大小保证在 3 到 12 之间，哪个函数更好？
 - en: Exercise 488\. Compare ![image](../Images/358b0d099d2024a7ba8c30e181b09235.png)
     and ![image](../Images/6c3f41526a45a85f9bfde748bdb38152.png). Does f belong to
     O(g) or g to O(f)?
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 练习 488。比较 ![image](../Images/358b0d099d2024a7ba8c30e181b09235.png) 和 ![image](../Images/6c3f41526a45a85f9bfde748bdb38152.png)。f
+    属于 O(g) 还是 g 属于 O(f)？
 - en: Why Do Programs Use Predicates and Selectors?[🔗](#(part._.Why_.Do_.Programs_.Use_.Predicates_and_.Selectors_)
     "Link to here")
+  id: totrans-180
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 为什么程序使用谓词和选择器？[🔗](#(part._.Why_.Do_.Programs_.Use_.Predicates_and_.Selectors_)
+    "链接到这里")
 - en: 'The notion of “on the order of” explains why the design recipes produce both
     well-organized and “performant” programs. We illustrate this insight with a single
     example, the design of a program that searches for a number in a list of numbers.
     Here are the signature, the purpose statement, and examples formulated as tests:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: “数量级”的概念解释了为什么设计食谱能产生既组织良好又“高效”的程序。我们用一个例子来说明这个见解，即设计一个在数字列表中搜索数字的程序。以下是签名、目的陈述和作为测试的示例：
 - en: '| ; [Number](part_one.html#%28tech._number%29) [[List-of](part_three.html#%28tech._sim-dd._list._of%29)  [Number](part_one.html#%28tech._number%29)]
     -> [Boolean](part_one.html#%28tech._boolean%29) |'
+  id: totrans-182
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ; [Number](part_one.html#%28tech._number%29) [[List-of](part_three.html#%28tech._sim-dd._list._of%29)  [Number](part_one.html#%28tech._number%29)]
+    -> [Boolean](part_one.html#%28tech._boolean%29)'
 - en: '| ; is x in l |'
+  id: totrans-183
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ; x是否在l中'
 - en: '|   |'
+  id: totrans-184
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|'
 - en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (search 0 ''(3 2 1 0)) #true)
     |'
+  id: totrans-185
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| [[check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29)] (search 0 ''(3 2 1 0)) #true'
 - en: '| ([check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29) (search 4 ''(3 2 1 0)) #false)
     |'
+  id: totrans-186
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '[[check-expect](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._check-expect%29%29)] (search 4 ''(3 2 1 0)) #false'
 - en: 'Here are two definitions that live up to these expectations:'
+  id: totrans-187
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里有两个定义符合这些期望：
 - en: '|'
+  id: totrans-188
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '|'
 - en: ''
+  id: totrans-189
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (searchL x l)
     &#124;'
+  id: totrans-190
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29)] (searchL x l)'
 - en: '&#124;   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     &#124;'
+  id: totrans-191
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)]'
 - en: '&#124;     [([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) l) #false]
     &#124;'
+  id: totrans-192
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[([empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29) l) #false]]'
 - en: '&#124;     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
     &#124;'
+  id: totrans-193
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
+    [[searchL](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._searchL%29%29)]]'
 - en: '&#124;      ([or](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29) ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) x)
     &#124;'
+  id: totrans-194
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[or](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29)] ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) x)'
 - en: '&#124;          (searchL &#124;'
+  id: totrans-195
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[searchL](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._searchL%29%29)]'
 - en: '&#124;            x ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)))]))
     &#124;'
+  id: totrans-196
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29)] x ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l))]'
 - en: ''
+  id: totrans-197
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '|'
+  id: totrans-198
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '|'
 - en: ''
+  id: totrans-199
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '&#124; ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (searchS x l)
     &#124;'
+  id: totrans-200
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (searchS x l)
+    [[define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29)]]'
 - en: '&#124;   ([cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
     &#124;'
+  id: totrans-201
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)]'
 - en: '&#124;     [([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) (length l) 0) #false]
     &#124;'
+  id: totrans-202
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) (length l) 0) #false]]'
 - en: '&#124;     [[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)
     &#124;'
+  id: totrans-203
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[[else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)]'
 - en: '&#124;      ([or](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29) ([=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29) ([first](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29) l) x)
     &#124;'
+  id: totrans-204
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '&#124; ([或者](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._or%29%29)
+    ([等于](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3d%29%29)
+    ([第一个](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._first%29%29)
+    l) x)) &#124;'
 - en: '&#124;          (searchS &#124;'
+  id: totrans-205
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '&#124; ([searchS](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._searchS%29%29)
+    &#124;'
 - en: '&#124;            x ([rest](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29) l)))]))
     &#124;'
+  id: totrans-206
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '&#124; ([x](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._rest%29%29)
+    l))]))) &#124;'
 - en: ''
+  id: totrans-207
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '|'
+  id: totrans-208
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '|'
 - en: The design of the program on the left follows the design recipe. In particular,
     the development of the template calls for the use of structural predicates per
     clause in the data definition. Following this advice yields a conditional program
@@ -1058,80 +1571,125 @@
     line uses [empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29)
     and the second one uses [cons?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons~3f%29%29)
     or [else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29).
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 左侧程序的编写遵循了设计配方。特别是，模板的开发需要使用数据定义中每个子句的结构性谓词。遵循这一建议会产生一个条件程序，其第一个 [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    行处理空列表，而第二个则处理所有其他情况。第一个 [cond](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cond%29%29)
+    行中的问题使用了 [empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29)，第二个则使用了
+    [cons?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._cons~3f%29%29)
+    或 [else](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._else%29%29)。
 - en: The design of searchS fails to live up to the structural designIt really uses
     generative recursion. recipe. It instead takes inspiration from the idea that
     lists are containers that have a size. Hence, a program can check this size for
     0, which is equivalent to checking for emptiness.
+  id: totrans-210
   prefs: []
   type: TYPE_NORMAL
+  zh: searchS 的设计未能满足结构化设计配方。它实际上使用了生成递归。它从列表是具有大小的容器这一想法中汲取灵感。因此，程序可以检查这个大小为 0，这相当于检查空列表。
 - en: Although this idea is functionally correct, it makes the assumption that the
     cost of *SL-provided operations is a fixed constant. If length is more like how-many,
     however, searchS is going to be slower than searchL. Using our new terminology,
     searchL is using O(n) recursive steps while searchS needs O(n2) steps for a list
     of n items. In short, using arbitrary *SL operations to formulate conditions may
     shift performance from one class of functions to one that is much worse.
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 虽然这个想法在功能上是正确的，但它假设 *SL 提供的操作成本是一个固定的常数。然而，如果长度更像是 how-many，那么 searchS 将会比 searchL
+    慢。使用我们新的术语，searchL 使用 O(n) 的递归步骤，而 searchS 对于 n 个元素的列表需要 O(n^2) 的步骤。简而言之，使用任意的
+    *SL 操作来制定条件可能会将性能从一类函数转移到一类性能更差的函数。
 - en: 'Let’s wrap up this intermezzo with an experiment that checks whether length
     is a constant-time function or whether it consumes time proportionally to the
     length of the given list. The easiest way is to define a program that creates
     a long list and determines how much time each version of the search program takes:'
+  id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们用一个实验来结束这个小插曲，这个实验检查长度是否是一个常数时间的函数，或者它是否消耗的时间与给定列表的长度成比例。最简单的方法是定义一个程序，它创建一个长列表并确定每个版本的搜索程序需要多少时间：
 - en: '| ; [N](part_two.html#%28tech._n%29) -> [[List](part_three.html#%28tech._sim-dd._list%29)  [Number](part_one.html#%28tech._number%29)  [Number](part_one.html#%28tech._number%29)]
     |'
+  id: totrans-213
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ; [N](part_two.html#%28tech._n%29) -> [[List](part_three.html#%28tech._sim-dd._list%29)  [Number](part_one.html#%28tech._number%29)  [Number](part_one.html#%28tech._number%29)]
+    |'
 - en: '| ; how long do searchS and searchL take |'
+  id: totrans-214
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ; how long do searchS and searchL take |'
 - en: '| ; to look for n in ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)  0  [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29)  ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29)  n  1))
     |'
+  id: totrans-215
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ; to look for n in ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29) 
+    0  [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29)  ([-](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._-%29%29) 
+    n  1)) |'
 - en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (timing n)
     |'
+  id: totrans-216
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (timing n)
+    |'
 - en: '|   ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) long-list
     |'
+  id: totrans-217
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([local](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._local%29%29) (([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) long-list
+    |'
 - en: '|             ([build-list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._build-list%29%29) n ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (x) x))))
     |'
+  id: totrans-218
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([build-list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._build-list%29%29) n ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (x) x))))
+    |'
 - en: '|     ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)
     |'
+  id: totrans-219
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([list](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._list%29%29)
+    |'
 - en: '|       ([time](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._time%29%29) (searchS n long-list))
     |'
+  id: totrans-220
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|     ([time](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._time%29%29) (searchS n long-list))
+    |'
 - en: '|       ([time](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._time%29%29) (searchL n long-list)))))
     |'
+  id: totrans-221
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|     ([time](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._time%29%29) (searchL n long-list)))))
+    |'
 - en: Now run this program on 10000 and 20000. If length is like [empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29),
     the times for the second run will be roughly twice those of the first one; otherwise,
     the time for searchS will increase dramatically.
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在运行这个程序对10000和20000进行测试。如果长度像[empty?](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._empty~3f%29%29)一样，第二次运行的时间将大约是第一次的两倍；否则，searchS的时间将显著增加。
 - en: Stop! Conduct the experiment.
+  id: totrans-223
   prefs: []
   type: TYPE_NORMAL
+  zh: 停止！进行实验。
 - en: Assuming you have completed the experiment, you now know that length takes time
     proportionally to the size of the given list. The “S” in searchS stands for “squared”
     because its running time is O(n2). But don’t jump to the conclusion that thisSee
@@ -1140,9 +1698,13 @@
     for every programming language you will encounter. Many deal with containers differently
     than *SL. Understanding how this is done requires one more design concept, accumulators,
     the concern of the final part of this book.
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: 假设你已经完成了实验，你现在知道长度与给定列表的大小成比例。在searchS中的“S”代表“平方”，因为它的运行时间是O(n^2)。但不要急于得出这种推理适用于你将遇到的每一种编程语言的结论。许多语言处理容器的方式与*SL不同。了解这是如何做到的还需要一个额外的设计概念，即累加器，这是本书最后一部分的内容。
 - en: '[🔗](#(part._i5-6-fake) "Link to here")'
+  id: totrans-225
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[🔗](#(part._i5-6-fake) "链接到此处")'

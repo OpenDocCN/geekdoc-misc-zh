@@ -1,50 +1,72 @@
 - en: 📜Scripting
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 📜脚本
 - en: 原文：[https://book.leveldesignbook.com/process/scripting](https://book.leveldesignbook.com/process/scripting)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://book.leveldesignbook.com/process/scripting](https://book.leveldesignbook.com/process/scripting)
 - en: What is scripting?
+  id: totrans-2
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 脚本是什么？
 - en: 'Level designers use **scripting** tools to program specific game rules and
     behaviors for a level. Some common examples of level scripting include:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 级别设计师使用**脚本**工具为关卡编程特定的游戏规则和行为。一些常见的级别脚本示例包括：
 - en: '**Objectives**, quests, missions -- a sequence of goals and [encounters](/process/combat/encounter)
     with a start and end'
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**目标**、任务、使命——一系列有开始和结束的目标和[遭遇](/process/combat/encounter)'
 - en: '**Triggers** execute logic when entering an area, to lose health or gain points,
     etc.'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**触发器**在进入某个区域时执行逻辑，例如失去生命值或获得分数等。'
 - en: '**Gates** block progress until the player solves a problem in the game world
     somehow'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**门**阻止玩家在解决游戏世界中的某个问题之前继续前进'
 - en: '**Game objects / entities** that move or react, like buttons, doors, elevators,
     trains, traps, etc.'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**游戏对象/实体**，如按钮、门、电梯、火车、陷阱等，可以移动或做出反应。'
 - en: (visual scripting example)
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: （可视化脚本示例）
 - en: '[](#game-code-vs-level-scripts)Game code vs level scripts'
+  id: totrans-9
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#game-code-vs-level-scripts)游戏代码与关卡脚本'
 - en: In past generations of game engines, there was a big technical difference between
     the game engine code vs. the scripting logic in a game level.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 在游戏引擎的过去几代中，游戏引擎代码与游戏关卡中的脚本逻辑之间存在很大的技术差异。
 - en: For example, Quake 1's game engine idTech2 was written in C / QuakeC, but level
     scripters relied on premade **entities** with narrow predefined behavior. A *func_button*
     entity could only function as a button, and a *func_door* entity could only work
@@ -53,38 +75,54 @@
     necessary because level designers could not easily code new types of entities.
     Entities were level-specific visual scripting logic that existed as data interpreted
     by the game engine.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，Quake 1 的游戏引擎 idTech2 是用 C / QuakeC 编写的，但关卡脚本员依赖于预先制作的具有狭窄预定义行为的**实体**。一个
+    *func_button* 实体只能作为按钮使用，而一个 *func_door* 实体只能作为滑动物体使用。如果设计师将门建成一个向上“打开”的平面平台，那么门基本上就是一个电梯；这些富有创造性的黑客行为是必要的，因为级别设计师无法轻松地编写新类型的实体。实体是特定级别的视觉脚本逻辑，作为游戏引擎解释的数据存在。
 - en: <picture class="relative">![](../Images/da171750a5f5821cdb5d6a029c8c0d47.png)
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/da171750a5f5821cdb5d6a029c8c0d47.png)
 - en: editor screenshot of a very complex entity setup (168 different objects!) for
     spawning weapons in Quake 1 by Benoit "Bal" Stordeur https://twitter.com/BafuBal/status/1261974130624167937</picture>
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: Benoit "Bal" Stordeur 为 Quake 1 中生成武器而制作的非常复杂的实体设置（168个不同的对象！）的编辑器截图 https://twitter.com/BafuBal/status/1261974130624167937</picture>
 - en: For modern game engines, scripting has become increasingly textual and code-like.
     Unreal Engine 4's Blueprint visual scripts match C++ functionality, Unity's Playmaker
     / Bolt visual scripts match the C# API, Fallout 4 / Skyrim scripters use a Papyrus
     language, and other engines routinely embed Lua. It's all basically code now.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于现代游戏引擎，脚本变得越来越文本化和代码化。Unreal Engine 4 的蓝图可视化脚本与 C++ 功能相匹配，Unity 的 Playmaker
+    / Bolt 可视化脚本与 C# API 相匹配，Fallout 4 / Skyrim 脚本员使用 Papyrus 语言，其他引擎通常嵌入 Lua。现在基本上都是代码。
 - en: 'So: a **level script** is simply a coded behavior limited to the scope of a
     game level. Scripts usually interact with specific objects or places in the map,
     binding to specific entities. They have limited functionality outside of this
     map or across different maps. Think of it as "softer" code unique to a given level,
     compared to the "harder" core game code shared by all levels across an entire
     game.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此：**关卡脚本**仅仅是限于游戏关卡范围内的编码行为。脚本通常与地图中的特定对象或地点交互，绑定到特定实体。它们在此地图之外或不同地图之间具有有限的功能。将其视为与特定关卡相关的“较软”代码，与所有关卡共享的“较硬”核心游戏代码相比。
 - en: '[](#hacks)Hacks'
+  id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#hacks)黑客'
 - en: A scripting **hack** is a one-off brittle solution that uses a game system in
     a way that wasn't intended, and thus cannot support a wider range of behavior
     nor be easily reused elsewhere in the game.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 脚本**黑客**是一种一次性脆弱的解决方案，它以非预期的方式使用游戏系统，因此无法支持更广泛的行为，也无法在游戏的其他地方轻松重用。
 - en: For example, in Fallout 3's Broken Steel DLC, the player fixes and rides a metro
     train during a mission. However, the game does not have any actual vehicle or
     train system. Instead, [Fallout 3 uses a clever hack to simulate a train](https://www.pcgamer.com/heres-whats-happening-inside-fallout-3s-metro-train/).
@@ -92,8 +130,10 @@
     "DLC03MetroCarArmor" -- an armband that executes a camera script that makes the
     player feel as if they're on a moving train. In Fallout 3's GECK game editor tool,
     the armband looks like a giant train-shaped hat. (see image below)
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，在《辐射3》的《破碎钢铁》DLC中，玩家在任务期间修复并乘坐地铁火车。然而，游戏并没有任何实际的车辆或火车系统。相反，[《辐射3》使用了一个巧妙的黑客技术来模拟火车](https://www.pcgamer.com/heres-whats-happening-inside-fallout-3s-metro-train/)。通过脚本，游戏强制玩家秘密装备一个名为“DLC03MetroCarArmor”的库存物品——一个执行相机脚本的臂章，让玩家感觉就像在移动的火车上。在《辐射3》的GECK游戏编辑器工具中，这个臂章看起来像一顶巨大的火车形状帽子。（见下文图片）
 - en: This scripting hack may seem absurd, but it works, and it saved the developers
     a lot of time from needlessly engineering a complex feature. So sometimes hacks
     are appropriate, but you can only decide on a hack like this when you have done
@@ -101,157 +141,239 @@
     designers had planned their DLC and they knew there was no point in coding a train
     system they would never use again, so instead they hacked a fake train and successfully
     shipped their project.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种脚本黑客技术可能看起来很荒谬，但它有效，并且节省了开发者大量时间，避免了不必要地构建复杂功能。所以有时黑客技术是合适的，但只有在你为你的项目范围做了足够的[规划](/process/preproduction)之后，你才能决定使用这样的黑客技术。在这里，Bethesda的设计师们已经规划了他们的DLC，并且他们知道没有必要编写他们永远不会再次使用的火车系统，因此他们黑客了一个假火车并成功发布了他们的项目。
 - en: <picture class="relative">![](../Images/6340669a86091c27eec2380d6f0abc5a.png)
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/6340669a86091c27eec2380d6f0abc5a.png)
 - en: The Fallout 3 "train hat" DLC03MetroCarArmor bracelet, as previewed in the GECK
     editor tool. From</picture>
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 《辐射3》的“火车帽”DLC03MetroCarArmor手镯，如GECK编辑器工具中预览的那样。从</picture>
 - en: Objectives
+  id: totrans-22
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 目标
 - en: quests, missions... usually made of triggers and gates
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 任务、使命... 通常由触发器和门组成
 - en: Branching flags model
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 分支标志模型
 - en: Fallout / Skyrim numbered quest stages (FSM?)
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 辐射/天际编号任务阶段（FSM？）
 - en: visualize as a flow chart, can get very complicated
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 将其可视化为一个流程图，可能会变得非常复杂
 - en: Triggers
+  id: totrans-27
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 触发器
 - en: triggers let us define volumes and areas, and apply behavior to those zones
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 触发器让我们定义体积和区域，并将行为应用于这些区域
 - en: triggers know when something enters, stays, and exits... a trigger is an EVENT
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 触发器知道何时有东西进入、停留和退出... 触发器是一个事件
 - en: basic trigger is traps, deaths, lava, etc. or opens a door
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 基本触发器是陷阱、死亡、熔岩等，或者打开一扇门
 - en: for singleplayer, triggers should be invisible and seamless and magic, and sometimes
     just one-off triggers? ... dear esther, triggers used for ghosts and voice over...
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于单人游戏，触发器应该是不可见的、无缝的、神奇的，有时只是单次触发器？... 亲爱的爱斯特，用于鬼魂和配音的触发器...
 - en: 'complex triggers: dynamically resizing triggers like in Gone Home parents closet?'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 复杂触发器：类似于《回家》中父母衣橱的动态调整触发器？
 - en: for multiplayer, triggers should NOT be invisible!!... bomb site areas in CS,
     capture points in Overwatch
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于多人游戏，触发器**不应该**是不可见的！！... CS中的炸弹地点区域，守望先锋中的占领点
 - en: Gates
+  id: totrans-34
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 门
 - en: 'see also: Gating, [Doors](/process/scripting/doors)'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 参见：门控，[门](/process/scripting/doors)
 - en: A gate is something that impedes or blocks the player's movement through the
     level, usually along the critical path.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 门是一种阻碍或阻止玩家在关卡中移动的东西，通常沿着关键路径。
 - en: Despite their name, gates are not just doors. Almost anything in a level can
     *function* as a gate, because any obstacle that impedes progress or flow, either
     by a little or a lot, is a type of gate.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管它们的名称是门，但门不仅仅是门。关卡中的几乎所有东西都可以*作为*门使用，因为任何阻碍进展或流动的障碍，无论是轻微的还是严重的，都是一种门。
 - en: A **hard gate** is when progress is impossible without completing the encounter
     or puzzle. When we just say "gate", we usually mean a hard gate.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: '**硬门**是指在没有完成遭遇战或谜题的情况下无法继续前进的情况。当我们说“门”时，通常指的是硬门。'
 - en: Kill all monsters / boss to open a door
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 杀死所有怪物/Boss以打开门
 - en: Press all the buttons
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 按下所有按钮
 - en: Collect the key
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 收集钥匙
 - en: Only the NPC can open the door, when they want to (e.g. out of combat)
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只有NPC在想要的时候才能打开门（例如，在战斗之外）
 - en: Or chain all these together.... kill a monster to get a key, press a button
     to release a monster that drops a key, etc.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者将这些全部连接起来.... 杀死怪物以获得钥匙，按按钮释放掉落钥匙的怪物等。
 - en: '[](#soft-gate)Soft gate'
+  id: totrans-44
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#软门)软门'
 - en: the player could bypass the gate without completing the encounter or puzzle,
     but they are heavily discouraged from doing so (e.g. too many monsters)
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 玩家可以在不完成遭遇战或谜题的情况下绕过大门，但他们被强烈劝阻这样做（例如怪物太多）
 - en: A bit more sophisticated and less hand-holdy, supports speed runners better...
     but might cause a cascade of confusion if player keeps bypassing gates without
     realizing, isn't sure what's happening, or the gate might be so soft that it doesn't
     even do anything
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 稍微复杂一些，不那么手把手，更好地支持速跑者...但玩家如果在不意识到的情况下绕过大门，不确定发生了什么，或者大门太柔和以至于根本不起作用，可能会引起一系列的困惑
 - en: (very soft) blocked sightline, hairpin turn (see typology)
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （非常柔和）阻挡视线，急转弯（参见类型学）
 - en: (soft) simple traversal / jumping puzzle, stacking boxes
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （柔和）简单的穿越/跳跃谜题，堆叠箱子
 - en: (softish) Valve-style slowly opening door gate
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （柔和）Valve风格的缓慢开启大门
 - en: (ranges from soft to game breaking) confusing layout, unclear how to progress
     (might end up feeling bad-confusing instead of good-confusing though)
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （从柔和到游戏破坏）令人困惑的布局，不清楚如何前进（可能会感觉不好，而不是好）
 - en: AI scripting
+  id: totrans-51
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: AI脚本
 - en: '[](#spawners)Spawners'
+  id: totrans-52
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#spawners)生成器'
 - en: monster closets
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 怪物储藏室
 - en: director AIs
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 导演AI
 - en: '[](#hinting)Hinting'
+  id: totrans-55
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#hinting)提示'
 - en: pathfinding nodes, monsterjump, cover nodes, clip volumes, leashing
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 寻路节点、怪物跳跃、遮蔽节点、剪辑体积、牵引
 - en: Cover hinting for NPCs and AI
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 为NPC和AI提供提示遮蔽
 - en: <picture class="relative">![](../Images/ff194a1dc78b36d87792deb5ddc00f74.png)
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/ff194a1dc78b36d87792deb5ddc00f74.png)
 - en: editor view of cover node hinting markup for Gears Tactics by Splash Damage
     (from https://www.splashdamage.com/news/blocktober-gears-tactics/)</picture>
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: Splash Damage为《Gears Tactics》提供的遮蔽节点提示标记的编辑视图（来自https://www.splashdamage.com/news/blocktober-gears-tactics/)</picture>
 - en: '"*The tall red boxes are standing cover (otherwise known as “full” cover, providing
     the most protection) and the smaller pink boxes are low cover (half-cover in-game*).
     *The yellow targets on each cover node show which angles a soldier can shoot from
@@ -263,94 +385,131 @@
     it, and if a cover node isn’t placed correctly at a corner then the soldier occupying
     that node will be unable to shoot around the corner. Both of these examples create
     frustration for the player and must be avoided!"*'
+  id: totrans-60
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '"*高高的红色箱子是站立遮蔽（也称为“完全遮蔽”，提供最大保护）而较小的粉色箱子是低遮蔽（游戏中的半遮蔽）。*每个遮蔽节点上的黄色目标显示士兵放置在该遮蔽节点时可以射击的角度。一些低遮蔽节点上方的黄色弯曲箭头显示士兵可以跳过遮蔽节点进入相邻侧的节点。仔细放置遮蔽节点和严格遵守度量标准对于创建干净、无错误的遮蔽设置并按玩家期望的方式工作至关重要。如果遮蔽物太高，则无法跳过它；如果遮蔽节点在角落放置不正确，则占据该节点的士兵将无法绕过角落射击。这两个例子都会给玩家带来挫败感，必须避免！*"'
 - en: ''
+  id: totrans-61
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '*-- from* [*"Blocktober: Gears Tactics"*](https://www.splashdamage.com/news/blocktober-gears-tactics/)
     *Splash Damage blog post*'
+  id: totrans-62
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*-- 来自 *[*"Blocktober: Gears Tactics"*](https://www.splashdamage.com/news/blocktober-gears-tactics/)
+    *Splash Damage博客文章*'
 - en: many combat games also automatically generate markup and fine-tune by hand (e.g.
     Uncharted 4)
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 许多战斗游戏也会自动生成标记并手动微调（例如《未知的4》）
 - en: Choreography
+  id: totrans-64
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 编排
 - en: When we script NPCs to perform specific actions outside the scope of their normal
     AI, especially for in-game cutscenes and [storytelling](/process/env-art/storytelling),
     then that type of scripting is called **choreography**. On large team projects,
     character choreography could be the responsibility of a scripter, animator, or
     dedicated cinematics artist.
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们为NPC编写脚本以执行超出其正常AI范围的具体动作时，特别是对于游戏中的场景和[叙事](/process/env-art/storytelling)，那么这种脚本被称为**编排**。在大型团队项目中，角色编排可能是脚本编写者、动画师或专门的视觉效果艺术家的责任。
 - en: 'Common choreography scripting actions include:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 常见的编排脚本操作包括：
 - en: '*NPC actor body control like looking, turning, walking, talking.* This [stage
     blocking](https://en.wikipedia.org/wiki/Blocking_(stage)) choreography should
     hook into the same body systems as the main game AI, i.e. maintaining two different
     walking systems would introduce extra technical debt into your project.'
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*NPC演员的身体控制，如看、转、走、说。*这种[舞台布局](https://en.wikipedia.org/wiki/Blocking_(stage))编排应连接到与主游戏AI相同的身体系统，即维护两个不同的行走系统会将额外的技术债务引入您的项目。'
 - en: '*Animation control.* Overriding the default idle stance or the current full-body
     animation completely. For example, if two actors hug once in your game, you should
     not engineer a dedicated hugging system -- instead, you should just temporarily
     override their animations with hugging motions.'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*动画控制*。完全覆盖默认的空闲姿势或当前的全身动画。例如，如果你的游戏中两个演员拥抱了一次，你不需要设计一个专门的拥抱系统——相反，你应该只是临时用拥抱动作覆盖他们的动画。'
 - en: '*Props and attachments.* Temporarily bind an object to a character joint, like
     attaching a hat to a head, or a cup to a hand.'
+  id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*道具和附件*。暂时将一个对象绑定到角色关节上，例如将帽子戴在头上，或将杯子放在手中。'
 - en: '*Timing delays.* Waiting for X seconds, useful for dramatic pacing or pauses.'
+  id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*时间延迟*。等待X秒，适用于戏剧性的节奏或暂停。'
 - en: '*Camera control.* Force a first person controller to look at something, or
     spawn additional third person cameras with other camera angles or cinematography.'
+  id: totrans-71
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*相机控制*。强制第一人称控制器看向某个目标，或生成具有其他角度或电影摄影的额外第三人称相机。'
 - en: '*Game state management.* For systemic or combat-oriented games, it is best
     practice to disable the choreographed actors'' combat AI and physics, as well
     as pause / block / delete nearby enemies and make the choreographed NPCs temporarily
     invincible. If you don''t manage and clean the game state for the choreography,
     then your actors could unexpectedly collapse or die during the cutscene.'
+  id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*游戏状态管理*。对于系统或以战斗为导向的游戏，最佳实践是禁用编排演员的战斗AI和物理，以及暂停/阻止/删除附近的敌人，并使编排NPC暂时无敌。如果你不管理和清理游戏状态以进行编排，那么你的演员在剪辑场景中可能会意外倒塌或死亡。'
 - en: <picture class="relative">![](../Images/ba66db4254050914a053deb71ffaf800.png)
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/ba66db4254050914a053deb71ffaf800.png)
 - en: screenshot of Faceposer choreography tool used for Half-Life 2 (2004) with 3D
     preview and track-based timeline interface</picture>
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: Faceposer编排工具的截图，用于Half-Life 2（2004）版本，具有3D预览和基于轨道的时间线界面</picture>
 - en: '[](#object-interaction-systems)Object interaction systems'
+  id: totrans-75
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#object-interaction-systems)对象交互系统'
 - en: Taylor Swope, QA lead for Obsidian RPG "The Outer Worlds" (2019), spent a long
     time trying to debug an NPC object interaction scripting issue [https://twitter.com/_taylorswope/status/1205252714680045568](https://twitter.com/_taylorswope/status/1205252714680045568)
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 泰勒·斯沃普（Taylor Swope），Obsidian RPG "The Outer Worlds"（2019）的QA负责人，花费了大量时间尝试调试NPC对象交互脚本问题[https://twitter.com/_taylorswope/status/1205252714680045568](https://twitter.com/_taylorswope/status/1205252714680045568)
 - en: '*We released [...] a fix for the dreaded "the game thinks my companions are
     dead" bug, which I believe I spent more time investigating than I have for any
     other individual bug in my career.*'
+  id: totrans-77
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*我们发布了 [...] 一个针对令人讨厌的“游戏认为我的同伴已经死亡”错误的修复程序，我相信我花在调查这个错误上的时间比我在职业生涯中调查任何其他单个错误的时间都要多。*'
 - en: ''
+  id: totrans-78
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -360,10 +519,13 @@
     it was so hard to pin down is that it was impossible to tell when the bug actually
     happened -- all of the cases we had were essentially "hey something bad happened
     in the last ten hours and now my quest is broken".*'
+  id: totrans-79
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*这个错误的本质是，对于一些玩家来说，同伴任务在任务日志中被标记为失败，理由是同伴已经死亡——尽管同伴实际上非常健康和活跃。其中一个原因它如此难以定位是因为无法确定错误实际发生的时间——我们所有的案例基本上是“嘿，在过去十个小时内发生了不好的事情，现在我的任务已经损坏了”。*'
 - en: ''
+  id: totrans-80
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -377,10 +539,13 @@
     Eventually we figured out that "undamageable" does not mean "invulnerable" --
     they can''t take damage from attacks but can still get hurt from other things.
     One of those things: falling a great distance.*'
+  id: totrans-81
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*调查它涉及到找出每个可能使游戏认为同伴已经死亡的脚本和代码行的位置。唯一的合理解释是一段在同伴的生命值达到零时运行的脚本：如果他们在队伍中，它将等待战斗结束并复活他们；否则，它将他们标记为“真正”的死亡。[但是]游戏中唯一一个同伴在场但不在活跃队伍中的地方是当玩家在他们的飞船上。问题是，当同伴在飞船上时，他们是不可伤害的。最终我们弄清楚，“不可伤害”并不意味着“无敌”——他们不能从攻击中受到伤害，但仍然可能因其他原因受伤。其中之一就是：从很高的地方坠落。'
 - en: ''
+  id: totrans-82
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -395,20 +560,26 @@
     had come out, and all hopes of this being a weird fluke only a couple devs would
     ever see were dashed, as players all over the place started reporting their companion
     quests failing.*'
+  id: totrans-83
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*问题在于玩家的飞船上没有足够高的地方会导致致命的坠落。所以现在我们必须弄清楚同伴是如何神秘地出现在水平面之上的。我调查了大量的理论，包括“也许在从其他地图快速旅行时，他们的身高数据被保留”和“也许两个同伴之间的物理交互导致其中一个迅速向上加速”。（我个人最喜欢的理论是“如果一位同伴站在随机事件中牛出生的地方，他们就会被发射到太空中”。当这个理论没有成真时，我真的很失望。）到这时，游戏已经发布，所有关于这只是一个奇怪的意外，只有少数开发者会看到的希望都破灭了，因为各地的玩家开始报告他们的同伴任务失败。*'
 - en: ''
+  id: totrans-84
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '*Eventually, an offhand comment in one user''s review mentioned seeing a weird
     bug where a companion was "climbing nothing", and this comment led me to figuring
     the whole thing out.*'
+  id: totrans-85
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*最终，一位用户的评论中无意间提到了一个奇怪的bug，其中一位同伴“爬着什么都没有”，这个评论让我找到了整个问题的答案。*'
 - en: ''
+  id: totrans-86
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -417,10 +588,13 @@
     chair, but it covers everything from using a terminal to leaning on a wall. Somewhere
     deep in the complex beast that is the furniture system, we had code that disabled
     all NPCs from starting new furniture interactions if the player was in a conversation.*'
+  id: totrans-87
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*在开发方面，NPC与环境交互的系统被称为“家具”。有时这确实是字面意义上的家具，比如坐在椅子上，但它涵盖了从使用终端到靠在墙上的所有行为。在复杂的家具系统中，我们有一段代码，如果玩家正在对话中，就会禁用所有NPC开始新的家具交互。*'
 - en: ''
+  id: totrans-88
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -429,21 +603,28 @@
     stop climbing and get off. So, if someone started climbing a ladder and the player
     entered a conversation before they stopped, they wouldn''t be able to exit the
     ladder, and, well….* -- Taylor Swope (@_taylorswope) [https://twitter.com/_taylorswope/status/1205252714680045568](https://twitter.com/_taylorswope/status/1205252714680045568)'
+  id: totrans-89
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*问题在于使用梯子被视为两种不同的家具交互：一种是为了上梯子并开始攀爬，另一种是为了停止攀爬并下来。所以，如果有人开始攀爬梯子，而玩家在停止之前进入了对话，他们就无法退出梯子，嗯……*
+    -- 泰勒·斯沃普 (@_taylorswope) [https://twitter.com/_taylorswope/status/1205252714680045568](https://twitter.com/_taylorswope/status/1205252714680045568)'
 - en: '[](#choreography-tools)Choreography tools'
+  id: totrans-90
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#choreography-tools)编排工具'
 - en: Game engines tend to have visual track-based timeline tools for choreography
     like [Timeline](https://docs.unity3d.com/Packages/com.unity.timeline@1.2/manual/index.html)
     (Unity) or [Sequencer](https://docs.unrealengine.com/en-US/AnimatingObjects/Sequencer/index.html)
     (UE4). Scripters and animators setup different tracks and place events on each
     track. This way, the game can import the choreography as a game asset instead
     of code, which avoids any time-consuming re-compiles and simplifying the codebase.
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 游戏引擎通常具有用于编排的视觉轨道时间线工具，如[时间线](https://docs.unity3d.com/Packages/com.unity.timeline@1.2/manual/index.html)（Unity）或[序列器](https://docs.unrealengine.com/en-US/AnimatingObjects/Sequencer/index.html)（UE4）。脚本编写者和动画师会设置不同的轨道并在每个轨道上放置事件。这样，游戏可以将编排作为游戏资产导入，而不是代码，这避免了任何耗时的重新编译并简化了代码库。
 - en: Large projects with many conversational cutscenes (like RPGs) usually rely on
     semi-automated workflows for scripting their choreography. Their tools automatically
     generate basic cutscene scripts for every conversation, because it is not feasible
@@ -453,8 +634,10 @@
     over heavy projects will also need to adjust scene timing for every voiced language,
     and games with day-night cycles should automatically override global lighting
     with better [lighting](/process/lighting) setups for cutscenes and close-ups.
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 大型项目，如包含许多对话场景（如RPG游戏），通常依赖于半自动化的工作流程来编写其编排脚本。他们的工具会自动为每个对话生成基本的场景脚本，因为手工制作数百（或数千）个简短的场景是不切实际的。然后脚本编写者和动画师通过额外的编排来润色最重要的场景，并且QA测试员会报告任何需要特别关注的低优先级编排问题。语音密集型项目还需要调整每个配音语言的场景时间，而具有昼夜循环的游戏应该自动覆盖全局照明，以更好的[照明](/process/lighting)设置来为场景和特写镜头提供照明。
 - en: If your project doesn't have or need specialized choreography tools, then it
     is still possible to choreograph directly with gameplay scripting code. Use something
     like [yield](https://docs.unity3d.com/Manual/Coroutines.html) (Unity C#) or [Wait
@@ -466,28 +649,41 @@
     of your choreography. Imagine choreographing 100 NPCs walking through a door one-at-a-time;
     this task would be slow painful tedious work in a visual tool, but trivial in
     a scripting language with for() loops and arrays.
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你的项目没有或不需要专门的编排工具，那么仍然可以直接使用游戏脚本代码进行编排。使用类似[yield](https://docs.unity3d.com/Manual/Coroutines.html)（Unity
+    C#）或[等待节点](https://docs.unity3d.com/bolt/1.4/manual/bolt-time.html)（Unity Bolt）或[延迟](https://docs.unrealengine.com/en-US/BlueprintAPI/Utilities/FlowControl/Delay/index.html)
+    / [计时器](https://docs.unrealengine.com/en-US/InteractiveExperiences/UseTimers/index.html)节点（UE4
+    BP）来按顺序调用函数，并使用你想要的计时。当你需要完全访问所有脚本函数作为编排的一部分时，这种方法很有用。想象一下编排100个NPC一个接一个地穿过一扇门；在视觉工具中，这项任务将是缓慢、痛苦且乏味的工作，但在具有for()循环和数组的脚本语言中，这将是微不足道的事情。
 - en: <picture class="relative">![](../Images/0d187780aae82ce810c85e7bdc031982.png)
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/0d187780aae82ce810c85e7bdc031982.png)
 - en: screenshot of Cutscene Editor used for Dragon Age Origins (2009) with 3D camera
     preview and track-based timeline</picture>
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: Dragon Age Origins（2009）使用的场景编辑器截图，带有3D摄像机预览和基于轨道的时间线</picture>
 - en: '[](#example-choreography-workflow-the-witcher-3)Example choreography workflow:
     The Witcher 3'
+  id: totrans-96
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[示例编排工作流程：巫师3](#example-choreography-workflow-the-witcher-3)'
 - en: 'For their large open world RPG The Witcher 3 (2015), developers CD Projekt
     Red divided their quest workflow into four phases: (1) *Writing* the script and
     choices with a screenplay format, (2) *Quest scripting* the possible branches
     and game states in a visual scripting flowchart tool, (3) *Dialogue and choreography*
     with preliminary auto-generation pass, and (4) *Post Production* with fixes and
     visual polish for cutscenes.'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于他们的大型开放世界RPG《巫师3》（2015），开发商CD Projekt Red将他们的任务工作流程分为四个阶段：（1）以剧本格式**编写**脚本和选择，（2）在视觉脚本流程图工具中**脚本编写**可能的分支和游戏状态，（3）**对话和编排**，通过初步自动生成过程，以及（4）**后期制作**，对场景进行修复和视觉润色。
 - en: The dialogue designer tool's automatic cutscene generator is especially interesting
     here. It takes the voice over audio and automatically generates tracks and timings
     for actors, with semi-randomized animation variations and standard camera shots
@@ -495,15 +691,21 @@
     rule. The result is a basic starting point for a cutscene that is already mostly
     done, allowing the choreographer to focus more on adding details and mood rather
     than boring rote work to setup fundamentals.
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 对话设计师工具的自动场景生成器在这里特别有趣。它接受配音音频，并自动为演员生成轨道和计时，包括半随机化的动画变化和遵循基本电影摄影模式（如镜头反打和180度规则）的标准摄像机镜头。结果是场景的基本起点，已经基本完成，允许编排师更多地专注于添加细节和氛围，而不是设置基础时的枯燥重复工作。
 - en: <picture class="relative">![](../Images/8353fcc82353e69680e08c5c7d4eed28.png)
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/8353fcc82353e69680e08c5c7d4eed28.png)
 - en: 'diagram of The Witcher 3''s cutscene generator tool, from GDC 2016: "Cinematic
     Dialogue in The Witcher 3"</picture>'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自GDC 2016的《巫师3》场景生成器工具的图表：“《巫师3》中的电影对话”<picture>
 - en: While the weaknesses of this method weren't really mentioned in [CDPR's GDC
     2016 talk](https://www.youtube.com/watch?v=chf3REzAjgI), we can imagine the main
     drawback here is that it requires you to finalize and systematize much of your
@@ -512,263 +714,371 @@
     be difficult for the generator to understand what to do. As with any procedural
     generation system, it is heavily dependent on its inputs, and without good meaningful
     input it will just result in the "[oatmeal problem](https://emshort.blog/2016/09/21/bowls-of-oatmeal-and-text-generation/)."
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管这种方法在[CDPR的GDC 2016演讲](https://www.youtube.com/watch?v=chf3REzAjgI)中并没有真正提到其弱点，但我们可以想象这里的主要缺点是它要求你最终确定并系统化你脚本的大部分内容、配音录音和动画，以便将其输入到生成器中。没有标记的音频资产和接近完成的角色，生成器将难以理解要做什么。就像任何程序生成系统一样，它高度依赖于其输入，如果没有良好的有意义的输入，它只会导致“[燕麦问题](https://emshort.blog/2016/09/21/bowls-of-oatmeal-and-text-generation/)”。
 - en: 'Other interesting details about CDPR''s choreography workflow:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于CDPR编排工作流程的其他有趣细节：
 - en: The game was scripted and choreographed in English, but the length of the voice
     over audio would obviously vary with each language. So for every localization,
     the choreography and camera shot sequences are automatically sped-up or slowed-down;
     for example, French choreography runs 16% slower than English. [[37:46]](https://youtu.be/chf3REzAjgI?t=2266)
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 游戏是用英语编写的和编排的，但配音音频的长度显然会随着每种语言的差异而变化。因此，对于每种本地化，编排和镜头序列会自动加快或减慢；例如，法语编排比英语慢16%。[[37:46]](https://youtu.be/chf3REzAjgI?t=2266)
 - en: To stop NPCs and wildlife from interrupting cutscenes, choreographers blocked
     out an invisible collision box / clipping trigger volume / "deny area" to push
     non-choreographed characters away and keep the camera shot clear. [[40:25]](https://youtu.be/chf3REzAjgI?t=2425)
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为了阻止NPC和野生动物打断场景，编排者设置了一个不可见的碰撞框/剪辑触发音量/“拒绝区域”，以将非编排角色推走并保持镜头清晰。[[40:25]](https://youtu.be/chf3REzAjgI?t=2425)
 - en: <picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
     max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">video
     showing the The Witcher 3 cutscene generator tool, with two randomly generated
     variations on the same dialogue scene
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
+    max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">展示《巫师3》场景生成器工具的视频，以及同一对话场景的两个随机生成的变体
 - en: How to script a level feature
+  id: totrans-106
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 如何脚本化关卡功能
 - en: Scripting is a creative problem-solving task that is similar to any other level
     design task. First you want to understand the problem, and then you want to try
     various approaches.
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 脚本化是一种创造性问题解决任务，类似于任何其他级别设计任务。首先，你想要理解问题，然后你想要尝试各种方法。
 - en: Do a little **planning** and **research**.
+  id: totrans-108
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 进行一些**规划**和**研究**。
 - en: '**Prototype** the most basic version and **playtest**.'
+  id: totrans-109
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**原型**最基本版本并**进行测试**。'
 - en: Gradually **iterate** and elaborate on the script until it meets your needs.
+  id: totrans-110
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 逐步**迭代**并完善脚本，直到满足你的需求。
 - en: '[](#id-1.-planning-a-script)1\. Planning a script'
+  id: totrans-111
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#id-1.-planning-a-script)1. 规划脚本'
 - en: 'As with any creative task, **a little bit of planning helps a lot.** Before
     you open the scripting editor, take a few minutes to **define what you want your
     script to do**. Some examples of planning documents:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 就像任何创造性任务一样，**一点点的规划大有裨益**。在你打开脚本编辑器之前，花几分钟时间**定义你想要你的脚本做什么**。一些规划文档的例子：
 - en: Scripting a mission? Draw a flowchart and markup a [layout](/process/layout)
     drawing with the mission locations.
+  id: totrans-113
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 脚本化任务？绘制流程图并用任务位置标记[布局](/process/layout)图。
 - en: Scripting an object or behavior? Sketch how it should look and its various states
     / properties.
+  id: totrans-114
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 脚本化一个对象或行为？草图展示它应该看起来什么样以及它的各种状态/属性。
 - en: Scripting a fight or encounter? Do some [encounter design](/process/combat/encounter)
     first.
+  id: totrans-115
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 脚本化一场战斗或遭遇？先进行一些[遭遇设计](/process/combat/encounter)。
 - en: Scripting dialogue or a cutscene? Write a script and draw a storyboard.
+  id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 脚本化对话或场景？编写脚本并绘制分镜图。
 - en: 'Next, **research** various ways of implementing the feature by googling. When
     googling for programming or technical scripting help, make sure to:'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来，通过谷歌搜索**研究**实现该功能的各种方法。当在谷歌搜索编程或技术脚本帮助时，请确保：
 - en: '*Be technically specific.* Include the game or engine name, as well as the
     scripting language. Surround both in quotation marks to require these terms in
     the search results.'
+  id: totrans-118
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*技术上要具体。* 包括游戏或引擎名称，以及脚本语言。将两者都用引号括起来，以要求搜索结果中包含这些术语。'
 - en: '*Be conceptually general.* Describe the desired behavior in generic terms.
     For more complicated features, break the problem into smaller simpler parts and
     google separately.'
+  id: totrans-119
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*概念上要通用。* 用通用术语描述期望的行为。对于更复杂的功能，将问题分解成更小的简单部分，并分别进行谷歌搜索。'
 - en: 'Some examples of search terms:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些搜索词的例子：
 - en: 😢`**how to code a ceiling fan**` is vague in the worst way (which code language?)
     and specific in the worst way (you're hoping someone else has specifically built
     a virtual ceiling fan)
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 😢`**如何编写吊扇的代码**`在表述上非常模糊（哪种编程语言？）并且在具体性上也是最糟糕的（你希望有人已经专门构建了一个虚拟吊扇）
 - en: 😎`**"unity" "c#" spinning object code**` is technically specific (we only want
     Unity C# code) and helpfully generalizing (a ceiling fan is a type of spinning
     thing) and we can extrapolate from the generic example for our specific use case
+  id: totrans-122
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 😎`**"unity" "c#" 旋转对象代码**`在技术上非常具体（我们只想要Unity C#代码）并且有帮助地进行了概括（吊扇是一种旋转物体），我们可以从通用示例中推断出我们特定用例的解决方案
 - en: 😐 `**game dev scripting objectives system**` will maybe tell you someone's opinion
     about how to architect an objectives system, but without any specific help. What
     type of game objective do you want to script, exactly? No search engine can design
     your gameplay for you.
+  id: totrans-123
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 😐 `**游戏开发脚本目标系统**`可能会告诉你某人关于如何构建目标系统的观点，但没有具体的帮助。你确切地想编写哪种类型的目标脚本？没有任何搜索引擎可以为你设计游戏玩法。
 - en: What if we breakdown this problem into simpler and more specific steps, and
     google for these smaller steps separately?
+  id: totrans-124
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们将这个问题分解成更简单、更具体的步骤，并分别对这一些小步骤进行谷歌搜索呢？
 - en: 😎`**"ue4" "blueprint" display text on screen**` helps us figure out how to notify
     the player about an objective
+  id: totrans-125
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 😎`**"ue4" "blueprint" 屏幕上显示文本**`帮助我们了解如何通知玩家关于目标的信息
 - en: 😎 `**"ue4" "blueprint" player enters trigger**` helps us learn how to detect
     when the objective is completed, when the player has reached a certain location
     in the level, etc.
+  id: totrans-126
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 😎 `**"ue4" "blueprint" 玩家进入触发器**`帮助我们学习如何检测目标是否完成，玩家在关卡中达到某个位置等情况
 - en: '**When to ask for help.** Unless you''re totally lost, avoid asking other people
     for help at this very early stage. Try to do it yourself with what you''ve found
     already, and see how far you get. Asking someone else works better when you have
     more specific questions or have some existing scripts to troubleshoot. To get
     a useful answer, you must first understand the problem.'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: '**何时寻求帮助。**除非你完全迷失方向，否则在早期阶段避免向其他人寻求帮助。尽量自己完成你已经找到的事情，看看你能走多远。当你有更具体的问题或有一些现有的脚本要调试时，向其他人求助效果更好。为了得到有用的答案，你必须首先理解问题。'
 - en: '[](#id-2.-prototyping-a-script)2\. Prototyping a script'
+  id: totrans-128
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#id-2.-prototyping-a-script)2. 脚本原型设计'
 - en: After you've done some searches, you now have a better understanding of the
     problem and you are ready to **prototype** the feature in the scripting tool.
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 在进行了一些搜索之后，你现在对问题有了更好的理解，并且你准备好在脚本工具中**原型**这个功能了。
 - en: 'ask community members for advice. Join an engine-specific forum, website, or
     Discord, and ask your question. If possible, recap the research you''ve already
     done and include any error messages. Here''s an example question you could post:'
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 向社区成员寻求建议。加入一个特定引擎的论坛、网站或Discord，并提出你的问题。如果可能的话，总结你已经进行的研究，并包括任何错误信息。以下是你可能发布的示例问题：
 - en: '"I''m trying to make a working carnival carousel. I found this C# code to make
     an object spin (link) but I when I try'
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: '"我正在尝试制作一个工作的游乐园旋转木马。我找到了这段C#代码来使对象旋转（链接），但当我尝试'
 - en: Encounter scripting workflow
+  id: totrans-132
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 遇到脚本工作流程
 - en: Usually involves a trigger to spawn / aggro enemies, and a gate to force the
     player to deal with enemies
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常涉及触发器来生成/激怒敌人，以及一个门来强迫玩家处理敌人
 - en: 'Before you begin scripting:'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 在开始编写脚本之前：
 - en: do some encounter design on paper. Have a plan before you open the editor, even
     a basic plan. what weapons or abilities will the player have for this encounter?
+  id: totrans-135
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在纸上做一些遭遇设计。在打开编辑器之前有一个计划，即使是一个基本的计划。玩家在这个遭遇中会有哪些武器或能力？
 - en: know your combat metrics. What are the ideal enemy engagement distances? is
     the blockout too big or too small?
+  id: totrans-136
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 了解你的战斗指标。理想的敌人交战距离是多少？封锁区域过大还是过小？
 - en: Then, place some AIs / NPCs / enemies and start playing with them
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，放置一些AI / NPC / 敌人，并开始与他们互动
 - en: how does the NPC react to the existing space? do they do anything you want to
     prevent with hinting?
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: NPC 如何应对现有空间？他们是否做了你想要通过提示来阻止的事情？
 - en: what tools are available to you? static vs. scripted vs. dynamic?
+  id: totrans-139
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 你有哪些可用的工具？静态与脚本、动态之间的比较？
 - en: To review...
+  id: totrans-140
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 要复习...
 - en: '**Scripts** are level-specific behaviors designed with a lightweight programming
     language, often with an engine-specific visual programming tool.'
+  id: totrans-141
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**脚本**是使用轻量级编程语言设计的关卡特定行为，通常与特定于引擎的可视化编程工具一起使用。'
 - en: Common features to script include **objectives**, **choreography**, **triggers**,
     **gates**, and **AI**.
+  id: totrans-142
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 常见的脚本特性包括**目标**、**编排**、**触发器**、**门**和**AI**。
 - en: When googling, include the engine name and search with generic terms.
+  id: totrans-143
   prefs:
   - PREF_UL
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在谷歌搜索时，包括引擎名称并使用通用术语进行搜索。
 - en: For short term small projects (< 1 month) the simplest and fastest hack could
     be good enough.
+  id: totrans-144
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于短期的小型项目（小于1个月），最简单、最快的黑客攻击可能就足够了。
 - en: For long term big projects (6+ months) a more stable systemic method is better.
+  id: totrans-145
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于长期的大型项目（6个月以上），更稳定的系统方法会更好。
 - en: Now what?
+  id: totrans-146
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 现在怎么办？
 - en: Scripting is important for [**encounter design**](/process/combat/encounter)
     and [**storytelling**](/process/env-art/storytelling).
+  id: totrans-147
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 脚本对于[**遭遇设计**](/process/combat/encounter)和[**叙事**](/process/env-art/storytelling)非常重要。
 - en: After you've scripted your main [**pacing**](/process/preproduction/pacing)
     beats, you may want to perform a [**lighting**](/process/lighting) pass on the
     [**blockout**](/process/blockout).
+  id: totrans-148
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在你编写了主要的[**节奏**](/process/preproduction/pacing)之后，你可能想要对[**块状**](/process/blockout)进行[**照明**](/process/lighting)处理。
 - en: '[](#further-reading)Further reading'
+  id: totrans-149
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#further-reading)进一步阅读'
 - en: Most mature game engines have visual scripting tools. Unity uses [Bolt](https://docs.unity3d.com/bolt/),
     Unreal Engine 4 uses [Blueprint](https://docs.unrealengine.com/en-US/ProgrammingAndScripting/Blueprints/index.html),
     and Godot has [Visual Scripts](https://docs.godotengine.org/en/stable/getting_started/scripting/visual_script/getting_started.html).
     See [Tools](/appendix/tools) for a full list of games and their scripting tools.
+  id: totrans-150
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 大多数成熟的游戏引擎都有可视化脚本工具。Unity 使用 [Bolt](https://docs.unity3d.com/bolt/)，Unreal Engine
+    4 使用 [Blueprint](https://docs.unrealengine.com/en-US/ProgrammingAndScripting/Blueprints/index.html)，而
+    Godot 有 [Visual Scripts](https://docs.godotengine.org/en/stable/getting_started/scripting/visual_script/getting_started.html)。见[工具](/appendix/tools)获取游戏及其脚本工具的完整列表。
 - en: 'Intro to scripting for Unreal: ["Implementing Level Design with Blueprints"
     by Patrick Haslow](https://www.unrealengine.com/en-US/onlinelearning-courses/implementing-level-design-with-blueprints),
     November 2021.'
+  id: totrans-151
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Unreal 脚本入门：[《使用蓝图实现关卡设计》由 Patrick Haslow 编写](https://www.unrealengine.com/en-US/onlinelearning-courses/implementing-level-design-with-blueprints)，2021年11月。
 - en: '[UE4 Blueprints From Hell](https://blueprintsfromhell.tumblr.com/) is a Tumblr
     archive of messy / hacky visual programming graphs authored in Unreal Engine 4''s
     Blueprint system. It''s fun but also a bit melodramatic; sometimes shipping an
     inefficient script makes more sense than engineering a time-consuming "better"
     design. If a cleaner method is 0.0001 ms faster but took twice as long to make,
     then it''s arguably not a better script.</picture>'
+  id: totrans-152
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[UE4 Blueprints From Hell](https://blueprintsfromhell.tumblr.com/) 是一个 Tumblr
+    存档，其中包含了在 Unreal Engine 4 的 Blueprint 系统中编写的混乱/黑客式的可视化编程图。它很有趣，但也有些夸张；有时发布一个效率不高的脚本比设计一个耗时较长的“更好”设计更有意义。如果一个更干净的方法快了0.0001毫秒，但制作时间却翻倍，那么它可能不是一个更好的脚本。</picture>'

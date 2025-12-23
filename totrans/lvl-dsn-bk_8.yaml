@@ -1,167 +1,246 @@
 - en: 🏡Environment Art
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 🏡环境艺术
 - en: 原文：[https://book.leveldesignbook.com/process/env-art](https://book.leveldesignbook.com/process/env-art)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://book.leveldesignbook.com/process/env-art](https://book.leveldesignbook.com/process/env-art)
 - en: What is environment art?
+  id: totrans-2
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 什么是环境艺术？
 - en: '**Environment art** (or "env art")is the cosmetic decoration of a level or
     game world, while preserving its core functionality and gameplay.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: '**环境艺术**（或“环境艺术”）是对关卡或游戏世界的装饰性装饰，同时保留其核心功能性和游戏玩法。'
 - en: This work involves building up a library of modules, props, textures, materials,
     and other art assets, and then **art passing** the level by painting / placing
     decor to supplement the underlying design.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 这项工作涉及建立一个模块、道具、纹理、材料和其它艺术资源的库，然后通过绘画/放置装饰来**艺术通行**关卡，以补充底层设计。
 - en: <picture class="relative">![](../Images/eb070cc3a79ed7ec80bebe75006ae67d.png)
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/eb070cc3a79ed7ec80bebe75006ae67d.png)
 - en: diagram comparing level design vs Level Design vs environment art, using process
     images of "Gallente Research Facility" from Dust 514 [by CCP Games](https://web.archive.org/web/20160305103957/http://dust514.com/news/blog/2013/08/gallente-research-facility/)</picture>
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 比较关卡设计、Level Design和环境艺术的图表，使用“尘埃514”（Dust 514）中“盖伦特研究设施”的过程图像 [由 CCP Games
+    提供](https://web.archive.org/web/20160305103957/http://dust514.com/news/blog/2013/08/gallente-research-facility/)</picture>
 - en: Before the 2000s, level designers often made their own environment art too.
     But today, a level designer is usually supposed to make as little visual art as
     possible, and the environment artist is usually supposed to wait for a mature
     [blockout](/process/blockout) before beginning an art pass. However, when working
     in a small team, level designers will likely have to source or make their own
     environment art, and vice versa.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 在2000年之前，关卡设计师经常也制作自己的环境艺术。但如今，关卡设计师通常应该尽可能少地制作视觉艺术，而环境艺术家通常应该在开始艺术通行之前等待成熟的
+    [块选](/process/blockout)。然而，在小团队中工作时，关卡设计师可能会需要寻找或制作自己的环境艺术，反之亦然。
 - en: Here **we will focus on general environment art principles** and high level
     concerns, so that level designers can better understand the art process and collaborate
     with environment artists. **This is not an environment art book.**
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里 **我们将关注一般环境艺术原则** 和高级关注点，以便关卡设计师更好地理解艺术流程并与环境艺术家合作。**这不是一本环境艺术书籍**。
 - en: '*For links to free textures, materials, and models, see* [*Resources*](/appendix/resources)*.*'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: '*有关免费纹理、材料和模型的链接，请参阅[*资源*](/appendix/resources)*.*'
 - en: '*For links to dedicated environment art communities, sites, and books, see*
     [*Community*](/appendix/communities)*.*'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: '*有关专用环境艺术社区、网站和书籍的链接，请参阅[*社区*](/appendix/communities)*.*'
 - en: <picture class="relative">![](../Images/2849b699c3bcb6ab1f35eaccf15ecc84.png)
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/2849b699c3bcb6ab1f35eaccf15ecc84.png)
 - en: animated GIF showing iterated blockout and art pass process for "Deathstorm"
     in Sniper Elite 4 (2017) ([via Twitter](https://twitter.com/JobsAtRebellion/status/1369307937320144906))</picture>
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 展示“狙击精英4”（2017）中“死亡风暴”迭代块选和艺术通行的动画GIF ([通过推特](https://twitter.com/JobsAtRebellion/status/1369307937320144906))</picture>
 - en: How to plan env art
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 如何规划环境艺术
 - en: 'Before you begin an art pass, you should to be able to answer these questions:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 在开始艺术通行之前，你应该能够回答以下问题：
 - en: '*Theme.* What is the time of day, climate, and location for the level?'
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*主题。* 关卡的时间、气候和地点是什么？'
 - en: '*Gameplay.* Which parts need emphasis? What should be simple, what should be
     detailed?'
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*游戏玩法。* 哪些部分需要强调？哪些应该简单，哪些应该详细？'
 - en: '*Style.* Realistic or stylized? What type of realism, what type of style?'
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*风格。* 现实主义还是风格化？哪种类型的现实主义，哪种类型的风味？'
 - en: '*Palette.* What''s the overall color palette, what''s the mood? What kinds
     of shapes?'
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*调色板。* 整体的色彩调色板是什么，氛围是怎样的？有哪些形状？'
 - en: '*Production.* Which parts need to be done first, and which should be last (or
     never)?'
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*制作。* 哪些部分需要先做，哪些应该最后做（或永不）？'
 - en: '*For more on planning, see* [*Pre-production*](/process/preproduction) *and*
     [*Research*](/process/preproduction/research)*.*'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: '*有关规划更多信息，请参阅[*前期制作*](/process/preproduction) 和 [*研究*](/process/preproduction/research)*.*'
 - en: <picture class="relative">![](../Images/fff03298a9c252f9c6d4199acb41adeb.png)
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/fff03298a9c252f9c6d4199acb41adeb.png)
 - en: internal concept art, photo reference, and silhouette studies for The Last Of
     Us Part 2 (2020), board [by John Sweeney](https://twitter.com/johnsweeney2147/status/1280646295837802496)</picture>
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 《最后生还者第二部》（2020）的内部概念艺术、参考照片和轮廓研究，由约翰·斯威尼 [在推特上](https://twitter.com/johnsweeney2147/status/1280646295837802496)
+    发布的板图</picture>
 - en: '[](#concept-art)Concept art'
+  id: totrans-23
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#concept-art)概念艺术'
 - en: '**Concept art** is generally any visual art used for planning the game, but
     not used in the game itself.'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: '**概念艺术**通常是指用于规划游戏但不在游戏中使用的任何视觉艺术。'
 - en: Sometimes the goal of concept art is to convey a desired theme or overall mood,
     while other times it must communicate technical specifications and details for
     art assets. Ask yourself, is this concept art meant to inspire, or is it trying
     to solve a specific visual design problem?
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时概念艺术的目标是传达一个期望的主题或整体氛围，而有时它必须传达艺术资源的技术规范和细节。问问自己，这个概念艺术是为了启发，还是试图解决一个特定的视觉设计问题？
 - en: Inspirational mood art is most useful during pre-production (especially when
     pitching a commercial project to a publisher) or early production, but detailed
     technical art is more useful later in production.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 启发性的氛围艺术在前期制作（尤其是在向发行商推销商业项目时）或早期制作阶段非常有用，但详细的技术艺术在后期制作中更有用。
 - en: '**If you use someone''s concept art, credit them** -- or even contact the artist
     and ask for permission before you begin. Attribution is very important if you''re
     looking for a job; everyone knows everyone, and failing to credit someone will
     look like a red flag.'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: '**如果你使用了某人的概念艺术，请给予他们信用**——甚至在开始之前联系艺术家并请求许可。如果你在找工作，归因非常重要；每个人都认识每个人，未能给予某人信用将看起来像是一个红旗。'
 - en: <picture class="relative">![](../Images/ff6eb55c8270e6061e83671270dc6cab.png)
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/ff6eb55c8270e6061e83671270dc6cab.png)
 - en: first person concept art (paintover?) of "underground vault" environment concept
     for Portal 2 (2011)</picture>
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: Portal 2（2011）地下金库环境概念的第一人称概念艺术（涂鸦？）</picture>
 - en: '[](#paintovers)Paintovers'
+  id: totrans-30
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#paintovers)涂鸦'
 - en: A **paintover** is a type of concept art that starts with a 3D screenshot and
     then an artist literally "paints over" the underlying screenshot to visualize
     the next version.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: '**涂鸦**是一种概念艺术，它从3D截图开始，然后艺术家实际上“涂鸦”在底图上，以可视化下一个版本。'
 - en: It is very common to paintover a [blockout](/process/blockout) screenshot to
     plan an art pass. This workflow saves a lot of time because the artist doesn't
     have to manually draft the perspective calculations for basic shapes. For this
     reason, even 2D artists should have at least some basic knowledge of 3D art tools,
     so they can potentially build their own blockouts for paintovers.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 在计划艺术流程时，涂鸦一个[块状截图](/process/blockout)是非常常见的。这种工作流程可以节省大量时间，因为艺术家不需要手动绘制基本形状的透视计算。因此，即使是2D艺术家也应该至少有一些基本的3D艺术工具知识，这样他们就可以潜在地为自己的涂鸦构建块状图。
 - en: 'Sometimes the artist fully renders some finished-looking concept art (see image
     above)... but usually the paintover is about providing direct feedback between
     artists: suggested edits, corrections, and notes (see image below).'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时艺术家会完全渲染一些看起来完成的最终概念艺术（见上图）...但通常涂鸦是为了在艺术家之间提供直接的反馈：建议的编辑、纠正和注释（见下图）。
 - en: <picture class="relative">![](../Images/35eb30fedafe34d4bf4cd22a264527ad.png)
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/35eb30fedafe34d4bf4cd22a264527ad.png)
 - en: annotated paintover with notes for "The Quarry" by Adam Dencker [(via Artstation.com)](https://www.artstation.com/blogs/bronzegear/wdw2/the-quarry-pt6)</picture>
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 由Adam Dencker创作的“The Quarry”的涂鸦注释（通过Artstation.com）[(via Artstation.com)](https://www.artstation.com/blogs/bronzegear/wdw2/the-quarry-pt6)</picture>
 - en: '[](#model-sheets)Model sheets'
+  id: totrans-36
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#model-sheets)模型图'
 - en: A **model sheet** is a more specific type of concept art for individual art
     assets that includes orthographic views for production artists to work from, as
     well as contextual mockups to show how that asset should be used within the game.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: '**模型图**是一种针对单个艺术资源的更具体的概念艺术，它包括用于生产艺术家的正交视图，以及用于展示该资源在游戏内如何使用的上下文模拟图。'
 - en: In the concept art / model sheet pictured below, note how we get a good sense
     of how this octagonal ice crystal platform model will fit into the whole environment
     theme. Furthermore, the orthographic top and bottom views answer the prop artist's
@@ -171,174 +250,258 @@
     together for an interlocking visual effect -- together, it helps the environment
     artist understand which details are important to preserve and carry over to the
     in-game asset.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的概念艺术/模型图中，注意我们如何获得一个很好的感觉，了解这个八角形冰晶平台模型将如何融入整个环境主题。此外，正视图和俯视图回答了道具艺术家的关于结构和颜色的疑问，并且可以轻松地作为参考引入3D建模工具。正视图强调了每个平台的金色角落装饰，而右下角的插图显示了角落装饰如何拼接在一起以产生互锁的视觉效果——共同，它帮助环境艺术家了解哪些细节需要保留并传递到游戏资产中。
 - en: <picture class="relative">![](../Images/0b5b8ae211f5cd2f58aed036324ba041.png)
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/0b5b8ae211f5cd2f58aed036324ba041.png)
 - en: 'combination concept art, model sheet, and paintover [by Sarah Morris](https://twitter.com/BraveRobynArt/status/1316108592857124864/)
     for Spyro: Reignited</picture>'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: '结合概念艺术、模型图和涂鸦[由Sarah Morris](https://twitter.com/BraveRobynArt/status/1316108592857124864/)为Spyro:
+    Reignited</picture>'
 - en: Art assets
+  id: totrans-41
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 艺术资产
 - en: After some planning, artists produce art **assets** -- visual objects to insert
     directly into the level. Unlike concept art, this is what the game engine must
     read and what the player will see in-game.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 经过一些规划，艺术家制作艺术**资产**——可以直接插入到关卡中的视觉对象。与概念艺术不同，这是游戏引擎必须读取的内容，玩家在游戏中将看到的内容。
 - en: 'When producing art assets, keep in mind:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 在制作艺术资产时，请记住：
 - en: '**The Brief.** What is the task? What does this asset need to do?'
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**任务说明**。任务是什么？这个资产需要做什么？'
 - en: '**Approval.** Who gives feedback on this asset? How will we know if it works?'
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**审批**。谁会对这个资产提供反馈？我们将如何知道它是否有效？'
 - en: '**Scope.** How much time to make this asset? Small rare details deserve less
     time.'
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**范围**。制作这个资产需要多少时间？小而罕见的细节需要较少的时间。'
 - en: '**Workflow.** How many steps to make this asset? In which tools?'
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**工作流程**。制作这个资产需要多少步骤？在哪些工具中？'
 - en: '**Pipeline.** How to export art into a format that the engine can read?'
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**流程**。如何将艺术导出为引擎可以读取的格式？'
 - en: Longer term projects (6+ months) with larger teams (6+ people?) should formalize
     this art production process to avoid costly redos, wasted work, and miscommunication.
     Maintain a spreadsheet or kanban board to track tasks, and move each asset through
     different stages of testing and team review. While all this task tracking may
     feel slow at first, communication and clarity are faster in the long run.
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于长期项目（6个月以上）和大型团队（6人以上？），应该正式化这一艺术制作流程，以避免昂贵的重做、浪费的工作和沟通不畅。维护一个电子表格或看板来跟踪任务，并将每个资产通过不同的测试和团队审查阶段。虽然一开始这些任务跟踪可能感觉比较慢，但从长远来看，沟通和清晰度会更快。
 - en: '*For more on organizing work tasks and team communication, see* *Production**.*'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: '*有关组织工作任务和团队沟通的更多信息，请参阅* *生产**.*'
 - en: <picture class="relative">![](../Images/dd5d3842ef80e976b9a4cff71a2c00a3.png)
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/dd5d3842ef80e976b9a4cff71a2c00a3.png)
 - en: art production process diagram with three review stages, from "Be your best
     you by critiquing everything your workmates do" by Hannah Mackintosh for Play
     By Play 2021</picture>
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: art production process diagram with three review stages, from "Be your best
+    you by critiquing everything your workmates do" by Hannah Mackintosh for Play
+    By Play 2021</picture>
 - en: Most art assets for levels are either 2D textures or 3D models, but in this
     section we'll also talk briefly about shaders and special FX later on.
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数关卡的艺术资产要么是2D纹理，要么是3D模型，但在这个部分我们也会简要地谈谈着色器和特殊效果。
 - en: '[](#asset-list)Asset list'
+  id: totrans-54
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#asset-list)资产清单'
 - en: Before making environment art, you may need to make an **asset list,** a list
     of all the art assets needed for a particular scene or level. Asset lists are
     usually in some sort of spreadsheet format, listing each asset's priority and
     estimated production time.
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 在制作环境艺术之前，你可能需要制作一个**资产清单**，列出特定场景或关卡所需的所有艺术资产。资产清单通常以某种电子表格格式存在，列出每个资产的优先级和估计制作时间。
 - en: In the image below, the artist has made an asset list spreadsheet grouped by
     month / week. They estimated they had about 30 hours a week to work, and prioritized
     a scene blockout / the most important level geometry assets first. Materials and
     detail props only happen later, after the foundation has been set.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的图片中，艺术家制作了一个按月份/周分组的项目清单电子表格。他们估计每周有大约30小时的工作时间，并将场景区块/最重要的级别几何资产优先考虑。材质和细节道具仅在基础设置之后进行。
 - en: <picture class="relative">![](../Images/0b04cf9bd58184b6fc6d81c56f599777.png)
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/0b04cf9bd58184b6fc6d81c56f599777.png)
 - en: an asset list / calendar / "block plan" for a 3D scene "The Grand Bath" by Vincent
     Dérozier, [via ArtStation](https://www.artstation.com/artwork/RnagAO)</picture>
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个3D场景“大浴场”的资产清单/日历/“区块计划”，由Vincent Dérozier创作，[通过ArtStation](https://www.artstation.com/artwork/RnagAO)
 - en: '[](#materials-and-textures)Materials and textures'
+  id: totrans-59
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#materials-and-textures)材质和纹理'
 - en: '**Textures** are 2D images that cover the 3D surface of the map. Since the
     2000s we often combine multiple textures together into **materials**, texture
     bundles with additional data like roughness, shininess, light emission, etc.'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: '**纹理**是覆盖地图3D表面的2D图像。自2000年代以来，我们经常将多个纹理组合在一起形成**材质**，这些材质包含额外的数据，如粗糙度、光泽度、光发射等。'
 - en: 'For environment art, texture design and layout is very important. Unlike character
     skins, we often reuse world textures heavily throughout levels. The ideal environment
     texture needs to be able to work well in many different situations: it should
     tile well across a surface, but also easily divide into reusable parts.'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于环境艺术，纹理设计和布局非常重要。与角色皮肤不同，我们经常在各个级别中大量重用世界纹理。理想的环境纹理需要在许多不同情况下都能很好地工作：它应该能够在表面上很好地平铺，同时也容易分割成可重用的部分。
 - en: '*For more on texturing and defining materials, see* [*Texturing*](/process/env-art/texturing)*.*'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: '*有关纹理和材质定义的更多信息，请参阅* [*纹理*](/process/env-art/texturing)*。'
 - en: <picture class="relative">![](../Images/4ad0139fd029eb30b2cd7f5b8f08283e.png)
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/4ad0139fd029eb30b2cd7f5b8f08283e.png)
 - en: texture mapping a medieval house, from Mount and Blade</picture>
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 从《剑与盾》中纹理映射中世纪房屋
 - en: '[](#modular-kit)Modular kit'
+  id: totrans-65
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#modular-kit)模块化套件'
 - en: A **modular kit** is a 3D tileset made of **modules**, environmental meshes
     designed to snap together in a variety of ways. Modules are most effective for
     buildings and structures that make regular use of repetition along a grid, but
     they don't work as well for organic or natural shapes.
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: '**模块化套件**是由**模块**组成的3D瓦片集，这些模块是设计成可以以多种方式拼接的环境网格。模块对于沿网格重复使用的建筑和结构最为有效，但对于有机或自然形状则不太适用。'
 - en: '*For more on how to plan, measure, and construct kits, see* [*Modular kit design*](/process/blockout/metrics/modular)*.*'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: '*有关如何规划、测量和构建套件的信息，请参阅* [*模块化套件设计*](/process/blockout/metrics/modular)*。'
 - en: <picture class="relative">![](../Images/febbe00d2be6f5884e96734c01ab99dd.png)
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/febbe00d2be6f5884e96734c01ab99dd.png)
 - en: reusing a modular wall segment (left) to build a rounded room (right); [example
     by Lea Kronenberger](https://www.beyondextent.com/articles/balancing-modularity-and-uniqueness-in-environment-art
     )</picture>
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 重复使用模块化墙段（左侧）来构建圆形房间（右侧）；[由Lea Kronenberger提供示例](https://www.beyondextent.com/articles/balancing-modularity-and-uniqueness-in-environment-art
+    )</picture>
 - en: There are many cases where modular meshes will not connect cleanly, especially
     if you build off-grid or at non-90 degree angles. Nonetheless, you may still want
     to preserve certain angles or odd lengths, for [metrics](/process/blockout/metrics)
     reasons or to evoke a gritty dirty non-manufactured natural feel. In these cases,
     just let the modules freely intersect, and then cover the messy intersection with
     another object.
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 在许多情况下，模块化网格无法干净地连接，尤其是如果你在非网格或非90度角上构建。尽管如此，你可能仍然希望保留某些角度或奇数长度，出于[度量](/process/blockout/metrics)原因或为了唤起粗糙、脏乱的非制造自然感。在这些情况下，只需让模块自由相交，然后用另一个物体覆盖杂乱的交汇处。
 - en: For example, imagine you had two rectangular floor meshes that meet at an odd
     angle -- arrange them to join seamlessly as best as you can, then cover the intersection
     with a wall, pillar, rock, crate, car, etc. Problem solved!
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，假设你有两个矩形地板网格以奇角相遇 -- 尽可能地安排它们无缝连接，然后用墙壁、柱子、岩石、板条箱、汽车等覆盖交汇处。问题解决！
 - en: <picture class="relative">![](../Images/26f27c10da3e54c2bf7878806a911dc3.png)
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/26f27c10da3e54c2bf7878806a911dc3.png)
 - en: how to join two modules at an odd angle? just cover the mess! [image by Joe
     Wintergreen](https://twitter.com/joewintergreen/status/839960782364299265)</picture>
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 如何以奇特的角连接两个模块？只需掩盖混乱！[图片由Joe Wintergreen提供](https://twitter.com/joewintergreen/status/839960782364299265)
 - en: '[](#hero-props-landmarks)Hero props / landmarks'
+  id: totrans-74
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#hero-props-landmarks)英雄道具/地标'
 - en: hero prop / hero building should ground an important place in the level
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 英雄道具/建筑应该使关卡中的一个重要地点有立足之地
 - en: don't put hero assets in bad places... don't guitar solo a dumpster, it's a
     dumpster, move on with your life
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 不要将英雄资产放在不好的地方...不要在垃圾箱里弹吉他独奏，它只是一个垃圾箱，继续你的生活吧
 - en: For multiplayer maps, unique landmarks give identity to an area and help facilitate
     **callouts**, short memorable nicknames that players can use to quickly talk about
     different parts of the map.
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于多人地图，独特的地标给一个区域赋予了身份，并有助于促进**呼叫**，即玩家可以用来快速讨论地图不同部分的简短、易于记忆的昵称。
 - en: Below is a hero asset by Lydia Zanotti for site B on the map Breeze in Valorant.
     The large tower looks important and in active use, with unique dark metal machinery
     that contrasts with the beige stone ruins. The design supports the game lore that
@@ -346,103 +509,150 @@
     as well as a gameplay function leaving its bottom section free of distracting
     shapes or silhouettes. Most importantly, it is used only once throughout the entire
     map, making the area feel special and unique.
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 下面是Lydia Zanotti为地图Breeze上的B站点设计的英雄资产。这个大塔看起来很重要，正在使用中，其独特的深色金属机械与米色的废墟形成对比。设计支持游戏背景故事，即“镭射石”（发光的青绿色物质）是一个重要的资源，需要控制，以及一个游戏功能，使其底部区域没有分散的形状或轮廓。最重要的是，在整个地图中只使用一次，使该区域感觉特别且独特。
 - en: <picture class="relative">![](../Images/46b9f676a9e3cab615520bd601ed601c.png)
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/46b9f676a9e3cab615520bd601ed601c.png)
 - en: paintover concept art, first pass model, and final art pass for Valorant [by
     Lydia Zanotti](https://twitter.com/PHRISK3D/status/1397187194096291840/)</picture>
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: paintover概念艺术，初版模型，以及最终艺术关卡为《 Valorant》[由Lydia Zanotti提供](https://twitter.com/PHRISK3D/status/1397187194096291840/)</picture>
 - en: '[](#details-props-foliage-clutter-set-dressing)Details (props, foliage, clutter,
     set dressing)'
+  id: totrans-81
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#details-props-foliage-clutter-set-dressing)细节（道具、植被、杂乱、场景布置）'
 - en: '[](#trees)Trees'
+  id: totrans-82
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[](#trees)树木'
 - en: <picture class="relative">![](../Images/77c4880f8a4026e316ff2883539b7823.png)
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/77c4880f8a4026e316ff2883539b7823.png)
 - en: General Plant Tips tutorial image [by Marie Lazar (pixelbutterfly.com)](https://pixelbutterfly.com)</picture>
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 一般植物提示教程图片[由Marie Lazar (pixelbutterfly.com)提供](https://pixelbutterfly.com)</picture>
 - en: for tall forest trees don't put canopy on every trunk and make sure there's
     detail at the base [https://www.gamasutra.com/blogs/DannyWeinbaum/20170216/291658/Art_Tips_for_Building_Forests.php](https://www.gamasutra.com/blogs/DannyWeinbaum/20170216/291658/Art_Tips_for_Building_Forests.php)
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于高大的森林树木，不要在每个树干上放置树冠，并确保树基部分有细节[https://www.gamasutra.com/blogs/DannyWeinbaum/20170216/291658/Art_Tips_for_Building_Forests.php](https://www.gamasutra.com/blogs/DannyWeinbaum/20170216/291658/Art_Tips_for_Building_Forests.php)
 - en: Readability
+  id: totrans-86
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 可读性
 - en: '**Readability** is about whether the player can walk around your level and
     "read" what they are looking at. Simplify what the player must see. Make it legible.'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: '**可读性**是指玩家能否在你的关卡中四处走动并“阅读”他们所看到的内容。简化玩家必须看到的内容。使其易于阅读。'
 - en: The goal is for the player to understand the level as an whole place, not as
     a pile of random floors and wall segments.
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 目标是让玩家理解整个关卡作为一个整体的地方，而不是一堆随机的楼层和墙壁部分。
 - en: Does the player have enough information to understand the current game state?
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 玩家是否有足够的信息来理解当前的游戏状态？
 - en: Can they easily see enemies / game objects from a distance?
+  id: totrans-90
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 他们能否从远处轻易地看到敌人/游戏对象？
 - en: Can they understand whether that enemy is idle, aggro, or hurt?
+  id: totrans-91
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 他们能否理解那个敌人是空闲的、愤怒的，还是受伤的？
 - en: Can the player understand where they can go vs. can't go, should vs. shouldn't
     go?
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 玩家能否理解他们可以去哪里，不能去哪里，应该去哪里，还是不应该去哪里？
 - en: When a level begins in abstract [blockout](/process/blockout) form, it is very
     plain and easy to read. However, as we add additional visual details to the world,
     the level geometry becomes less distinct and more noisy. An art passed level that
     is "busy" will be "illegible" and difficult to read.
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 当关卡以抽象的[blockout](/process/blockout)形式开始时，它非常简单且易于阅读。然而，当我们向世界中添加更多的视觉细节时，关卡几何形状变得不那么明显，更加嘈杂。一个“繁忙”的艺术关卡将会变得“难以辨认”且难以阅读。
 - en: <picture class="relative">![](../Images/051174b15abce422fe2b4b1c758e3731.png)
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/051174b15abce422fe2b4b1c758e3731.png)
 - en: 'animated GIF showing visual development and readability for de_cache for Counter-Strike:
     Global Offensive, art by Shawn Snelling, from GDC 2015: Community Level Design
     for Competitive CS:GO</picture>'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 由肖恩·斯奈林创作的动画GIF展示了《反恐精英：全球攻势》中de_cache的视觉发展和可读性，来自2015年GDC：为竞技CS:GO的社区关卡设计</picture>
 - en: In the animated GIF above, notice how the CS map de_cache changed from a dark
     high-contrast level with shadowy busy details to a brighter more evenly-shaded
     level with les visual contrast -- that concession to readability makes sense for
     that game and audience.
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上面的动画GIF中，注意CS地图de_cache如何从暗色调高对比度、细节繁多的关卡转变为亮度更高、色调更均匀、视觉对比度更低的关卡——这种对可读性的让步对那个游戏和观众来说是合理的。
 - en: Some games such as escape rooms, hidden object games, and prop hunts, are all
     about the joy of parsing busy cluttered spaces. However, fast-paced multiplayer
     shooters like Counter-Strike or Valorant depend heavily on split-second reflex
     aiming and snap judgments, and these players would likely blame an unreadable
     level for their defeat.
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些游戏，如逃脱房间、隐藏物体游戏和寻宝游戏，都关乎于解析繁忙杂乱空间的乐趣。然而，像《反恐精英》或《无畏》这样的快节奏多人射击游戏则高度依赖于瞬间反应瞄准和迅速判断，这些玩家可能会将失败归咎于难以阅读的关卡。
 - en: As you art pass a level and apply set dressing, the accumulation of these details
     can impact the player's understanding of the space.
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你绘制关卡并应用装饰时，这些细节的累积会影响玩家对空间的理解。
 - en: <picture class="relative">![](../Images/0eac35ea0bcb0a3414dceace4ca363ab.png)
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/0eac35ea0bcb0a3414dceace4ca363ab.png)
 - en: internal style guide for ivy readability in The Last Of Us Part 2 (2020) [by
     John Sweeney](https://twitter.com/johnsweeney2147/status/1280646295837802496/  )</picture>
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 《最后生还者第二部》（2020年）中常春藤可读性的内部风格指南 [由约翰·斯威尼](https://twitter.com/johnsweeney2147/status/1280646295837802496/)
+    提供</picture>
 - en: For example, when art passing the environments in The Last Of Us Part 2, Naughty
     Dog artists used ivy coverage (see image above) to denote neglected closed buildings,
     while clearing ivy for open buildings that the player should enter. Also note
@@ -453,185 +663,264 @@
     player. As long as all the designers and artists maintain consistency in how they
     use ivy, this decorative foliage effect takes on a new meaning beyond how fancy
     and expensive the video game looks.
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，当绘制《最后生还者第二部》中的环境时，顽皮狗艺术家使用了常春藤覆盖（见上图）来表示被忽视的封闭建筑，而为玩家应该进入的开放建筑清除常春藤。同时注意常春藤如何使建筑立面扁平化。玩家不再需要检查每个窗户来猜测它是否可导航或相关——被常春藤完全覆盖的建筑意味着它是关闭的，并变成一个绿色团块。因此，常春藤简化了视觉环境，并为玩家提供了导航辅助。只要所有设计师和艺术家在如何使用常春藤方面保持一致性，这种装饰性叶状效果就超越了视频游戏看起来多么花哨和昂贵的新意义。
 - en: 'But here''s the secret: everything is ivy, *everything in environment art has
     a readability function.* When you art pass any part of a level, you are refining
     the visual patterns that help the player reason about spatial logic.'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 但这里有一个秘密：一切都是常春藤，**环境艺术中的每一项元素都具有可读性功能**。当你绘制关卡中的任何部分时，你正在细化帮助玩家理解空间逻辑的视觉模式。
 - en: '*Readability also heavily depends on* [*massing*](/process/blockout/massing)*,*
     [*metrics*](/process/blockout/metrics)*, and* [*composition*](/process/blockout/massing/composition)*.*'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: '**可读性也严重依赖于** [*体量*](/process/blockout/massing)、[*度量*](/process/blockout/metrics)
+    和 [*构图*](/process/blockout/massing/composition)。'
 - en: '[](#clustering)Clustering'
+  id: totrans-104
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#clustering)聚类'
 - en: To help players parse and understand the game world more easily, try to compose
     the set dressing in clusters of related details. Proximity, similarity, and implied
     connectedness helps us see objects as groups and patterns. This corresponds to
     a [gestalt theory](https://en.wikipedia.org/wiki/Principles_of_grouping) of perception.
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了帮助玩家更容易地解析和理解游戏世界，尝试将装饰组合成相关细节的集群。邻近性、相似性和暗示的关联性帮助我们将物体视为群体和模式。这对应于感知的[格式塔理论](https://en.wikipedia.org/wiki/Principles_of_grouping)。
 - en: To make a rocky outcrop, place one rock, then duplicate, shrink, rotate, and
     slightly offset... and repeat. To make a forest, place one tree, then duplicate,
     shrink, rotate, and slightly offset... and repeat. You can repeat this workflow
     for any type of natural set dressing, or even your landscape compositions. Try
     to build these compositions in an asymmetrical fractal structure, to give a sense
     of repeated logic and consistency to the prop placement.
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 要制作岩石露头，放置一块石头，然后复制、缩小、旋转并稍微偏移...然后重复。要制作森林，放置一棵树，然后复制、缩小、旋转并稍微偏移...然后重复。你可以重复此工作流程来制作任何类型的自然装饰，或者甚至你的景观构图。尝试以不对称的分形结构构建这些构图，以给道具放置带来重复的逻辑和一致性。
 - en: <picture class="relative">![](../Images/4f0fc7384d52ad330902df14db98c3bc.png)
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/4f0fc7384d52ad330902df14db98c3bc.png)
 - en: '"fractal" clusters of rocks, trees, terrain, and even buckets, from the Allods
     Online art bible [by Anton Lavrushkin](https://shurick.livejournal.com/195876.html)</picture>'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: “分形”岩石、树木、地形甚至桶的簇，来自《Allods Online》艺术圣经[由安东·拉夫鲁申金](https://shurick.livejournal.com/195876.html)</picture>
 - en: '[](#color-and-value)Color and value'
+  id: totrans-109
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#color-and-value)色彩与价值'
 - en: Avoid deeply saturated colors, give space for lighting... if you make a very
     red texture, it can't get much redder. Some games might also reserve specific
     color coding too (only explosive barrels are red! only doors can be blue and orange!)
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 避免过度饱和的颜色，为光照留出空间...如果你制作一个非常红色的纹理，它不可能变得更红。一些游戏也可能保留特定的颜色编码（只有爆炸桶是红色的！只有门可以是蓝色和橙色！）
 - en: Gradients are smooth (not noisy) but still avoid flatness (there is hierarchy)
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 渐变平滑（不是嘈杂）但仍然避免平坦（存在层次）
 - en: In the example GIF below of the map "Castillo" from Overwatch, notice how the
     ground is generally darker than the surrounding walls; wall textures are plain
     with minimal noisy details; red and pink are generally reserved for floor and
     roof planes.
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的示例GIF中，可以看到《守望先锋》地图“Castillo”的纹理，注意地面通常比周围的墙壁暗；墙壁纹理简单，细节最少；红色和粉色通常保留用于地板和屋顶平面。
 - en: <picture class="relative">![](../Images/3ae0183acae1578b82e90e8482df6129.png)
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/3ae0183acae1578b82e90e8482df6129.png)
 - en: example blockout to art pass process comparison GIF of map "Castillo" [by Helder
     Pinto](https://twitter.com/HelderHP/status/1454561504473141251) (and others),
     for Overwatch</picture>
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 地图“Castillo”从草图到艺术流程的对比GIF示例[由Helder Pinto](https://twitter.com/HelderHP/status/1454561504473141251)（以及其他人），用于《守望先锋》</picture>
 - en: '[](#materiality)Materiality'
+  id: totrans-115
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#materiality)材料性'
 - en: A material is a specific technical term for a group of textures imported into
     a game engine -- but more broadly, "material" also refers to **materiality** --
     the general feel, substance, mass, and physical matter represented by the visual
     surface.
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 材料是将一组纹理导入游戏引擎的特定技术术语——但更广泛地说，“材料”也指**材料性**——由视觉表面代表的一般感觉、物质、质量和物理物质。
 - en: Ideally, an environment texture should read as a distinct real world material.
     Does the texture truly feel like it's made of brick or rock? Is it too shiny to
     feel like concrete? Does the glass or wood feel brittle or strong? Being able
     to read a material is often important for gameplay; for instance, footstep and
     bullet penetration are common mechanics in tactical shooter games, and rely on
     players understanding the material they're walking on / shooting at.
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 理想情况下，环境纹理应该读作一个独特的真实世界材料。这种纹理是否真的感觉像是用砖或石头制成的？它是否过于光滑以至于感觉像混凝土？玻璃或木材是否感觉脆弱或坚固？能够读取材料对于游戏玩法通常很重要；例如，脚步声和子弹穿透是战术射击游戏中的常见机制，并且依赖于玩家理解他们所踩踏的/射击的材料。
 - en: As a general rule, most artists strive to craft textures made of clear and distinct
     materials. A wood texture should still look like wood from 50 meters away, and
     a shiny metal texture should feel different from a shiny plastic texture.
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为一般规则，大多数艺术家都努力制作出由清晰且独特的材料制成的纹理。木材纹理即使在50米外也应该看起来像木材，而闪亮的金属纹理应该与闪亮的塑料纹理感觉不同。
 - en: '*For more on textures and materials, see* [*Texturing*](/process/env-art/texturing)*.*'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: '*关于纹理和材料的更多信息，请参阅* [*纹理*](/process/env-art/texturing)*.*'
 - en: <picture class="relative">![](../Images/f4aff5a5a98e24cdaca1af7737a5639b.png)
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/f4aff5a5a98e24cdaca1af7737a5639b.png)
 - en: '*different world textures convey different surface properties and materials;
     textures* [*by Marie Lazar (from 80 Level)*](https://80.lv/articles/creating-a-stylized-chaparral-environment-in-ue4/)</picture>'
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: '*不同的世界纹理传达不同的表面属性和材料；纹理* [*由玛丽·拉扎尔（来自80 Level）*](https://80.lv/articles/creating-a-stylized-chaparral-environment-in-ue4/)</picture>'
 - en: '[](#avoid-shape-and-color-psychology)Avoid shape and color psychology'
+  id: totrans-122
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#avoid-shape-and-color-psychology)避免形状和颜色心理学'
 - en: '**Shape and color psychology** are theories that shapes / colors convey universal
     ideas and influence behavior.'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: '**形状与色彩心理学**是理论，认为形状/颜色传达普遍的思想并影响行为。'
 - en: While artists often crave secret power over people, we argue that **shape and
     color psychology are not effective for level design**. Abstract geometric shapes
     and colors, by themselves, do not make all humans feel the same thing nor communicate
     the same ideas. These simplistic theories fail to capture the rich complexity
     of art and culture, misunderstand basic psychology, and overshadow much more useful
     design tools. You're better off without them.
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 当艺术家们常常渴望对人们拥有秘密的力量时，我们争论说**形状与色彩心理学对关卡设计并不有效**。抽象的几何形状和颜色本身并不能让所有人类产生相同的感觉，也不能传达相同的思想。这些简单的理论未能捕捉艺术和文化的丰富复杂性，误解了基本心理学，并掩盖了更多有用的设计工具。没有它们你会更好。
 - en: '*For more, see* [*Shape and color psychology*](/process/env-art/psychology)*.*'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: '*更多内容，请参阅* [*形状与色彩心理学*](/process/env-art/psychology)*。'
 - en: How to art pass
+  id: totrans-126
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 如何进行艺术处理
 - en: 'There are many ways to approach an art pass, but here''s some general advice:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 接近艺术处理的方法有很多，但以下是一些建议：
 - en: '**WORK ITERATIVELY** in stages, don''t try to make the 100% final version of
     every asset. You need to see how the art assets will relate to each other, in
     context, to know if an asset is "finished" or not. When surrounded by other art
     in the game world, sometimes a 50% finished art asset can actually be 100% "finished
     enough".'
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**分阶段迭代工作**，不要试图制作每个资产的100%最终版本。你需要看到艺术资产将如何相互关联，在上下文中，才能知道一个资产是否“完成”。当被游戏世界中的其他艺术作品包围时，有时一个50%完成的艺术资产实际上可以是100%“足够完成”的。'
 - en: '**ART PASS WITH FOCUS,** don''t just art pass random parts of random areas.
     Try to push progress along in specific parts of the level, in specific ways or
     themes, so you can get feedback on your changes. If you art pass haphazardly in
     incoherent ways, then it is more difficult for others to give you feedback.'
+  id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**有重点地进行艺术处理**，不要只是随意地处理随机区域的随机部分。尝试在关卡的具体部分、具体方式或主题上推进进度，这样你可以对你的更改获得反馈。如果你以无序的方式随意进行艺术处理，那么其他人给你反馈会更困难。'
 - en: '**START BIG**, and save smaller details for later art passes. Define your basic
     shapes and massing, color palette, and main themes first. Then after nailing all
     your fundamentals, you can finally move on to sculpting pebbles or painting grunge
     marks.'
+  id: totrans-130
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**从大处着手**，将更小的细节留到后期艺术阶段。首先定义你的基本形状、体量、色彩调色板和主要主题。然后在掌握所有基础之后，你最终可以开始雕刻鹅卵石或绘制磨损痕迹。'
 - en: For each animated GIF example below, try to count the number of art pass iterations.
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于下面的每个动画GIF示例，尝试计算艺术处理迭代的次数。
 - en: <picture class="relative">![](../Images/69131c85086b1a1e50fb1fe132875efc.png)
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/69131c85086b1a1e50fb1fe132875efc.png)
 - en: series of art passes for 2D pixel art game Minit, posted by Kitty Calis [(via
     Twitter)](https://twitter.com/kittycalis/status/981577805992484866)</picture>
     <picture class="relative">![](../Images/fecb5ff436dc4a65f5ab36a8c2e5bba2.png)
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 2D像素艺术游戏Minit的艺术处理系列，由Kitty Calis发布[(via Twitter)](https://twitter.com/kittycalis/status/981577805992484866)</picture>
+    <picture class="relative">![](../Images/fecb5ff436dc4a65f5ab36a8c2e5bba2.png)
 - en: series of art passes and iterations for a portfolio piece by Kieran Goodson
     [(via 80 Level)](https://80.lv/articles/001agt-004adk-3d-environment-design-symbols-breakdown/)</picture>
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: Kieran Goodson的系列艺术处理和迭代作品，用于作品集[(via 80 Level)](https://80.lv/articles/001agt-004adk-3d-environment-design-symbols-breakdown/)
 - en: '[](#make-a-prop-zoo-warehouse-showcase-map)Make a prop zoo / warehouse / showcase
     map'
+  id: totrans-135
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#make-a-prop-zoo-warehouse-showcase-map)制作道具动物园/仓库/展示地图'
 - en: Similar to metric playground maps and modular kit loopback tests, the best way
     to validate environment art is to try using it in-game. **Make a scene or level
     with every prop / art asset, and walk around in it.**
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 与度量游乐场地图和模块化套件回环测试类似，验证环境艺术的最佳方式是尝试在游戏中使用它。**制作一个包含每个道具/艺术资产的场景或关卡，并在其中四处走动**。
 - en: 'Charles Boury, art director on Caravan Sandwitch, offers this advice for showcases:'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: Caravan Sandwich的艺术总监Charles Boury为展示提供了以下建议：
 - en: '*I typically create: ShowcaseCharas for every character, ShowcaseProps for
     an Ikea-style overview of every game props, ShowcaseMats for a grid-view of every
     material in different light conditions, and ShowcaseUI for a scene where I can
     play with every UI element.*'
+  id: totrans-138
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*我通常创建：为每个角色创建ShowcaseCharas，为每个游戏道具创建Ikea风格的ShowcaseProps概览，为每种材料在不同光照条件下的网格视图创建ShowcaseMats，以及为可以玩转每个UI元素的场景创建ShowcaseUI*。'
 - en: ''
+  id: totrans-139
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -640,23 +929,32 @@
     pickable items. When you ask yourself, "Is the color red used on a character?",
     or when the team asks you a specific question like, "how many props use complex
     collisions instead of simple and why?", you can answer confidently.*'
+  id: totrans-140
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*注意“每个”这个词。详尽的列表让你能够监督游戏内容并建立信心。当你处理，比如说，拾取用户界面时，你可以用所有可拾取的项目来测试它。当你问自己，“角色上是否使用了红色？”或者当团队问你一个具体的问题，比如，“有多少道具使用复杂碰撞而不是简单碰撞，为什么？”时，你可以自信地回答。*'
 - en: <picture class="relative">![](../Images/5732deb8a2e59cf81a834be367e0a2ad.png)
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/5732deb8a2e59cf81a834be367e0a2ad.png)
 - en: in-editor screenshot of the ShowcaseProps scene for Road 96, by Charles Boury
     via ["Scene setup for art direction"](https://charlesboury.fr/articles/scene-setup-for-art-direction.html)</picture>
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: Road 96 的 ShowcaseProps 场景的内编辑器截图，由查尔斯·博伊提供，[“场景设置的艺术指导”](https://charlesboury.fr/articles/scene-setup-for-art-direction.html)</picture>
 - en: '*As an art director, I''m pushing for a specific style. I don''t focus on a
     single prop or character. I''m constantly looking for the big picture, the artistic
     unity. So how can I make my life easier for this goal?*'
+  id: totrans-143
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*作为一名艺术总监，我正在推动一种特定的风格。我不专注于单个道具或角色。我一直在寻找大局，艺术上的统一。那么，我如何使自己的生活更容易实现这个目标呢？*'
 - en: ''
+  id: totrans-144
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -665,32 +963,45 @@
     game props, nicely grouped by category, arranged on a grid, so I can compare them
     and chose witch one to improve. What parts of the game need more consistency?
     How can I play with this kit to create something unique?*'
+  id: totrans-145
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*我想看到所有道具的有序排列，以检查它们的调色板、轮廓和细节水平。一个漂亮的仓库会整洁，所有游戏道具都按类别整齐地排列在网格上，这样我就可以比较它们并选择要改进的一个。游戏中的哪些部分需要更多的统一性？我如何利用这个套件创造一些独特的东西？*'
 - en: ''
+  id: totrans-146
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: -- Charles Boury, from ["Scene setup for art direction"](https://charlesboury.fr/articles/scene-setup-for-art-direction.html)
+  id: totrans-147
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: -- 查尔斯·博伊，来自 ["场景设置的艺术指导"](https://charlesboury.fr/articles/scene-setup-for-art-direction.html)
 - en: <picture class="relative">![](../Images/08d798b698eb1de6e93fdf4bb96780c4.png)
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/08d798b698eb1de6e93fdf4bb96780c4.png)
 - en: in-editor screenshot of the prop warehouse test level for Caravan Sandwitch,
     by Charles Boury via ["Scene setup for art direction"](https://charlesboury.fr/articles/scene-setup-for-art-direction.html)</picture>
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: Caravan Sandwich 的道具仓库测试关卡的内编辑器截图，由查尔斯·博伊提供，[“场景设置的艺术指导”](https://charlesboury.fr/articles/scene-setup-for-art-direction.html)</picture>
 - en: Example art passes
+  id: totrans-150
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 示例艺术流程
 - en: '[](#icebox-for-valorant-riot-games)"Icebox" for Valorant (Riot Games)'
+  id: totrans-151
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#icebox-for-valorant-riot-games)"Icebox" for Valorant (Riot Games)'
 - en: Because Valorant is a competitive multiplayer shooter that depends on precise
     map [balance](/process/combat/balance), Riot tailored their art pass process to
     preserve the level designer's blockout as much as possible. Before entering art
@@ -701,18 +1012,26 @@
     for level designers to make more changes to the level geometry, and propagate
     those tweaks back to the artists with minimal waste. Prolonging the blockout stage
     improves the final art pass and allows for more collaboration between departments.
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为《 Valorant》是一款依赖精确地图平衡的竞技型多人射击游戏，Riot 对其艺术流程进行了调整，以尽可能保留关卡设计师的初步设计。在进入艺术制作和细化阶段之前，Valoant
+    地图会经过为期一个月的详细灰色测试（[blockout](/process/blockout)) 和 [playtest](/process/blockout/playtesting)
+    阶段，以及几个初步的 *艺术初步设计* 测试，以测试颜色样本和 [massing](/process/blockout/massing)。这种 *艺术初步设计*
+    为关卡设计师提供了额外的时间来对关卡几何形状进行更多修改，并将这些调整以最小的浪费反馈给艺术家。延长初步设计阶段可以改善最终的艺术流程，并促进部门之间的更多合作。
 - en: Before 3D artists can touch a map, our Art Lead and Creative Director work very
     high level with the concept artists to iterate on finding an iconic look for our
     maps using a series of blue-sky concepts. At this stage there's a lot of back
     and forth between the artist and project leadership to make sure the map follows
     the VALORANT narrative, is marked by visual variety, and most importantly, is
     something the team is really excited to be working on.
+  id: totrans-153
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在3D艺术家能够接触地图之前，我们的艺术总监和创意总监与概念艺术家紧密合作，通过一系列天马行空的构想来迭代寻找我们地图的标志性外观。在这个阶段，艺术家和项目领导之间有很多来回沟通，以确保地图遵循《VALORANT》的叙事，具有视觉多样性，最重要的是，确保团队真正兴奋于这项工作。
 - en: ''
+  id: totrans-154
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -720,25 +1039,34 @@
     tackle specific locations and call-outs on the map based on the greybox layout.
     At this stage, the concept artists try to get as much coverage on the map before
     the 3D artists jump in and begin modeling the basic shapes of the architecture.
+  id: totrans-155
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在确定高级方向后，概念艺术家开始根据灰盒布局处理地图上的特定位置和标注。在这个阶段，概念艺术家试图在3D艺术家开始建模建筑的基本形状之前，在地图上覆盖尽可能多的内容。
 - en: <picture class="relative">![](../Images/fac367b7e1733e9aeaeed80a63aaf2a8.png)
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/fac367b7e1733e9aeaeed80a63aaf2a8.png)</picture>
 - en: graybox to "art blockout" to "art production" workflow of map Icebox for Valorant
     [(via PlayValorant.com)](https://playvalorant.com/en-us/news/dev/the-art-of-valorant-map-environments/)</picture>
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
+  zh: Valorant地图Icebox的“灰盒”到“艺术草图”再到“艺术制作”的工作流程 [(via PlayValorant.com)](https://playvalorant.com/en-us/news/dev/the-art-of-valorant-map-environments/)</picture>
 - en: We try to model and get the basic architectural shapes into the map before starting
     to unwrap and texture them. When we start to add colors on the meshes, we make
     sure that they aren't too dark, especially in interior spaces. The objective here
     is to maintain gameplay integrity by making sure that the environment doesn't
     impede with clarity, and that the characters are always clearly visible.
+  id: totrans-158
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 我们试图在开始展开和纹理化之前，将基本的建筑形状建模到地图中。当我们开始在网格上添加颜色时，我们确保它们不要太暗，特别是在室内空间中。这里的目的是通过确保环境不会阻碍清晰度，并且角色始终清晰可见来维护游戏完整性。
 - en: ''
+  id: totrans-159
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -747,10 +1075,13 @@
     such as Zbrush, Substance Designer, Substance Painter, and Photoshop. We do use
     custom textures on props when needed, such as the coffee machine in the kitchen,
     or the forklift near A-site.
+  id: totrans-160
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在纹理方面，我们主要在建筑和大型结构上使用拼接纹理和裁剪图。这些是通过Zbrush、Substance Designer、Substance Painter和Photoshop等多种程序创建的。当需要时，我们也会在道具上使用自定义纹理，例如厨房中的咖啡机或A点附近的叉车。
 - en: ''
+  id: totrans-161
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -759,132 +1090,194 @@
     by using lights to illuminate dark areas, or to spotlight spaces where you would
     want the most visibility possible, such as a Spike plant site or a commonly peeked
     corner.'
+  id: totrans-162
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[...] 为了减少视觉噪音，我们确保我们的材料在价值上相似，并且没有太多的对比度或暗度。我们还可以通过使用灯光照亮暗区，或者突出显示你希望尽可能可见的空间，如刺球植物地点或常见的窥视角落，来提高清晰度。'
 - en: ''
+  id: totrans-163
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: -- from ["The Art of Valorant Map Environments"](https://playvalorant.com/en-us/news/dev/the-art-of-valorant-map-environments/)
     by Lydia Zanotti
+  id: totrans-164
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: -- 来自 [《《VALORANT》地图环境艺术》](https://playvalorant.com/en-us/news/dev/the-art-of-valorant-map-environments/)
+    by Lydia Zanotti
 - en: <picture class="relative">![](../Images/ea1261f9d733ff1c451fae49f541e1ec.png)
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/ea1261f9d733ff1c451fae49f541e1ec.png)</picture>
 - en: progression of "Kitchen" area in "Icebox" from blockout to art blockout; the
     hallway becomes a room! [(via PlayValorant.com)](https://playvalorant.com/en-us/news/dev/the-art-of-valorant-map-environments/)</picture>
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: “冰箱”中“厨房”区域的进展，从草图到艺术草图；走廊变成了房间！[(via PlayValorant.com)](https://playvalorant.com/en-us/news/dev/the-art-of-valorant-map-environments/)</picture>
 - en: To review...
+  id: totrans-167
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 要审查...
 - en: '**Environment art** is about decorating and refining the visuals of a level.'
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: '**环境艺术**是关于装饰和细化关卡视觉的。'
 - en: Industrial artists tend to do a lot of planning in the form of **concept art**,
     **paintovers**, and **model sheets**. Based on those plans, they generate an **asset
     list** so they can figure out how much work they have to do.
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
+  zh: 工业艺术家倾向于通过**概念艺术**、**涂鸦**和**模型图集**进行大量规划。基于这些计划，他们生成**资产清单**，以便确定他们需要完成多少工作。
 - en: Common environment **art assets** include **world textures**, **modular kits**,
     **hero props**, and general **set dressing** props like foliage and clutter.
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: 常见的环境艺术**资产**包括**世界纹理**、**模块化套件**、**英雄道具**以及像植被和杂乱无章的**场景布置**道具。
 - en: 'When making assets, artists should consider **readability**: how an object''s
     visual appearance suggests affordance (functionality and usefulness). To improve
     readability, **cluster** details together in groups, pay attention to **color
     and value**, and make sure **materials** read clearly.'
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 在制作资产时，艺术家应该考虑**可读性**：一个物体的视觉外观如何暗示其功能（功能性和实用性）。为了提高可读性，将细节**分组**在一起，注意**色彩和明度**，并确保**材质**清晰可读。
 - en: We argue strongly **against** [**shape and color psychology**](/process/env-art/psychology).
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们强烈**反对**[**形状和色彩心理学**](/process/env-art/psychology)。
 - en: '**How to art pass**:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: '**如何进行艺术处理**：'
 - en: focus on swapping-in big important common core objects / shapes first
+  id: totrans-174
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 首先关注交换进重要的核心对象/形状
 - en: do not try to finish each asset 100% one-by-one, instead it's better to **work
     iteratively:** get multiple objects to 50%, then step back and evaluate
+  id: totrans-175
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不要试图逐个完成每个资产100%，相反，最好是**迭代式工作**：让多个对象达到50%，然后退后一步进行评估
 - en: Now what?
+  id: totrans-176
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 现在怎么办？
 - en: Continue on to [**Release**](/process/release).
+  id: totrans-177
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 继续阅读到[**发布**](/process/release)。
 - en: ~~Stop reading a level design book, and go find an environment art book / website
     instead~~.
+  id: totrans-178
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: ~~停止阅读关卡设计书，去找一本环境艺术书/网站学习吧~~。
 - en: Read more about a certain aspect of environment art in more detail...
+  id: totrans-179
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 想要更详细地了解环境艺术的一个特定方面，请阅读更多内容...
 - en: '[](#env-art-in-detail)Env art in detail'
+  id: totrans-180
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#env-art-in-detail)环境艺术细节'
 - en: 'Working environment artists often specialize in one aspect:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 工作环境艺术家通常专注于一个方面：
 - en: '**Modeling and sculpting.** Hard surface architecture and props, or nature
     and foliage?'
+  id: totrans-182
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**建模和雕刻**。硬表面建筑和道具，还是自然和植被？'
 - en: '[**Lighting**](/process/lighting) heavily affects how players perceive shape,
     depth, space, and mood.'
+  id: totrans-183
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[**光照**](/process/lighting)极大地影响了玩家对形状、深度、空间和氛围的感知。'
 - en: '*Is that wall far away or close by? Is this room shallow or deep? Is it scary?*'
+  id: totrans-184
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*那面墙是远还是近？这个房间是浅还是深？它可怕吗？*'
 - en: '[**Texturing**](/process/env-art/texturing) is important for reading shape,
     surfaces, and materials.'
+  id: totrans-185
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[**纹理化**](/process/env-art/texturing)对于读取形状、表面和材料非常重要。'
 - en: '*Is that wall made of wood or metal? ... Alien metal? Are there aliens nearby?*'
+  id: totrans-186
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*那面墙是由木头还是金属制成的？... 外星金属？附近有外星人吗？*'
 - en: '[**Storytelling**](/process/env-art/storytelling) and set dressing give a sense
     of place / lived-in feel.'
+  id: totrans-187
   prefs: []
   type: TYPE_NORMAL
+  zh: '[**叙事**](/process/env-art/storytelling)和场景布置赋予了一种场所感/居住感。'
 - en: After an art pass, levels often require [**optimization**](/process/env-art/optimization).
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 在艺术处理之后，关卡通常需要[**优化**](/process/env-art/optimization)。
 - en: Further reading
+  id: totrans-189
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 进一步阅读
 - en: Remember, this is a level design book, not an env art book. You should definitely
     go somewhere else to learn more.
+  id: totrans-190
   prefs: []
   type: TYPE_NORMAL
+  zh: 记住，这是一本关卡设计书，而不是环境艺术书。你绝对应该去其他地方学习更多。
 - en: 'For links to environment art sites, see [Communities: Environment Art](/appendix/communities).'
+  id: totrans-191
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 关于环境艺术网站的链接，请参阅[社区：环境艺术](/appendix/communities)。
 - en: '[Environment Art blog](https://environmentart.wordpress.com/) by Rogelio Olguin
     (discontinued since 2016, but still lots of good stuff)'
+  id: totrans-192
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[环境艺术博客](https://environmentart.wordpress.com/)由Rogelio Olguin撰写（自2016年起已停更，但仍有很多好内容）'

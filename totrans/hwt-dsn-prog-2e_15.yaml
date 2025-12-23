@@ -1,48 +1,68 @@
 - en: 'Epilogue: Moving On🔗'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 尾声：前进🔗
 - en: 原文：[https://htdp.org/2024-11-6/Book/part_epilogue.html](https://htdp.org/2024-11-6/Book/part_epilogue.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://htdp.org/2024-11-6/Book/part_epilogue.html](https://htdp.org/2024-11-6/Book/part_epilogue.html)
 - en: '|     [Computing](#%28part._computing%29) |'
+  id: totrans-2
   prefs: []
   type: TYPE_TB
+  zh: '|   [计算](#%28part._computing%29) |'
 - en: '|     [Program Design](#%28part._programming%29) |'
+  id: totrans-3
   prefs: []
   type: TYPE_TB
+  zh: '|   [程序设计](#%28part._programming%29) |'
 - en: '|     [Onward, Developers and Computer Scientists](#%28part._moving-on-devs%29)
     |'
+  id: totrans-4
   prefs: []
   type: TYPE_TB
+  zh: '|   [向前进，开发者和计算机科学家](#%28part._moving-on-devs%29) |'
 - en: '|     [Onward, Accountants, Journalists, Surgeons, and Everyone Else](#%28part._moving-on-everyone%29)
     |'
+  id: totrans-5
   prefs: []
   type: TYPE_TB
+  zh: '|   [向前进，会计师、记者、外科医生以及所有人](#%28part._moving-on-everyone%29) |'
 - en: You have reached the end of this introduction to computing and programming,
     or program design, as we say here. While there is more to learn about both subjects,
     this is a good point to stop, summarize, and look ahead.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 你已经到达了计算和编程，或者说程序设计，如我们在这里所说的，的介绍结束。虽然这两个主题还有很多东西要学，但这是一个停下来总结和展望的好时机。
 - en: Computing[🔗](#(part._computing) "Link to here")
+  id: totrans-7
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 计算学[🔗](#(part._computing) "链接到此处")
 - en: 'In elementary school, you learned to calculate with numbers. At first, you
     used numbers to count real things: three apples, five friends, twelve bagels.
     A bit later, you encountered addition, subtraction, multiplication, and even division;
     then came fractions. Eventually, you found out about variables and functions,
     which your teachers called algebra. Variables represented numbers, and functions
     related numbers to numbers.'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 在小学，你学会了用数字进行计算。起初，你用数字来计数真实的事物：三个苹果、五个朋友、十二个百吉饼。稍后，你遇到了加法、减法、乘法和甚至除法；然后出现了分数。最终，你发现了变量和函数，你的老师称之为代数。变量代表数字，函数将数字与数字联系起来。
 - en: Because you used numbers throughout this process, you didn’t think much of numbers
     as a means to represent information about the real world. Yes, you had started
     with three bears, five wolves, and twelve horses; but by high school, nobody reminded
     you of this relationship.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为你在整个过程中一直使用数字，所以你并没有太多地考虑数字作为表示现实世界信息手段的重要性。是的，你从三只熊、五只狼和十二匹马开始；但到了高中，没有人提醒你这种关系。
 - en: When you move from mathematical calculations to computing, the step from information
     to data and back becomes central. Nowadays, programs process representations of
     music, videos, molecules, chemical compounds, business case studies, electrical
@@ -51,8 +71,10 @@
     tedious. Instead, computing generalizes arithmetic and algebra so that when you
     program, you can code—<wbr>and your programs can compute—<wbr>with strings, Booleans,
     characters, structures, lists, functions, and many more kinds of data.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 当你从数学计算转向计算时，从信息到数据再到信息的步骤变得至关重要。如今，程序处理音乐、视频、分子、化合物、商业案例研究、电气图和蓝图等信息的表示。幸运的是，你不需要用数字或更糟糕的，只用0和1来编码所有这些信息；如果你必须这样做，生活将是无法想象的乏味。相反，计算将算术和代数推广，这样当你编程时，你可以用字符串、布尔值、字符、结构、列表、函数和许多其他类型的数据进行编码。
 - en: 'Classes of data and their functions come with equational laws that explain
     their meaning, just like the laws for numbers and their functions. While these
     equational laws are as simple as “(+  1  1) evaluates to 2” and “(not  #true)
@@ -62,12 +84,17 @@
     Student Language](i1-2.html). Once the variables are replaced with values, the
     laws of data take over until you have either only a value or another function
     application. But yes, that’s all there is to computing.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '数据类别及其函数伴随着解释它们意义的等式定律，就像数字及其函数的定律一样。虽然这些等式定律像“(+ 1 1) 等于 2”和“(not #true) 等于
+    #false”一样简单，但你可以用它们来预测整个程序的行为。当你运行一个程序时，你实际上只是应用了它的许多函数中的一个，你可以用在[间奏曲 1：初学者的语言](i1-2.html)中首次提到的贝塔规则来解释这一行为。一旦变量被值所替代，数据定律就接管了，直到你只剩下一个值或另一个函数应用。但是的，这就是计算的全部。'
 - en: Program Design[🔗](#(part._programming) "Link to here")
+  id: totrans-12
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 程序设计[🔗](#(part._programming) "链接到此处")
 - en: A typical software development project requires the collaboration of many programmers,
     and the result consists of thousands of functions. Over the life span of such
     a project, programmers come and go. Hence, the design structure of programs is
@@ -75,15 +102,19 @@
     code that someone else wrote some time ago, the program ought to express its purpose
     and its relationships to other pieces—<wbr>because that other person might not
     be around anymore.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个典型的软件开发项目需要许多程序员的协作，其结果包含数千个函数。在这样一个项目的生命周期中，程序员来来去去。因此，程序的设计结构实际上是程序员之间跨越时间的沟通方式。当你接近别人多年前编写的代码时，程序应该表达其目的以及与其他部分的关联——<wbr>因为那个人可能已经不再存在了。
 - en: In such a dynamic context, programmers must create programs in a disciplined
     manner if they wish to work reasonable numbers of hours or produce high-quality
     products. Following a systematic design method guarantees that the program organization
     is comprehensible. Others can then easily understand the pieces and the whole,
     and then fix bugs or add new pieces of functionality.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这样一个动态的环境中，程序员必须以纪律性的方式创建程序，如果他们希望工作合理的时间或生产高质量的产品。遵循系统化的设计方法可以保证程序组织是可理解的。其他人可以轻松地理解各个部分和整体，然后修复错误或添加新的功能。
 - en: The design process of this book is one of these methods, and you ought to follow
     it whenever you create programs you might care about. You start with an analysis
     of the world of information and a description of the data that represents the
@@ -92,8 +123,10 @@
     of functions that quickly yields a product with which a client can interact. As
     you observe these interactions, you will quickly figure out which elements of
     your work list to tackle next.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 这本书的设计过程就是这些方法之一，你应该在创建你关心的程序时遵循它。你从一个对信息世界的分析开始，描述代表信息的数据。然后你制定一个计划，列出需要的函数的工作清单。如果这个清单很长，你可以以迭代的方式细化这个过程。你从一个函数子集开始，可以快速产生一个客户可以与之交互的产品。随着你观察这些交互，你会很快确定下一步要处理的工作清单中的哪些元素。
 - en: Designing a program, or only a function, requires a rigorous understanding of
     what it computes. Unless you can describe the purpose of a piece of code with
     a concise statement, you cannot produce anything useful for future programmers.
@@ -101,8 +134,10 @@
     This test suite is even more important when it comes to future modifications of
     the program. Anyone who changes the code can rerun these tests and reconfirm that
     the program still works for the basic examples.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 设计一个程序，或者仅仅是一个函数，需要严格理解它所计算的内容。除非你能用简洁的语句描述一段代码的目的，否则你无法为未来的程序员提供任何有用的东西。编造并解决例子。将这些例子转化为一系列测试。当涉及到程序未来的修改时，这个测试套件尤为重要。任何更改代码的人都可以重新运行这些测试，并重新确认程序对于基本例子仍然有效。
 - en: Eventually your program will also fail. Other programmers may use it in an unanticipated
     manner. Real-world users may find differences between expected and actual behavior.
     Because you have designed the code in a systematic manner, you will know what
@@ -113,31 +148,41 @@
     create a bug. If the broken function composes others, resume the test creation;
     otherwise you have found the source of the problem. You will know that you have
     fixed the problem when the program as a whole passes all its tests.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 最终，你的程序也可能失败。其他程序员可能会以未预料到的方式使用它。现实世界的用户可能会发现预期行为和实际行为之间的差异。因为你已经以系统化的方式设计了代码，所以你会知道该怎么做。你会为程序的主要功能制定一个失败的测试用例。从这个测试用例中，你会为程序中提到的每个函数推导出一个测试用例。那些通过新测试的函数不会导致失败。另一个函数可能导致了失败；有时，几个函数可能会串通起来创建一个错误。如果出错的函数组合了其他函数，则继续创建测试；否则，你已经找到了问题的根源。当你发现程序作为一个整体通过所有测试时，你就知道问题已经解决了。
 - en: No matter how hard you work, a function or program isn’t done the first time
     it passes the test suite. You must find time to inspect it for design flaws and
     repetitions of designs. If you find any design patterns, form new abstractions
     or use existing abstractions to eliminate these patterns.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 无论你多么努力工作，一个函数或程序在第一次通过测试套件时并不会完成。你必须找到时间来检查其设计缺陷和设计的重复。如果你发现任何设计模式，就形成新的抽象或使用现有的抽象来消除这些模式。
 - en: If you respect these guidelines, you will produce solid software with reasonable
     effort. It will work because you understand why and how it works. Others who must
     modify or enhance your software will understand it quickly because the code communicates
     its process and its purpose. Working through this book got you started. Now you
     must practice, practice, practice. And you will have to learn a lot more about
     program design and computing than a first book can teach.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你尊重这些指南，你将能够以合理的努力产出坚实的软件。它将能够工作，因为你理解了为什么以及它是如何工作的。其他人如果需要修改或增强你的软件，也会很快理解它，因为代码传达了其过程和目的。通过这本书的学习让你开始了。现在你必须练习，练习，再练习。而且你将不得不比第一本书能教给你的更多关于程序设计和计算的知识。
 - en: Onward, Developers and Computer Scientists[🔗](#(part._moving-on-devs) "Link
     to here")
+  id: totrans-20
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 继续前进，开发者与计算机科学家[🔗](#(part._moving-on-devs) "链接到此处")
 - en: Right now, you might be wondering what to study next. The answer is both more
     programming and more computing.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 目前，你可能正在思考接下来要学习什么。答案是更多的编程和更多的计算。
 - en: As a student of program design, your next task is to learn how the design process
     applies in the setting of a full-fledged programming language. Some of these languages
     are like the teaching languages, and the transition will be easy. Others require
@@ -154,8 +199,10 @@
     and your programs will compose these instances to create coherent systems. Similarly,
     learning to create new system components is also inherently a part of scaling
     up your skills.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为程序设计的学生，你的下一个任务是学习设计过程如何在完整的编程语言环境中应用。其中一些语言就像教学语言一样，过渡会很容易。其他语言则需要不同的思维方式，因为它们提供了明确数据定义（类和对象）和制定签名的方法，以便在程序运行前进行交叉检查（类型）。根据你的知识，学习Racket语言会很容易，这是本书中教学语言背后的语言。参见[“Racket的领域”](Http://realmofracket.com/about.html)以获取一种可能的介绍。此外，你还将不得不学习如何将设计过程扩展到所谓的框架（“堆栈”）和组件的使用和生产。粗略地说，框架抽象了功能块——例如，图形用户界面、数据库连接和Web连接——这些是许多软件系统共有的。你需要学会实例化这些抽象，你的程序将组合这些实例以创建连贯的系统。同样，学习创建新的系统组件也是提升你技能的一个内在部分。
 - en: As a student of computing, you will also have to expand your understanding of
     the computational process. This book has focused on the laws that describe the
     process itself. In order to function as a real software engineer, you need to
@@ -165,13 +212,17 @@
     goal because you will need this skill as a developer on a regular basis. Above
     and beyond these basic ideas, you will also need knowledge about hardware, networking,
     layering of software, and specialized algorithms in various disciplines.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为计算的学生，你还将不得不扩展你对计算过程的理解。这本书已经关注了描述该过程的法则。为了作为一个真正的软件工程师发挥作用，你需要了解这个过程在理论和实践层面的成本。在更深入地研究大O概念是这一方向上的第一步小步骤；学会衡量和分析程序的性能是真正的目标，因为作为开发者，你将经常需要这项技能。在这些基本想法之上，你还需要了解硬件、网络、软件分层以及各个学科中的专用算法。
 - en: Onward, Accountants, Journalists, Surgeons, and Everyone Else[🔗](#(part._moving-on-everyone)
     "Link to here")
+  id: totrans-24
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 好了，会计师、记者、外科医生以及所有人[🔗](#(part._moving-on-everyone) "链接到此处")
 - en: Some of you wanted to see what computing and programming are all about. You
     now know that computing is merely a generalization of calculating, and you may
     sense how useful program design is to you. Even if you never develop programs
@@ -179,8 +230,10 @@
     developer. When you interact with developers as a professional, you know that
     systematic design matters because it affects your quality of life and the bottom
     line of your business.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些同学想了解计算和编程究竟是什么。现在你们已经知道计算不过是计算的一种推广，也许你们已经感受到程序设计对你们有多大的帮助。即使你们以后不再开发程序，你们也知道如何区分一个车库程序员和一个严肃的软件开发者。当你以专业身份与开发者互动时，你知道系统设计的重要性，因为它影响你的生活质量和你生意的底线。
 - en: In reality, though, you are likely to “program” again, on a regular basis; you
     may just fail to see your activities in this light. Imagine a journalist for a
     moment. His story starts with the collection of information and data, laying it
@@ -195,17 +248,23 @@
     the predictive calculations. Each of these professionals develops a system to
     work effectively and efficiently; and deep down, this system is likely to resemble
     the design process employed in this book.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，实际上，你们很可能会定期再次“编程”；你们可能只是没有从这种角度看待自己的活动。想象一下一位记者。他的故事从收集信息和数据开始，然后整理、组织，并添加轶事。如果你眯起眼睛，你会发现这仅仅是设计过程的第一步。让我们转向一位家庭医生，他在检查你的症状后，会提出可能影响你的假设。你看到了第二步吗？或者，想想一位律师，他用几个例子来说明论点的要点——这是第三步的一个例子。最后，一位土木工程师在桥梁建造过程中交叉检查，以确保它符合蓝图和基础静态计算。交叉检查是一种测试形式——过程中的第六步；它将实际测量值与预测计算中的预期值进行比较。每位专业人士都会开发一套系统来有效地工作；在深处，这个系统很可能与本书中采用的设计过程相似。
 - en: Now, once you accept that many activities are a form of programming, you can
     transfer additional ideas from the design process to your own life. For example,
     if you recognize patterns, you may take the little additional time it takes to
     create an “abstraction”—<wbr>a single point of control—<wbr>to simplify your future
     work. So, regardless of whether you become an accountant or a doctor or something
     else, remember the design processes wherever you go and whatever you do.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，一旦你接受许多活动都是编程的一种形式，你就可以将设计过程中的其他想法转移到你的生活中。例如，如果你认识到模式，你可能会花一点额外的时间来创建一个“抽象”——一个控制点——以简化你未来的工作。所以，无论你成为会计师、医生还是其他什么，记住无论你去哪里做什么都要记住设计过程。
 - en: Exercise Write a short essay on how the design process may help you with your
     chosen profession.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 练习：写一篇短文，谈谈设计过程如何帮助你选择的专业。

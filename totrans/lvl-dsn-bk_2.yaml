@@ -1,394 +1,569 @@
 - en: 🧠Pre-production
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 🧠前期制作
 - en: 原文：[https://book.leveldesignbook.com/process/preproduction](https://book.leveldesignbook.com/process/preproduction)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://book.leveldesignbook.com/process/preproduction](https://book.leveldesignbook.com/process/preproduction)
 - en: What is pre-production?
+  id: totrans-2
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 前期制作是什么？
 - en: '*"Plans are of little importance, but planning is essential."* -- some guy'
+  id: totrans-3
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*"计划虽少，但规划是必要的。"* —— 某人'
 - en: '**Pre-production** is the early phase of a project where you generate ideas
     and try to figure out what the project is about. It''s about answering big design
     questions:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: '**前期制作**是项目的早期阶段，在这个阶段你产生想法并试图弄清楚项目的内容。它涉及到回答一些大的设计问题：'
 - en: '*What* are you making?'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*你*在制作什么？'
 - en: What will the player be able to do? (Mechanics, Experience Goals, Pacing)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 玩家将能够做什么？（机制、体验目标、节奏）
 - en: Which parts are most important? (Pillars)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 哪些部分最重要？（支柱）
 - en: '*How* are you going to make this?'
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*你*将如何制作这个？'
 - en: How did other people solve similar problems? (Research)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 其他人是如何解决类似问题的？（研究）
 - en: How much time do you need? Is this feasible? (Scope)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 你需要多少时间？这是否可行？（范围）
 - en: Your answers to these questions will change throughout the project, and that's
     OK.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 你对这些问题的回答将在项目过程中发生变化，这是可以的。
 - en: '**Planning is useful but it''s not magic;** you won''t know what you''re making
     until you actually make it.'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '**规划是有用的，但它不是魔法；**你只有在真正制作它之前，才知道你将制作什么。'
 - en: Project planning
+  id: totrans-13
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 项目规划
 - en: Level planning can take many forms. Like for a small solo hobby project, planning
     is less important, you can write or sketch a simple basic plan and then enjoy
     the thrill of improvisation and discovery. But for a larger group project, planning
     helps everyone know what to do / what everyone needs from each other.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 关卡规划可以采取多种形式。例如，对于一个小型的个人爱好项目，规划不那么重要，你可以写或画一个简单的初步计划，然后享受即兴创作和发现的乐趣。但对于大型团队项目，规划有助于每个人知道该做什么/每个人需要从其他人那里得到什么。
 - en: '[](#minimal-checklist)Minimal checklist'
+  id: totrans-15
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[](#minimal-checklist)最小化清单'
 - en: 'Very basic questions, enough for a quick solo jam project:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 非常基本的问题，足以进行快速的个人项目：
 - en: '[](#recommended-checklist)Recommended checklist'
+  id: totrans-17
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[](#recommended-checklist)推荐清单'
 - en: 'But really, you should be able to answer these other basic questions too:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 但实际上，你也应该能够回答这些其他的基本问题：
 - en: '[](#full-checklist)Full checklist'
+  id: totrans-19
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[](#full-checklist)完整清单'
 - en: 'For 3+ people or a 3+ months project, then more planning will help:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于3人以上或3个月以上的项目，则需要更多的规划：
 - en: 'In the video below, industry level designer Steve Lee talks about his process
     -- before drawing any layouts or opening the editor tool, he first opens a text
     window and writes an outline for what should happen in the level. This is the
     core of planning: **think about the main ideas and talk about it.**'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的视频中，行业级设计师史蒂夫·李（Steve Lee）谈论了他的流程——在绘制任何布局或打开编辑工具之前，他首先打开一个文本窗口，并写下关于该关卡应该发生的事情的大纲。这是规划的核心：**思考主要想法并讨论它们**。
 - en: <picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
     max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">["How
     I design levels in text first, and why" (22 minutes)](https://www.youtube.com/watch?v=0FSssDWEFLc)
     video by Steve Lee, uploaded 21 June 2022
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
+    max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">["如何先在文本中设计关卡，以及为什么"
+    (22分钟)](https://www.youtube.com/watch?v=0FSssDWEFLc) 由史蒂夫·李（Steve Lee）上传的视频，2022年6月21日
 - en: Mechanics
+  id: totrans-23
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 力学
 - en: A game **mechanic** is any activity, system, or tactic repeated in your game,
     basically any action a player routinely performs or uses. **Core mechanics** are
     the most basic frequent and fundamental actions / systems of a game, while less
     frequent activities can be called *secondary mechanics.*
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 游戏机制是指你在游戏中重复的任何活动、系统或策略，基本上是玩家例行执行或使用的任何动作。**核心机制**是游戏中最基本、最频繁和最根本的动作/系统，而较少发生的活动可以称为*次要机制*。
 - en: People argue over the exact definition of "mechanic." This book adopts a broad
     inclusive definition because we don't care. But if you care, [read more about
     it](https://en.wikipedia.org/wiki/Game_mechanics).
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 人们就“机制”的确切定义争论不休。本书采用广泛包容的定义，因为我们不在乎。但如果你在乎，[了解更多关于它的信息](https://en.wikipedia.org/wiki/Game_mechanics)。
 - en: 'Some examples of how we talk about game mechanics:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们如何谈论游戏机制的几个例子：
 - en: Super Mario 64's core mechanics are running and jumping to reach the exit. Some
     Mario 64 levels support secondary mechanics like wall kicks for secret shortcuts.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 《超级马里奥64》的核心机制是跑步和跳跃以到达出口。一些《马里奥64》关卡支持次要机制，如墙壁踢来获得秘密捷径。
 - en: Doom's core mechanics involve running and shooting, with little or no jumping.
     Sometimes players trick monsters into shooting each other, a secondary mechanic
     called in-fighting.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Doom的核心机制包括奔跑和射击，几乎没有跳跃。有时玩家会诱使怪物相互射击，这是一种称为内战的次要机制。
 - en: 'Thief: The Dark Project is a stealth game about avoiding enemies, with a core
     mechanic where loud fast footsteps attract guards. In contrast to Mario and Doom,
     Thief discourages fast movement, and running is a secondary mechanic.'
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 《盗贼：暗影项目》是一款潜行游戏，关于避开敌人，其核心机制是响亮而快速的脚步声会吸引守卫。与马里奥和Doom不同，盗贼不鼓励快速移动，奔跑是一种次要机制。
 - en: Mario 64, Doom, and Thief are all similar 3D action games about reaching the
     exit without dying. However these games require very different approaches to level
     design. Mario platforming would make for an impossible Doom level, and Doom-style
     hordes of monsters would make for a brutally unfair Thief level.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 马里奥64、Doom和盗贼都是关于不死亡就到达出口的3D动作游戏。然而，这些游戏在关卡设计上需要非常不同的方法。马里奥的平台跳跃将使Doom关卡变得不可能，而Doom风格的怪物群将使盗贼关卡变得极其不公平。
 - en: Do not design for the genre, do not sleepwalk into familiar patterns. Instead,
     design for the actual game that exists! If you're modding a game, play it for
     at least a couple hours, including other modders' work. Watch YouTube gameplay
     footage, pay attention to how other players use mechanics and systems.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 不要为游戏类型设计，不要在熟悉的模式中梦游。相反，为实际存在的游戏设计！如果你在修改游戏，至少要玩上几个小时，包括其他修改者的作品。观看YouTube游戏玩法视频，注意其他玩家如何使用机制和系统。
 - en: <picture class="relative">![](../Images/ed5c787de9a326ef1acbe99a9d8f2e9f.png)
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/ed5c787de9a326ef1acbe99a9d8f2e9f.png)
 - en: a page from the Super Mario 64 game manual, detailing various actions and mechanics</picture>
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自《超级马里奥64》游戏手册的一页，详细说明了各种动作和机制</picture>
 - en: '[](#havent-finalized-mechanics-yet)Haven''t finalized mechanics yet?'
+  id: totrans-34
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#havent-finalized-mechanics-yet)机制尚未最终确定？'
 - en: It's hard to build levels without knowing the mechanics. Both mechanics and
     levels depend on each other, one cannot exist without the other. You can't evaluate
     a mechanic without testing in a level, but you also can't quite evaluate a level
     without finalized mechanics.
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 在不知道机制的情况下构建关卡是困难的。机制和关卡相互依赖，一个不能没有另一个存在。你无法在没有测试关卡的情况下评估机制，但你也不能在没有最终确定的机制的情况下完全评估关卡。
 - en: If you change your mechanics, then you'll end up with a lot of wasted work and
     obsolete levels that relied on discarded mechanics. But if you don't build enough
     test levels to measure the mechanics' potential, then you might end up with a
     dud mechanic that isn't interesting enough beyond the first level.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你更改了机制，那么你最终会浪费大量工作，并产生依赖已丢弃机制的过时关卡。但是，如果你没有构建足够的测试关卡来衡量机制潜力，那么你可能会得到一个在第一关之后就不那么有趣的糟糕机制。
 - en: You might have to throwaway or redo levels, maybe even multiple times! It's
     OK. Do not think of this as wasted time or work. Instead, think of each discarded
     version as valuable research. This is why we call it game *development* -- development
     is a process that takes time. It will take time to figure out what makes for a
     good level and a good game.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能需要丢弃或重做关卡，甚至可能多次！没关系。不要认为这是浪费时间或工作。相反，将每个被丢弃的版本视为宝贵的研究。这就是我们称之为游戏*开发*的原因——开发是一个需要时间的过程。确定什么是一个好的关卡和一个好的游戏需要时间。
 - en: <picture class="relative">![](../Images/e869e353e4b47150d8198ee76c8a816f.png)
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/e869e353e4b47150d8198ee76c8a816f.png)
 - en: early design document for Donkey Kong (1981) showing mechanics, controls, and
     flow; by Shigeru Miyamoto ([via Twitter](https://twitter.com/forestillusion/status/1443284433268666368/))</picture>
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 显示机制、控制和流程的1981年Donkey Kong早期设计文档；由宫本茂制作([via Twitter](https://twitter.com/forestillusion/status/1443284433268666368/))</picture>
 - en: '[](#build-playground-test-maps)Build playground test maps'
+  id: totrans-40
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#build-playground-test-maps)构建游乐场测试地图'
 - en: As part of the planning process, build **playground** [**blockout**](/process/blockout)
     **test maps:** big boxy courtyard levels filled with varied floors, room shapes,
     and game objects.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为规划过程的一部分，构建**游乐场**[**blockout**](/process/blockout) **测试地图**：大型的方形庭院关卡，充满了多样的地板、房间形状和游戏对象。
 - en: These simple playground-style debug levels are vital for testing game mechanics
     and general feel for the game. It is especially essential if you are prototyping
     your own character controller and player physics, to make sure the player can
     comfortably move around in the game.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些简单的游乐场风格调试关卡对于测试游戏机制和游戏的整体感觉至关重要。如果你正在原型化自己的角色控制器和玩家物理，这尤其重要，以确保玩家可以在游戏中舒适地移动。
 - en: '*For more on building test maps for internal use, see* [*Metrics*](/process/blockout/metrics)*.*'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: '*关于构建内部使用测试地图的更多信息，请参阅* [*指标*](/process/blockout/metrics)*.*'
 - en: <picture class="relative">![](../Images/71211faeddb55ca29c731a2e9fccb0ec.png)
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/71211faeddb55ca29c731a2e9fccb0ec.png)
 - en: 'actual internal developer metrics blockout test maps "K_Test2" and "I_TestM"
     from a French version of The Legend of Zelda: The Wind Waker, screenshots by Dark
     Linkaël [(via tcrf.net)](https://tcrf.net/The_Legend_of_Zelda:_The_Wind_Waker/Unused_Rooms/Page_Two)</picture>'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自法国版《塞尔达传说：时之笛》的实际内部开发者指标封锁测试地图“K_Test2”和“I_TestM”，截图由Dark Linkaël提供。[通过tcrf.net](https://tcrf.net/The_Legend_of_Zelda:_The_Wind_Waker/Unused_Rooms/Page_Two)
 - en: '[](#noun-verb-diagrams)Noun-verb diagrams'
+  id: totrans-46
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#noun-verb-diagrams)名词-动词图解'
 - en: Modern game developers today rarely use big "GDDs" (game design documents) nor
     big design bibles; *no one's going to read all that,* and docs quickly get outdated
     as you evolve the game. Instead, create a **noun-verb diagram** to **visually
     track how game systems and mechanics interact**.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 现代游戏开发者今天很少使用大型的“GDD”（游戏设计文档）或大型设计圣经；*没有人会读那么多，*而且随着游戏的演变，文档很快就会过时。相反，创建一个**名词-动词图解**来**视觉跟踪游戏系统和机制之间的交互**。
 - en: '"[Noun-verb diagrams are] useful for finding holes and questioning assumptions
     we were making about player motivations, and is super handy for pitching at a
     glance, people can understand the game so much faster with this than a bunch of
     bloated copy.'
+  id: totrans-48
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '"[名词-动词图解]有助于找到漏洞并质疑我们对玩家动机所做出的假设，并且对于快速展示来说非常方便，人们可以通过这种方式比一大堆冗长的副本更快地理解游戏。'
 - en: ''
+  id: totrans-49
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '[...] **This diagram is** ***not*** **supposed to chart all the things that
     are possible, but the things you feel are important.**"'
+  id: totrans-50
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[...] **这个图解** ***不是*** **用来列出所有可能的事情，而是列出你认为重要的事情。**"'
 - en: ''
+  id: totrans-51
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: -- Leena van Deventer, ["Noun-verb diagrams"](https://cohost.org/Leena/post/297770-noun-verb-diagrams)
+  id: totrans-52
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: -- 李娜·范·德文特，["名词-动词图解"](https://cohost.org/Leena/post/297770-noun-verb-diagrams)
 - en: <picture class="relative">![](../Images/26cf940e4c347cfe1d117fc4d5b5a58b.png)
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/26cf940e4c347cfe1d117fc4d5b5a58b.png)
 - en: core gameplay noun-verb diagram for [Dead Static Drive](https://www.deadstaticdrive.com/)
     by Reuben Games, [via Leena van Deventer's post "Noun-verb diagrams"](https://cohost.org/Leena/post/297770-noun-verb-diagrams)</picture>
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: Reuben Games开发的[Dead Static Drive](https://www.deadstaticdrive.com/)的核心游戏名词-动词图解，由李娜·范·德文特在其帖子“名词-动词图解”中提供。[通过李娜·范·德文特的帖子
+    "Noun-verb diagrams"](https://cohost.org/Leena/post/297770-noun-verb-diagrams)
 - en: Experience Goals
+  id: totrans-55
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 体验目标
 - en: An **experience goal** is some kind of idea, feeling, or activity for the player.
     To conceptualize goals, try starting with the phrase, *"In this level, the player
     should [learn/feel/do]..."*
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: '**体验目标**是玩家的一种想法、感觉或活动。为了概念化目标，尝试从短语“在这个关卡中，玩家应该[学习/感受/做]...”开始。'
 - en: '*In this level, the player should... ...* learn how to use the double jump
     ability. (Tutorial)'
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*在这个关卡中，玩家应该... ...* 学习如何使用双重跳跃能力。（教程）'
 - en: '*In this level, the player should...* ... feel vulnerable, then reach the safehouse
     and feel relief. (Emotion)'
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*在这个关卡中，玩家应该...* ...感到脆弱，然后到达安全屋并感到放松。（情感）'
 - en: '*In this level, the player should...* ... dodge deadly traps and unlock a shortcut
     at the end. (Activity)'
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*在这个关卡中，玩家应该...* ...躲避致命的陷阱，并在最后解锁一条捷径。（活动）'
 - en: '*In this level, the player should...* ... feel like they''re escaping a medieval
     prison. (Fantasy)'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*在这个关卡中，玩家应该...* ...感觉像是在逃离中世纪的监狱。（幻想）'
 - en: '[](#advice-for-setting-goals)Advice for setting goals'
+  id: totrans-61
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#advice-for-setting-goals)设定目标建议'
 - en: '**BE SPECIFIC.**'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: '**要具体。**'
 - en: Experience goals don't have to be complicated or profound, but a clear and specific
     experience goal helps you decide what to build and what is unnecessary.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 体验目标不必复杂或深刻，但一个清晰和具体的体验目标有助于你决定要构建什么，什么是不必要的。
 - en: '*"The player should have fun"* is a vague goal that can''t drive design decisions.
     What type of fun? How much fun? Be more specific.'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: '*"玩家应该感到快乐"*是一个模糊的目标，不能驱动设计决策。哪种类型的快乐？有多快乐？要更具体。'
 - en: Or if the goal is to *"make the player feel fear,"* then what type of fear?
     There's body horror, existential horror, fear of failure, fear of rejection, mid-life
     crisis, etc.
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者，如果目标是“让玩家感到恐惧”，那么是哪种恐惧？有身体恐怖、存在主义恐怖、失败恐惧、被拒绝恐惧、中年危机等。
 - en: '**THINK FROM THE PLAYER''S PERSPECTIVE.**'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: '**从玩家的角度思考。**'
 - en: Avoid abstract experience goals. Imagine the player's perspective.
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 避免抽象的体验目标。想象一下玩家的视角。
 - en: For example, *"the player should enjoy non-linearity"* focuses on an abstract
     structure that isn't relevant to the average player, so it isn't a useful experience
     goal. What do you actually mean by enjoyment or non-linearity?
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，*"玩家应该享受非线性"* 关注的是一个与普通玩家无关的抽象结构，因此它不是一个有用的体验目标。你实际上所说的享受或非线性是什么意思？
 - en: Imagine talking after a playtest. What do you hope a player says about your
     level? You would feel insulted if they said, "wow that was really... um... non-linear..."
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 想象一下在试玩后进行讨论。你希望玩家对你的关卡说些什么？如果他们说："哇，这真的很...嗯...非线性..."，你会感到受辱。
 - en: '[](#secondary-design-goals-can-help)SECONDARY DESIGN GOALS CAN HELP.'
+  id: totrans-70
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[](#secondary-design-goals-can-help)次要设计目标可以帮助。'
 - en: Levels rarely have just one experience design goal. Even a tutorial level benefits
     from storytelling and mood. These secondary goals can help guide your design decisions.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 关卡很少只有一个体验设计目标。即使是教程关卡也能从叙事和氛围中受益。这些次要目标可以帮助指导你的设计决策。
 - en: For example, *"fight multiple enemies at once"* is an encounter design goal
     for a level. But so much is still undefined. Where is this level set? What type
     of enemies?
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，*"同时与多个敌人战斗"* 是一个关卡的设计目标。但还有很多东西仍然没有定义。这个关卡设置在哪里？敌人类型是什么？
 - en: 'Try adding a pacing goal: *"feel overwhelmed at first" ...* So maybe the fight
     should start in a small space with enemies almost surrounding the player.'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 尝试添加一个节奏目标："一开始感到不知所措" ... 因此，战斗可能应该在一个小空间开始，敌人几乎包围了玩家。
 - en: 'Add a fantasy / storytelling goal: *"feel like defending a campsite from zombies"
     ...* So maybe we should research types of campsites (military? hiker? winter?)
     to plan the arena. Campsites have campfires, maybe there''s a fire weapon... etc.'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 添加一个幻想/叙事目标："感觉像在保卫营地免受僵尸侵袭" ... 因此，我们可能应该研究不同类型的营地（军事？徒步旅行者？冬季？）来规划竞技场。营地有篝火，也许有一种火武器...等等。
 - en: '[](#pillars)Pillars'
+  id: totrans-75
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#pillars)支柱'
 - en: The most important experience goals across your entire project are **pillars**
     -- the most vital ideas that structurally support and justify your entire design.
     Design pillars help teams maintain a cohesive vision for the project, and resist
     "feature creep" work tasks that don't actually support your main goals.
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 在整个项目中，最重要的体验目标是**支柱**——那些在结构上支持和证明整个设计的最关键思想。设计支柱帮助团队保持对项目的整体愿景，并抵制那些实际上不支持主要目标的功能蔓延工作。
 - en: Pillars are a design planning tool to help you conceptualize short-term experience
     goals for each level or area. Each of your level's smaller experience goals and
     small gameplay beats should contribute to your pillars somehow, and that culminates
     in the grander arc of your entire game's experience.
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 支柱是设计规划工具，帮助你构思每个关卡或区域的短期体验目标。你关卡中的每个较小的体验目标和小的游戏成就都应该以某种方式为支柱做出贡献，最终汇聚成整个游戏体验的宏大弧线。
 - en: To help internalize these big design goals, title each pillar with a pithy phrase
     or word. For example, the God of War (2018) internal design pillars at Sony Santa
     Monica were Combat, Father/Son and Exploration (see below).
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了帮助内化这些大的设计目标，用简洁的短语或词为每个支柱命名。例如，索尼圣莫尼卡工作室的《战神》（2018）内部设计支柱是战斗、父子关系和探索（见下文）。
 - en: <picture class="relative">![](../Images/a83e05256232cbc8912009e91e4a601b.png)
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/a83e05256232cbc8912009e91e4a601b.png)</picture>
 - en: core experience goals / "pillars" for God of War (2018), presented by SIE Santa
     Monica Studio</picture>
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 由SIE圣莫尼卡工作室展示的《战神》（2018）的核心体验目标/“支柱”</picture>
 - en: Because this was a big budget AAA game, their experience goals also involved
     production value targets like "high optical [motion capture] fidelity."
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于这是一款大预算的AAA游戏，他们的体验目标还涉及生产价值目标，如"高光学[动作捕捉]保真度"。
 - en: You might think this character animation goal has little to do with level design,
     but imagine a level that makes the mocap character animation look bad -- who has
     to change their work now, the level designer or the animator?
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能会认为这个角色动画目标与关卡设计关系不大，但想象一下一个让动作捕捉角色动画看起来很糟糕的关卡——现在谁需要改变他们的工作，是关卡设计师还是动画师？
 - en: Because the entire team already agreed that mocap animation should have priority
     as a pillar, perhaps that prior consensus means the level designer should change
     their level to fit the existing animation.
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于整个团队已经一致同意动作捕捉动画应该作为一个支柱优先考虑，也许这先前的共识意味着关卡设计师应该改变他们的关卡以适应现有的动画。
 - en: In this way, pillars help us define what is important about our projects, and
     thus make more consistent and coherent decisions during development.
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 以这种方式，支柱帮助我们定义了我们项目的重要之处，从而在开发过程中做出更一致和连贯的决定。
 - en: 'Example: Psychonauts 2'
+  id: totrans-85
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 示例：Psychonauts 2
 - en: Psychonauts 2 is a 3D platformer about exploring peoples' brains. In November
     2016, Double Fine Studios made a pre-production with a vertical slice style "art
     test" prototype -- 5 years before the game's release in August 2021.
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: Psychonauts 2是一款关于探索人们大脑的3D平台游戏。2016年11月，Double Fine Studios制作了一个预生产原型，采用垂直切片风格的“艺术测试”原型，距离游戏在2021年8月发布还有5年时间。
 - en: As depicted in their official dev documentary video series ["PsychOdyssey"](https://www.youtube.com/playlist?list=PLIhLvue17Sd70y34zh2erWWpMyOnh4UN_)
     episode 8, the pre-production team focused on building out a core movement set,
     art style, and level design in Unreal Engine 4\. While much of the core platforming
@@ -396,206 +571,296 @@
     with new ways the player's various psychic powers could interact with the platforming
     gameplay -- resulting in a telekinesis-with-movable-tightrope prototype mechanic
     that never appeared in the final game.
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 如他们在官方开发纪录片系列 ["PsychOdyssey"](https://www.youtube.com/playlist?list=PLIhLvue17Sd70y34zh2erWWpMyOnh4UN_)
+    第8集所展示，预生产团队专注于在Unreal Engine 4中构建核心动作集、艺术风格和关卡设计。虽然大部分核心平台机制是从原始Psychonauts 1继承下来的，但团队希望尝试新的方法，让玩家的各种心灵能力与平台游戏玩法相互作用——从而产生了一种在最终游戏中从未出现过的，可以移动的绳索的念力原型机制。
 - en: By the end of the dev cycle, there's still a lot of uncertainty and unanswered
     questions. Will this game be good? No one knows. The journey is just beginning.
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 到开发周期结束时，仍然有很多不确定性和未解决的问题。这款游戏会好吗？没有人知道。旅程才刚刚开始。
 - en: '<picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
     max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">Double
     Fine PsychOdyssey · EP08: “A Couple Years of a Lot of Work” [(via YouTube)](https://www.youtube.com/watch?v=eaA0P2dDHSg&list=PLIhLvue17Sd70y34zh2erWWpMyOnh4UN_&index=9)
     uploaded 11 Feb 2023'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: '<picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
+    max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">Double
+    Fine PsychOdyssey · EP08: “多年的大量工作” [(via YouTube)](https://www.youtube.com/watch?v=eaA0P2dDHSg&list=PLIhLvue17Sd70y34zh2erWWpMyOnh4UN_&index=9)
+    上传于2023年2月11日'
 - en: 'Example: Dishonored 2, "Clockwork Mansion"'
+  id: totrans-90
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 示例：被遗忘者2，"时钟庄园"
 - en: Dishonored is a first person stealth action RPG series about exploring complex
     places. In Dishonored 2, there is a "Clockwork Mansion" level where the layout
     dynamically changes.
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: Dishonored是一款关于探索复杂场所的第一人称潜行动作RPG系列。在Dishonored 2中，有一个“时钟庄园”关卡，其布局会动态变化。
 - en: 'Arkane Studios designer Dana Nightingale built a proof of concept pre-production
     prototype: ([Twitter thread](https://twitter.com/DanaENight/status/1448582302855045124))'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: Arkane Studios的设计师达娜·奈特林格尔构建了一个概念预生产原型：([Twitter 线程](https://twitter.com/DanaENight/status/1448582302855045124))
 - en: '"I created this proof of concept early in 2013, long before the map was greenlit
     to be included in the game, basically to say "yes this could be amazing" and "yes
     I should work on it." It did both, but it would still be over a year before the
     map was officially OK''d.'
+  id: totrans-93
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '"我在2013年初创建了这一概念原型，远在地图获得绿灯被纳入游戏之前，基本上是为了表达“这可能会很棒”和“我应该着手做这件事”。它确实做到了，但直到一年多后地图才正式获得批准。"'
 - en: ''
+  id: totrans-94
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: But sure, I could make a bunch of blocks animate however I wanted. What is possible
     using real level geometry? That's why I made this prototype. A bit less wild?
     Yes. But still clearly do-able.
+  id: totrans-95
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 但当然，我可以让一大堆方块以任何我想要的方式动画化。使用真实关卡几何形状能实现什么？这就是我制作这个原型的原因。更少一些疯狂？是的。但仍然明显可行。
 - en: ''
+  id: totrans-96
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: That prototype introduced the idea of rooms that were moved around like cargo
     containers and slotted into place, making the map's layout totally dynamic, but
     without transforming rooms. I am glad we didn't go in that direction.
+  id: totrans-97
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 那个原型引入了房间可以像货柜一样移动并插入到位的想法，使地图布局完全动态，但不会转换房间。我很高兴我们没有走那条路。
 - en: ''
+  id: totrans-98
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '[...]'
+  id: totrans-99
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[...]'
 - en: ''
+  id: totrans-100
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: After nearly a year of working on other prototypes it was time to revisit the
     Clockwork Mansion and finally get it validated. I made a new version with fewer
     twisty rooms, and more emphasis on the "behind the scenes" areas..."
+  id: totrans-101
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在几乎一年时间专注于其他原型之后，是时候重新审视时钟庄园并最终得到验证。我制作了一个新版本，房间更少，更注重“幕后”区域..."
 - en: ''
+  id: totrans-102
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: -- [Dana Nightingale (@DanaENight), 14 October 2021](https://twitter.com/DanaENight/status/1448582302855045124)
+  id: totrans-103
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: -- [达娜·奈特林格尔 (@DanaENight), 2021年10月14日](https://twitter.com/DanaENight/status/1448582302855045124)
 - en: 'To give you a sense of time scales here: this level spent 7 months in pre-production,
     then entered final layout / blockout about 18 months later.'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了让您了解时间尺度：这个关卡在预生产阶段花费了7个月，然后在18个月后进入了最终布局/封锁阶段。
 - en: <picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
     max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">video
     of internal Arkane prototype ["Clockwork Mansion Proof of Concept"](https://www.youtube.com/watch?v=-BgynKsHKUo),
     recorded 5 Feb 2013 [by Dana Nightingale](https://twitter.com/DanaENight/status/1448582302855045124)
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
+    max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">内部Arkane原型视频
+    ["Clockwork Mansion Proof of Concept"](https://www.youtube.com/watch?v=-BgynKsHKUo)，由Dana
+    Nightingale于2013年2月5日录制 [by Dana Nightingale](https://twitter.com/DanaENight/status/1448582302855045124)
 - en: To review...
+  id: totrans-106
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 需要审查...
 - en: '**Mechanics** are the repeated systems and interactions of a game.'
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**机制**是游戏中重复的系统交互。'
 - en: '**Core mechanics** are the most frequent, while secondary mechanics add occasional
     variety and finesse for more experienced players.'
+  id: totrans-108
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**核心机制**是最频繁的，而次要机制为经验更丰富的玩家增加了偶尔的多样性和精致。'
 - en: '**Experience goals** are the player-facing design goals for your levels'
+  id: totrans-109
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**体验目标**是玩家面对的设计目标'
 - en: '**Pillars** are the main design goals for your entire game. What do you want
     the player to learn, feel, or understand?'
+  id: totrans-110
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**支柱**是整个游戏的主要设计目标。你希望玩家学到什么，感受到什么，或理解什么？'
 - en: How much planning do you need? It depends.
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 需要多少计划？这取决于。
 - en: Small casual projects will be OK with small (or nonexistent) plans, big long-term
     projects may require a huge internal wiki.
+  id: totrans-112
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 小型休闲项目可能只需要小型（或不存在）的计划，而大型长期项目可能需要一个巨大的内部维基。
 - en: '**Pre-production planning helps developers coordinate and trust each other.**'
+  id: totrans-113
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**预生产计划有助于开发者之间协调和相互信任**。'
 - en: If you're prototyping new mechanics or game design elements, then **blockout
     a test map** with a big playground-style space.
+  id: totrans-114
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果你正在原型设计新的机制或游戏设计元素，那么就**设计一个大型游乐场风格的测试地图**。
 - en: Plans help you make things, but **plans always change.** Even after preproduction,
     while working in the middle of the project, you will almost always adjust your
     plans and improvise a redesign. That is OK.
+  id: totrans-115
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 计划帮助你完成事情，但**计划总是会有所变化**。即使在预生产之后，在项目进行中，你几乎总是会调整你的计划并进行即兴重设计。这是可以的。
 - en: Now what?
+  id: totrans-116
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 现在怎么办？
 - en: 'Pre-production in more detail:'
+  id: totrans-117
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 预生产细节：
 - en: '[**Research**](/process/preproduction/research) is vital for projects focusing
     on story or realism.'
+  id: totrans-118
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[**研究**](/process/preproduction/research) 对于专注于故事或现实主义的工程项目至关重要。'
 - en: Single player projects require special attention to [**pacing**](/process/preproduction/pacing).
+  id: totrans-119
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 单人游戏项目需要特别注意[**节奏**](/process/preproduction/pacing)。
 - en: Projects often start too big and must be [**scoped**](/process/preproduction/scope)
     down.
+  id: totrans-120
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 项目往往一开始就过于庞大，必须[**缩小范围**](/process/preproduction/scope)。
 - en: Big narrative projects benefit from [**worldbuilding**](/process/preproduction/worldbuilding).
+  id: totrans-121
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 大型叙事项目受益于[**世界观构建**](/process/preproduction/worldbuilding)。
 - en: Or you might move on to the [**layout**](/process/layout)phase of level design.
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 或者你可能进入关卡设计的[**布局**](/process/layout)阶段。
 - en: '[](#further-reading-and-resources)Further reading and resources'
+  id: totrans-123
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#further-reading-and-resources)进一步阅读和资源'
 - en: '[**"A Series of First Steps - Overcoming the Digital Blank Page"** by Seth
     Marinello](https://www.youtube.com/watch?v=R75g3elj7y4) (GDC 2014)'
+  id: totrans-124
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[**“一系列第一步 - 克服数字空白页”** by Seth Marinello](https://www.youtube.com/watch?v=R75g3elj7y4)
+    (GDC 2014)'
 - en: '[**"An Approach to Holistic Level Design"** by Steve Lee](https://www.youtube.com/watch?v=CpOoTAVeEcU)
     (GDC 2017)'
+  id: totrans-125
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[**“全面关卡设计方法”** by Steve Lee](https://www.youtube.com/watch?v=CpOoTAVeEcU)
+    (GDC 2017)'
 - en: '[**"Finding Duskers: Innovation Through Better Design Pillars"** by Tim Keenan](https://www.youtube.com/watch?v=kzQDVtysXjA)
     (GDC 2017)'
+  id: totrans-126
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[**“寻找Duskers：通过更好的设计支柱进行创新”** by Tim Keenan](https://www.youtube.com/watch?v=kzQDVtysXjA)
+    (GDC 2017)'
 - en: '[**"A Playful Production Process"**](https://www.playfulproductionprocess.com/)
     (2021) by Richard Lemarchand is an approachable textbook that introduces game
     production methods, ideal for late high school / university students.'
+  id: totrans-127
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[**“一个有趣的生产过程”**](https://www.playfulproductionprocess.com/) (2021) by Richard
+    Lemarchand 是一本易于理解的教科书，介绍了游戏制作方法，非常适合高中/大学生。'
 - en: '[Pre-production (Wikipedia)](https://en.wikipedia.org/wiki/Pre-production)
     is a formalized process for film and music industries.</picture></picture></picture>'
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[预生产（维基百科）](https://en.wikipedia.org/wiki/Pre-production) 是电影和音乐行业的一个规范化流程。</picture></picture></picture>'

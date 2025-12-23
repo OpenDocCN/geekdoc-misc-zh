@@ -1,85 +1,121 @@
 - en: 🗺️How to make a level
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 🗺️如何制作关卡
 - en: 原文：[https://book.leveldesignbook.com/process/overview](https://book.leveldesignbook.com/process/overview)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://book.leveldesignbook.com/process/overview](https://book.leveldesignbook.com/process/overview)
 - en: 'Most 3D level design projects involve this process:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数3D关卡设计项目都涉及以下流程：
 - en: '**[**Pre-production**](/process/preproduction): plan out the big ideas and
     overall experience design.**'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**[**前期制作**](/process/preproduction)**：规划出大的想法和整体体验设计。'
 - en: '**[**Combat**](/process/combat) **(optional)**: for combat games, define how
     player(s) and enemy types interact.**'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**[**战斗**](/process/combat) **（可选）**：对于战斗游戏，定义玩家和敌人类型之间的交互。'
 - en: '****[**Layout**](/process/layout)**:** sketch a visual top-down 2D plan for
     a level.****'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**[**布局**](/process/layout)**：为关卡绘制一个视觉的俯视图2D计划。'
 - en: '******[**Blockout**](/process/blockout)**:** build a basic in-game 3D rough
     draft and playtest it.******'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**[**预制作**](/process/blockout)**：构建基本的游戏内3D草图并测试它。**'
 - en: '******[**Scripting**](/process/scripting): integrate events and behaviors (missions,
     quests, doors, buttons, AI)******'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**[**脚本**](/process/scripting)**：整合事件和行为（任务、任务、门、按钮、AI）**'
 - en: '******[**Lighting**](/process/lighting)**:** arrange light sources for depth
     and readability******'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**[**光照**](/process/lighting)**：安排光源以增加深度和可读性**'
 - en: '******[**Environment Art**](/process/env-art): "art pass" the level with props
     and set dressing******'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**[**环境艺术**](/process/env-art)**：用道具和布景“艺术化”关卡**'
 - en: '******[**Release**](/process/release): document, publicize, and publish the
     project.******'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '**[**发布**](/process/release)**：记录、宣传和发布项目。'
 - en: '****If you don''t know where to start, try doing everything. With more experience,
     you will learn when to skip or expand a phase.****'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你不知道从哪里开始，尝试做所有的事情。随着经验的增加，你会学会何时跳过或扩展一个阶段。
 - en: '****<picture class="relative">![](../Images/73ca6e57ddcfc138b4b8998b6fdc2095.png)'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '**<picture class="relative">![](../Images/73ca6e57ddcfc138b4b8998b6fdc2095.png)**'
 - en: underpass in de_dust by Dave "DaveJ" Johnston, for Counter-Strike 1.6</picture>****
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: underpass in de_dust by Dave "DaveJ" Johnston, for Counter-Strike 1.6</picture>****
 - en: '****Tailor the process****'
+  id: totrans-14
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '**定制流程**'
 - en: '****Every level / project has different needs. There is no single foolproof
     way to make a level.****'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个关卡/项目都有不同的需求。没有一种万无一失的方法来制作关卡。
 - en: '******Group projects** need more [**pre-production**](/process/preproduction)
     and planning, like [pacing](/process/preproduction/pacing) outlines and [layout](/process/layout)
     drawings. Without enough communication and documentation, collaborators can''t
     collaborate.****'
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**小组项目**需要更多的[**前期制作**](/process/preproduction)和规划，比如[节奏](/process/preproduction/pacing)大纲和[布局](/process/layout)草图。如果没有足够的沟通和文档，合作者无法协作。'
 - en: '******[**Combat**](/process/combat) **games / multiplayer maps** need more
     [**blockout**](/process/blockout) time to tune [encounters](/process/combat/encounter)
     and [map balance](/process/combat/balance) with a strong focus on [**playtesting**](/process/blockout/playtesting)**.********'
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**[**战斗**](/process/combat) **游戏/多人地图**需要更多的[**预制作**](/process/blockout)时间来调整[遭遇战](/process/combat/encounter)和[地图平衡](/process/combat/balance)，并重点关注[**测试**](/process/blockout/playtesting)**。'
 - en: '******Single player levels with a** [**storytelling**](/process/env-art/storytelling)
     **focus** benefit less from a long blockout period. That may sound appealing but
     it''s actually a special hell with zero certainty. When is a story "good enough"?
@@ -87,287 +123,424 @@
     art](/process/env-art). If your story changes, you''ll have to redo everything,
     and it''s hard to keep everything in sync. Ever play a game where the story doesn''t
     make sense? That''s probably going to be your game too.****'
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**以**[**叙事**](/process/env-art/storytelling) **为重点的单人关卡**从较长的预制作期中受益较少。这可能听起来很有吸引力，但实际上是一个零确定性的特殊地狱。何时一个故事“足够好”？你将需要在[脚本](/process/scripting)和[环境艺术](/process/env-art)上进行大量的迭代。如果你的故事改变了，你将不得不重做一切，而且很难保持一切同步。你有没有玩过故事不合理的游戏？那可能就是你的游戏了。'
 - en: '****Process overview****'
+  id: totrans-19
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '**过程概述**'
 - en: '****[](#id-1.-pre-production)********1\. [Pre-production](/process/preproduction)****'
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '**[](#id-1.-pre-production)**********1. [前期制作](/process/preproduction)****'
 - en: '******Pre-production** is about planning the basic shape and scope of the project.
     What is the project about? What are the design goals and constraints?****'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '**前期制作**是关于规划项目的基本形状和范围。项目是关于什么的？设计目标和限制是什么？'
 - en: '****Beginners often neglect project planning entirely, while experienced designers
     sometimes over-plan. Big commercial studios often spend months or even years in
     pre-production. When collaborating in a group, this phase is very important because
     this is when you all align your expectations. When working solo as a hobbyist,
     you can probably get away with less planning.****'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '**初学者往往完全忽视项目规划，而经验丰富的设计师有时会过度规划。大型商业工作室通常会在前期制作上花费数月甚至数年。当团队合作时，这一阶段非常重要，因为这是你们所有人调整期望的时候。当作为爱好者独立工作时，你可能可以减少规划。** '
 - en: '****Pre-production plans are usually text documents, boards with movable cards,
     and spreadsheets.****'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '**前期制作计划通常是文本文档、带有可移动卡片的板子和电子表格。**'
 - en: '*****For more on conceptual planning, see* [*Pre-production*](/process/preproduction)****'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: '***关于概念规划，请参阅[*前期制作*](/process/preproduction)**'
 - en: '****<picture class="relative">![](../Images/c46bf6bdf4b68fb3417a532e0b239461.png)'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '**<picture class="relative">![](../Images/c46bf6bdf4b68fb3417a532e0b239461.png)'
 - en: photo of internal planning board for The Last Of Us (Naughty Dog), from "Videogames"
     at Victoria and Albert Museum</picture>****
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自维多利亚和阿尔伯特博物馆“电子游戏”展览的《最后生还者》（Naughty Dog）内部规划板的照片</picture>**
 - en: '****[](#id-2.-combat-design-optional)********2\. [Combat design](/process/combat)
     (optional)****'
+  id: totrans-27
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '**[](#id-2.-combat-design-optional)********2．[战斗设计](/process/combat)（可选）**'
 - en: '****If your project is about combat, then what does a typical fight look like,
     what is a battle made of? How do players prepare? How can you make fights feel
     varied and fresh?****'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: '**如果你的项目是关于战斗的，那么典型的战斗是什么样的，战斗由什么组成？玩家如何准备？你如何让战斗感觉多样化且新鲜？**'
 - en: '****Combat is like any other game system or mechanic. You should define these
     experience design goals *before* you make levels for them.****'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: '**战斗就像任何其他游戏系统或机制。你应该在为它们制作关卡之前定义这些体验设计目标。**'
 - en: '****If you''re making a combat game from scratch, the fights won''t "feel good"
     until programmers and artists make it functional and readable. You basically have
     to make the whole game before you''ll know what the combat feels like! Because
     it''s so much work, we recommend modding combat games so you can practice on pre-built
     battle-tested systems.****'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: '**如果你是从零开始制作战斗游戏，直到程序员和艺术家使其功能化和可读性之前，战斗都不会“感觉良好”！你基本上必须制作整个游戏，才能知道战斗的感觉！因为这是一项如此繁重的工作，我们建议修改战斗游戏，这样你就可以在预构建的经过实战测试的系统上练习。**'
 - en: '*****For more on designing fights, weapons, and enemies, see* [*Combat*](/process/combat)*.*****'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: '***关于设计战斗、武器和敌人的更多信息，请参阅[*战斗*](/process/combat)**'
 - en: '*****For a list of recommended combat games to mod, see* [*Tools*](/appendix/tools)*.*****'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: '***关于推荐用于修改的战斗游戏列表，请参阅[*工具*](/appendix/tools)*.**'
 - en: '****<picture class="relative">![](../Images/e227c994db588f6a23df7895952ca362.png)'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: '**<picture class="relative">![](../Images/e227c994db588f6a23df7895952ca362.png)'
 - en: spreadsheet breakdown showing the moveset matrix for valkyrie bosses in God
     of War (2018), ​[by Jason de Heras (via Twitter)](https://twitter.com/jasondeheras/status/1376005158656638977)</picture>****
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 展示《战神》（2018）中瓦尔基里Boss动作矩阵的电子表格分解，[由Jason de Heras（via Twitter）提供](https://twitter.com/jasondeheras/status/1376005158656638977)</picture>**
 - en: '****[](#id-3.-layout)********3\. [Layout](/process/layout)****'
+  id: totrans-35
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '**[](#id-3.-layout)********3．[布局](/process/layout)**'
 - en: '****The **layout** is the basic structure of the level, usually a flat 2D drawing
     of core areas and elements.****'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: '**布局是关卡的基本结构，通常是一个核心区域和元素的平面2D图纸。**'
 - en: '****For a small solo hobby project, a simple layout sketch, even a scribble,
     can be enough.****'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: '**对于一个小型的独立爱好者项目，一个简单的布局草图，甚至是一个涂鸦，可能就足够了。**'
 - en: '****For a group / big project, detailed layout drawings are important communication
     tools. No one can read your mind; if you don''t visualize it and talk about it,
     then no one will know what you want.****'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: '**对于团队/大型项目，详细的布局图是重要的沟通工具。没有人能读懂你的想法；如果你不将其视觉化并讨论，那么没有人会知道你想要什么。**'
 - en: '****Layout drawings are usually top-down 2D floor plans, but isometric / perspective
     drawings are common too. Remember, this isn''t about being a great artist; it''s
     about communication! The drawing is a visual plan for where the player can go
     and what they can do.****'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: '**布局图通常是俯视图的2D平面图，但等距/透视绘图也很常见。记住，这并不是关于成为一个伟大的艺术家；这是关于沟通！这张图是玩家可以前往以及可以做什么的视觉计划。**'
 - en: '*****For more on visual space planning, see* [*Layout*](/process/layout)****'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: '*关于视觉空间规划，请参阅[*布局*](/process/layout)**'
 - en: '****<picture class="relative">![](../Images/489397460dd88b40db4f3397e6f6ad92.png)'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '**<picture class="relative">![](../Images/489397460dd88b40db4f3397e6f6ad92.png)**'
 - en: layout drawing of multiplayer map "Warpath" for Team Fortress Classic, by Robin
     Walker</picture>****
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: Team Fortress Classic多人地图“Warpath”的布局草图，由Robin Walker制作</picture>****
 - en: '****[](#id-4.-blockout)********4\. [Blockout](/process/blockout)****'
+  id: totrans-43
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '****[](#id-4.-blockout)********4\. [Blockout](/process/blockout)****'
 - en: '****A **blockout** is a playable rough draft of the level, built with simple
     blocky 3D shapes in low detail.****'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '******Blockout**是一个可玩的原型关卡，使用低细节的简单块状3D形状构建。****'
 - en: '****We prototype the basic structure of the level so we can playtest it within
     the game engine. Playtesting helps us decide whether the level is too small or
     too big, confusing or entertaining, balanced or broken, etc.****'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: '****我们原型化关卡的基本结构，以便在游戏引擎中进行测试。测试帮助我们决定关卡是否太小或太大，是否令人困惑或有趣，是否平衡或损坏等。****'
 - en: '****This playtesting is important for any combat game, or anything where rearranging
     a room can cause big changes in player behavior. If you realize a room design
     isn''t working, then you can modify it more easily when it is made of simple shapes.****'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: '****这种测试对于任何战斗游戏或任何通过重新排列房间就能引起玩家行为重大变化的情况都至关重要。如果你发现房间设计不起作用，那么当它由简单的形状组成时，你可以更容易地对其进行修改。****'
 - en: '****Blockout files are playable game levels / scene files loaded into the game
     engine.****'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '****Blockout文件是可玩的游戏关卡/场景文件，加载到游戏引擎中。****'
 - en: '*****For more on in-game 3D prototyping, see* [*Blockout*](/process/blockout)****'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关游戏内3D原型设计的更多信息，请参阅[*Blockout*](/process/blockout)****
 - en: '*****<picture class="relative">![](../Images/f2a35e8891fa85cff722c941fd1b9de0.png)'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: '*****<picture class="relative">![](../Images/f2a35e8891fa85cff722c941fd1b9de0.png)'
 - en: blockout screenshot for a cliff level in Uncharted 4 (Naughty Dog), by Em Schatz</picture>*****
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: Uncharted 4（Naughty Dog）中悬崖关卡的原型截图，由Em Schatz制作</picture>*****
 - en: '*****[](#id-5.-scripting)**********5\. [Scripting](/process/scripting)*****'
+  id: totrans-51
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '**********5\. [脚本编写](/process/scripting)*****'
 - en: '*******Scripting** is about integrating behaviors, events, and game logic into
     a level.*****'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: '*******脚本编写**是将行为、事件和游戏逻辑集成到关卡中的过程。*****'
 - en: '*****[Door scripting](/process/scripting/doors) is one of the most difficult
     problems in game development. Trains and moving platforms are even more complicated.
     It''s better to start with buttons and collectibles.*****'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: '*****[门脚本编写](/process/scripting/doors)是游戏开发中最困难的问题之一。火车和移动平台更加复杂。最好从按钮和可收集物品开始。*****'
 - en: '*****Mission objectives, quests, cutscenes, choreography -- and any AI control
     / combat / [encounter design](/process/combat/encounter) -- often rely on scripting.
     If you''re scared of coding, don''t be afraid, many game engines and toolsets
     have special scripting languages and tools to simplify the programming process.*****'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: '*****任务目标、任务、预告片、编排，以及任何AI控制/战斗/[遭遇设计](/process/combat/encounter)通常依赖于脚本编写。如果你害怕编程，不要害怕，许多游戏引擎和工具集都有专门的脚本语言和工具来简化编程过程。*****'
 - en: '*****Level design culture tends to underappreciates scripters, yet scripting
     is what makes a level feel "alive" and is crucial for transforming a map into
     an experience.*****'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: '*****关卡设计文化往往低估了脚本编写者的作用，然而脚本编写是让关卡感觉“生动”并使其成为体验的关键。*****'
 - en: '******For more about making levels do stuff, see* [*Scripting*](/process/scripting)*****'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: '******有关制作关卡实现功能的更多信息，请参阅[*脚本编写*](/process/scripting)*****'
 - en: '******<picture class="relative">![](../Images/f75c57d7bac9f0af7949096b6adc8f5e.png)'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: '******<picture class="relative">![](../Images/f75c57d7bac9f0af7949096b6adc8f5e.png)'
 - en: in an early version of Gone Home, doors didn't quite work correctly... from
     blog post ["Code Judo" by Johnnemann Nordhagen](https://fullbright.company/2012/07/02/code-judo/)</picture>******
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 在《Gone Home》的早期版本中，门的工作并不完全正确... 来自博客文章["Code Judo" by Johnnemann Nordhagen](https://fullbright.company/2012/07/02/code-judo/)**
 - en: '******[](#id-6.-lighting)************6\. [Lighting](/process/lighting)******'
+  id: totrans-59
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '******[](#id-6.-lighting)************6\. [光照](/process/lighting)******'
 - en: '********Lighting** adds shadow and depth to a blockout, helping players understand
     the core shape of the level.******'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: '********光照**为Blockout添加阴影和深度，帮助玩家理解关卡的核心形状。******'
 - en: '******Without light, the 3D game world will feel more like a flat 2D image,
     and it will be difficult to gauge distances or understand the full layout. Light
     and shadow also serve as a form of cover / layer of information essential for
     combat gameplay.******'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: '******没有光照，3D游戏世界将更像是一个平面的2D图像，这将很难判断距离或理解完整的布局。光和阴影还充当一种掩护/信息层，这对于战斗游戏至关重要。******'
 - en: '******While the game industry usually treats lighting more as a decorative
     facet of environment art, we argue that lighting has crucial gameplay functions
     and must be crafted in deep consultation with level designers.******'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: '******尽管游戏行业通常将照明视为环境艺术的一个装饰性方面，但我们认为照明具有关键的游戏功能，并且必须与关卡设计师进行深入咨询来精心制作。******'
 - en: '*******For more on lighting design for gameplay, see* [*Lighting*](/process/lighting)*.*******'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: '*******有关游戏玩法照明设计的更多信息，请参阅[*照明*](/process/lighting)******。'
 - en: '******<picture class="relative">![](../Images/b53a3161bd766c4fd3bd7a4818f060f7.png)'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: '******<picture class="relative">![](../Images/b53a3161bd766c4fd3bd7a4818f060f7.png)'
 - en: medieval lighting study with light entities [by Harley Wilson (via Artstation.com)](https://www.artstation.com/artwork/lBLzJ)</picture>******
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: medieval lighting study with light entities [by Harley Wilson (via Artstation.com)](https://www.artstation.com/artwork/lBLzJ)</picture>******
 - en: '******[](#id-7.-environment-art)************7\. [Environment Art](/process/env-art)******'
+  id: totrans-66
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '******[](#id-7.-environment-art)************7． [环境艺术](/process/env-art)******'
 - en: '******Once you have enough certainty about the overall shape and flow of the
     level, you can begin adding more **environment art,** or visual detail.******'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: '******一旦你对关卡的整体形状和流程有足够的信心，你就可以开始添加更多**环境艺术**，或视觉细节。******'
 - en: '******An **art pass** is the process of adding these details. Most projects
     will require multiple art passes.******'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: '******艺术通过是添加这些细节的过程。大多数项目将需要多次艺术通过。******'
 - en: '******Many people think art passing is the "fun part." Beginners often rush
     too quickly into art passing without adequate planning, layout, or blockout work.
     A premature art pass locks-in early design mistakes because it becomes "expensive"
     to change the level and thus redo all the artwork. So, resist the urge! Don''t
     rush into an art pass!******'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: '******许多人认为艺术通过是“有趣的部分”。初学者往往在没有充分规划、布局或块状工作的情况下急于进行艺术通过。过早的艺术通过会锁定早期设计错误，因为改变关卡和重做所有艺术作品变得“昂贵”。所以，抵制诱惑！不要急于进行艺术通过！******'
 - en: '*******For more about making levels pretty, see* [*Environment Art*](/process/env-art)******'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: '*******有关制作关卡更美观的更多信息，请参阅[*环境艺术*](/process/env-art)******'
 - en: '*******<picture class="relative">![](../Images/2849b699c3bcb6ab1f35eaccf15ecc84.png)'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: '*******<picture class="relative">![](../Images/2849b699c3bcb6ab1f35eaccf15ecc84.png)'
 - en: animated GIF of development process for a snowy military dock level in Sniper
     Elite</picture>*******
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: animated GIF of development process for a snowy military dock level in Sniper
+    Elite</picture>*******
 - en: '*******[](#id-8.-release)**************8\. [Release](/process/release)*******'
+  id: totrans-73
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '*******[](#id-8.-release)**************8． [发布](/process/release)*******'
 - en: '*******When the project is complete, it is time to **release** and make sure
     it reaches your audience.*******'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: '*******当项目完成时，是时候**发布**并确保它触及你的受众了。*******'
 - en: '*******For commercial projects, the game launch is just the beginning of the
     nightmare -- you must continue to market and publicize the project, gauge user
     feedback, ship bug fixes, and even build out additional post-launch content.*******'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: '*******对于商业项目，游戏发布只是噩梦的开始——你必须继续推广和宣传项目，衡量用户反馈，发布错误修复，甚至构建额外的发布后内容。*******'
 - en: '*******For personal portfolio projects, you must document the level design
     properly, or else no one will understand what you did. Without effective documentation,
     the project basically does not exist.*******'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: '*******对于个人作品集项目，你必须正确记录关卡设计，否则没有人会理解你做了什么。没有有效的文档，项目基本上就不存在。*******'
 - en: '*******Beginners often do not put enough time into the release phase, and assume
     the project will speak for itself -- *but if no one knows about it, then your
     work has no one to speak to.********'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: '*******初学者往往在发布阶段投入的时间不足，并假设项目会自我宣传——*但如果没有人在乎，那么你的作品就没有人来说话了。********'
 - en: '*******For more on publishing a level / building a portfolio, see* [*Release*](/process/release)*.*******'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: '*******有关发布关卡/构建作品集的更多信息，请参阅[*发布*](/process/release)******。'
 - en: '******To review******'
+  id: totrans-79
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '******待审阅******'
 - en: '******Level design usually involves multiple steps, in this general order:
     (1) pre-production, (2) combat design (unless it''s not a combat game), (3) layout,
     (4) blockout, (5) scripting, (6) lighting, (7) environment art, and (8) release.******'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: '******关卡设计通常涉及多个步骤，一般顺序如下：（1）前期制作，（2）战斗设计（除非不是战斗游戏），（3）布局，（4）块状，（5）脚本，（6）照明，（7）环境艺术，以及（8）发布。******'
 - en: '******But every project is different. Sometimes you may want to skip a layout
     phase, or expand a scripting phase, or do environment art before scripting, etc.******'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: '******但每个项目都是不同的。有时你可能想跳过布局阶段，或者扩展脚本阶段，或者在进行脚本之前先做环境艺术等。******'
 - en: '******If you are early in a project or early your level design career, you
     should probably try doing everything until you figure out what process works best
     for you.******'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: '******如果你在项目初期或早期设计生涯中，你可能需要尝试做所有的事情，直到你找出最适合你的流程。******'
 - en: '******Now what?******'
+  id: totrans-83
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '******现在怎么办？******'
 - en: '******Start with the beginning -- learn about [pre-production](/process/preproduction)
     for level design. Even just a little bit of planning will help a lot. It will
     help you figure out what the hell you''re doing.******'
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '******从开始做起——了解关卡设计的[前期制作](/process/preproduction)。即使只是一点点规划也会大有帮助。这将帮助你弄清楚你在做什么。******'
 - en: '******Day-to-day, most level designers tend to focus on the [layout](/process/layout)
     and [blockout](/process/blockout).******'
+  id: totrans-85
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '******日常中，大多数关卡设计师倾向于关注[布局](/process/layout)和[草图](/process/blockout)。******'

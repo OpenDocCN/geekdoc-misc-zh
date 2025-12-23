@@ -1,239 +1,349 @@
 - en: 🔫Combat
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 🔫战斗
 - en: 原文：[https://book.leveldesignbook.com/process/combat](https://book.leveldesignbook.com/process/combat)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://book.leveldesignbook.com/process/combat](https://book.leveldesignbook.com/process/combat)
 - en: '**What is combat design?**'
+  id: totrans-2
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '**什么是战斗设计？**'
 - en: '**Combat design** is about making game systems for physical conflict between
     player(s) and often AI-controlled enemies too.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: '**战斗设计**是关于为玩家（们）和通常由AI控制的敌人之间的物理冲突制作游戏系统。'
 - en: In level design, we generally assume this is combat for a first person shooter
     or other real-time 3D action game. This book will also make that assumption.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 在关卡设计中，我们通常假设这是第一人称射击游戏或其他实时3D动作游戏的战斗。这本书也将做出这个假设。
 - en: Note that competitive **player vs. player (PvP)** functions very differently
     from single player / cooperative **player vs. enemy (PvE)** combat. PvP usually
     implies a fair chance to win for all combatants. In contrast, PvE provides delayed
     but guaranteed victory. These are two very different promises to make to players,
     and so the level design is different too.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，竞技**玩家对玩家（PvP）**与**玩家对敌人（PvE）**的战斗非常不同。PvP通常意味着所有战斗者都有公平的获胜机会。相比之下，PvE提供延迟但保证的胜利。这是对玩家做出的两种非常不同的承诺，因此关卡设计也不同。
 - en: '*If in fact, you do not choose violence, then skip ahead to learning about*
     [*Layout*](/process/layout)*.*'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: '*如果你实际上不选择暴力，那么请跳过学习* [*布局*](/process/layout)*.*'
 - en: <picture class="relative">![](../Images/d2b21a314477ac9411fbfb3cc976d54d.png)
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/d2b21a314477ac9411fbfb3cc976d54d.png)
 - en: '*screenshot of Doom (1993), an early first person shooter that popularized
     many combat design patterns today*</picture>'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '*《毁灭战士》（Doom，1993年），一款早期的第一人称射击游戏，普及了许多今天流行的战斗设计模式*</picture>'
 - en: Combat systems
+  id: totrans-9
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 战斗系统
 - en: 'When making a combat game, you have two options:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 在制作战斗游戏时，你有两种选择：
 - en: Mod an existing combat game.
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 修改现有的战斗游戏。
 - en: Build your own combat gameplay from scratch.
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从头开始构建自己的战斗游戏玩法。
 - en: You cannot make good combat levels without good combat systems. But developing
     this core combat toolkit requires a lot of code, art, animation, audio, and tuning.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有好的战斗系统，你就无法制作好的战斗关卡。但开发这个核心战斗工具包需要大量的代码、艺术、动画、音频和调整。
 - en: This is a complex topic that is outside the scope of a level design book. Asking
     "how do I make good combat?" is like asking "how do I make a good game?" It's
     a big question.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个复杂的话题，超出了关卡设计书籍的范围。询问“我如何制作好的战斗？”就像询问“我如何制作一个好的游戏？”一样，这是一个很大的问题。
 - en: 'This is why we strongly suggest modding: that way, you can reuse a game''s
     already-proven core combat systems without having to build your own.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 正因如此，我们强烈建议进行修改：这样，你可以在不构建自己的基础上，重用游戏已经证明的核心战斗系统。
 - en: '*For a list of recommended combat games to mod and study, see* [*Tools*](/appendix/tools)*.*'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: '*有关推荐修改和研究的战斗游戏列表，请参阅* [*工具*](/appendix/tools)*.*'
 - en: <picture class="relative">![](../Images/2e7f7067e3a8701b607a0545c7a2af50.png)
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/2e7f7067e3a8701b607a0545c7a2af50.png)
 - en: 'slide from the talk ["Reaching Into the Toy-Chest: A Look into Skylanders Spyro''s
     Adventure''s Design"](https://www.gdcvault.com/play/1015838/Reaching-Into-the-Toy-Chest)
     by Mike Stout, from GDC 2012</picture>'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自迈克·斯托特（Mike Stout）在2012年GDC上的演讲["探索玩具箱：对《斯派罗的冒险》设计的一瞥](https://www.gdcvault.com/play/1015838/Reaching-Into-the-Toy-Chest)的幻灯片</picture>
 - en: 'That said, even if you do mod an existing combat game, you still have to be
     able to theorize how it works. All single player and multiplayer combat games
     have some form of these core elements:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 话虽如此，即使你修改了现有的战斗游戏，你仍然必须能够理论化它是如何工作的。所有单人游戏和多玩家战斗游戏都有某种形式的这些核心元素：
 - en: '**Combat mechanics**'
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**战斗机制**'
 - en: '**Weapon design**'
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**武器设计**'
 - en: '**Economy**'
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**经济**'
 - en: In a big commercial studio with specialized development roles, **none of those
     core combat elements would be the level designer's responsibility**. However,
     a level designer cannot make levels without understanding them.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 在一个大型商业工作室中，具有专门开发角色的环境中，**这些核心战斗元素中没有任何一个是关卡设计师的责任**。然而，关卡设计师如果不了解它们，就无法制作关卡。
 - en: <picture class="relative">![](../Images/c5c7f59f7c7c7278f0f4a1d5454fad60.png)
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/c5c7f59f7c7c7278f0f4a1d5454fad60.png)
 - en: 'image from ["Creating Conflict: Combat Design for AAA Action Games"](https://www.gdcvault.com/play/1023791/Creating-Conflict-Combat-Design-for)
     by Michael Barclay et al, from GDC 2016</picture>'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自迈克尔·巴克莱（Michael Barclay）等人在2016年GDC上的作品["创造冲突：AAA动作游戏的战斗设计"](https://www.gdcvault.com/play/1023791/Creating-Conflict-Combat-Design-for)的图片</picture>
 - en: '[](#combat-mechanics)Combat mechanics'
+  id: totrans-26
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#combat-mechanics)战斗机制'
 - en: '**Combat mechanics** are the player''s repeated actions / skills / weapons
     used to fight enemies. Some common combat mechanics:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: '**战斗机制**是玩家用来与敌人战斗的重复动作/技能/武器。一些常见的战斗机制：'
 - en: '**Move** away from danger, control **territory**'
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**远离危险，控制**领土'
 - en: '**Aim** at specific enemy types / weak points'
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**瞄准**特定敌人类型/弱点'
 - en: '**Timing** an attack for a **tell / telegraph** (opportunity)'
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**时机**攻击以获得**提示/预告**（机会）'
 - en: Chain attacks into **combos**, combine actions or weapons
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将攻击链成**连招**，组合动作或武器
 - en: '**Block** an enemy attack; **parry** / **counter** / **evade** at the right
     time'
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**阻挡**敌人攻击；在正确的时间**格挡**/**反击**/**躲避**'
 - en: Use **traps** like explosive barrels, water, lava, cliffs, etc
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用**陷阱**如爆炸桶、水、熔岩、悬崖等
 - en: <picture class="relative">![](../Images/37f3c27e04664a117246b165c9ddfbf6.png)
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/37f3c27e04664a117246b165c9ddfbf6.png)
 - en: animated GIF of early test map + combat prototype from 2014 for God of War (2018)
     by Sony Santa Monica</picture>
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 2014年索尼圣莫尼卡为《战神》（2018）制作的早期测试地图和战斗原型的动画GIF</picture>
 - en: '[](#weapon-design)Weapon design'
+  id: totrans-36
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#weapon-design)武器设计'
 - en: 'Many games provide the player with multiple weapons to use. **Weapon design**
     is about conceptualizing, implementing, and balancing this arsenal. Some aspects
     to consider:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 许多游戏为玩家提供多种武器使用。**武器设计**是关于构思、实施和平衡这个军火库。需要考虑的一些方面：
 - en: '**Weapon feel and fantasy** (e.g. big slow gun vs. sneaky knife vs. loud chainsaw)'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**武器感觉和幻想**（例如：大而慢的枪械 vs. 窃贼般的刀 vs. 响亮的电锯）'
 - en: '**Stats** like varied damage, range, rate of fire, ammo supply'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**统计数据**如不同的伤害、射程、射速、弹药供应'
 - en: 'For guns: varied spread, recoil, sights, penetration, magazine size, reload
     speed'
+  id: totrans-40
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于枪械：不同的散布、后坐力、瞄准具、穿透力、弹匣大小、装填速度
 - en: '**Situational awareness** to pick the most appropriate / effective weapon'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**情境意识**以选择最合适/有效的武器'
 - en: <picture class="relative">![](../Images/6b8d7c25dd7e2722e283bf70c06eda43.png)
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/6b8d7c25dd7e2722e283bf70c06eda43.png)
 - en: 'Weapons from Doom (1993) that inspired many shooters after it: (1) Chainsaw,
     (2) Pistol, (3) Shotgun, (4) Super Shotgun, (5) Chaingun, (6) Rocket Launcher,
     (7) Plasma Gun, (8) BFG</picture>'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自《毁灭战士》（1993）的武器，启发了许多后续的射击游戏：（1）电锯，（2）手枪，（3）霰弹枪，（4）超级霰弹枪，（5）链式枪，（6）火箭发射器，（7）等离子枪，（8）BFG</picture>
 - en: '[](#economy)Economy'
+  id: totrans-44
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#economy)经济'
 - en: '**Economy** is a general game design term for the overall system of costs /
     benefits / rewards that the player must consider throughout the game. The player''s
     access to resources affects which mechanics and weapons they use and when:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: '**经济**是游戏设计中一个通用术语，指的是玩家在整个游戏中必须考虑的成本/收益/奖励的整体系统。玩家对资源的获取会影响他们使用的机制和武器以及何时使用：'
 - en: '**Weapon economy:** ammo, time (DPS), arsenal / loadout'
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**武器经济**：弹药、时间（DPS）、军火库/装备'
 - en: '*example: the player has 1 rocket left, so they save it until they fight a
     strong enemy that is weak to rockets*'
+  id: totrans-47
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*示例：玩家只剩下一枚火箭，所以他们将其保存到与一个对火箭弱点的强大敌人战斗时*'
 - en: '*example: the player has only 15 seconds of oxygen underwater, so they need
     a high DPS weapon to fight an underwater enemy*'
+  id: totrans-48
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*示例：玩家在水下只有15秒的氧气，所以他们需要一把高DPS的武器来对抗水下敌人*'
 - en: '**Player state:** *short term economy* like health, inventory, consumables'
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**玩家状态**：*短期经济*如生命值、库存、消耗品'
 - en: '*example: the player has 99% health, so they will avoid a health item that
     adds +25% health, because that would "waste" 24% of the pickup*'
+  id: totrans-50
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*示例：玩家的生命值还有99%，所以他们不会选择增加25%生命值的物品，因为这会“浪费”24%的拾取*'
 - en: '**Player progression:** *long term economy* like experience points, perks,
     upgrades, gear'
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**玩家进步**：*长期经济*如经验值、奖励、升级、装备'
 - en: '*example: the player has 99% health, but they have an upgrade that gives +100%
     damage if they are at full health, so they decide to pickup a +25% health item
     anyway because the damage bonus is worth more than the wasted healing*'
+  id: totrans-52
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*示例：玩家的生命值还有99%，但他们有一个升级，如果他们处于满血状态，则可以增加100%的伤害，所以他们决定捡起一个+25%生命值的物品，因为伤害加成比浪费的治疗更重要*'
 - en: <picture class="relative">![](../Images/ce21231e0101fc8c4a5a867820e82767.png)
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/ce21231e0101fc8c4a5a867820e82767.png)
 - en: 'Weapon progression spreadsheet used for the action RPG God of War: Ragnarok
     (2022), from the talk ["Reckoning With Fate: Combat At The Scale of Ragnarok"
     (2023) by Rob Meyer (via YouTube)](https://youtu.be/6iTBqcBv5QA?t=1311)</picture>'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 用于动作角色扮演游戏《战神：诸神黄昏》（2022）的武器进阶表格，来自Rob Meyer的演讲["与命运抗衡：诸神黄昏规模的战斗"（2023）](https://youtu.be/6iTBqcBv5QA?t=1311)</picture>
 - en: '*"We tried to model our expectations for gear acquisition and progression in
     a way we felt would be healthy on paper, and then we constantly playtested and
     iterated on things to try to get the reality of the playtest to match our models.
@@ -243,10 +353,13 @@
     these are the levels that we expected you to get that gear to at that point in
     the game. We would constantly cross reference what we thought should be happening
     with what was actually happening in playtests...*'
+  id: totrans-55
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*"我们试图以我们认为在纸上健康的方式模拟装备获取和进步的预期，然后我们不断进行游戏测试和迭代，以尝试使游戏测试的现实与我们的模型相匹配。[这里有一个图表（如上图所示），其中包含]计划中的功率等级进步，不同装备槽位在游戏不同阶段的水平。每一行是游戏中的不同等级，按时间顺序排列。每一列是不同的装备，这些是我们预计你在游戏中的那个阶段应该获得这些装备的水平。我们会不断交叉参考我们认为应该发生的事情与实际游戏测试中发生的事情...*'
 - en: ''
+  id: totrans-56
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -255,97 +368,137 @@
     reward level 5 armor during exploration content when we knew the resources to
     upgrade from 4 to 5 weren''t available yet, so we were guaranteeing that armor
     would be exciting and enticing for a short time."*'
+  id: totrans-57
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*我们使用的一个技巧是[使升级现有装备的成本高于购买新装备]，这样你就有了一个临时动力去寻找新装备 [...] 或者类似地，在我们知道从4级升级到5级所需的资源尚未可用时，奖励探索内容中的第5级盔甲，这样我们就能保证盔甲在短时间内会令人兴奋和吸引人。"*'
 - en: ''
+  id: totrans-58
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '-- Rob Meyer, ["Reckoning With Gate: Combat At the Scale of Ragnarok" (2023)
     (YouTube)](https://www.youtube.com/watch?v=6iTBqcBv5QA&t=1311s)'
+  id: totrans-59
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: -- Rob Meyer，["与盖特和解：雷加诺克规模的战斗"（2023）（YouTube）](https://www.youtube.com/watch?v=6iTBqcBv5QA&t=1311s)
 - en: Combat examples
+  id: totrans-60
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 战斗示例
 - en: 'Here we summarize three major approaches to combat:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，我们总结了三种主要的战斗方法：
 - en: '**Classic combat** (Doom, Quake) focuses on **movement**'
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**经典战斗**（Doom、Quake）侧重于**移动**'
 - en: '**Soulslikes** (Dark Souls, Bloodborne, Elden Ring) require **dodging**'
+  id: totrans-63
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**灵魂类游戏**（Dark Souls、Bloodborne、Elden Ring）需要**躲避**'
 - en: Fights are usually close range and continuous.
+  id: totrans-64
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 战斗通常发生在近距离且连续进行。
 - en: '**Military realism** (Counter-Strike, Call of Duty) is about **aiming**'
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**军事现实主义**（Counter-Strike、Call of Duty）关于**瞄准**'
 - en: '**Battle royale** (Fortnite, PUBG, Apex Legends) adds more **economy**'
+  id: totrans-66
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**皇室战争**（Fortnite、PUBG、Apex Legends）增加了更多**经济元素**'
 - en: Fights are often long range and erratic.
+  id: totrans-67
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 战斗通常是远程且不规则的。
 - en: '**Modern combat** (Halo, Team Fortress 2, Overwatch) emphasizes **damage**'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**现代战斗**（Halo、Team Fortress 2、Overwatch）强调**伤害**'
 - en: '**Cover shooters** (Gears of War, Uncharted) add **positioning**'
+  id: totrans-69
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**掩体射击**（Gears of War、Uncharted）增加了**定位**'
 - en: Fights are usually mid range and rhythmic.
+  id: totrans-70
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 战斗通常发生在中距离且节奏感强。
 - en: 'Note: no game fits neatly into a category. These are just examples / just one
     way to think about these games.'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意：没有一款游戏能完美地归入一个类别。这些只是例子/只是思考这些游戏的一种方式。
 - en: <picture class="relative">![](../Images/ba30ccb5d86c42ecfc9f1f7568fe3034.png)
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: <picture class="relative">![](../Images/ba30ccb5d86c42ecfc9f1f7568fe3034.png)
 - en: screenshot of iconic level "Dead Simple" in Doom 2 by American McGee and Sandy
     Petersen.</picture>
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 美国麦吉和桑迪·彼得森在Doom 2中标志性的关卡“Dead Simple”的截图。</picture>
 - en: '[](#classic-combat)Classic combat'
+  id: totrans-74
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[](#classic-combat)经典战斗'
 - en: Combat in Doom (1993) features a strong built-in auto-aim assist. The player
     cannot even look up or down vertically. Doom is clearly not about aiming. Instead,
     Doom's high speeds enable levels with large enemy counts, encounter variation,
     and huge sprawling level layouts.
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: Doom（1993）中的战斗特点是有强大的内置自动瞄准辅助。玩家甚至不能垂直向上或向下看。显然，Doom不是关于瞄准的。相反，Doom的高速度使得关卡可以容纳大量敌人、遭遇变化和巨大的广阔关卡布局。
 - en: '*"[The player] runs at about 50 scale miles per hour – nonsensically fast by
     modern standards. Most of Doom’s enemies don’t have instant-hit projectile attacks,
     and most of the ones that do are quite weak – the lowly trooper and sergeant.
     Every other enemy projectile takes time to reach its target, and would look comical
     in a more realistic visual presentation.*'
+  id: totrans-76
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*"[玩家]以大约每小时50个规模英里奔跑——按照现代标准来说，这是不合理的快。大多数Doom的敌人没有即时命中的投射攻击，而且大多数有这种攻击的敌人都很弱——低级士兵和中士。其他所有敌人的投射攻击都需要时间才能到达目标，在一个更现实的视觉呈现中看起来会非常滑稽。*'
 - en: ''
+  id: totrans-77
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
@@ -354,42 +507,58 @@
     [...] This frees up Doom’s encounters to feature huge numbers of enemies, to vary
     scenarios by mixing in different proportions of threats, and to have huge, sprawling,
     often non-linear spaces that the player can traverse easily."*'
+  id: totrans-78
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*因此，由于在《毁灭战士》中玩家移动得很快，而且大多数敌人攻击都是可以躲避的，玩家可以通过移动来避免大量的伤害。[...] 这使得《毁灭战士》的遭遇战可以拥有大量的敌人，通过混合不同比例的威胁来变化场景，并且拥有巨大的、广阔的、通常是非线性的空间，玩家可以轻松穿越。*'
 - en: ''
+  id: totrans-79
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '*--JP LeBreton,* [*Coelacanth: Lessons from Doom*](http://vectorpoem.com/news/?p=74)'
+  id: totrans-80
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*--JP LeBreton,* [*Coelacanth: Lessons from Doom*](http://vectorpoem.com/news/?p=74)'
 - en: '*Dark Souls-like action RPG games formalize dodging mechanics via "dodge rolls"
     with "invincibility frames" (I-frames) providing complete damage negation with
     good timing. Learning how to read enemy moves, and repositioning / dodging to
     avoid damage, is often more important than using the best weapon or having the
     best equipment.*'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: '*类似《黑暗之魂》的动作RPG游戏通过“躲避翻滚”和“无敌帧”（I-frames）来正式化躲避机制，良好的时机可以提供完全的伤害抵消。学习如何阅读敌人的动作，并重新定位/躲避以避免伤害，通常比使用最好的武器或拥有最好的装备更重要。*'
 - en: '*<picture class="relative">![](../Images/960587e1e46849dfa2f8ff6b6414aa35.png)'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: '*<picture class="relative">![](../Images/960587e1e46849dfa2f8ff6b6414aa35.png)'
 - en: screenshot of Quake (1996) as it would've appeared back in 1996</picture>*
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: screenshot of Quake (1996) as it would've appeared back in 1996</picture>*
 - en: '*[](#military-realism)**Military realism*'
+  id: totrans-84
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '*[](#military-realism)**军事现实主义*'
 - en: '*The original Counter-Strike (1999) popularized competitive team-based multiplayer
     in a realistic military style. Weapons are highly lethal and fights end within
     a few seconds. Success depends on fast reaction speed and aiming in the right
     place at the right time, while clearing firing angles and sightlines -- but flashbangs
     and smoke grenades can deny visibility. Varied gun accuracy, recoil, and bullet
     penetration mechanics supplement this focus on looking and aiming.*'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: '*原始的《反恐精英》（1999）在现实军事风格中普及了基于团队的竞技多人游戏。武器极具致命性，战斗在几秒钟内结束。成功取决于快速的反应速度和在正确的时间瞄准正确的位置，同时清理射击角度和视线
+    -- 但闪光弹和烟雾弹可以阻止视线。不同的枪械精度、后坐力和子弹穿透机制补充了这一关注点，即观察和瞄准。*'
 - en: '*The more recent battle royale genre began as a mod for a realistic military
     sim shooter series called ARMA, and much of its approach carried over to PUBG:
     Battlegrounds, the first commercially successful battle royale shooter. This persists
@@ -398,27 +567,38 @@
     away. However, this all depends on a player''s ability to accumulate supplies
     and guns, adding an inventory management aspect and RPG-like progression to each
     round.*'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: '*近年来兴起的战斗皇家游戏类型最初是作为一款名为ARMA的现实军事模拟射击系列的mod，其许多方法被继承到了《PUBG: Battlegrounds》这款首个商业上成功的战斗皇家射击游戏中。即使在像《堡垒之夜》或《Apex》这样的不太军事化的战斗皇家游戏中，新手玩家突然被一百米外的狙击手击中也是常见的。然而，这一切都取决于玩家积累资源和枪械的能力，这为每一轮增加了库存管理和RPG式的进步元素。*'
 - en: '*<picture class="relative">![](../Images/c8e59c9daa3df210e5e967ad0878849c.png)'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: '*<picture class="relative">![](../Images/c8e59c9daa3df210e5e967ad0878849c.png)'
 - en: gameplay screenshot on the iconic multiplayer map de_dust2 by Dave Johnston,
     for Counter-Strike 1.6</picture>*
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: gameplay screenshot on the iconic multiplayer map de_dust2 by Dave Johnston,
+    for Counter-Strike 1.6</picture>*
 - en: '*[](#modern-combat)**Modern combat*'
+  id: totrans-89
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '*[](#modern-combat)**现代战斗*'
 - en: '*In Halo: Combat Evolved (2001), the player moves slowly with a very floaty
     jump, so there''s not much dodging here. But there also isn''t much aiming either;
     the default pistol is notoriously one of the best weapons in the game, allowing
     cheap frequent mid-range / long range headshots with a subtle auto-aim "magnetism"
     well-suited for casual console play. Instead of movement or aiming, Halo is about
     managing damage:*'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: '*在《光环：战斗进化》（2001）中，玩家的移动速度很慢，跳跃很飘，所以这里没有太多的躲避。但也没有太多的瞄准；默认手枪是游戏中臭名昭著的最好武器之一，允许玩家以微妙的自动瞄准“磁性”进行便宜频繁的中远程/长程头部射击，非常适合休闲主机游戏。除了移动或瞄准，光环是关于管理伤害：*'
 - en: '**"In almost every modern FPS, the player moves fairly slowly and a huge proportion
     of enemies are equipped with instant hit attacks – pistols, machine guns, sniper
     rifles. This usually puts the player in the role of “damage sponge” – they’re
@@ -426,237 +606,337 @@
     then seek cover and heal up. Halo’s recharging shield makes this mechanic quite
     explicit – by default, you’re exposed to damage and will die, while seeking cover
     halts that and completes the basic cycle of any combat."**'
+  id: totrans-91
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '**"在几乎每一款现代FPS游戏中，玩家的移动速度相当慢，大量敌人配备了即时命中攻击——手枪、机关枪、狙击步枪。这通常将玩家置于“伤害海绵”的角色——他们被设计成吸收一定量的伤害，主要来自无法避免的敌人攻击，然后寻找掩体并恢复健康。光环的充电护盾使这一机制非常明确——默认情况下，你会受到伤害并死亡，而寻找掩体则停止这种伤害并完成任何战斗的基本周期。"**'
 - en: ''
+  id: totrans-92
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '*-- JP LeBreton, [Coelacanth: Lessons From Doom](http://vectorpoem.com/news/?p=74)*'
+  id: totrans-93
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '*-- JP LeBreton, [Coelacanth: Lessons From Doom](http://vectorpoem.com/news/?p=74)*'
 - en: '*Multiplayer team shooters like Team Fortress 2 strongly emphasize healing,
     to the extent that every team always needs a healer. Overwatch builds on Halo''s
     regenerating shield mechanic. Cover shooters like Gears of War or Uncharted feature
     regenerating health, but tie this rhythm to hiding behind objects. Modern combat
     is about getting shot at, alternating periods of risk and rest.*'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: '*多玩家团队射击游戏如《反恐精英2》强烈强调治疗，以至于每个团队都需要一个治疗者。守望先锋建立在《光环》的再生护盾机制之上。像《战争机器》或《未知的边境》这样的掩体射击游戏具有再生健康，但将这种节奏与躲在物体后面联系起来。现代战斗是关于被射击，交替着风险和休息的时期。*'
 - en: '*<picture class="relative">![](../Images/32dc6b9b27ad23605eff26e247330160.png)'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: '*<picture class="relative">![](../Images/32dc6b9b27ad23605eff26e247330160.png)'
 - en: 'gameplay screenshot of the beloved multiplayer map Blood Gulch, from Halo:
     Combat Evolved by Bungie</picture>*'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自Bungie的《光环：战斗进化》中深受喜爱的多人地图Blood Gulch的游戏截图</picture>
 - en: '*TODO: How to build combat*'
+  id: totrans-97
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '*TODO: 如何构建战斗*'
 - en: '*blockout a test arena*'
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*封锁一个测试竞技场*'
 - en: '*open area and/or 3 lane*'
+  id: totrans-99
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*开放区域和/或3车道*'
 - en: '*place some enemies*'
+  id: totrans-100
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*放置一些敌人*'
 - en: '*playtest and repeat*'
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*测试并重复*'
 - en: '*how to know when combat is "good enough"?*'
+  id: totrans-102
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*如何知道战斗是否“足够好”？*'
 - en: '*Key concepts for combat levels*'
+  id: totrans-103
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '*战斗关卡的关键概念*'
 - en: '*Once you''ve established the core combat systems, either by playing the game
     you''re modding or by building your own combat from scratch, then you are ready
     to start designing more specific combat scenarios:*'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: '*一旦你建立了核心战斗系统，无论是通过玩你正在修改的游戏，还是从头开始构建自己的战斗，那么你就可以开始设计更具体的战斗场景了：*'
 - en: '***[**Enemy design**](/process/combat/enemy) **is about defining different
     hostile NPC types.*****'
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '***[**敌人设计**](/process/combat/enemy) **是定义不同敌对NPC类型的过程。*****'
 - en: '***Ideally, each type has distinct behaviors, strengths, and weaknesses.***'
+  id: totrans-106
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '***理想情况下，每种类型都有独特的行为、优势和劣势。***'
 - en: '***Without a roster of varied enemies, fights will feel repetitive.***'
+  id: totrans-107
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '***没有多样化的敌人名单，战斗会感觉重复。***'
 - en: '*****[**Encounters**](/process/combat/encounter) **are structured battles against
     NPCs.*******'
+  id: totrans-108
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****[**遭遇战**](/process/combat/encounter) **是对NPC的结构化战斗。*******'
 - en: '*****Open-ended combat puzzles; player must usually improvise a solution*****'
+  id: totrans-109
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****开放式的战斗谜题；玩家通常需要即兴发挥解决方案*****'
 - en: '*****Implementation usually involves some [scripting](/process/scripting).*****'
+  id: totrans-110
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****实现通常涉及一些[脚本](/process/scripting)。*****'
 - en: '*****[**Cover**](/process/combat/cover) **is about building spaces to fight
     from.*******'
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****[**掩体**](/process/combat/cover) **是关于构建战斗空间。*******'
 - en: '*****Where is safe, and where is high risk? Where can players fight or recover?*****'
+  id: totrans-112
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****哪里是安全的，哪里是高风险？玩家可以在哪里战斗或恢复？*****'
 - en: '*****Cover varies with mechanics / weapons. You need core combat design first.*****'
+  id: totrans-113
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****掩体根据机制/武器而变化。你需要先有核心战斗设计。*****'
 - en: '*******[**Map balance**](/process/combat/balance) **is the fairness of the
     player''s options, usually in PvP.*********'
+  id: totrans-114
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*******[**地图平衡**](/process/combat/balance) **是玩家选项的公平性，通常在PvP中。*********'
 - en: '*****Where can the player go, what territory can they control? How will the
     player know?*****'
+  id: totrans-115
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****玩家可以去哪里，他们可以控制哪些领土？玩家将如何知道？*****'
 - en: '*****A balanced level helps players trust the [layout](/process/layout) and
     invest in the outcome.*****'
+  id: totrans-116
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****平衡的关卡有助于玩家信任[布局](/process/layout)并投资于结果。*****'
 - en: '*****We recommend approaching combat in the order listed above. Each aspect
     depends on the previous one. To build encounters, you need enemy design first.
     To coordinate cover, you need an idea of how the encounter should play out. To
     balance a map, you need to know which cover patterns make sense.*****'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: '*****我们建议按照上述顺序来处理战斗。每个方面都依赖于前一个方面。要构建遭遇战，你需要先有敌人设计。要协调掩体，你需要对遭遇战应该如何进行有一个想法。要平衡地图，你需要知道哪些掩体模式是有意义的。*****'
 - en: '*****<picture class="relative">![](../Images/90382a97af7603c82cd03e71fcde77b1.png)'
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: '*****<picture class="relative">![](../Images/90382a97af7603c82cd03e71fcde77b1.png)'
 - en: enemy characters from Halo (2001), an early console FPS that popularized dynamic
     squad battles and vehicles</picture>*****
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 来自《光环》（2001年），一款早期主机FPS游戏，它普及了动态小队战斗和车辆</picture>*****
 - en: '*****To review...*****'
+  id: totrans-120
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '*****回顾...*****'
 - en: '*******Combat design** is about designing systems for physical conflict.*****'
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*******战斗设计**是关于设计物理冲突的系统。*****'
 - en: '*****To make combat levels, you first need a combat game. But making an entire
     game is hard, and this is just a level design book. Modding a game is easier.*****'
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****要制作战斗等级，你首先需要一个战斗游戏。但制作一个完整的游戏很困难，而这本书只是关于关卡设计的。修改游戏更容易。*****'
 - en: '*****Common combat systems include:*****'
+  id: totrans-123
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****常见的战斗系统包括：*****'
 - en: '*******Combat mechanics** like aiming, dodging, timing, etc.*****'
+  id: totrans-124
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*******战斗机制**如瞄准、躲避、时机等*****'
 - en: '*******Weapon design**, a varied set of interesting tools to use*****'
+  id: totrans-125
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*******武器设计**，一套多样化的有趣工具*****'
 - en: '*******Economy**, systems of costs / benefits for weapons, inventory, and progression*****'
+  id: totrans-126
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*******经济**，武器、库存和进度的成本/收益系统*****'
 - en: '*****Some combat examples:*****'
+  id: totrans-127
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****一些战斗示例：*****'
 - en: '*******Classic combat** & **soulslikes** emphasizes speed and dodging fire*****'
+  id: totrans-128
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*******经典战斗**与**灵魂类似**游戏强调速度和躲避火焰*****'
 - en: '*******Military realism** & **battle royales** make guns and aiming more important*****'
+  id: totrans-129
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*******军事现实主义**与**大逃杀**使枪械和瞄准变得更重要*****'
 - en: '*******Modern combat** & **cover shooters** are about managing health / damage*****'
+  id: totrans-130
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*******现代战斗**与**掩体射击**是关于管理健康/伤害*****'
 - en: '*****To build a combat game, (TODO)*****'
+  id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****要构建一个战斗游戏，(待办)*****'
 - en: '*****Now what?*****'
+  id: totrans-132
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: '*****现在怎么办？*****'
 - en: '*****Read more about key design concepts for combat level design:*****'
+  id: totrans-133
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****阅读更多关于战斗关卡设计的关键设计概念：*****'
 - en: '*****[Enemy design](/process/combat/enemy)*****'
+  id: totrans-134
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****[敌人设计](/process/combat/enemy)*****'
 - en: '*****[Encounter design](/process/combat/encounter)*****'
+  id: totrans-135
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****[遭遇设计](/process/combat/encounter)*****'
 - en: '*****[Cover](/process/combat/cover)*****'
+  id: totrans-136
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****[封面](/process/combat/cover)*****'
 - en: '*****[Map balance](/process/combat/balance)*****'
+  id: totrans-137
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****[地图平衡](/process/combat/balance)*****'
 - en: '*****Move on to the [Layout](/process/layout) phase.*****'
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****继续到[布局](/process/layout)阶段。*****'
 - en: '*****[](#further-reading-on-combat-design)**********Further reading on combat
     design*****'
+  id: totrans-139
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '*****[](#further-reading-on-combat-design)**********进一步阅读关于战斗设计*****'
 - en: '*****["Reckoning With Fate: Combat At The Scale of Ragnarok" (2023) (via YouTube)](https://www.youtube.com/watch?v=6iTBqcBv5QA)
     is the most comprehensive talk on modern AAA combat design from Rob Meyer, lead
     combat designer on God of War: Ragnarok (2022). Meyer gives specific examples
     from his work and details the responsibilities of a combat designer at Sony Santa
     Monica.*****'
+  id: totrans-140
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*****["与命运抗衡：雷加洛克的规模战斗"（2023年）（via YouTube）](https://www.youtube.com/watch?v=6iTBqcBv5QA)是Rob
+    Meyer关于现代AAA战斗设计的最全面讨论，他是《战神：雷加洛克》（2022年）的首席战斗设计师。Meyer分享了他工作中的具体例子，并详细介绍了在索尼圣莫尼卡担任战斗设计师的责任。*****'
