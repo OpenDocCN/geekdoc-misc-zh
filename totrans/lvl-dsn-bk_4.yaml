@@ -1,0 +1,872 @@
+- en: 🛠️Layout
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://book.leveldesignbook.com/process/layout](https://book.leveldesignbook.com/process/layout)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Why design a layout?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '**Layout** has two similar meanings in level design:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**the level''s overall structure**; *"the layout was so confusing I didn''t
+    know where to go"*'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**overview drawing used for planning**, sometimes called a "topdown" because
+    it''s drawn from a top-down perspective; *"have you finished drawing the layout?
+    we need to blockout soon"*'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Layout drawings can be simple or complex, symbolic or representational, abstract
+    or concrete. It can be a napkin scribble or a detailed floor plan, it all depends!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**A "good layout drawing" is any image that effectively communicates the core
+    design.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/e48d94aa52a03e68abef1cf4738e93fe.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: which of these layout sketching styles is most effective for you? you have to
+    decide</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'But remember: *plans aren''t magic.* **A layout drawing cannot tell you if
+    your level works**, only a [blockout](/process/blockout) and [playtest](/process/blockout/playtesting)
+    can begin answering that question. **A layout is NOT a level**, the player never
+    plays your drawing.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/ce345cb201fe879938876f2dbed1723e.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: a dev consulting a paper world map layout for Grand Theft Auto 1 (1996) by DMA
+    Design, photo from Steve Hammond [(via Twitter)](https://twitter.com/snap2grid/status/1597157105726853121)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Layout concepts
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'When designing a layout, utilize these design concepts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[**Flow**](/process/layout/flow) **is how it feels to move around the level.**'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Does the player move quickly or slowly, smoothly or abruptly?
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Desired flow depends on the [experience goals](/process/preproduction#experience-goals).
+    Abrupt flow isn't bad.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**[**Critical path**](/process/layout/criticalpath) is the ideal path to complete
+    a level.**'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****[**Circulation**](/process/layout/flow/circulation) is how real world architects
+    think about flow.****'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******[**Verticality**](/process/layout/flow/verticality) is about supporting
+    vertical flow.******'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******[**Parti**](/process/layout/parti) **is the core structure / main idea
+    of the layout.********'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****What is the overall concept that binds the entire layout together?****'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****A clear parti helps you focus on the most important parts of the design.****'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******[**Typology**](/process/layout/typology) **is about common layout patterns
+    and functions.********'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****Simplify the way you think about the layout****'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****Shared design vocabulary helps you study other levels and communicate.****'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****![](../Images/b03b97372ba322096901fac92b7a343e.png)****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****How to design a layout****'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '****There''s no single best way to design a layout. Every person (and project)
+    can make layouts in a different way. But if you feel lost, try doing everything:****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[**Pre-production**](/process/preproduction): define design goals****'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '******Parti thumbnails**: brainstorm the core shapes****'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '******Bubble diagrams**: visualize size / flow between areas****'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '******Floor plan**: draft specific room shapes in more detail****'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '******Gameplay markup**: add labels and design notes****'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '****For small solo jam projects, do as much (or as little) layout planning
+    as you like.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****For big group projects, try doing all these steps together on a shared
+    whiteboard.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/36a404ba74316e952514ecd7106fa422.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: drawing iterations from abstract grid (left) to floor plan (right) from "Architectural
+    Graphics" by Francis Ching</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#id-1.-pre-production-plan)********1\. Pre-production plan****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '****It is difficult to design something without any purpose. In a [**pre-production**](/process/preproduction)
+    phase, we try to define and plan out what we want to make *before* we try making
+    it.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****So before drawing a layout, define at least one player **experience goal***.*
+    What should the player learn, feel, or do, in this level?****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****You can write specific experience goals *("teach the player how to double-jump
+    in a sci-fi sewer for 5 minutes")* or be more abstract *("feel one with nature").*
+    But more specific = easier to design.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/c46bf6bdf4b68fb3417a532e0b239461.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: beat board for planning The Last Of Us (2012) by Naughty Dog; from "Videogames"
+    at Victoria & Albert Museum in London</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Once you have some goals, you can plan [**pacing**](/process/preproduction/pacing)**,**
+    the sequence of specific events and activities that will help make the experience
+    goal happen.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****For example if your experience goal is *"run away from scary monster"*
+    then you need to break down that experience into smaller specific **beats** --
+    like *"(1) hear baby crying behind door, (2) reveal zombie bear making baby crying
+    sound, (3) jump out window to escape monster."* (This simple plan already helps
+    a lot, now we know we''ll need a door, a window, a bear...)****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*****For more on planning experience goals, see* [*Pre-production*](/process/preproduction)*.*****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*****For more on planning activities and beats, see* [*Pacing*](/process/preproduction/pacing)*.*****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#id-2.-parti-thumbnails)********2\. Parti thumbnails****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '****In architecture, the [**parti**](/process/layout/parti) is the basic shape
+    / idea of the entire building.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****a. sketch a *small simple diagram* (**thumbnail**) b. label it with a short
+    phrase****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****What type of basic shape fits with your experience goal / pacing plan?****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****The parti can be symbolic ("upside-down boat") or abstract ("box subtracted")
+    or it can focus on how people will use the building ("core segregates public-private")
+    or a relationship with the surrounding environment ("finger poking into the woods").****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Or you can just **vibe** with some shapes and sort it out later. The point
+    is to start thinking visually with no pressure. If you don''t like a parti, no
+    problem, you can just scribble another one.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/4eaf0f5efa6f5bcea90a70e8cbe350bb.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: parti diagrams from "101 Things I Learned in Architecture School" by Matthew
+    Frederic</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#advice-for-parti-thumbnails)**********ADVICE FOR PARTI THUMBNAILS******'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '******Draw at least 5-10 thumbnails** to generate multiple approaches. If you
+    draw 100 partis, then at least one of those *will* be good, because it''s impossible
+    to design 100 terrible buildings. The more you draw, the more probability is on
+    your side.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******Don''t spend too long on each one.** Sometimes you only need 30 seconds
+    to scribble some lines, and that''ll be enough to express the core idea.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******If you can''t name it then maybe it''s too raw**. Try drawing it again
+    in a different way, or try rotating the paper 180 degrees to imagine it from another
+    angle.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****[](#id-3.-bubble-diagrams)********3\. Bubble diagrams****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '****Expand the most promising parti into a **bubble diagram:** a cluster of
+    different ovals that each symbolize different rooms.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****a. draw a **bubble** for each part of the parti b. label each bubble c.
+    draw arrows to emphasize certain connections or directions****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****The goal of the bubble diagram is to establish **proportions** and **relationships**
+    in your level. What needs to be big? What needs to connect to each other?****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Don''t worry about details yet. This is about the logic of your spaces.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Look at the example bubble diagram below. Which spaces connect to the living
+    room and why? Why is the bathroom there? Where are the bedrooms? What if someone
+    couldn''t use stairs, how would they live in this house?****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/e5d9e2457962455756eb7d72fe2fbecf.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'example bubble diagram of F10 House in Chicago, from The Architecture Handbook:
+    A Student Guide to Understanding Buildings by Masengarb et al.</picture>****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#advice-for-bubble-diagrams)********ADVICE FOR BUBBLE DIAGRAMS****'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '****Your first few bubble diagrams will have problems and pose new questions.
+    Some bubbles will be too big or too small, or they might touch the wrong bubbles.
+    Maybe there are some bubbles you forgot to add? Or maybe there are too many bubbles.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '******A bad bubble diagram is good.** That means you found the design problem
+    early, and you can draw another one to try another arrangement.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******Draw at least 3 bubble diagrams** to imagine multiple arrangements and
+    sizes.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******You can deviate from the parti.** The purpose of the parti was to help
+    you start drawing bubbles. If it''s not helping you anymore, then don''t use it.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****[](#id-4.-floor-plan)********4\. Floor plan****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '****In architecture, a top-down layout drawing is called a **floor plan**.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****a. imagine a **plan cut**, an imaginary horizontal slice through a building
+    b. draw the structural shapes *below* this plan cut -- wall segments, doorways,
+    windows, and significant furniture or fixtures c. to draw relevant objects *above*
+    the plan cut, use dashed or dotted lines****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****In the diagram below, notice how Ching uses various line types, line weights,
+    shading, and tonal patterns to differentiate parts of the floor plan. Ching thickens
+    and darkens walls, but uses thinner lines to mark stairs or to denote areas of
+    the house, and fainter lines for the arc of a rotating door.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/a39d8a044008c3818e38ccb3c6d45466.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: various floor plan drawing techniques from "Architectural Graphics" (6th ed.)
+    by Francis D. K. Ching</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#advice-for-drawing-floor-plans)********ADVICE FOR DRAWING FLOOR PLANS****'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '******START BIG**. Use the entire page. Start with big main shapes and gradually
+    work down to smaller features like doors and windows. Don''t draw at 100% detail.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******BE BOXY**. Rectangles are easier to build than odd angles or curved walls.
+    ~90%+ of your corners should be 90 degrees and aligned to the grid.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******USE 2+ LINE THICKNESSES**. Use different line weights for different types
+    of walls.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******THE PEN IS MIGHTIER.** For quick layouts, use a pen or pencil.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******WE''RE NOT ARCHITECTS.** Draw the minimum needed to imagine the player
+    experience.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****[](#id-5.-gameplay-markup)********5\. Gameplay markup****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '******Markup** and label important parts of the layout drawing.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '******[**Flow**](/process/layout/flow)**.** For single player levels, draw
+    or mark the [critical path](/process/layout/criticalpath). For multiplayer maps,
+    lightly shade or highlight team spawn areas and primary [circulation](/process/layout/flow/circulation).******'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******Areas.** Label major areas and landmarks. For competitive multiplayer
+    maps, start thinking about the possible ["callouts"](https://steamcommunity.com/sharedfiles/filedetails/?id=157442340).****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******Game Objects.** Mark important objectives, NPCs, items, traps, etc. that
+    are vital for understanding the player experience.But don''t clutter the drawing
+    with too much stuff.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/93cd6a8b017cae8c4488700026eb743e.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'note the copious gameplay markup in this isometric layout drawing for "Nova
+    Prospekt" in Half-Life 2 by Eric Kirchmer, from the art book Half-Life 2: Raising
+    The Bar</picture>**** ****<picture class="relative">![](../Images/8a6c15b8dd6834460ee4cb21e9bbc390.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: note the player flow arrows in this isometric layout drawing for a puzzle in
+    Portal 2, from Game Informer, March 2010</picture>**** ****<picture class="relative">![](../Images/73a4ddb28bbdb4b201fa169477ff4bb0.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'actual Valve whiteboard with isometric layout drawing + pacing outline, used
+    for planning Half-Life 2: Episode Two... however, note that this drawing differs
+    a bit from the final game; photo by Phil Co ([via Interlopers.net](https://www.interlopers.net/articles/phil-co-interview))</picture>****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Example layout drawings****'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '****[](#nova-prospekt-for-half-life-2-valve-by-eric-kirchmer-and-david-sawyer)********"Nova
+    Prospekt" for Half-Life 2 (Valve), by Eric Kirchmer and David Sawyer****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '****About 2/3 of the way through the single player FPS game Half-Life 2 (2004),
+    the player must fight through a ruined prison complex called Nova Prospekt. It
+    is a long chapter filled with many multi-floor close quarter combat encounters
+    against fast moving squad enemies, designed to make heavy use of the player''s
+    "bugbait" weapon that can command flying "antlion" monsters to attack hostile
+    soldiers.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[Research](/process/preproduction/research): heavily inspired by Alcatraz
+    State Penitentiary in San Francisco, California****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****[Typology](/process/layout/typology): ground-level arenas flanked with
+    narrow catwalks and prison cells, frequently gated****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****[Encounters](/process/combat/encounter): designed block-by-block, room-by-room,
+    each section offers a central conceit that adds a new twist to the Antlion vs.
+    Combine encounter space throughout the whole chapter****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/28314446e5b21e022815af79d26e9341.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'map of Alcatraz (left) and Nova Prospekt cell block bubble diagram (right)
+    from art book "Half-Life 2: Raising The Bar"</picture>****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Notice how the Nova Prospekt plan (above, right) is a relatively simple
+    layout drawing, marking out areas and how the player might progress through them.
+    It omits the individual rooms and hallways inside each building. This is a layout
+    image for a group of levels, not just one level. It is basically a bubble diagram,
+    focusing on the footprint of each area and its connectivity.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****For the individual cell blocks and encounters, Valve concept artist Eric
+    Kirchmer incorporated level design and gameplay markup directly into the concept
+    art sketches, which were likely the result of collaborative group whiteboard design
+    sessions. These combat encounters have intended flows with idealized critical
+    path "solutions", which treat each battle like a puzzle to be solved. These sketches
+    provided valuable design documentation for level designer David Sawyer to blockout
+    and prototype from.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****In all the isometric layout drawings, note the heavy gameplay markup: player
+    start location, critical path arrows, and heavy use of text labels to help us
+    imagine the player experience.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/89a16786a1d0be8cdf027dc29a1aebc2.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'isometric layout drawings for various Nova Prospekt encounters, from art book
+    "Half-Life 2: Raising The Bar"</picture>****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#untitled-for-quake-1-by-andrew-yoder)********"Untitled" for Quake 1,
+    by Andrew Yoder****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '****For his single player Quake level, designer Andrew Yoder iterated on a
+    setpiece encounter involving suspended cages in the middle of the room. Here,
+    Yoder fluidly switches between layout and [blockout](/process/blockout) repeatedly,
+    sometimes discarding entire rooms and revisiting the design with layout sketches.
+    Here''s [some of his notes](https://twitter.com/Mclogenog/status/1248992822725926912):****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/21718b1e3bbc5730d39d678ba43ee8ac.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: level layout sketches with perspective views (ink on paper), courtesy of Andrew
+    Yoder</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****"My process is about iteration, which sometimes means stepping back to
+    planning stages. [...] Sometimes I spend an hour iterating on an area and it *clicks.*
+    Other times I spend that same hour, and eh, maybe best to set it aside and try
+    something else. [...] How do I tell? There''s a gut feeling from experience building
+    similar levels in the past. There are also a bunch of heuristics and patterns
+    to check against. Does the player know the goal? Can they anticipate a solution
+    and plan for it?"****'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '****Note the numbering, ample use of notes, labeling different parts of the
+    sketch, and use of occasional perspective thumbnails to clarify the overall structure.
+    Perspective thumbnails are especially useful when the level layout involves height
+    changes, which are difficult to draw from a top down perspective.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****The variety of sketches and copious markup helps Yoder communicate the
+    intent of his design. The layout process helps Yoder verbalize and articulate
+    the design problems.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/d818713d8788fdd9bd76d17a02d9698d.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: screenshot of the resulting suspended cage area blockout in Quake 1, courtesy
+    of Andrew Yoder</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#automata-tv-station-for-watch-dogs-2-ubisoft-by-iuliu-cosmin-oniscu)********"Automata
+    - TV Station" for Watch Dogs 2 (Ubisoft), by Iuliu-Cosmin Oniscu****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '****For the open world hacking game Watch Dogs 2, designer Iuliu-Cosmin Oniscu
+    built a mission with multiple objectives, entrances, and critical paths.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****In his post ["Watch Dogs 2 — Automata - a level design retrospective"](https://medium.com/@iuliu.cosmin.oniscu/watch-dogs-2-automata-a-level-design-retrospective-dcb82040e454),
+    he includes layout drawings with heavy gameplay markup and minimal architecture:****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/7b2822421f61131b4ddceb87ba8eda5c.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: layout of WKZ Station in "Automata" for Watch Dogs 2, as drawn by the designer
+    Iuliu-Cosmin Oniscu</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Some of the designer''s notes and intentions:****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*****In this particular scenario the trick was that the player could go through
+    the lasers and trigger an alarm but he could also:*****'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*****Disable the lasers when the guard was patrolling away from them and then
+    go into the red zone and silently take the AI down.*****'
+  prefs:
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '*****Use the Camera attached to the walls to scout the location by traveling
+    from camera angle to camera angle. At this point in the game this is an already
+    well established way of scouting interior locations.*****'
+  prefs:
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '*****Use the drone to explore the hallway and incapacitate guards.*****'
+  prefs:
+  - PREF_BQ
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*****The corridor beyond also has a bunch of strategically placed junction
+    boxes that can be hacked to incapacitate to incapacitate two guards at the same
+    time.*****'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '****Note how the level designer''s drawing (pictured above) is much simpler
+    than the actual in-game implementation (pictured below). Architectural details,
+    furniture, and even some gameplay elements like neutral NPCs and wall-mounted
+    cameras, aren''t represented in the layout drawing. None of that is relevant to
+    planning the core experience goal of bypassing security by knocking-out the guard
+    NPCs.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****The lesson here is: **don''t clutter your layout drawing with unnecessary
+    design features.******'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/b06793c303ea9a620e517103db4b0ee9.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: player view of finished WKZ Station lobby in "Automata" for Watch Dogs 2, by
+    Iuliu-Cosmin Oniscu</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#warpath-for-team-fortress-classic-valve-by-robin-walker-et-al)********"Warpath"
+    for Team Fortress Classic (Valve), by Robin Walker et al****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '****In the class-based multiplayer shooter Team Fortress Classic (1999), "Warpath"
+    was a control point ("CP") map designed collaboratively by Robin Walker and his
+    team at Valve. TFC''s CP game mode was similar to the modern CP modes in Team
+    Fortress 2 or Overwatch, where two teams compete to capture all the control points
+    along a central lane.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[Flow](/process/layout/flow): one central lane with side paths, 5 control
+    points total with dynamic spawn rooms****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****[Balance](/process/combat/balance): symmetrical map, all 9 classes must
+    be viable, attack / defense viable at each CP****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****[Typology](/process/layout/typology): beaded necklace, a long coiled corridor
+    dotted with arenas for each CP****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/3056e6c0ddb21ed838ff96767552e04d.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: compare the original plan vs the final level layout; image of "Warpath" from
+    Team Fortress Classic</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****In the Half-Life 2 artbook "Raising The Bar", Walker details their process
+    and how drawing layouts factor into their collaborative multiplayer level design
+    workflow:****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*****"After the initial design discussions, maps were sketched out by the design
+    group, and then built by the level designers. Once the initial version was complete,
+    regular playtesting began. Many changes were made throughout the playtesting cycle,*
+    ***often resulting in drastic changes to original plans for the map.*** *[...]
+    [Warpath] was the first TF map in which teams respawned in different locations
+    based upon which control zones their team controlled, and this led to a long test
+    cycle where respawn points were moved many times."* -- Robin Walker, from "Half-Life
+    2: Raising The Bar", pg. 48 (emphasis ours)****'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '****In the drawing above, note the numbered control points and labeled call
+    outs. Each control point area is like a mini arena / parti, with specific landmark
+    labels: sniper ledge, tunnel, stone arch, barracks, etc. **Name and theme map
+    areas from the beginning.** Labels also highlight the most important parts key
+    to the map''s experience goals.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Also note the drawing only shows half of the map, where the mirrored symmetry
+    splits at the central bridge. Because they already decided the map layout would
+    be symmetrical, drawing the entire map was unnecessary. **Thus, design constraints
+    affect how you draw your layout.******'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/fc7c45c34a728f7e1c91a5bb05ba75cd.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: the central bridge arena, facing south from the Blue team's sniper ledge; "Warpath"
+    from Team Fortress Classic</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Against layouts?****'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '****While layouts may seem vital for level design, many level designers do
+    not draw layouts, and often jump from pre-production to blockout. Some arguments
+    against making layout drawings:****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****You can''t playtest a layout drawing.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****Drawings are visual documentation that quickly become obsolete and out
+    of date.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****Real world architects do layouts because they have to; we shouldn''t copy
+    them mindlessly.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****3D game movement relies more on intuition rather than calculation.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****For the influential 3D platformer game Super Mario 64 (1996), Miyamoto''s
+    team made only minimal concept art / layout sketches to plan major pacing beats:****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#when-you-created-the-level-maps-did-you-draw-out-models-blueprints-beforehand)*********...
+    When you created the level maps, did you draw out models/blueprints beforehand?*****'
+  prefs:
+  - PREF_BQ
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*******Miyamoto:*** *Actually, no, not at all. There would only be some concept
+    art sketches, and brief notes/memos. For example, I’d talk with course director
+    Yoichi Yamada about an idea for a level, then he’d make some quick sketches of
+    it. Yamada isn’t an artist, but he draws weird stuff. (laughs) Then we’d look
+    over those and talk more (“oh, there should be a snowman here!”), and those key
+    elements of the level would be written down. Yamada and the other level designers
+    then would refer back to those notes while designing the levels with our software
+    development tools.*****'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '****-- interview from the Super Mario 64 Strategy Guide (via [shmuplations.com](https://shmuplations.com/mario64/))****'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '****<picture class="relative">![](../Images/c01c664e61d0228f567a72834eafda37.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: scan of a magazine spread featuring a clay diorama of Super Mario 64's ["Bob-omb
+    Battlefield"](https://www.mariowiki.com/Bob-omb_Battlefield) level; does it feel
+    pre-planned? because it wasn't!... from "Super Mario 64 Complete Clear Guide Book"
+    (via [shmuplations.com](https://shmuplations.com/mario64/))</picture>****
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****[](#against-against-layouts)********Against against-layouts?****'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '****You could also argue Miyamoto''s methods are less applicable to other genres,
+    situations, or teams. They were a dozen veteran pro developers who knew and trusted
+    each other, of course they could improvise small low poly single player levels
+    with no planning.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****To review...****'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '****A **layout drawing** (or a "layout") is an initial visual plan of the level''s
+    structure and key pacing beats. You should expect your final level to diverge
+    significantly.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Start with a basic [**pre-production plan**](/process/preproduction), define
+    desired [experience goals](/process/preproduction#experience-goals) and [pacing](/process/preproduction/pacing).****'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '****Sketch and label [**partis**](/process/layout/parti)**,** simple thumbnail
+    sketches of core shapes.****'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '****Arrange the space with **bubble diagrams**, sketches that emphasize overall
+    proportion and relation.****'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '****Draw a **floor plan**, a top-down drawing with walls and floors**.******'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '****Start with big simple shapes, omit details. Use multiple line weights and
+    shade floor areas.****'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****For rooms with multiple floors, draw an isometric view, with attention
+    to the floor planes.****'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****For important or complex set piece rooms, maybe sketch a perspective view
+    and label it.****'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '******Markup** the plan with player flow and gameplay notes. Help others imagine
+    the experience, especially if you are collaborating with others.****'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '****Name and label areas. Think of each chunk of the level as its own parti.****'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****That said, **many level designers don''t make layout drawings**. Try it,
+    and keep doing it if it helps you think, or if it helps your team communicate.
+    However, don''t feel obligated.****'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '****Now what?****'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '****Read more about important [**layout design concepts**](/process/layout#layout-concepts).****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****Continue to the [**Blockout**](/process/blockout) phase.****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '****[](#further-reading-on-layouts)********Further reading on layouts****'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '****["Warowl and FMPone - Mapping for Fun"](https://www.youtube.com/watch?v=5hq4QSttI2k)
+    by 3kliksphilip****'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

@@ -1,0 +1,890 @@
+- en: 🏡Environment Art
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://book.leveldesignbook.com/process/env-art](https://book.leveldesignbook.com/process/env-art)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: What is environment art?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '**Environment art** (or "env art")is the cosmetic decoration of a level or
+    game world, while preserving its core functionality and gameplay.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This work involves building up a library of modules, props, textures, materials,
+    and other art assets, and then **art passing** the level by painting / placing
+    decor to supplement the underlying design.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/eb070cc3a79ed7ec80bebe75006ae67d.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: diagram comparing level design vs Level Design vs environment art, using process
+    images of "Gallente Research Facility" from Dust 514 [by CCP Games](https://web.archive.org/web/20160305103957/http://dust514.com/news/blog/2013/08/gallente-research-facility/)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Before the 2000s, level designers often made their own environment art too.
+    But today, a level designer is usually supposed to make as little visual art as
+    possible, and the environment artist is usually supposed to wait for a mature
+    [blockout](/process/blockout) before beginning an art pass. However, when working
+    in a small team, level designers will likely have to source or make their own
+    environment art, and vice versa.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Here **we will focus on general environment art principles** and high level
+    concerns, so that level designers can better understand the art process and collaborate
+    with environment artists. **This is not an environment art book.**
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For links to free textures, materials, and models, see* [*Resources*](/appendix/resources)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For links to dedicated environment art communities, sites, and books, see*
+    [*Community*](/appendix/communities)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/2849b699c3bcb6ab1f35eaccf15ecc84.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: animated GIF showing iterated blockout and art pass process for "Deathstorm"
+    in Sniper Elite 4 (2017) ([via Twitter](https://twitter.com/JobsAtRebellion/status/1369307937320144906))</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: How to plan env art
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Before you begin an art pass, you should to be able to answer these questions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Theme.* What is the time of day, climate, and location for the level?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Gameplay.* Which parts need emphasis? What should be simple, what should be
+    detailed?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Style.* Realistic or stylized? What type of realism, what type of style?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Palette.* What''s the overall color palette, what''s the mood? What kinds
+    of shapes?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Production.* Which parts need to be done first, and which should be last (or
+    never)?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*For more on planning, see* [*Pre-production*](/process/preproduction) *and*
+    [*Research*](/process/preproduction/research)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/fff03298a9c252f9c6d4199acb41adeb.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: internal concept art, photo reference, and silhouette studies for The Last Of
+    Us Part 2 (2020), board [by John Sweeney](https://twitter.com/johnsweeney2147/status/1280646295837802496)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#concept-art)Concept art'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Concept art** is generally any visual art used for planning the game, but
+    not used in the game itself.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Sometimes the goal of concept art is to convey a desired theme or overall mood,
+    while other times it must communicate technical specifications and details for
+    art assets. Ask yourself, is this concept art meant to inspire, or is it trying
+    to solve a specific visual design problem?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Inspirational mood art is most useful during pre-production (especially when
+    pitching a commercial project to a publisher) or early production, but detailed
+    technical art is more useful later in production.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**If you use someone''s concept art, credit them** -- or even contact the artist
+    and ask for permission before you begin. Attribution is very important if you''re
+    looking for a job; everyone knows everyone, and failing to credit someone will
+    look like a red flag.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/ff6eb55c8270e6061e83671270dc6cab.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: first person concept art (paintover?) of "underground vault" environment concept
+    for Portal 2 (2011)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#paintovers)Paintovers'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A **paintover** is a type of concept art that starts with a 3D screenshot and
+    then an artist literally "paints over" the underlying screenshot to visualize
+    the next version.
+  prefs: []
+  type: TYPE_NORMAL
+- en: It is very common to paintover a [blockout](/process/blockout) screenshot to
+    plan an art pass. This workflow saves a lot of time because the artist doesn't
+    have to manually draft the perspective calculations for basic shapes. For this
+    reason, even 2D artists should have at least some basic knowledge of 3D art tools,
+    so they can potentially build their own blockouts for paintovers.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Sometimes the artist fully renders some finished-looking concept art (see image
+    above)... but usually the paintover is about providing direct feedback between
+    artists: suggested edits, corrections, and notes (see image below).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/35eb30fedafe34d4bf4cd22a264527ad.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: annotated paintover with notes for "The Quarry" by Adam Dencker [(via Artstation.com)](https://www.artstation.com/blogs/bronzegear/wdw2/the-quarry-pt6)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#model-sheets)Model sheets'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A **model sheet** is a more specific type of concept art for individual art
+    assets that includes orthographic views for production artists to work from, as
+    well as contextual mockups to show how that asset should be used within the game.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the concept art / model sheet pictured below, note how we get a good sense
+    of how this octagonal ice crystal platform model will fit into the whole environment
+    theme. Furthermore, the orthographic top and bottom views answer the prop artist's
+    questions about construction and color, and can be easily brought into a 3D modeling
+    tool as reference. The orthographics emphasize the golden corner trim of each
+    platform, while the bottom-right illustration shows how the corner trims tile
+    together for an interlocking visual effect -- together, it helps the environment
+    artist understand which details are important to preserve and carry over to the
+    in-game asset.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/0b5b8ae211f5cd2f58aed036324ba041.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'combination concept art, model sheet, and paintover [by Sarah Morris](https://twitter.com/BraveRobynArt/status/1316108592857124864/)
+    for Spyro: Reignited</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Art assets
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: After some planning, artists produce art **assets** -- visual objects to insert
+    directly into the level. Unlike concept art, this is what the game engine must
+    read and what the player will see in-game.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'When producing art assets, keep in mind:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**The Brief.** What is the task? What does this asset need to do?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Approval.** Who gives feedback on this asset? How will we know if it works?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Scope.** How much time to make this asset? Small rare details deserve less
+    time.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Workflow.** How many steps to make this asset? In which tools?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Pipeline.** How to export art into a format that the engine can read?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Longer term projects (6+ months) with larger teams (6+ people?) should formalize
+    this art production process to avoid costly redos, wasted work, and miscommunication.
+    Maintain a spreadsheet or kanban board to track tasks, and move each asset through
+    different stages of testing and team review. While all this task tracking may
+    feel slow at first, communication and clarity are faster in the long run.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more on organizing work tasks and team communication, see* *Production**.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/dd5d3842ef80e976b9a4cff71a2c00a3.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: art production process diagram with three review stages, from "Be your best
+    you by critiquing everything your workmates do" by Hannah Mackintosh for Play
+    By Play 2021</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Most art assets for levels are either 2D textures or 3D models, but in this
+    section we'll also talk briefly about shaders and special FX later on.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#asset-list)Asset list'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Before making environment art, you may need to make an **asset list,** a list
+    of all the art assets needed for a particular scene or level. Asset lists are
+    usually in some sort of spreadsheet format, listing each asset's priority and
+    estimated production time.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the image below, the artist has made an asset list spreadsheet grouped by
+    month / week. They estimated they had about 30 hours a week to work, and prioritized
+    a scene blockout / the most important level geometry assets first. Materials and
+    detail props only happen later, after the foundation has been set.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/0b04cf9bd58184b6fc6d81c56f599777.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: an asset list / calendar / "block plan" for a 3D scene "The Grand Bath" by Vincent
+    Dérozier, [via ArtStation](https://www.artstation.com/artwork/RnagAO)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#materials-and-textures)Materials and textures'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Textures** are 2D images that cover the 3D surface of the map. Since the
+    2000s we often combine multiple textures together into **materials**, texture
+    bundles with additional data like roughness, shininess, light emission, etc.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For environment art, texture design and layout is very important. Unlike character
+    skins, we often reuse world textures heavily throughout levels. The ideal environment
+    texture needs to be able to work well in many different situations: it should
+    tile well across a surface, but also easily divide into reusable parts.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more on texturing and defining materials, see* [*Texturing*](/process/env-art/texturing)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/4ad0139fd029eb30b2cd7f5b8f08283e.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: texture mapping a medieval house, from Mount and Blade</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#modular-kit)Modular kit'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A **modular kit** is a 3D tileset made of **modules**, environmental meshes
+    designed to snap together in a variety of ways. Modules are most effective for
+    buildings and structures that make regular use of repetition along a grid, but
+    they don't work as well for organic or natural shapes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more on how to plan, measure, and construct kits, see* [*Modular kit design*](/process/blockout/metrics/modular)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/febbe00d2be6f5884e96734c01ab99dd.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: reusing a modular wall segment (left) to build a rounded room (right); [example
+    by Lea Kronenberger](https://www.beyondextent.com/articles/balancing-modularity-and-uniqueness-in-environment-art
+    )</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: There are many cases where modular meshes will not connect cleanly, especially
+    if you build off-grid or at non-90 degree angles. Nonetheless, you may still want
+    to preserve certain angles or odd lengths, for [metrics](/process/blockout/metrics)
+    reasons or to evoke a gritty dirty non-manufactured natural feel. In these cases,
+    just let the modules freely intersect, and then cover the messy intersection with
+    another object.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For example, imagine you had two rectangular floor meshes that meet at an odd
+    angle -- arrange them to join seamlessly as best as you can, then cover the intersection
+    with a wall, pillar, rock, crate, car, etc. Problem solved!
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/26f27c10da3e54c2bf7878806a911dc3.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: how to join two modules at an odd angle? just cover the mess! [image by Joe
+    Wintergreen](https://twitter.com/joewintergreen/status/839960782364299265)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#hero-props-landmarks)Hero props / landmarks'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: hero prop / hero building should ground an important place in the level
+  prefs: []
+  type: TYPE_NORMAL
+- en: don't put hero assets in bad places... don't guitar solo a dumpster, it's a
+    dumpster, move on with your life
+  prefs: []
+  type: TYPE_NORMAL
+- en: For multiplayer maps, unique landmarks give identity to an area and help facilitate
+    **callouts**, short memorable nicknames that players can use to quickly talk about
+    different parts of the map.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Below is a hero asset by Lydia Zanotti for site B on the map Breeze in Valorant.
+    The large tower looks important and in active use, with unique dark metal machinery
+    that contrasts with the beige stone ruins. The design supports the game lore that
+    "radianite" (the glowing teal substance) is an important resource to control,
+    as well as a gameplay function leaving its bottom section free of distracting
+    shapes or silhouettes. Most importantly, it is used only once throughout the entire
+    map, making the area feel special and unique.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/46b9f676a9e3cab615520bd601ed601c.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: paintover concept art, first pass model, and final art pass for Valorant [by
+    Lydia Zanotti](https://twitter.com/PHRISK3D/status/1397187194096291840/)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#details-props-foliage-clutter-set-dressing)Details (props, foliage, clutter,
+    set dressing)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[](#trees)Trees'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/77c4880f8a4026e316ff2883539b7823.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: General Plant Tips tutorial image [by Marie Lazar (pixelbutterfly.com)](https://pixelbutterfly.com)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: for tall forest trees don't put canopy on every trunk and make sure there's
+    detail at the base [https://www.gamasutra.com/blogs/DannyWeinbaum/20170216/291658/Art_Tips_for_Building_Forests.php](https://www.gamasutra.com/blogs/DannyWeinbaum/20170216/291658/Art_Tips_for_Building_Forests.php)
+  prefs: []
+  type: TYPE_NORMAL
+- en: Readability
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '**Readability** is about whether the player can walk around your level and
+    "read" what they are looking at. Simplify what the player must see. Make it legible.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The goal is for the player to understand the level as an whole place, not as
+    a pile of random floors and wall segments.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Does the player have enough information to understand the current game state?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Can they easily see enemies / game objects from a distance?
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Can they understand whether that enemy is idle, aggro, or hurt?
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Can the player understand where they can go vs. can't go, should vs. shouldn't
+    go?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: When a level begins in abstract [blockout](/process/blockout) form, it is very
+    plain and easy to read. However, as we add additional visual details to the world,
+    the level geometry becomes less distinct and more noisy. An art passed level that
+    is "busy" will be "illegible" and difficult to read.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/051174b15abce422fe2b4b1c758e3731.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'animated GIF showing visual development and readability for de_cache for Counter-Strike:
+    Global Offensive, art by Shawn Snelling, from GDC 2015: Community Level Design
+    for Competitive CS:GO</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the animated GIF above, notice how the CS map de_cache changed from a dark
+    high-contrast level with shadowy busy details to a brighter more evenly-shaded
+    level with les visual contrast -- that concession to readability makes sense for
+    that game and audience.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Some games such as escape rooms, hidden object games, and prop hunts, are all
+    about the joy of parsing busy cluttered spaces. However, fast-paced multiplayer
+    shooters like Counter-Strike or Valorant depend heavily on split-second reflex
+    aiming and snap judgments, and these players would likely blame an unreadable
+    level for their defeat.
+  prefs: []
+  type: TYPE_NORMAL
+- en: As you art pass a level and apply set dressing, the accumulation of these details
+    can impact the player's understanding of the space.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/0eac35ea0bcb0a3414dceace4ca363ab.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: internal style guide for ivy readability in The Last Of Us Part 2 (2020) [by
+    John Sweeney](https://twitter.com/johnsweeney2147/status/1280646295837802496/  )</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: For example, when art passing the environments in The Last Of Us Part 2, Naughty
+    Dog artists used ivy coverage (see image above) to denote neglected closed buildings,
+    while clearing ivy for open buildings that the player should enter. Also note
+    how ivy flattens the structure of the facade. The player no longer has to inspect
+    every window to wonder if it's navigable or relevant -- a building utterly consumed
+    in ivy means it is closed, and resolves into a green blob. Thus, ivy functions
+    as a simplifies the visual environment and serves as a navigation aid for the
+    player. As long as all the designers and artists maintain consistency in how they
+    use ivy, this decorative foliage effect takes on a new meaning beyond how fancy
+    and expensive the video game looks.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'But here''s the secret: everything is ivy, *everything in environment art has
+    a readability function.* When you art pass any part of a level, you are refining
+    the visual patterns that help the player reason about spatial logic.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Readability also heavily depends on* [*massing*](/process/blockout/massing)*,*
+    [*metrics*](/process/blockout/metrics)*, and* [*composition*](/process/blockout/massing/composition)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#clustering)Clustering'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: To help players parse and understand the game world more easily, try to compose
+    the set dressing in clusters of related details. Proximity, similarity, and implied
+    connectedness helps us see objects as groups and patterns. This corresponds to
+    a [gestalt theory](https://en.wikipedia.org/wiki/Principles_of_grouping) of perception.
+  prefs: []
+  type: TYPE_NORMAL
+- en: To make a rocky outcrop, place one rock, then duplicate, shrink, rotate, and
+    slightly offset... and repeat. To make a forest, place one tree, then duplicate,
+    shrink, rotate, and slightly offset... and repeat. You can repeat this workflow
+    for any type of natural set dressing, or even your landscape compositions. Try
+    to build these compositions in an asymmetrical fractal structure, to give a sense
+    of repeated logic and consistency to the prop placement.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/4f0fc7384d52ad330902df14db98c3bc.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"fractal" clusters of rocks, trees, terrain, and even buckets, from the Allods
+    Online art bible [by Anton Lavrushkin](https://shurick.livejournal.com/195876.html)</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#color-and-value)Color and value'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Avoid deeply saturated colors, give space for lighting... if you make a very
+    red texture, it can't get much redder. Some games might also reserve specific
+    color coding too (only explosive barrels are red! only doors can be blue and orange!)
+  prefs: []
+  type: TYPE_NORMAL
+- en: Gradients are smooth (not noisy) but still avoid flatness (there is hierarchy)
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the example GIF below of the map "Castillo" from Overwatch, notice how the
+    ground is generally darker than the surrounding walls; wall textures are plain
+    with minimal noisy details; red and pink are generally reserved for floor and
+    roof planes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/3ae0183acae1578b82e90e8482df6129.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: example blockout to art pass process comparison GIF of map "Castillo" [by Helder
+    Pinto](https://twitter.com/HelderHP/status/1454561504473141251) (and others),
+    for Overwatch</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#materiality)Materiality'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A material is a specific technical term for a group of textures imported into
+    a game engine -- but more broadly, "material" also refers to **materiality** --
+    the general feel, substance, mass, and physical matter represented by the visual
+    surface.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Ideally, an environment texture should read as a distinct real world material.
+    Does the texture truly feel like it's made of brick or rock? Is it too shiny to
+    feel like concrete? Does the glass or wood feel brittle or strong? Being able
+    to read a material is often important for gameplay; for instance, footstep and
+    bullet penetration are common mechanics in tactical shooter games, and rely on
+    players understanding the material they're walking on / shooting at.
+  prefs: []
+  type: TYPE_NORMAL
+- en: As a general rule, most artists strive to craft textures made of clear and distinct
+    materials. A wood texture should still look like wood from 50 meters away, and
+    a shiny metal texture should feel different from a shiny plastic texture.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more on textures and materials, see* [*Texturing*](/process/env-art/texturing)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/f4aff5a5a98e24cdaca1af7737a5639b.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*different world textures convey different surface properties and materials;
+    textures* [*by Marie Lazar (from 80 Level)*](https://80.lv/articles/creating-a-stylized-chaparral-environment-in-ue4/)</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#avoid-shape-and-color-psychology)Avoid shape and color psychology'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Shape and color psychology** are theories that shapes / colors convey universal
+    ideas and influence behavior.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: While artists often crave secret power over people, we argue that **shape and
+    color psychology are not effective for level design**. Abstract geometric shapes
+    and colors, by themselves, do not make all humans feel the same thing nor communicate
+    the same ideas. These simplistic theories fail to capture the rich complexity
+    of art and culture, misunderstand basic psychology, and overshadow much more useful
+    design tools. You're better off without them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more, see* [*Shape and color psychology*](/process/env-art/psychology)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: How to art pass
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'There are many ways to approach an art pass, but here''s some general advice:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**WORK ITERATIVELY** in stages, don''t try to make the 100% final version of
+    every asset. You need to see how the art assets will relate to each other, in
+    context, to know if an asset is "finished" or not. When surrounded by other art
+    in the game world, sometimes a 50% finished art asset can actually be 100% "finished
+    enough".'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**ART PASS WITH FOCUS,** don''t just art pass random parts of random areas.
+    Try to push progress along in specific parts of the level, in specific ways or
+    themes, so you can get feedback on your changes. If you art pass haphazardly in
+    incoherent ways, then it is more difficult for others to give you feedback.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**START BIG**, and save smaller details for later art passes. Define your basic
+    shapes and massing, color palette, and main themes first. Then after nailing all
+    your fundamentals, you can finally move on to sculpting pebbles or painting grunge
+    marks.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For each animated GIF example below, try to count the number of art pass iterations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/69131c85086b1a1e50fb1fe132875efc.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: series of art passes for 2D pixel art game Minit, posted by Kitty Calis [(via
+    Twitter)](https://twitter.com/kittycalis/status/981577805992484866)</picture>
+    <picture class="relative">![](../Images/fecb5ff436dc4a65f5ab36a8c2e5bba2.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: series of art passes and iterations for a portfolio piece by Kieran Goodson
+    [(via 80 Level)](https://80.lv/articles/001agt-004adk-3d-environment-design-symbols-breakdown/)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#make-a-prop-zoo-warehouse-showcase-map)Make a prop zoo / warehouse / showcase
+    map'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Similar to metric playground maps and modular kit loopback tests, the best way
+    to validate environment art is to try using it in-game. **Make a scene or level
+    with every prop / art asset, and walk around in it.**
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Charles Boury, art director on Caravan Sandwitch, offers this advice for showcases:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*I typically create: ShowcaseCharas for every character, ShowcaseProps for
+    an Ikea-style overview of every game props, ShowcaseMats for a grid-view of every
+    material in different light conditions, and ShowcaseUI for a scene where I can
+    play with every UI element.*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*Note the word "every." Exhaustive lists let you oversee the game content and
+    build confidence. When you work on, say, the pickup UI, you can test it with all
+    pickable items. When you ask yourself, "Is the color red used on a character?",
+    or when the team asks you a specific question like, "how many props use complex
+    collisions instead of simple and why?", you can answer confidently.*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/5732deb8a2e59cf81a834be367e0a2ad.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: in-editor screenshot of the ShowcaseProps scene for Road 96, by Charles Boury
+    via ["Scene setup for art direction"](https://charlesboury.fr/articles/scene-setup-for-art-direction.html)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*As an art director, I''m pushing for a specific style. I don''t focus on a
+    single prop or character. I''m constantly looking for the big picture, the artistic
+    unity. So how can I make my life easier for this goal?*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*I want to see an organised arrangement of all the props to check their palette,
+    silhouette and level of details. A nice warehouse would be neat, with all the
+    game props, nicely grouped by category, arranged on a grid, so I can compare them
+    and chose witch one to improve. What parts of the game need more consistency?
+    How can I play with this kit to create something unique?*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: -- Charles Boury, from ["Scene setup for art direction"](https://charlesboury.fr/articles/scene-setup-for-art-direction.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/08d798b698eb1de6e93fdf4bb96780c4.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: in-editor screenshot of the prop warehouse test level for Caravan Sandwitch,
+    by Charles Boury via ["Scene setup for art direction"](https://charlesboury.fr/articles/scene-setup-for-art-direction.html)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Example art passes
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[](#icebox-for-valorant-riot-games)"Icebox" for Valorant (Riot Games)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Because Valorant is a competitive multiplayer shooter that depends on precise
+    map [balance](/process/combat/balance), Riot tailored their art pass process to
+    preserve the level designer's blockout as much as possible. Before entering art
+    production and detailing phases, Valorant maps go through extensive month-long
+    greybox ([blockout](/process/blockout)) and [playtest](/process/blockout/playtesting)
+    phases as well as several initial *art blockout* passes to test color swatches
+    and [massing](/process/blockout/massing). This *art blockout* gives extra time
+    for level designers to make more changes to the level geometry, and propagate
+    those tweaks back to the artists with minimal waste. Prolonging the blockout stage
+    improves the final art pass and allows for more collaboration between departments.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Before 3D artists can touch a map, our Art Lead and Creative Director work very
+    high level with the concept artists to iterate on finding an iconic look for our
+    maps using a series of blue-sky concepts. At this stage there's a lot of back
+    and forth between the artist and project leadership to make sure the map follows
+    the VALORANT narrative, is marked by visual variety, and most importantly, is
+    something the team is really excited to be working on.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: After a high-level direction has been locked down, concept artists begin to
+    tackle specific locations and call-outs on the map based on the greybox layout.
+    At this stage, the concept artists try to get as much coverage on the map before
+    the 3D artists jump in and begin modeling the basic shapes of the architecture.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/fac367b7e1733e9aeaeed80a63aaf2a8.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: graybox to "art blockout" to "art production" workflow of map Icebox for Valorant
+    [(via PlayValorant.com)](https://playvalorant.com/en-us/news/dev/the-art-of-valorant-map-environments/)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: We try to model and get the basic architectural shapes into the map before starting
+    to unwrap and texture them. When we start to add colors on the meshes, we make
+    sure that they aren't too dark, especially in interior spaces. The objective here
+    is to maintain gameplay integrity by making sure that the environment doesn't
+    impede with clarity, and that the characters are always clearly visible.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: As far as texturing goes, we primarily use tiling textures and trim sheets on
+    our buildings and large structures. These are created using a variety of programs
+    such as Zbrush, Substance Designer, Substance Painter, and Photoshop. We do use
+    custom textures on props when needed, such as the coffee machine in the kitchen,
+    or the forklift near A-site.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[...] To help with visual noise, we make sure that our materials are similar
+    in value and there isn''t too much contrast or darkness. We can also improve clarity
+    by using lights to illuminate dark areas, or to spotlight spaces where you would
+    want the most visibility possible, such as a Spike plant site or a commonly peeked
+    corner.'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: -- from ["The Art of Valorant Map Environments"](https://playvalorant.com/en-us/news/dev/the-art-of-valorant-map-environments/)
+    by Lydia Zanotti
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/ea1261f9d733ff1c451fae49f541e1ec.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: progression of "Kitchen" area in "Icebox" from blockout to art blockout; the
+    hallway becomes a room! [(via PlayValorant.com)](https://playvalorant.com/en-us/news/dev/the-art-of-valorant-map-environments/)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: To review...
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '**Environment art** is about decorating and refining the visuals of a level.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Industrial artists tend to do a lot of planning in the form of **concept art**,
+    **paintovers**, and **model sheets**. Based on those plans, they generate an **asset
+    list** so they can figure out how much work they have to do.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Common environment **art assets** include **world textures**, **modular kits**,
+    **hero props**, and general **set dressing** props like foliage and clutter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'When making assets, artists should consider **readability**: how an object''s
+    visual appearance suggests affordance (functionality and usefulness). To improve
+    readability, **cluster** details together in groups, pay attention to **color
+    and value**, and make sure **materials** read clearly.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We argue strongly **against** [**shape and color psychology**](/process/env-art/psychology).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**How to art pass**:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: focus on swapping-in big important common core objects / shapes first
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: do not try to finish each asset 100% one-by-one, instead it's better to **work
+    iteratively:** get multiple objects to 50%, then step back and evaluate
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Now what?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Continue on to [**Release**](/process/release).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ~~Stop reading a level design book, and go find an environment art book / website
+    instead~~.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Read more about a certain aspect of environment art in more detail...
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#env-art-in-detail)Env art in detail'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Working environment artists often specialize in one aspect:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Modeling and sculpting.** Hard surface architecture and props, or nature
+    and foliage?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**Lighting**](/process/lighting) heavily affects how players perceive shape,
+    depth, space, and mood.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Is that wall far away or close by? Is this room shallow or deep? Is it scary?*'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**Texturing**](/process/env-art/texturing) is important for reading shape,
+    surfaces, and materials.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Is that wall made of wood or metal? ... Alien metal? Are there aliens nearby?*'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**Storytelling**](/process/env-art/storytelling) and set dressing give a sense
+    of place / lived-in feel.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: After an art pass, levels often require [**optimization**](/process/env-art/optimization).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Further reading
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Remember, this is a level design book, not an env art book. You should definitely
+    go somewhere else to learn more.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For links to environment art sites, see [Communities: Environment Art](/appendix/communities).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Environment Art blog](https://environmentart.wordpress.com/) by Rogelio Olguin
+    (discontinued since 2016, but still lots of good stuff)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

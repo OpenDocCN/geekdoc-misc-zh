@@ -1,0 +1,774 @@
+- en: 📜Scripting
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://book.leveldesignbook.com/process/scripting](https://book.leveldesignbook.com/process/scripting)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: What is scripting?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Level designers use **scripting** tools to program specific game rules and
+    behaviors for a level. Some common examples of level scripting include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Objectives**, quests, missions -- a sequence of goals and [encounters](/process/combat/encounter)
+    with a start and end'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Triggers** execute logic when entering an area, to lose health or gain points,
+    etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Gates** block progress until the player solves a problem in the game world
+    somehow'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Game objects / entities** that move or react, like buttons, doors, elevators,
+    trains, traps, etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (visual scripting example)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#game-code-vs-level-scripts)Game code vs level scripts'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In past generations of game engines, there was a big technical difference between
+    the game engine code vs. the scripting logic in a game level.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For example, Quake 1's game engine idTech2 was written in C / QuakeC, but level
+    scripters relied on premade **entities** with narrow predefined behavior. A *func_button*
+    entity could only function as a button, and a *func_door* entity could only work
+    as a sliding object. If a designer built the door as a flat platform that "opened"
+    upwards, then the door was basically an elevator; these resourceful hacks were
+    necessary because level designers could not easily code new types of entities.
+    Entities were level-specific visual scripting logic that existed as data interpreted
+    by the game engine.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/da171750a5f5821cdb5d6a029c8c0d47.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: editor screenshot of a very complex entity setup (168 different objects!) for
+    spawning weapons in Quake 1 by Benoit "Bal" Stordeur https://twitter.com/BafuBal/status/1261974130624167937</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: For modern game engines, scripting has become increasingly textual and code-like.
+    Unreal Engine 4's Blueprint visual scripts match C++ functionality, Unity's Playmaker
+    / Bolt visual scripts match the C# API, Fallout 4 / Skyrim scripters use a Papyrus
+    language, and other engines routinely embed Lua. It's all basically code now.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'So: a **level script** is simply a coded behavior limited to the scope of a
+    game level. Scripts usually interact with specific objects or places in the map,
+    binding to specific entities. They have limited functionality outside of this
+    map or across different maps. Think of it as "softer" code unique to a given level,
+    compared to the "harder" core game code shared by all levels across an entire
+    game.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#hacks)Hacks'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A scripting **hack** is a one-off brittle solution that uses a game system in
+    a way that wasn't intended, and thus cannot support a wider range of behavior
+    nor be easily reused elsewhere in the game.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For example, in Fallout 3's Broken Steel DLC, the player fixes and rides a metro
+    train during a mission. However, the game does not have any actual vehicle or
+    train system. Instead, [Fallout 3 uses a clever hack to simulate a train](https://www.pcgamer.com/heres-whats-happening-inside-fallout-3s-metro-train/).
+    Via script, the game forces the player to secretly equip an inventory item called
+    "DLC03MetroCarArmor" -- an armband that executes a camera script that makes the
+    player feel as if they're on a moving train. In Fallout 3's GECK game editor tool,
+    the armband looks like a giant train-shaped hat. (see image below)
+  prefs: []
+  type: TYPE_NORMAL
+- en: This scripting hack may seem absurd, but it works, and it saved the developers
+    a lot of time from needlessly engineering a complex feature. So sometimes hacks
+    are appropriate, but you can only decide on a hack like this when you have done
+    enough [planning](/process/preproduction) for your project scope. Here, the Bethesda
+    designers had planned their DLC and they knew there was no point in coding a train
+    system they would never use again, so instead they hacked a fake train and successfully
+    shipped their project.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/6340669a86091c27eec2380d6f0abc5a.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: The Fallout 3 "train hat" DLC03MetroCarArmor bracelet, as previewed in the GECK
+    editor tool. From</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Objectives
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: quests, missions... usually made of triggers and gates
+  prefs: []
+  type: TYPE_NORMAL
+- en: Branching flags model
+  prefs: []
+  type: TYPE_NORMAL
+- en: Fallout / Skyrim numbered quest stages (FSM?)
+  prefs: []
+  type: TYPE_NORMAL
+- en: visualize as a flow chart, can get very complicated
+  prefs: []
+  type: TYPE_NORMAL
+- en: Triggers
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: triggers let us define volumes and areas, and apply behavior to those zones
+  prefs: []
+  type: TYPE_NORMAL
+- en: triggers know when something enters, stays, and exits... a trigger is an EVENT
+  prefs: []
+  type: TYPE_NORMAL
+- en: basic trigger is traps, deaths, lava, etc. or opens a door
+  prefs: []
+  type: TYPE_NORMAL
+- en: for singleplayer, triggers should be invisible and seamless and magic, and sometimes
+    just one-off triggers? ... dear esther, triggers used for ghosts and voice over...
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'complex triggers: dynamically resizing triggers like in Gone Home parents closet?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: for multiplayer, triggers should NOT be invisible!!... bomb site areas in CS,
+    capture points in Overwatch
+  prefs: []
+  type: TYPE_NORMAL
+- en: Gates
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'see also: Gating, [Doors](/process/scripting/doors)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A gate is something that impedes or blocks the player's movement through the
+    level, usually along the critical path.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Despite their name, gates are not just doors. Almost anything in a level can
+    *function* as a gate, because any obstacle that impedes progress or flow, either
+    by a little or a lot, is a type of gate.
+  prefs: []
+  type: TYPE_NORMAL
+- en: A **hard gate** is when progress is impossible without completing the encounter
+    or puzzle. When we just say "gate", we usually mean a hard gate.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Kill all monsters / boss to open a door
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Press all the buttons
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Collect the key
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Only the NPC can open the door, when they want to (e.g. out of combat)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Or chain all these together.... kill a monster to get a key, press a button
+    to release a monster that drops a key, etc.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#soft-gate)Soft gate'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: the player could bypass the gate without completing the encounter or puzzle,
+    but they are heavily discouraged from doing so (e.g. too many monsters)
+  prefs: []
+  type: TYPE_NORMAL
+- en: A bit more sophisticated and less hand-holdy, supports speed runners better...
+    but might cause a cascade of confusion if player keeps bypassing gates without
+    realizing, isn't sure what's happening, or the gate might be so soft that it doesn't
+    even do anything
+  prefs: []
+  type: TYPE_NORMAL
+- en: (very soft) blocked sightline, hairpin turn (see typology)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (soft) simple traversal / jumping puzzle, stacking boxes
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (softish) Valve-style slowly opening door gate
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (ranges from soft to game breaking) confusing layout, unclear how to progress
+    (might end up feeling bad-confusing instead of good-confusing though)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: AI scripting
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[](#spawners)Spawners'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: monster closets
+  prefs: []
+  type: TYPE_NORMAL
+- en: director AIs
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#hinting)Hinting'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: pathfinding nodes, monsterjump, cover nodes, clip volumes, leashing
+  prefs: []
+  type: TYPE_NORMAL
+- en: Cover hinting for NPCs and AI
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/ff194a1dc78b36d87792deb5ddc00f74.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: editor view of cover node hinting markup for Gears Tactics by Splash Damage
+    (from https://www.splashdamage.com/news/blocktober-gears-tactics/)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"*The tall red boxes are standing cover (otherwise known as “full” cover, providing
+    the most protection) and the smaller pink boxes are low cover (half-cover in-game*).
+    *The yellow targets on each cover node show which angles a soldier can shoot from
+    when placed in that cover node. The yellow curved arrows above some of the low
+    cover nodes show that a soldier can vault over the cover node into a node on the
+    adjacent side. Careful placement of cover nodes and strict adherence to the metrics
+    is essential to create a clean, bug-free cover setup that works as players expect
+    it to. If a piece of cover is too high then you will not be able to vault over
+    it, and if a cover node isn’t placed correctly at a corner then the soldier occupying
+    that node will be unable to shoot around the corner. Both of these examples create
+    frustration for the player and must be avoided!"*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*-- from* [*"Blocktober: Gears Tactics"*](https://www.splashdamage.com/news/blocktober-gears-tactics/)
+    *Splash Damage blog post*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: many combat games also automatically generate markup and fine-tune by hand (e.g.
+    Uncharted 4)
+  prefs: []
+  type: TYPE_NORMAL
+- en: Choreography
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: When we script NPCs to perform specific actions outside the scope of their normal
+    AI, especially for in-game cutscenes and [storytelling](/process/env-art/storytelling),
+    then that type of scripting is called **choreography**. On large team projects,
+    character choreography could be the responsibility of a scripter, animator, or
+    dedicated cinematics artist.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Common choreography scripting actions include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*NPC actor body control like looking, turning, walking, talking.* This [stage
+    blocking](https://en.wikipedia.org/wiki/Blocking_(stage)) choreography should
+    hook into the same body systems as the main game AI, i.e. maintaining two different
+    walking systems would introduce extra technical debt into your project.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Animation control.* Overriding the default idle stance or the current full-body
+    animation completely. For example, if two actors hug once in your game, you should
+    not engineer a dedicated hugging system -- instead, you should just temporarily
+    override their animations with hugging motions.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Props and attachments.* Temporarily bind an object to a character joint, like
+    attaching a hat to a head, or a cup to a hand.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Timing delays.* Waiting for X seconds, useful for dramatic pacing or pauses.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Camera control.* Force a first person controller to look at something, or
+    spawn additional third person cameras with other camera angles or cinematography.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Game state management.* For systemic or combat-oriented games, it is best
+    practice to disable the choreographed actors'' combat AI and physics, as well
+    as pause / block / delete nearby enemies and make the choreographed NPCs temporarily
+    invincible. If you don''t manage and clean the game state for the choreography,
+    then your actors could unexpectedly collapse or die during the cutscene.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/ba66db4254050914a053deb71ffaf800.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: screenshot of Faceposer choreography tool used for Half-Life 2 (2004) with 3D
+    preview and track-based timeline interface</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#object-interaction-systems)Object interaction systems'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Taylor Swope, QA lead for Obsidian RPG "The Outer Worlds" (2019), spent a long
+    time trying to debug an NPC object interaction scripting issue [https://twitter.com/_taylorswope/status/1205252714680045568](https://twitter.com/_taylorswope/status/1205252714680045568)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*We released [...] a fix for the dreaded "the game thinks my companions are
+    dead" bug, which I believe I spent more time investigating than I have for any
+    other individual bug in my career.*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The gist of the bug was that, for some players, a companion quest would be
+    marked as Failed in the quest log, with the reasoning that the companion was dead
+    -- despite the fact that the companion was very much alive and well. One reason
+    it was so hard to pin down is that it was impossible to tell when the bug actually
+    happened -- all of the cases we had were essentially "hey something bad happened
+    in the last ten hours and now my quest is broken".*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*Investigating it involved figuring out the location of every script and line
+    of code that could possibly make the game think that a companion was dead. The
+    only logical culprit was a bit of scripting that runs when a companion''s health
+    reaches zero: if they''re in the party, it waits for combat to end and revives
+    them; otherwise it marks them as dead "for real". [But] the only place in the
+    game when a companion is present but not in the active party is when the player
+    is on their ship. The problem is, when companions are on the ship, they are undamageable.
+    Eventually we figured out that "undamageable" does not mean "invulnerable" --
+    they can''t take damage from attacks but can still get hurt from other things.
+    One of those things: falling a great distance.*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The problem with that is that there are no spots in the player''s ship that
+    are high enough to result in a lethal fall. So now we had to figure out how companions
+    were mysteriously ending up way above the level. I looked into tons of theories,
+    including "maybe their height data is preserved when fast travelling from other
+    maps" and "maybe a physics interaction between two companions causes one to rapidly
+    accelerate upwards". (My personal fav was "what if a companion is standing right
+    where a cow spawns in during a random event and they''re launched into space".
+    Was genuinely bummed when that theory didn''t pan out.) By this time, the game
+    had come out, and all hopes of this being a weird fluke only a couple devs would
+    ever see were dashed, as players all over the place started reporting their companion
+    quests failing.*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*Eventually, an offhand comment in one user''s review mentioned seeing a weird
+    bug where a companion was "climbing nothing", and this comment led me to figuring
+    the whole thing out.*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*On the dev side of things, the system for NPCs interacting with the environment
+    is called "furniture". Sometimes this is literal furniture, like sitting in a
+    chair, but it covers everything from using a terminal to leaning on a wall. Somewhere
+    deep in the complex beast that is the furniture system, we had code that disabled
+    all NPCs from starting new furniture interactions if the player was in a conversation.*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*The problem was that using a ladder is considered two different furniture
+    interactions: one for getting on the ladder and starting to climb, and one to
+    stop climbing and get off. So, if someone started climbing a ladder and the player
+    entered a conversation before they stopped, they wouldn''t be able to exit the
+    ladder, and, well….* -- Taylor Swope (@_taylorswope) [https://twitter.com/_taylorswope/status/1205252714680045568](https://twitter.com/_taylorswope/status/1205252714680045568)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[](#choreography-tools)Choreography tools'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Game engines tend to have visual track-based timeline tools for choreography
+    like [Timeline](https://docs.unity3d.com/Packages/com.unity.timeline@1.2/manual/index.html)
+    (Unity) or [Sequencer](https://docs.unrealengine.com/en-US/AnimatingObjects/Sequencer/index.html)
+    (UE4). Scripters and animators setup different tracks and place events on each
+    track. This way, the game can import the choreography as a game asset instead
+    of code, which avoids any time-consuming re-compiles and simplifying the codebase.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Large projects with many conversational cutscenes (like RPGs) usually rely on
+    semi-automated workflows for scripting their choreography. Their tools automatically
+    generate basic cutscene scripts for every conversation, because it is not feasible
+    to handcraft hundreds (or thousands) of short cutscenes. Then scripters and animators
+    polish the most important scenes with additional choreography, and QA testers
+    report any broken low priority choreography that needs specific attention. Voice
+    over heavy projects will also need to adjust scene timing for every voiced language,
+    and games with day-night cycles should automatically override global lighting
+    with better [lighting](/process/lighting) setups for cutscenes and close-ups.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If your project doesn't have or need specialized choreography tools, then it
+    is still possible to choreograph directly with gameplay scripting code. Use something
+    like [yield](https://docs.unity3d.com/Manual/Coroutines.html) (Unity C#) or [Wait
+    nodes](https://docs.unity3d.com/bolt/1.4/manual/bolt-time.html) (Unity Bolt) or
+    [Delay](https://docs.unrealengine.com/en-US/BlueprintAPI/Utilities/FlowControl/Delay/index.html)
+    / [Timer](https://docs.unrealengine.com/en-US/InteractiveExperiences/UseTimers/index.html)
+    nodes (UE4 BP) to call functions in sequence with your desired timing. This direct
+    method is useful when you need full access to all scripting functions as part
+    of your choreography. Imagine choreographing 100 NPCs walking through a door one-at-a-time;
+    this task would be slow painful tedious work in a visual tool, but trivial in
+    a scripting language with for() loops and arrays.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/0d187780aae82ce810c85e7bdc031982.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: screenshot of Cutscene Editor used for Dragon Age Origins (2009) with 3D camera
+    preview and track-based timeline</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#example-choreography-workflow-the-witcher-3)Example choreography workflow:
+    The Witcher 3'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'For their large open world RPG The Witcher 3 (2015), developers CD Projekt
+    Red divided their quest workflow into four phases: (1) *Writing* the script and
+    choices with a screenplay format, (2) *Quest scripting* the possible branches
+    and game states in a visual scripting flowchart tool, (3) *Dialogue and choreography*
+    with preliminary auto-generation pass, and (4) *Post Production* with fixes and
+    visual polish for cutscenes.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The dialogue designer tool's automatic cutscene generator is especially interesting
+    here. It takes the voice over audio and automatically generates tracks and timings
+    for actors, with semi-randomized animation variations and standard camera shots
+    that follow basic cinematography patterns like shot-reverse-shot and 180 degree
+    rule. The result is a basic starting point for a cutscene that is already mostly
+    done, allowing the choreographer to focus more on adding details and mood rather
+    than boring rote work to setup fundamentals.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/8353fcc82353e69680e08c5c7d4eed28.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'diagram of The Witcher 3''s cutscene generator tool, from GDC 2016: "Cinematic
+    Dialogue in The Witcher 3"</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: While the weaknesses of this method weren't really mentioned in [CDPR's GDC
+    2016 talk](https://www.youtube.com/watch?v=chf3REzAjgI), we can imagine the main
+    drawback here is that it requires you to finalize and systematize much of your
+    script, voice over recordings, and animation set in order to feed it into the
+    generator. Without tagged audio assets and near-finished characters, it would
+    be difficult for the generator to understand what to do. As with any procedural
+    generation system, it is heavily dependent on its inputs, and without good meaningful
+    input it will just result in the "[oatmeal problem](https://emshort.blog/2016/09/21/bowls-of-oatmeal-and-text-generation/)."
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Other interesting details about CDPR''s choreography workflow:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The game was scripted and choreographed in English, but the length of the voice
+    over audio would obviously vary with each language. So for every localization,
+    the choreography and camera shot sequences are automatically sped-up or slowed-down;
+    for example, French choreography runs 16% slower than English. [[37:46]](https://youtu.be/chf3REzAjgI?t=2266)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: To stop NPCs and wildlife from interrupting cutscenes, choreographers blocked
+    out an invisible collision box / clipping trigger volume / "deny area" to push
+    non-choreographed characters away and keep the camera shot clear. [[40:25]](https://youtu.be/chf3REzAjgI?t=2425)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: <picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
+    max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">video
+    showing the The Witcher 3 cutscene generator tool, with two randomly generated
+    variations on the same dialogue scene
+  prefs: []
+  type: TYPE_NORMAL
+- en: How to script a level feature
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Scripting is a creative problem-solving task that is similar to any other level
+    design task. First you want to understand the problem, and then you want to try
+    various approaches.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Do a little **planning** and **research**.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**Prototype** the most basic version and **playtest**.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Gradually **iterate** and elaborate on the script until it meets your needs.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[](#id-1.-planning-a-script)1\. Planning a script'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'As with any creative task, **a little bit of planning helps a lot.** Before
+    you open the scripting editor, take a few minutes to **define what you want your
+    script to do**. Some examples of planning documents:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Scripting a mission? Draw a flowchart and markup a [layout](/process/layout)
+    drawing with the mission locations.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Scripting an object or behavior? Sketch how it should look and its various states
+    / properties.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Scripting a fight or encounter? Do some [encounter design](/process/combat/encounter)
+    first.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Scripting dialogue or a cutscene? Write a script and draw a storyboard.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Next, **research** various ways of implementing the feature by googling. When
+    googling for programming or technical scripting help, make sure to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Be technically specific.* Include the game or engine name, as well as the
+    scripting language. Surround both in quotation marks to require these terms in
+    the search results.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Be conceptually general.* Describe the desired behavior in generic terms.
+    For more complicated features, break the problem into smaller simpler parts and
+    google separately.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Some examples of search terms:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 😢`**how to code a ceiling fan**` is vague in the worst way (which code language?)
+    and specific in the worst way (you're hoping someone else has specifically built
+    a virtual ceiling fan)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 😎`**"unity" "c#" spinning object code**` is technically specific (we only want
+    Unity C# code) and helpfully generalizing (a ceiling fan is a type of spinning
+    thing) and we can extrapolate from the generic example for our specific use case
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 😐 `**game dev scripting objectives system**` will maybe tell you someone's opinion
+    about how to architect an objectives system, but without any specific help. What
+    type of game objective do you want to script, exactly? No search engine can design
+    your gameplay for you.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What if we breakdown this problem into simpler and more specific steps, and
+    google for these smaller steps separately?
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 😎`**"ue4" "blueprint" display text on screen**` helps us figure out how to notify
+    the player about an objective
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 😎 `**"ue4" "blueprint" player enters trigger**` helps us learn how to detect
+    when the objective is completed, when the player has reached a certain location
+    in the level, etc.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**When to ask for help.** Unless you''re totally lost, avoid asking other people
+    for help at this very early stage. Try to do it yourself with what you''ve found
+    already, and see how far you get. Asking someone else works better when you have
+    more specific questions or have some existing scripts to troubleshoot. To get
+    a useful answer, you must first understand the problem.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#id-2.-prototyping-a-script)2\. Prototyping a script'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: After you've done some searches, you now have a better understanding of the
+    problem and you are ready to **prototype** the feature in the scripting tool.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'ask community members for advice. Join an engine-specific forum, website, or
+    Discord, and ask your question. If possible, recap the research you''ve already
+    done and include any error messages. Here''s an example question you could post:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"I''m trying to make a working carnival carousel. I found this C# code to make
+    an object spin (link) but I when I try'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Encounter scripting workflow
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Usually involves a trigger to spawn / aggro enemies, and a gate to force the
+    player to deal with enemies
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Before you begin scripting:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: do some encounter design on paper. Have a plan before you open the editor, even
+    a basic plan. what weapons or abilities will the player have for this encounter?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: know your combat metrics. What are the ideal enemy engagement distances? is
+    the blockout too big or too small?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Then, place some AIs / NPCs / enemies and start playing with them
+  prefs: []
+  type: TYPE_NORMAL
+- en: how does the NPC react to the existing space? do they do anything you want to
+    prevent with hinting?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: what tools are available to you? static vs. scripted vs. dynamic?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: To review...
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '**Scripts** are level-specific behaviors designed with a lightweight programming
+    language, often with an engine-specific visual programming tool.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Common features to script include **objectives**, **choreography**, **triggers**,
+    **gates**, and **AI**.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: When googling, include the engine name and search with generic terms.
+  prefs:
+  - PREF_UL
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For short term small projects (< 1 month) the simplest and fastest hack could
+    be good enough.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For long term big projects (6+ months) a more stable systemic method is better.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Now what?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Scripting is important for [**encounter design**](/process/combat/encounter)
+    and [**storytelling**](/process/env-art/storytelling).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: After you've scripted your main [**pacing**](/process/preproduction/pacing)
+    beats, you may want to perform a [**lighting**](/process/lighting) pass on the
+    [**blockout**](/process/blockout).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#further-reading)Further reading'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Most mature game engines have visual scripting tools. Unity uses [Bolt](https://docs.unity3d.com/bolt/),
+    Unreal Engine 4 uses [Blueprint](https://docs.unrealengine.com/en-US/ProgrammingAndScripting/Blueprints/index.html),
+    and Godot has [Visual Scripts](https://docs.godotengine.org/en/stable/getting_started/scripting/visual_script/getting_started.html).
+    See [Tools](/appendix/tools) for a full list of games and their scripting tools.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Intro to scripting for Unreal: ["Implementing Level Design with Blueprints"
+    by Patrick Haslow](https://www.unrealengine.com/en-US/onlinelearning-courses/implementing-level-design-with-blueprints),
+    November 2021.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[UE4 Blueprints From Hell](https://blueprintsfromhell.tumblr.com/) is a Tumblr
+    archive of messy / hacky visual programming graphs authored in Unreal Engine 4''s
+    Blueprint system. It''s fun but also a bit melodramatic; sometimes shipping an
+    inefficient script makes more sense than engineering a time-consuming "better"
+    design. If a cleaner method is 0.0001 ms faster but took twice as long to make,
+    then it''s arguably not a better script.</picture>'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

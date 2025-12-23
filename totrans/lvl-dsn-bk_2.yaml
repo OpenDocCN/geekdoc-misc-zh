@@ -1,0 +1,601 @@
+- en: 🧠Pre-production
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://book.leveldesignbook.com/process/preproduction](https://book.leveldesignbook.com/process/preproduction)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: What is pre-production?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '*"Plans are of little importance, but planning is essential."* -- some guy'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '**Pre-production** is the early phase of a project where you generate ideas
+    and try to figure out what the project is about. It''s about answering big design
+    questions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*What* are you making?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What will the player be able to do? (Mechanics, Experience Goals, Pacing)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Which parts are most important? (Pillars)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*How* are you going to make this?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How did other people solve similar problems? (Research)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How much time do you need? Is this feasible? (Scope)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Your answers to these questions will change throughout the project, and that's
+    OK.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Planning is useful but it''s not magic;** you won''t know what you''re making
+    until you actually make it.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Project planning
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Level planning can take many forms. Like for a small solo hobby project, planning
+    is less important, you can write or sketch a simple basic plan and then enjoy
+    the thrill of improvisation and discovery. But for a larger group project, planning
+    helps everyone know what to do / what everyone needs from each other.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#minimal-checklist)Minimal checklist'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Very basic questions, enough for a quick solo jam project:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#recommended-checklist)Recommended checklist'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'But really, you should be able to answer these other basic questions too:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#full-checklist)Full checklist'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'For 3+ people or a 3+ months project, then more planning will help:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the video below, industry level designer Steve Lee talks about his process
+    -- before drawing any layouts or opening the editor tool, he first opens a text
+    window and writes an outline for what should happen in the level. This is the
+    core of planning: **think about the main ideas and talk about it.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
+    max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">["How
+    I design levels in text first, and why" (22 minutes)](https://www.youtube.com/watch?v=0FSssDWEFLc)
+    video by Steve Lee, uploaded 21 June 2022
+  prefs: []
+  type: TYPE_NORMAL
+- en: Mechanics
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: A game **mechanic** is any activity, system, or tactic repeated in your game,
+    basically any action a player routinely performs or uses. **Core mechanics** are
+    the most basic frequent and fundamental actions / systems of a game, while less
+    frequent activities can be called *secondary mechanics.*
+  prefs: []
+  type: TYPE_NORMAL
+- en: People argue over the exact definition of "mechanic." This book adopts a broad
+    inclusive definition because we don't care. But if you care, [read more about
+    it](https://en.wikipedia.org/wiki/Game_mechanics).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Some examples of how we talk about game mechanics:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Super Mario 64's core mechanics are running and jumping to reach the exit. Some
+    Mario 64 levels support secondary mechanics like wall kicks for secret shortcuts.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Doom's core mechanics involve running and shooting, with little or no jumping.
+    Sometimes players trick monsters into shooting each other, a secondary mechanic
+    called in-fighting.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Thief: The Dark Project is a stealth game about avoiding enemies, with a core
+    mechanic where loud fast footsteps attract guards. In contrast to Mario and Doom,
+    Thief discourages fast movement, and running is a secondary mechanic.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Mario 64, Doom, and Thief are all similar 3D action games about reaching the
+    exit without dying. However these games require very different approaches to level
+    design. Mario platforming would make for an impossible Doom level, and Doom-style
+    hordes of monsters would make for a brutally unfair Thief level.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Do not design for the genre, do not sleepwalk into familiar patterns. Instead,
+    design for the actual game that exists! If you're modding a game, play it for
+    at least a couple hours, including other modders' work. Watch YouTube gameplay
+    footage, pay attention to how other players use mechanics and systems.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/ed5c787de9a326ef1acbe99a9d8f2e9f.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: a page from the Super Mario 64 game manual, detailing various actions and mechanics</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#havent-finalized-mechanics-yet)Haven''t finalized mechanics yet?'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: It's hard to build levels without knowing the mechanics. Both mechanics and
+    levels depend on each other, one cannot exist without the other. You can't evaluate
+    a mechanic without testing in a level, but you also can't quite evaluate a level
+    without finalized mechanics.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If you change your mechanics, then you'll end up with a lot of wasted work and
+    obsolete levels that relied on discarded mechanics. But if you don't build enough
+    test levels to measure the mechanics' potential, then you might end up with a
+    dud mechanic that isn't interesting enough beyond the first level.
+  prefs: []
+  type: TYPE_NORMAL
+- en: You might have to throwaway or redo levels, maybe even multiple times! It's
+    OK. Do not think of this as wasted time or work. Instead, think of each discarded
+    version as valuable research. This is why we call it game *development* -- development
+    is a process that takes time. It will take time to figure out what makes for a
+    good level and a good game.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/e869e353e4b47150d8198ee76c8a816f.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: early design document for Donkey Kong (1981) showing mechanics, controls, and
+    flow; by Shigeru Miyamoto ([via Twitter](https://twitter.com/forestillusion/status/1443284433268666368/))</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#build-playground-test-maps)Build playground test maps'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: As part of the planning process, build **playground** [**blockout**](/process/blockout)
+    **test maps:** big boxy courtyard levels filled with varied floors, room shapes,
+    and game objects.
+  prefs: []
+  type: TYPE_NORMAL
+- en: These simple playground-style debug levels are vital for testing game mechanics
+    and general feel for the game. It is especially essential if you are prototyping
+    your own character controller and player physics, to make sure the player can
+    comfortably move around in the game.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more on building test maps for internal use, see* [*Metrics*](/process/blockout/metrics)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/71211faeddb55ca29c731a2e9fccb0ec.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'actual internal developer metrics blockout test maps "K_Test2" and "I_TestM"
+    from a French version of The Legend of Zelda: The Wind Waker, screenshots by Dark
+    Linkaël [(via tcrf.net)](https://tcrf.net/The_Legend_of_Zelda:_The_Wind_Waker/Unused_Rooms/Page_Two)</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#noun-verb-diagrams)Noun-verb diagrams'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Modern game developers today rarely use big "GDDs" (game design documents) nor
+    big design bibles; *no one's going to read all that,* and docs quickly get outdated
+    as you evolve the game. Instead, create a **noun-verb diagram** to **visually
+    track how game systems and mechanics interact**.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"[Noun-verb diagrams are] useful for finding holes and questioning assumptions
+    we were making about player motivations, and is super handy for pitching at a
+    glance, people can understand the game so much faster with this than a bunch of
+    bloated copy.'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[...] **This diagram is** ***not*** **supposed to chart all the things that
+    are possible, but the things you feel are important.**"'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: -- Leena van Deventer, ["Noun-verb diagrams"](https://cohost.org/Leena/post/297770-noun-verb-diagrams)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/26cf940e4c347cfe1d117fc4d5b5a58b.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: core gameplay noun-verb diagram for [Dead Static Drive](https://www.deadstaticdrive.com/)
+    by Reuben Games, [via Leena van Deventer's post "Noun-verb diagrams"](https://cohost.org/Leena/post/297770-noun-verb-diagrams)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Experience Goals
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: An **experience goal** is some kind of idea, feeling, or activity for the player.
+    To conceptualize goals, try starting with the phrase, *"In this level, the player
+    should [learn/feel/do]..."*
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*In this level, the player should... ...* learn how to use the double jump
+    ability. (Tutorial)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*In this level, the player should...* ... feel vulnerable, then reach the safehouse
+    and feel relief. (Emotion)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*In this level, the player should...* ... dodge deadly traps and unlock a shortcut
+    at the end. (Activity)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*In this level, the player should...* ... feel like they''re escaping a medieval
+    prison. (Fantasy)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#advice-for-setting-goals)Advice for setting goals'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**BE SPECIFIC.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Experience goals don't have to be complicated or profound, but a clear and specific
+    experience goal helps you decide what to build and what is unnecessary.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*"The player should have fun"* is a vague goal that can''t drive design decisions.
+    What type of fun? How much fun? Be more specific.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Or if the goal is to *"make the player feel fear,"* then what type of fear?
+    There's body horror, existential horror, fear of failure, fear of rejection, mid-life
+    crisis, etc.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**THINK FROM THE PLAYER''S PERSPECTIVE.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Avoid abstract experience goals. Imagine the player's perspective.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For example, *"the player should enjoy non-linearity"* focuses on an abstract
+    structure that isn't relevant to the average player, so it isn't a useful experience
+    goal. What do you actually mean by enjoyment or non-linearity?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Imagine talking after a playtest. What do you hope a player says about your
+    level? You would feel insulted if they said, "wow that was really... um... non-linear..."
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#secondary-design-goals-can-help)SECONDARY DESIGN GOALS CAN HELP.'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Levels rarely have just one experience design goal. Even a tutorial level benefits
+    from storytelling and mood. These secondary goals can help guide your design decisions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For example, *"fight multiple enemies at once"* is an encounter design goal
+    for a level. But so much is still undefined. Where is this level set? What type
+    of enemies?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Try adding a pacing goal: *"feel overwhelmed at first" ...* So maybe the fight
+    should start in a small space with enemies almost surrounding the player.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Add a fantasy / storytelling goal: *"feel like defending a campsite from zombies"
+    ...* So maybe we should research types of campsites (military? hiker? winter?)
+    to plan the arena. Campsites have campfires, maybe there''s a fire weapon... etc.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#pillars)Pillars'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The most important experience goals across your entire project are **pillars**
+    -- the most vital ideas that structurally support and justify your entire design.
+    Design pillars help teams maintain a cohesive vision for the project, and resist
+    "feature creep" work tasks that don't actually support your main goals.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Pillars are a design planning tool to help you conceptualize short-term experience
+    goals for each level or area. Each of your level's smaller experience goals and
+    small gameplay beats should contribute to your pillars somehow, and that culminates
+    in the grander arc of your entire game's experience.
+  prefs: []
+  type: TYPE_NORMAL
+- en: To help internalize these big design goals, title each pillar with a pithy phrase
+    or word. For example, the God of War (2018) internal design pillars at Sony Santa
+    Monica were Combat, Father/Son and Exploration (see below).
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/a83e05256232cbc8912009e91e4a601b.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: core experience goals / "pillars" for God of War (2018), presented by SIE Santa
+    Monica Studio</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Because this was a big budget AAA game, their experience goals also involved
+    production value targets like "high optical [motion capture] fidelity."
+  prefs: []
+  type: TYPE_NORMAL
+- en: You might think this character animation goal has little to do with level design,
+    but imagine a level that makes the mocap character animation look bad -- who has
+    to change their work now, the level designer or the animator?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Because the entire team already agreed that mocap animation should have priority
+    as a pillar, perhaps that prior consensus means the level designer should change
+    their level to fit the existing animation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this way, pillars help us define what is important about our projects, and
+    thus make more consistent and coherent decisions during development.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Example: Psychonauts 2'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Psychonauts 2 is a 3D platformer about exploring peoples' brains. In November
+    2016, Double Fine Studios made a pre-production with a vertical slice style "art
+    test" prototype -- 5 years before the game's release in August 2021.
+  prefs: []
+  type: TYPE_NORMAL
+- en: As depicted in their official dev documentary video series ["PsychOdyssey"](https://www.youtube.com/playlist?list=PLIhLvue17Sd70y34zh2erWWpMyOnh4UN_)
+    episode 8, the pre-production team focused on building out a core movement set,
+    art style, and level design in Unreal Engine 4\. While much of the core platforming
+    mechanics carried over from the original Psychonauts 1, the team wanted to experiment
+    with new ways the player's various psychic powers could interact with the platforming
+    gameplay -- resulting in a telekinesis-with-movable-tightrope prototype mechanic
+    that never appeared in the final game.
+  prefs: []
+  type: TYPE_NORMAL
+- en: By the end of the dev cycle, there's still a lot of uncertainty and unanswered
+    questions. Will this game be good? No one knows. The journey is just beginning.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '<picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
+    max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">Double
+    Fine PsychOdyssey · EP08: “A Couple Years of a Lot of Work” [(via YouTube)](https://www.youtube.com/watch?v=eaA0P2dDHSg&list=PLIhLvue17Sd70y34zh2erWWpMyOnh4UN_&index=9)
+    uploaded 11 Feb 2023'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Example: Dishonored 2, "Clockwork Mansion"'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Dishonored is a first person stealth action RPG series about exploring complex
+    places. In Dishonored 2, there is a "Clockwork Mansion" level where the layout
+    dynamically changes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Arkane Studios designer Dana Nightingale built a proof of concept pre-production
+    prototype: ([Twitter thread](https://twitter.com/DanaENight/status/1448582302855045124))'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"I created this proof of concept early in 2013, long before the map was greenlit
+    to be included in the game, basically to say "yes this could be amazing" and "yes
+    I should work on it." It did both, but it would still be over a year before the
+    map was officially OK''d.'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: But sure, I could make a bunch of blocks animate however I wanted. What is possible
+    using real level geometry? That's why I made this prototype. A bit less wild?
+    Yes. But still clearly do-able.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: That prototype introduced the idea of rooms that were moved around like cargo
+    containers and slotted into place, making the map's layout totally dynamic, but
+    without transforming rooms. I am glad we didn't go in that direction.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[...]'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: After nearly a year of working on other prototypes it was time to revisit the
+    Clockwork Mansion and finally get it validated. I made a new version with fewer
+    twisty rooms, and more emphasis on the "behind the scenes" areas..."
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: -- [Dana Nightingale (@DanaENight), 14 October 2021](https://twitter.com/DanaENight/status/1448582302855045124)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'To give you a sense of time scales here: this level spent 7 months in pre-production,
+    then entered final layout / blockout about 18 months later.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
+    max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">video
+    of internal Arkane prototype ["Clockwork Mansion Proof of Concept"](https://www.youtube.com/watch?v=-BgynKsHKUo),
+    recorded 5 Feb 2013 [by Dana Nightingale](https://twitter.com/DanaENight/status/1448582302855045124)
+  prefs: []
+  type: TYPE_NORMAL
+- en: To review...
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '**Mechanics** are the repeated systems and interactions of a game.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Core mechanics** are the most frequent, while secondary mechanics add occasional
+    variety and finesse for more experienced players.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Experience goals** are the player-facing design goals for your levels'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Pillars** are the main design goals for your entire game. What do you want
+    the player to learn, feel, or understand?'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How much planning do you need? It depends.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Small casual projects will be OK with small (or nonexistent) plans, big long-term
+    projects may require a huge internal wiki.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Pre-production planning helps developers coordinate and trust each other.**'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If you're prototyping new mechanics or game design elements, then **blockout
+    a test map** with a big playground-style space.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Plans help you make things, but **plans always change.** Even after preproduction,
+    while working in the middle of the project, you will almost always adjust your
+    plans and improvise a redesign. That is OK.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Now what?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Pre-production in more detail:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**Research**](/process/preproduction/research) is vital for projects focusing
+    on story or realism.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Single player projects require special attention to [**pacing**](/process/preproduction/pacing).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Projects often start too big and must be [**scoped**](/process/preproduction/scope)
+    down.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Big narrative projects benefit from [**worldbuilding**](/process/preproduction/worldbuilding).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Or you might move on to the [**layout**](/process/layout)phase of level design.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#further-reading-and-resources)Further reading and resources'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[**"A Series of First Steps - Overcoming the Digital Blank Page"** by Seth
+    Marinello](https://www.youtube.com/watch?v=R75g3elj7y4) (GDC 2014)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**"An Approach to Holistic Level Design"** by Steve Lee](https://www.youtube.com/watch?v=CpOoTAVeEcU)
+    (GDC 2017)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**"Finding Duskers: Innovation Through Better Design Pillars"** by Tim Keenan](https://www.youtube.com/watch?v=kzQDVtysXjA)
+    (GDC 2017)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**"A Playful Production Process"**](https://www.playfulproductionprocess.com/)
+    (2021) by Richard Lemarchand is an approachable textbook that introduces game
+    production methods, ideal for late high school / university students.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Pre-production (Wikipedia)](https://en.wikipedia.org/wiki/Pre-production)
+    is a formalized process for film and music industries.</picture></picture></picture>'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

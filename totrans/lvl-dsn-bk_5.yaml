@@ -1,0 +1,992 @@
+- en: 🏠Blockout
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://book.leveldesignbook.com/process/blockout](https://book.leveldesignbook.com/process/blockout)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Why build a blockout?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: A **blockout** (also **blockmesh** or **graybox**) is a 3D rough draft level
+    built with simple 3D shapes, but without any details or polished art assets.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The goal is to prototype, test, and adjust the foundational shapes of the level.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the image below, notice the differences between the blockout version and
+    the final shipped version. A shape might start as a gray block -- then after months
+    of [playtesting](/process/blockout/playtesting) and [art passing](/process/env-art),
+    the block becomes a stack of barrels... or maybe gets deleted entirely.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/59bd5787478a5f7af58326314cff104c.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'comparison of blockout vs final art-pass for "Docks" in Call of Duty: Modern
+    Warfare (2019) [by Brian Baker](https://twitter.com/JrBakerChee/status/1182384066881916928
+    )</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Blockouts **support experimentation**.
+  prefs: []
+  type: TYPE_NORMAL
+- en: It is "cheap" to delete or rebuild some rough blockout geometry, but throwing
+    away finalized [art passed](/process/env-art) work is "expensive" and wasteful.
+  prefs: []
+  type: TYPE_NORMAL
+- en: When you are not confident about the level structure, it is best to keep it
+    "cheap" until it is ready to become "expensive."
+  prefs: []
+  type: TYPE_NORMAL
+- en: You can't playtest a design document or a layout sketch, **but you can playtest
+    a blockout** and evaluate its [flow](/process/layout/flow), [balance](/process/combat/balance),
+    [encounter design](/process/combat/encounter), and [metrics](/process/blockout/metrics).
+    This is the design phase when you finally start to discover whether the ideas
+    will work or not. The blockout is just the beginning.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*"... If we consider that [Neon White] shipped with over 100 levels, the team
+    made “double” that amount in scrapped levels, and [the level] Smackdown alone
+    had more than 50 changes made to it, we’re faced with thousands of tweaks and
+    redesigns throughout the entire game. [...] Three years later, Smackdown is complete."*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '*-- from* [*How A Neon White Level Is Made*](https://www.gameinformer.com/feature/2022/11/25/how-a-neon-white-level-is-made)
+    *by Blake Hester, Game Informer #350*'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/369e7647c1903ed154e7c62f07ac3001.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: early blockout of "Smackdown" in Neon White (2022) by Ben Esposito, Russell
+    Honor, and Carter Piccollo [(via Game Informer)](https://www.gameinformer.com/feature/2022/11/25/how-a-neon-white-level-is-made)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Key concepts
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'When blocking out, consider these aspects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[**Massing**](/process/blockout/massing) is the general sense of volume and
+    weight conveyed by the shapes.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Is this structure thick / heavy, or thin / light? What kind of place is this?*'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Landscapes](/process/blockout/massing/landscape) need special consideration.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Composition](/process/blockout/massing/composition) is currently over-emphasized
+    in level design culture today.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**Metrics**](/process/blockout/metrics) are the general scale, dimensions,
+    and proportions of the level.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Is this area too big or small? Can the player fit in this room?*'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'examples of useful measurements: [Doom metrics](/process/blockout/metrics/doom),
+    [Quake metrics](/process/blockout/metrics/quake)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**Wayfinding**](/process/blockout/wayfinding) is the player''s navigation
+    process for learning the map structure.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*How to help the player find the* [*critical path*](/process/layout/flow#critical-path)
+    */ level exit? Does the player feel too lost?*'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**Playtesting**](/process/blockout/playtesting) is when you run an experiment
+    to see if the level meets its design goals.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Can most players complete the level? Do the* [*encounters*](/process/combat/encounter)
+    *work? Is it* [*balanced*](/process/combat/balance)*?*'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Playtesting is really important. This is the whole point of making a blockout.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '<picture class="relative mx-auto page-width-wide:mx-0 w-full decoration-primary/6
+    max-w-3xl print:break-inside-avoid page-width-wide:max-w-full page-api-block:ml-0">example
+    blockout video - ["Uncharted: The Lost Legacy - Train Level Early Prototype"](https://www.youtube.com/watch?v=5Cv30vCgPso)
+    by Matthew Gallant'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Construction methods
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'There are five common 3D level construction methods in games:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Primitives:** arrange simple basic shapes like cubes and boxes.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Brushes / modeling:** construct 3D shapes in the level editor.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Modular kit:** connect pre-made pieces together, like Lego.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Sculpting:** "paint" organic 3D shapes, useful for landscapes.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Splines:** create math curves that procedurally generate geometry'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#primitives)Primitives'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Primitives** are simple 3D shapes, like the default gray cubes and boxes
+    built into a game editor.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Move / rotate / scale the shapes. Arrange them together, stack them on top of
+    each other, make more complex groups of shapes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This is a surprisingly powerful blockout method. You can always use this method
+    in any 3D engine or tool, but you'll hit limitations with blocking out anything
+    beyond simple boxy buildings.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <details id="advice-for-blocking-out-with-primitives" class="scroll-mt-(--content-scroll-margin)
+    mx-auto page-width-wide:mx-0 w-full decoration-primary/6 max-w-3xl print:break-inside-avoid
+    page-api-block:ml-0 group/expandable bg-tint-base border border-b-0 border-tint-subtle
+    mt-0! first:mt-5! first:rounded-t-lg [:not(&amp;)_+&amp;]:mt-5! [:not(&amp;)_+&amp;]:rounded-t-lg
+    [&amp;:not(:has(+_&amp;))]:mb-5 [&amp;:not(:has(+_&amp;))]:rounded-b-lg [&amp;:not(:has(+_&amp;))]:border-b"><summary
+    class="cursor-pointer px-4 pr-10 py-4 relative list-none select-none transition-colors
+    text-tint group-hover/expandable:text-tint-strong group-open/expandable:text-tint-strong
+    [&amp;::-webkit-details-marker]:hidden">Advice for blocking out with primitives...[](#advice-for-blocking-out-with-primitives)</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Pay attention to [**metrics**](/process/blockout/metrics)**,** establishing
+    scale is tricky.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'To make a **ramp**: make a long wide thin cube, then rotate to slope downward.
+    To make **stairs**: avoid suffering and just make a ramp instead'
+  prefs: []
+  type: TYPE_NORMAL
+- en: To make a **doorway:** leave a gap between two walls, no door frame. To make
+    a **window:** make doorway-like gap, then fill in with a short waist-height wall</details>
+    <picture class="relative">![](../Images/9a4dc049aded6b38143dbc839de13902.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'dimensional massing diagram by Francis Ching, from "Architecture: Form, Space,
+    and Order"</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#brushes-modeling)Brushes / modeling'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Brushes** are simple low polygon 3D shapes modeled in the level editor.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This was the main level construction method across the industry from 1990s-2000s.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We strongly recommend this method because it offers the most control and handmade
+    feel, but unfortunately most modern game engines often have poor brush modeling
+    tools. It can be tricky to figure out a workflow here.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <details id="advice-for-blocking-out-with-brushes-low-poly" class="scroll-mt-(--content-scroll-margin)
+    mx-auto page-width-wide:mx-0 w-full decoration-primary/6 max-w-3xl print:break-inside-avoid
+    page-api-block:ml-0 group/expandable bg-tint-base border border-b-0 border-tint-subtle
+    mt-0! first:mt-5! first:rounded-t-lg [:not(&amp;)_+&amp;]:mt-5! [:not(&amp;)_+&amp;]:rounded-t-lg
+    [&amp;:not(:has(+_&amp;))]:mb-5 [&amp;:not(:has(+_&amp;))]:rounded-b-lg [&amp;:not(:has(+_&amp;))]:border-b"><summary
+    class="cursor-pointer px-4 pr-10 py-4 relative list-none select-none transition-colors
+    text-tint group-hover/expandable:text-tint-strong group-open/expandable:text-tint-strong
+    [&amp;::-webkit-details-marker]:hidden">Advice for blocking out with brushes /
+    low poly...[](#advice-for-blocking-out-with-brushes-low-poly)</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Use a **3D modeling tool** that emphasizes low poly geometry.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Unity: [ProBuilder](https://unity.com/features/probuilder) is OK, but [SabreCSG](https://assetstore.unity.com/packages/tools/modeling/sabrecsg-level-design-tools-47418)
+    / [RealtimeCSG](https://realtimecsg.com/) are more focused'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Unreal: use [CubeGrid](https://docs.unrealengine.com/5.3/en-US/cubegrid-tool-in-unreal-engine/)
+    + [Modeling Tools](https://docs.unrealengine.com/5.3/en-US/modeling-tools-in-unreal-engine/)
+    (or [Mesh Tool](https://www.unrealengine.com/marketplace/en-US/product/mesh-tool))'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: if the engine can use .MAP or .BSP files, use [TrenchBroom](/appendix/tools/trenchbroom)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Use a **big coarse grid size** based on [metrics](/process/blockout/metrics),
+    specifically *player width.*
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Doom](/process/blockout/metrics/doom) or [Quake](/process/blockout/metrics/quake):
+    32u wide player = set grid to 32 or 64'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Unity: 1m wide player = set grid to 1 or 2'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Unreal: 60uu wide player = set grid to 50 / 100, or 64 / 128</details> <picture
+    class="relative">![](../Images/68c29963a6adae786adb15f9c325b836.png)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: simple 3D modeling with "brushes" in [TrenchBroom](/appendix/tools/trenchbroom);
+    GIF demonstration by [Benoit "Bal" Stordeur](https://www.artstation.com/bal)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#modular-kit)Modular kit'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Snap together pre-made pieces of architecture from a kit of **modular parts**.
+  prefs: []
+  type: TYPE_NORMAL
+- en: However, if the kit is badly designed or poorly configured, it'll be hard to
+    use. If you're a beginner, you probably shouldn't try to make your own kit --
+    just download one instead.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more on planning, measuring, and constructing modular kits, see* [*Modular
+    kit design*](/process/blockout/metrics/modular)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For links to download free modular prototyping kits, see* [*Resources.*](/appendix/resources)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <details id="advice-for-blocking-out-with-modular-kit" class="scroll-mt-(--content-scroll-margin)
+    mx-auto page-width-wide:mx-0 w-full decoration-primary/6 max-w-3xl print:break-inside-avoid
+    page-api-block:ml-0 group/expandable bg-tint-base border border-b-0 border-tint-subtle
+    mt-0! first:mt-5! first:rounded-t-lg [:not(&amp;)_+&amp;]:mt-5! [:not(&amp;)_+&amp;]:rounded-t-lg
+    [&amp;:not(:has(+_&amp;))]:mb-5 [&amp;:not(:has(+_&amp;))]:rounded-b-lg [&amp;:not(:has(+_&amp;))]:border-b"><summary
+    class="cursor-pointer px-4 pr-10 py-4 relative list-none select-none transition-colors
+    text-tint group-hover/expandable:text-tint-strong group-open/expandable:text-tint-strong
+    [&amp;::-webkit-details-marker]:hidden">Advice for blocking out with modular kit...[](#advice-for-blocking-out-with-modular-kit)</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Configure the Grid and turn on Grid Snapping** (how-to: [Unity](https://docs.unity3d.com/Manual/GridSnapping.html),
+    [Unreal](https://docs.unrealengine.com/4.27/en-US/BuildingWorlds/LevelEditor/Viewports/ViewportToolbar/))'
+  prefs: []
+  type: TYPE_NORMAL
+- en: use a large coarse grid based on module size
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: e.g. if wall modules are 5m wide, then set grid to 5
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Use vertex snapping** to align modules precisely (how-to: [Unity](https://docs.unity3d.com/Manual/PositioningGameObjects.html),
+    [Unreal](https://docs.unrealengine.com/4.26/en-US/Basics/Actors/Transform/))'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Just **download a pre-made kit.**</details> <picture class="relative">![](../Images/77a15ae778936ee1632982dc4dde186d.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"graybox" blockout modular kit used for prototyping levels in Skyrim, [image
+    by Joel Burgess](http://blog.joelburgess.com/2013/04/skyrims-modular-level-design-gdc-2013.html)</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#sculpting)Sculpting'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Most modern engines have a **sculpting tool** that lets you paint and deform
+    a flat plane.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We use this only for making big smooth shapes like terrain and landscapes; it's
+    bad for hard surfaces like buildings.
+  prefs: []
+  type: TYPE_NORMAL
+- en: But if landscapes are central to a project, there's no way to avoid sculpting.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more on sculpting and designing terrain, see* [*Landscape*](/process/blockout/massing/landscape)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <details id="advice-for-blocking-out-with-a-sculpt" class="scroll-mt-(--content-scroll-margin)
+    mx-auto page-width-wide:mx-0 w-full decoration-primary/6 max-w-3xl print:break-inside-avoid
+    page-api-block:ml-0 group/expandable bg-tint-base border border-b-0 border-tint-subtle
+    mt-0! first:mt-5! first:rounded-t-lg [:not(&amp;)_+&amp;]:mt-5! [:not(&amp;)_+&amp;]:rounded-t-lg
+    [&amp;:not(:has(+_&amp;))]:mb-5 [&amp;:not(:has(+_&amp;))]:rounded-b-lg [&amp;:not(:has(+_&amp;))]:border-b"><summary
+    class="cursor-pointer px-4 pr-10 py-4 relative list-none select-none transition-colors
+    text-tint group-hover/expandable:text-tint-strong group-open/expandable:text-tint-strong
+    [&amp;::-webkit-details-marker]:hidden">Advice for blocking out with a sculpt...[](#advice-for-blocking-out-with-a-sculpt)</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Sculpting is often a distraction for beginners.** Making a mountain with
+    a single click is so fun and empowering that you''ll forget to do any level design.
+    Be careful! Don''t let sculpting tools seduce you!'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Use a large brush size** and focus on big core shapes first.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Define ground planes** with the [Set Height (Unity)](https://docs.unity3d.com/Manual/terrain-SetHeight.html)
+    or [Flatten Target (Unreal)](https://docs.unrealengine.com/en-US/Engine/Landscape/Editing/SculptMode/Flatten/index.html)
+    brush'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Sculpt slopes as stepped terraces** to define the gradient, then smooth it.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Avoid erosion / auto-generator tools,** you need control over the design.</details>
+    <picture class="relative">![](../Images/63de545302c3708d14d22006c6c02bbd.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'sculpting landscapes for the "Nagrand" region in World of Warcraft: Legion</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#splines)Splines'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Splines** are invisible curves that generate geometry along the path.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: These curves are also *non-destructive*; you can adjust a spline at any point
+    and regenerate its geometry.
+  prefs: []
+  type: TYPE_NORMAL
+- en: A spline is ideal for blocking out curvy linear forms like roads or rivers,
+    where it can also automatically deform the surrounding landscape.
+  prefs: []
+  type: TYPE_NORMAL
+- en: It's also possible to generate non-linear areas and buildings with splines too,
+    but this type of workflow isn't common and usually requires custom tooling.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <details id="advice-for-blocking-out-with-splines" class="scroll-mt-(--content-scroll-margin)
+    mx-auto page-width-wide:mx-0 w-full decoration-primary/6 max-w-3xl print:break-inside-avoid
+    page-api-block:ml-0 group/expandable bg-tint-base border border-b-0 border-tint-subtle
+    mt-0! first:mt-5! first:rounded-t-lg [:not(&amp;)_+&amp;]:mt-5! [:not(&amp;)_+&amp;]:rounded-t-lg
+    [&amp;:not(:has(+_&amp;))]:mb-5 [&amp;:not(:has(+_&amp;))]:rounded-b-lg [&amp;:not(:has(+_&amp;))]:border-b"><summary
+    class="cursor-pointer px-4 pr-10 py-4 relative list-none select-none transition-colors
+    text-tint group-hover/expandable:text-tint-strong group-open/expandable:text-tint-strong
+    [&amp;::-webkit-details-marker]:hidden">Advice for blocking out with splines...[](#advice-for-blocking-out-with-splines)</summary>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Like sculpting, **splines are often a distraction for beginners.** Playing with
+    splines is so fun that you'll forget to do any level design. Don't let splines
+    seduce you!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Spline tooling varies.** They became common only in the mid 2010s. Unreal
+    has excellent built-in support for [Blueprint Splines](https://dev.epicgames.com/community/learning/tutorials/39/populating-meshes-along-a-spline-with-blueprints).
+    Unity users are less lucky and have to try various plugins like [SplineMesh](https://github.com/methusalah/SplineMesh)
+    or [code your own splines](https://catlikecoding.com/unity/tutorials/curves-and-splines/).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Splines aren''t magic.** If you want to make anything more complicated than
+    roads, rivers, or bridges, it will usually require custom tooling and a lot of
+    art support.</details> <picture class="relative">![](../Images/07db291bf4827d8c7bf7a511de04a2a7.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: animated GIF of a procedurally generated bridge defined with a spline in Unreal
+    Engine 4; [by Peter Severud (via Artstation)](https://www.artstation.com/artwork/eKwwX)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Why not use a 3D art tool like Blender, Maya, Max, or SketchUp to blockout?**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'People debate this**.** Here''s our take: 3D art tools don''t let you tune
+    gameplay, collision, encounters, or items. Playtests become slower and less frequent.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Example: on an unnamed AAA game, moving a rock requires a multi-step hour-long
+    process: (1) load debug build, (2) find which file has the object, (3) open Maya,
+    (4) edit file, (5) recompile game, (6) load debug build again to confirm change.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: How to blockout
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Here's a general process. If you're a beginner, or you're at the start of a
+    new project, try to do everything. You will gradually personalize your own process
+    and style.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Sketch layout**'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**Add ground plane, scale figures, walls**'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**Playtest**'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**Diverge, iterate, and playtest again**'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**Repeat step 4 until done**'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[](#id-1.-sketch-layout)**1\. S**ketch [layout](/process/layout)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: It can be difficult to blockout without any plan, especially for beginners.
+    Even a simple scribble can help a lot.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Look at the layout sketches below. The left sketch emphasizes the scale of each
+    space, the middle sketch focuses on the relationships between the areas, while
+    the right sketch is a more detailed floor plan drawing. Any of these sketches
+    can work, any of them can help you plan a blockout.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Just draw something!
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/e48d94aa52a03e68abef1cf4738e93fe.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'example: three similar but different layout drawing styles that can maybe help
+    you plan the blockout... any of these are fine to get you started, JUST DRAW SOMETHING</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#id-2.-add-ground-plane-scale-figures-and-walls)2\. Add ground plane, scale
+    figures, and walls'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Create a ground plane** (or a big flat cube) near the center of the 3D space
+    (0, 0, 0).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Use a light-colored gridded prototyping texture so that you can visually estimate
+    sizes and scales. This floor object will help "ground" the rest of the level geometry,
+    providing a horizon line and context for everything else to rest upon.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Add a player-humanoid scale figure** to help establish scale.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If you don't have any humanoid assets, create a roughly human-shaped block to
+    serve as a placeholder. The scale figure helps establish consistency and clearance
+    for the player.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more on common hallway / wall sizes and humanoid dimensions, see* [*Metrics*](/process/blockout/metrics)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For links to free prototyping and blockout textures, see* [*Resources*](/appendix/resources#prototyping-blockout-textures)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/e8b5bfda25d803b2b847142deea7fd76.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'example: a gray ground plane with a yellow scale figure standing on it</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Build a wall segment** that''s approximately **150-200% as tall as the scale
+    figure**.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If you're working in a modern game engine, sizes don't have to be exact -- the
+    sense of proportion is most important to establish here.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If you are blocking out with a [modular kit](/process/blockout/metrics/modular),
+    just place a standard wall module next to the figure.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Texture the wall with a different color** from the ground plane. Color and
+    brightness provide important context for understanding what the space is made
+    of, and how these various floor and wall planes relate to each other. If you are
+    afraid of colors affecting your blockout too much, then at least use textures
+    with different shades of gray.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/ad06e400cb09ce09e67c7c9470bf7a78.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'example: added a white wall segment that''s twice the height of the scale figure</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Copy & paste wall segments** to build up more space until you have at least
+    one room or hallway. Some tools feature special "duplicate" or "clone" commands:
+    in Hammer, hold Shift and drag the brush; in UE4, hold Ctrl+Shift and drag the
+    wall object.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Intersections are OK. Messy is OK.
+  prefs: []
+  type: TYPE_NORMAL
+- en: To make a doorway or window, just leave a gap between wall segments, and fill
+    it in later. Entryways and hallways should be at least twice as wide as the scale
+    figure.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/f5433746249fbfd41ae2d536586eb043.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'example: copy-and-pasted / duplicated more wall segments, based on the first
+    wall</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#id-3.-playtest)3\. Playtest'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Do a simple self-playtest:** **walk around the space, within the game engine,
+    with full player gravity, collision, and speed.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The purpose of the blockout is to experiment. To verify the results of the experiment,
+    you must test the prototype. *Do NOT just fly around in the editor view,* that
+    won't help you imagine the player experience.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[**Massing**](/process/blockout/massing)**.** Do the level''s shapes make sense?
+    Is it confusing to look at?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**Metrics**](/process/blockout/metrics)**.** Does the player fit through every
+    door and passage? Do the stairs / ramps work? Can the player jump where they''re
+    supposed to jump?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[**Flow**](/process/layout/flow)**.** Does movement feel slow or fast, smooth
+    or complex? What type of movement is ideal for your intended design goals?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/c7437a806979aab2909299e4c64f1561.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'example GIF: walking around the half-built space in the game engine, playtesting
+    as soon as possible</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#id-4.-diverge-and-iterate)4\. Diverge and iterate'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Diverge from original plans and respond to the playtest.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 99% of the time, your blockout will not survive a playtest. Rooms will feel
+    awkward, doorways too narrow, the layout too confusing. But this is exactly why
+    we blockout!
+  prefs: []
+  type: TYPE_NORMAL
+- en: Want to rebuild huge sections of your blockout? *Go for it.* Want to delete
+    an entire room? *Do it.* Need to split a courtyard into two smaller areas? *You
+    have permission.*
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/55ec669321dc87da15f509f2df6a46cc.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'example: following a layout sketch, more areas blocked out with more scale
+    figures</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Keep an open mind about what your playtests and walkarounds are telling you.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Continue adding new scale figures, walls, and floors.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Then playtest again.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/77b5d8da91dedfbc8d98e572bf3c86ed.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'example GIF: the original blockout felt too cramped, so what if we widened
+    the space and deleted the walls?</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#id-5.-continue-iterating)5\. Continue iterating'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Keep an open mind and continue this cycle of modification + playtesting. Continue
+    developing the blockout. Build, then walk around in it, then modify, then playtest
+    again... and repeat. This design process is called **iteration**, because we are
+    making new *iterations* that build off of the strengths of the previous version.
+  prefs: []
+  type: TYPE_NORMAL
+- en: As you gradually build more and more of the level, it may surprise you how much
+    it changes over time. Let the map surprise you.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/c12eecff17b6111eb675f8f7f28ca41e.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: Common blockout problems
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '**(most common) My blockout feels too small / too big.**'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Use more scale figures during construction.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Playtest more often and catch scaling problems sooner.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Too big? Delete unnecessary rooms and compress what's left.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Too small? Expand outermost walls, then expand the center to fill up the new
+    space.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Or delete everything and rebuild. It's just a blockout.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**I have anxiety and stare at the empty level editor screen without making
+    anything.**'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sketch a layout drawing, and then try to follow that plan.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Just blockout one simple room. You can always delete it later. The point is
+    to get rid of the blank page. In drawing, this is "activating the canvas"; in
+    writing, this is a ["shitty first draft."](https://wrd.as.uky.edu/sites/default/files/1-Shitty%20First%20Drafts.pdf)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Do something else and return to the blockout later.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Example blockouts
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[](#castle-for-dirty-bomb-splash-damage)"Castle" for Dirty Bomb (Splash Damage)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/3b7fd23d3652e9430f0ffeeb82fb5782.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'layout, blockout, and final version of Castle for Dirty Bomb, by Splash Damage
+    (["Blocktober: Dirty Bomb"](https://www.splashdamage.com/news/blocktober-dirty-bomb/))</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Splash Damage level designer Anthony "MassE" Massey designed the map Castle
+    for the competitive multiplayer team shooter Dirty Bomb. Massey took inspiration
+    from twisting medieval streets and typology of the real-life Tower of London,
+    and conceptualized the initial layout drawing (above, left). But note how the
+    resulting blockout (above, center) differs from the layout with fewer curves,
+    more 90 degree angles, and chunkier areas. The layout was just an initial guide.
+    Because this is a multiplayer shooter map, the design team playtested the blockout
+    with a focus on movement and combat [metrics](/process/blockout/metrics):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: “The scale of maps is always the hardest aspect to get right. It’s important
+    to plot your main paths and measure these distances; we’re looking for anything
+    between 8 and 12 seconds from spawning to an objective. [...] Anything longer
+    than that and players get frustrated when they respawn and have to run back. On
+    the other hand, if the time is shorter it risks the map feeling too small for
+    8v8 matches, and can lead to chaotic gameplay. [...] This stage is crucial to
+    map development, but our team operated by a simple rule of thumb; if it feels
+    long, it’s too long."
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '"Considering [player classes] is the next step. We had to look at combat ranges
+    to allows our entire arsenal to function, [...] while also ensuring variety in
+    combat spaces to allow [different abilities] to be viable (like [an airstrike
+    ability]). In real terms, this means considering the ratio between outdoor and
+    indoor areas, ensuring [characters with outdoor-focused abilities] were viable."'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '-- from ["Blocktober: Dirty Bomb" Splash Damage blog post](https://www.splashdamage.com/news/blocktober-dirty-bomb/)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[](#worlds-edge-for-apex-legends-respawn)"World''s Edge" for Apex Legends (Respawn)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/0a63d681bed45bc200352e13b97e3cf0.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: final detailed blockout (left) and final art pass (right) for "World's Edge"
+    map in Apex Legends; [blockout by Rodney Reece](https://twitter.com/RodneyReece7/status/1336783331711623168)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Respawn level designer Rodney Reece built the blockout for "World's Edge", a
+    large competitive multiplayer map for first person battle royale game Apex Legends.
+    Notice how the map changed drastically from blockout (left) to art pass (right)
+    in not only theme but also layout and composition.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"Originally the idea was the map was snowy. But art wanted to bring green into
+    the map, and in one of the meetings, Robert Taube suggested what if the Epicenter
+    (then called Frozen Explosion) caused the snow.'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: A key to being a good designer is being flexible to new ideas. For instance,
+    the Art team came up with The Dome. In my blockmesh, it was a volcano. They pitched
+    it and I adjusted to incorporate the idea. I had to create a new layout for it,
+    but it made it better.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: But other times, certain [points of interest] are fun from the beginning. In
+    those situations, I am more stubborn about what can change. Sorting Factory is
+    a good example of that. It's important to identify what's precious and what's
+    flexible in terms of layout. Because it takes a team!"
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: -- [remarks by Rodney Reece (@RodneyReece7)](https://twitter.com/RodneyReece7/status/1336783331711623168)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Against blockouts?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: For some projects, the traditional blockout might be less helpful. The experience
+    may depend less on spatial design and more on the [art pass](/process/env-art).
+    Blockouts can't validate a concept dependent on art or other assets.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#vertical-slice-for-firewatch-campo-santo)Vertical slice for "Firewatch"
+    (Campo Santo)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: For the first person narrative exploration game Firewatch (2016), developer
+    Campo Santo wanted to focus on mechanics like walking and talking; the main appeal
+    of the game concept was looking at art passed scenery and listening to voice acted
+    dialogue. Following typical best practices, they first built a blockout to test
+    the viability of these mechanics. However, the blockout did not help them answer
+    any questions about the player experience because the game pacing was fundamentally
+    a narrative design and environment art issue, not so much a level design issue.
+    The traditional blockout process wasn't working.
+  prefs: []
+  type: TYPE_NORMAL
+- en: According to environment artist Jane Ng's account, it wasn't clear whether Firewatch
+    would "work" as an experience until they *skipped the blockout process* and instead
+    completed a vertical slice prototype with an art passed environment and near-final
+    dialogue.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/6f17f686973b3f08bdf51849ce1ebab0.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"Greyboxing did not answer any of the important questions" and other slides
+    from "Making the World of Firewatch" by Jane Ng at GDC 2016</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#location-scouting-for-untitled-goose-game-house-house)Location scouting
+    for "Untitled Goose Game" (House House)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: For the top-down third person stealth puzzle game Untitled Goose Game, developer
+    House House sought to create an authentic-feeling British village in 3D. Level
+    designer Jake Strasser had never been in the UK, so blocked out the initial level
+    with occasional use of photo reference. However, this blockout-first approach
+    required Strasser to fill-in gaps from his imagination -- and because he didn't
+    have a British imagination, these gaps often felt implausible or inauthentic in
+    subtle ways, counter to their intent. The traditional blockout process wasn't
+    working.
+  prefs: []
+  type: TYPE_NORMAL
+- en: So instead, Strasser tried a [research](/process/preproduction/research)-first
+    "location scouting" approach. He went on an exhaustive virtual tour of various
+    UK villages, taking lots of photos from Google Street View. After recreating several
+    village streets in-game, Strasser finally pin-pointed what type of structure suited
+    the game's needs, and settled on an unusual side street layout based on [Pump
+    Street in the village of Orford](https://goo.gl/maps/WAkqYmNRARyAEimi9). Here,
+    blockout was less about building a space, and more about discovering a space.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/782b37f50632a7f9f3d6134a5ca84cd1.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"It started feeling more like a unique place with its own quirks and history"...
+    from ["Google Maps, Not Grayboxes: Digital Location Scouting for Untitled Goose
+    Game"](https://www.youtube.com/watch?v=cCsMz5tUXmc) for GDC 2021 by Jake Strasser</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: To review
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: A **blockout** is a simple but playable "rough draft" level with minimal detail.
+    We keep it simple and blocky so that we can easily change it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: You can build a blockout with **primitives**, **brushes**, **modular kit**,
+    **sculpting**, or **splines**. The best technique will depend on your engine and
+    project, or you can combine multiple techniques.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'How to blockout:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Sketch a** [**layout**](/process/layout), even a simple one'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Add a **ground plane,** **scale figures,** and **walls**.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**Playtest** immediately; does it feel OK to walk around? You need to know
+    now.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**Diverge** from your original plan, **iterate and playtest again**'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**Repeat step 4.**'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '**The most common problem is scale**, especially for beginners. Playtesting
+    the blockout in-game is the best way to know if it feels too big or too small.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Blockouts might be less helpful for some projects like single player art-dependent
+    narrative levels.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Now what?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Review[**key concepts** for blockouts](/process/blockout#key-concepts) like
+    massing, metrics, wayfinding, and playtesting.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Once you're built and tested a blockout, do a [**scripting**](/process/scripting)
+    pass or a [**lighting**](/process/lighting)pass.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#more-about-blockouts)More about blockouts'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[GDC 2018: "Invisible Intuition: Blockmesh and Lighting Tips to Guide the Player
+    and Set the Mood"](https://www.youtube.com/watch?v=09r1B9cVEQY) by David Shaver
+    and Robert Yang is probably the most up-to-date industry-standard blockout talk,
+    showing blockout examples from Shaver''s work on Naughty Dog games alongside distilled
+    examples prototyped in Unity. However, it''s actually more concerned with [composition](/process/blockout/massing/composition)
+    and [wayfinding](/process/blockout/wayfinding) than construction.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '["Quake Mapping Tips: Building Layouts" (5 min) video by Michael Markie](https://www.youtube.com/watch?v=G4tWWiuaF7g)
+    starts with a very simple one room blockout in Quake 1, then gradually elaborates
+    on it and makes it more compelling to play. Note the frequent playtesting and
+    design iteration. A great example of an improvised blockout process with little
+    pre-planning.</picture>'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

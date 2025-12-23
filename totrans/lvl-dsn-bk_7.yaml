@@ -1,0 +1,762 @@
+- en: ☀️Lighting
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://book.leveldesignbook.com/process/lighting](https://book.leveldesignbook.com/process/lighting)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '**Lighting design** is about placing lights in the game world to create visual
+    depth, evoke mood, and provide information to help players play. Poorly lit spaces
+    often feel stale, flat, unfinished, or confusing.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Since lighting is so important for readability, we recommend a lighting pass
+    during / soon after establishing core gameplay in [blockout](/process/blockout)
+    or [scripting](/process/scripting) phase.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The industry usually categorizes lighting as an aspect of [environment art](/process/env-art),
+    but here we will focus less on graphics and more on the *design* and *function*
+    of lighting. **What do lights say and do?**
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/2df9b34d02bc6fbd93ce5fabbafd2aad.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: lighting study blockout [by Harley Wilson (via Artstation)](https://www.artstation.com/artwork/PQJvn)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the study above by Harley Wilson, **lights tell us a lot about the game world
+    and help us play:**
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Worldbuilding](/process/preproduction/worldbuilding). Recessed down-lights
+    along a wall suggest a fancy modern gallery.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Massing](/process/blockout/massing). Cooler grays wash a gallery wall, warmer
+    lamps highlight counters, dim down-lights mark a shadowy corner. Lights divide
+    this area into three sub-areas.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Circulation](/process/layout/flow/circulation). The far wall is dark, maybe
+    it leads to a backdoor or a closet. It''s probably not a primary exit, which would
+    be lit more prominently.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What is video game lighting?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: In real-life, **light** is visible energy that interacts with surfaces. It is
+    an elegant system; with the core physics of energy and photons, you can derive
+    all other complex light effects.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In contrast, **video game lighting is NOT elegant.** It''s a fake-as-hell fucking
+    mess, secretly made of many different subsystems in a game engine:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Light sources:** base layer of direct illumination, based on light angle
+    and position'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Shadows:** objects occlude (block) light and project shadow maps onto other
+    objects'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Materials:** the color, texture, opacity, and reflectivity of 3D surfaces'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Postprocess:** screenspace effects like color correction, bloom, and HDR
+    eye adaptation'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Reflections**: true reflectivity requires re-rendering the scene; most games
+    use approximations'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Baking:** developers pre-render lightmaps and reflection data'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/b306b3f964bda87eb1db0abbb5b36b43.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '"What is light vs how games simulate it" slide from "Invisible Intuition: How
+    To Light A Level" by Robert Yang for GDC 2018</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Imagine making a rainbow with a prism. In real-life, you shine a ray of light
+    through a prism and a rainbow "automatically" emerges because that's how photons
+    and physics work.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'But in a video game, a prism effect would be a mess of hacks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Refracting glass material + screen space reflection for prism shape
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Ray FX, white beam and rainbow painted separately in Photoshop
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Glow sprites where beams intersect prism
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Caustic projections / translucent AO for nearby surfaces
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This is not an elegant universe of photons interacting with surfaces. In the
+    list above, notice that we're not even using any light sources! It's all "fake"!
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/bde6eeed500964a9df9027018f255052.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: spotlight casting shadows in Unreal Engine 4, [by Oskar Świerad (via UnrealArtOptimization.com)](https://unrealartoptimization.github.io/book/profiling/passes/)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Lighting a video game is about picking and choosing only what you need.**
+    In most game engines you can set one light to turn off shadows, or set another
+    light to disable reflectivity. This is essential for [optimization](/process/env-art/optimization).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It's enough to make a real-life physicist vomit. "But light without shadows
+    or reflectivity doesn't make any sense," cry the physicists. Haha, silly physicists!
+    This is video game land!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Graphics programmers are secretly bothered as much as physicists. Tech like
+    raytracing is about trying to make game lighting more elegant. Maybe in 10 years
+    it will be.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/1e4623f5aafbb4a97ed768c59d5f974e.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '(left) [Shadow volume illustration](https://commons.wikimedia.org/wiki/File:Shadow_volume_illustration.png)
+    by Rainwarrior, CC BY-SA 3.0; (right) slide from [*Toy Story 3: The Video Game
+    Rendering Techniques*](https://advances.realtimerendering.com/s2010/Ownby,Hall%20and%20Hall%20-%20Toystory3%20(SIGGRAPH%202010%20Advanced%20RealTime%20Rendering%20Course).pdf)*;
+    both from* ["Classic 3D videogame shadow techniques" by Pekka Väänänen](https://30fps.net/pages/videogame-shadows/)</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#a-brief-history-of-light)A brief history of light'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The sun and the moon (reflecting light from the sun) are the most common *natural
+    light sources*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: There are also *artificial light sources* like controlled fires, gas lamps,
+    incandescent light bulbs... and in the 21st century, there's energy-efficient
+    fluorescent lights and LED lighting.
+  prefs: []
+  type: TYPE_NORMAL
+- en: However, this is not just a story of technology and progress. The light bulb
+    did not make the sun obsolete, and the LED does not make fire obsolete. We still
+    like sunny days and romantic candle-lit dinners.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Fire has not disappeared from the world. Instead, the meaning and use of fire
+    has changed. Lighting design is about understanding how light conveys these ideas,
+    moods, and emotions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/aa3e681dd3f162a59d2597eb4feded53.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'various light sources throughout history: sunlight, fire, gas lamp, incandescent,
+    fluorescent, LED</picture>'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**What is lighting design?**'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '**Real-life lighting design** is the art / science of placing light sources
+    to account for context and functionality, whether for an office or a moody restaurant.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Real-life professional lighting designers assess building plans and coordinate
+    with architects. They shop in catalogs published by light fixture manufacturers,
+    with detailed technical specifications and lab-tested light falloff charts / standardized
+    IES profiles that they can test in 3D simulations. They must also balance local
+    laws and building codes about minimum light levels, budget, maintenance plans,
+    energy use, and sustainability.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/5280f216673f44f61986debb93f2bac3.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: light fixture catalog with distribution curves / falloff charts in standard
+    candelas (cd) from the Daeyang Electric catalog</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Because eyes adapt to nearby light levels, it is difficult to guess how bright
+    a room actually is, so lighting designers often approximate a quick measurement
+    with the [lumen / zonal cavity method](https://en.wikipedia.org/wiki/Lumen_method).
+    For a more accurate reading on-site, they also use handheld [light meters](https://en.wikipedia.org/wiki/Light_meter)
+    to measure scientific units like [lux](https://en.wikipedia.org/wiki/Lux) / [lumens](https://en.wikipedia.org/wiki/Lumen_(unit))
+    / [candelas](https://en.wikipedia.org/wiki/Candela).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Some game engines are increasingly adopting this technical / scientific lighting
+    approach. However, we must be vigilant: **real-life lighting design has fundamentally
+    different goals vs. video game lighting design.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#real-life-vs.-video-game-lighting-design)Real-life vs. video game lighting
+    design'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: REAL-LIFE LIGHTINGGAME LIGHTING
+  prefs: []
+  type: TYPE_NORMAL
+- en: Runs on electricity
+  prefs: []
+  type: TYPE_NORMAL
+- en: Also runs on electricity
+  prefs: []
+  type: TYPE_NORMAL
+- en: Must obey laws of physics
+  prefs: []
+  type: TYPE_NORMAL
+- en: Pick and choose laws; godless
+  prefs: []
+  type: TYPE_NORMAL
+- en: Follow local regulations
+  prefs: []
+  type: TYPE_NORMAL
+- en: No regulations, only gamer norms
+  prefs: []
+  type: TYPE_NORMAL
+- en: Infinite light sources, infinite rendering
+  prefs: []
+  type: TYPE_NORMAL
+- en: Optimize for fewest light sources
+  prefs: []
+  type: TYPE_NORMAL
+- en: Long-term, you live in it
+  prefs: []
+  type: TYPE_NORMAL
+- en: Short-term, you visit it
+  prefs: []
+  type: TYPE_NORMAL
+- en: Glare is literally painful to look at
+  prefs: []
+  type: TYPE_NORMAL
+- en: Glare makes your game worth $60
+  prefs: []
+  type: TYPE_NORMAL
+- en: Comfort, safety, usability, reliability
+  prefs: []
+  type: TYPE_NORMAL
+- en: Drama, detail, clarity, plausibility
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/010297d7517a8bb881481a865ff1c972.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: recommended reflectance and luminance ratios for real-life classrooms, from
+    IESNA Lighting Handbook 9th edition</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Light sources
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Since game lighting is so complicated, we will mostly focus on the fundamentals
+    of lighting design for level designers: *placing light sources.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Core light source types
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Static vs. dynamic light sources
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Fixture vs. light source
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#core-light-source-types)Core light source types'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Almost every game engine uses these four core light source types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Ambient light** is the default minimum amount of light in the world. Not
+    really realistic.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Directional light** casts constant light from a direction, like sunlight
+    downwards from the sky.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Point lights** (omnidirectional / "omni" light) are like light bulbs, throws
+    light in all directions.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Spotlights** cast a cone of light in a certain direction from a certain position.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '(TODO: light source diagram)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Together, these light sources form a complete domain of basic lighting tools:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Global, affects everything*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Local, affects nearby things*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Shines in all directions*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Ambient light**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Point light**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Shines in one direction*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Directional light**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Spotlight**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Other light shapes are just variations on these core types.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Area lights are wide flat rectangular spotlights
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Tube lights are long point lights
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Emissive materials / "texture lighting" use self-illuminated pixels like point
+    lights
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#static-vs-dynamic)Static vs dynamic'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A **static light** does not change at all, while a **dynamic light** can change
+    in color, intensity, direction, or position.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Static lighting is almost always better for framerate because the engine can
+    "bake" lighting data like lightmaps and reflections -- but rebaking constantly
+    gets annoying, and lighting data can consume a lot of memory.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In contrast, dynamic light means the level can change and react, enabling switchable
+    moving lights and day-night cycles -- but if there's too many light sources, then
+    it might overload the player's machine and the framerate will suffer.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/b460decf52ae8a400cd4ffaf85ab9d10.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: lightmap UV charts for the "New York City" map in Overwatch 2, image by Bruce
+    Wilkie [(via PlayOverwatch.com)](https://playoverwatch.com/en-gb/news/23674944/environment-states-in-overwatch-2-behind-the-scenes-with-the-engineering-team/)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#fixture-vs-light-source)Fixture vs light source'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A **light fixture** is a visible plausible source of light, like a light bulb
+    or a fireplace. But a window with sunlight is also like a fixture. Within a game
+    level, this is usually like an architectural feature or a decorative lamp prop.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This is not the same as an in-engine light source, which is actually an invisible
+    source of light with no apparent cause. It often looks kind of weird, and simply
+    doesn't happen in real-life.
+  prefs: []
+  type: TYPE_NORMAL
+- en: A **motivated light** is a light source with a plausible fixture.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Note that a *single fixture may actually motivate multiple invisible in-engine
+    light sources.* In the image pictured below by Harley Wilson, there are only two
+    visible light fixtures: an orange fireplace and a blue-gray window.*But what looks
+    like two lights is actually 11+ light sources!*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/b53a3161bd766c4fd3bd7a4818f060f7.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: medieval lighting study with light entities [by Harley Wilson (via Artstation.com)](https://www.artstation.com/artwork/lBLzJ)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Lighting theory
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Here are two ways of approaching lighting design:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Three point lighting:** common theory for 2D media like film and photography'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**D6 lighting:** more abstract but more 3D, for architects and interior designers'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#three-point-lighting)Three point lighting'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**Three point lighting** is a lighting theory with three types of lights:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Key light:** the primary light source'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Fill light:** softer secondary light source to brighten up shadows'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Rim light:** an accent to highlight objects and edges'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: While these core concepts are useful, it has limitations for level design. This
+    technique comes from photography and film, so it assumes linear fixed 2D screen
+    compositions -- not an interactive 3D space that a viewer navigates freely.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more about this 2D lighting theory, see* [*Three point lighting*](/process/lighting/three-point)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/977c99387d49dd96952f0e8150a6c978.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: Three point lighting is common in studio photography and portraiture</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#d6-lighting)D6 lighting'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '**D6 lighting** is a lighting theory focused on coverage and space, inspired
+    by a six sided die. Each side represents a lighting strategy, for a total of six
+    strategies:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Focal point ⚀
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Focal frame ⚁
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Path ⚂
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Area ⚃
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Area with focal point ⚄
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Area with path ⚅
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: This theory has more applications for architecture and level design, however
+    it's obscure and less known than three point theory.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*For more about this 3D lighting theory, see* [*D6 lighting*](/process/lighting/d6-lighting)*.*'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/9603123d2ce3b93c94f9b644a32f1e7d.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: lighting study blockout breakdown [by Harley Wilson (from Artstation.com)](https://www.artstation.com/artwork/PQJvn)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: How to light a level
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Lighting can be very time-consuming, so don't attempt to do final lighting all
+    at once. Instead, build flexibility into your workflow, and work iteratively.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We recommend lighting in four passes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Global lights
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Wayfinding / critical path lights
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Gameplay / combat encounter lights
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Detail and mood lighting
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#id-1.-global-lights)1\. Global lights'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Begin with an initial pass at any global key lights and fill lights: skylight,
+    ambient light, and any skybox / atmospherics.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If you are using any emissive materials as key lights, e.g. a glowing river
+    of lava, then configure this light source as well.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If your desired look involves baked indirect light, run an initial low quality
+    light bake immediately. Some fancy global illumination solutions (e.g. UE5 Lumen)
+    may be able to light the entire game world with just one sunlight-like directional
+    light.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#id-2.-wayfinding-critical-path-lights)2\. Wayfinding / critical path lights'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Next, ensure any important entrances / exits along the [critical path](/process/layout/criticalpath)
+    are well-lit from the desired approach. You will likely need to use local light
+    sources, e.g. place a light fixture next to a doorway.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Build a hierarchy. Big important exits should have more important looking lighting,
+    while secondary spaces should have dimmer less focused lights.
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/bbe625fea72f167f842081a9ab8ac39b.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: brightly lit doorways help players understand the [flow](/process/layout/flow)
+    of the room; from ["Functional Lighting" by Magnar Jenssen](http://magnarj.net/article_funclight.html)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#id-3.-gameplay-lights)3\. Gameplay lights'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Lighting to foreshadow encounters (enemy approach, battle line, possible strategies
+    and flanks)
+  prefs: []
+  type: TYPE_NORMAL
+- en: Lighting to highlight puzzle elements and suggest areas to explore
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/30bc75e598ba52dd7947da7887493274.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: strong spotlight draws attention to enemy silhouettes; from ["Functional Lighting"
+    by Magnar Jenssen](http://magnarj.net/article_funclight.html)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[](#id-4.-detail-and-mood-lighting)4\. Detail and mood lighting'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Fine tune and tweak everything, but don't spend too long, it probably looks
+    good enough, and if you tweak it too much you might destroy the effect from a
+    previous pass.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '(TODO: images and examples?)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Common lighting design problems
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[](#shadows-are-too-dark-after-a-light-bake)Shadows are too dark after a light
+    bake?'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Your albedo textures might be too dark. If the textures are too dark, then any
+    resulting light bounces will be faint, no matter how bright your lights are. Unless
+    you have specific stylistic or technical reasons to do otherwise, your main diffuse
+    textures should usually be in the 50-100% brightness range. See ["Texturing Values
+    for Environments"](https://environmentart.wordpress.com/2016/06/13/texturing-values-for-environments-part-1/)
+    by Rogelio Olguin, and the old Epic Games UDK docs ["Epic Games Texturing Guidelines"](https://docs.unrealengine.com/udk/Three/TexturingGuidelines.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/cd8340751411aa768407febf49033550.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: dark albedo texture (top) vs midtone albedo texture histogram (bottom), from
+    ["Epic Games Texturing Guidelines"](https://docs.unrealengine.com/udk/Three/TexturingGuidelines.html)</picture>
+    <picture class="relative">![](../Images/e409572ec9dfb8e319c4b2c07e122181.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: Comparing a scene with dark albedo texture (left) vs. midtone albedo texture
+    (right), from ["Epic Games Texturing Guidelines"](https://docs.unrealengine.com/udk/Three/TexturingGuidelines.html)</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: Lighting examples
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'TODO: showcase different contexts (industrial vs residential) and moods (scary,
+    comfy)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/99b5a86e008f7e04ee7e8db906dd633c.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: lighting variations diagram for level design by Simon "Sock" O'Callaghan</picture>
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Lighting example: Ratchet and Clank - Rift Apart'
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: <picture class="relative">![](../Images/24465a86138b2ce37805f344b7732d1f.png)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Lighting workflow overview for Ratchet and Clank: Rift Apart, from [GDC 2022:
+    Recalibrating Our Limits: Lighting on ''Ratchet and Clank: Rift Apart'' (via YouTube)](https://www.youtube.com/watch?v=geErfczxwjc)</picture>
+    ![](../Images/fc74f9125d2d248d07efeb43bcd2cece.png)![](../Images/724a1080378efb570b8f4b3b617df355.png)![](../Images/7f360b319c0551150987505b00974cd2.png)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: To review...
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '**Lighting** gives visual depth to a scene, allowing players to gauge distances
+    and distinguish shapes. Because it serves a very important gameplay function,
+    you should do a **lighting pass** early in the level design process, before a
+    proper art pass.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Video game lighting tech is a crude illusion that approximates real-life light.
+    Many game lighting effects do not actually use any lighting systems.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'There are 4 core light source types: **ambient, directional, point, and spotlight.**
+    These lights can be *static* or *dynamic,* and **motivated** by a visible **light
+    fixture** or *unmotivated* without any visible source.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The most common lighting theory is three point lighting, which defines **key
+    lights**, **fill lights**, and **rim lights** based on the light's orientation
+    to the camera and subject.
+  prefs: []
+  type: TYPE_NORMAL
+- en: To light a level, work gradually over several lighting passes. Do global lights
+    first, then light for wayfinding, and then for gameplay, and finally any last
+    details or moods.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Now what?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Move on to [Environment Art](/process/env-art).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Lighting is traditionally the most performance-heavy visual aspect of a level.
+    After a lighting pass, you'll want to do an [optimization](/process/env-art/optimization)
+    pass.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Further reading on lighting
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: '[](#game-lighting)Game lighting'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '["Functional Lighting"](http://magnarj.net/article_funclight.html) by Magnar
+    Jenssen is about lighting levels to aid readability for typical shooter gameplay.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '["Gamma and Linear Space"](https://www.kinematicsoup.com/news/2016/6/15/gamma-and-linear-space-what-they-are-how-they-differ)
+    by Kinematic Soup covers an important but often neglected aspect of game graphics:
+    color space and gamma curves.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[GDC 2022: Recalibrating Our Limits: Lighting on ''Ratchet and Clank: Rift
+    Apart'' by Anna Roan and Brian Mullen (via YouTube)](https://www.youtube.com/watch?v=geErfczxwjc)
+    is a great overview of how many AAA lighting artists work today, with lots of
+    process and iteration examples.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#general-cg-lighting)General CG lighting'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Blender Conference 2022: The Secrets of Photorealism by Andrew Price (via
+    YouTube)](https://www.youtube.com/watch?v=Z8AAX-ENWvQ) is a video intro to lighting
+    3D scenes for photorealistic look. Color temperature, falloff, materials, and
+    optics / post process.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[](#real-world-lighting-design)Real world lighting design'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '*The Architecture of Natural Light,* by Henry Plummer. Monacelli Press: 2009.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[*IESNA Lighting Handbook*](https://openlibrary.org/books/OL58383M/The_IESNA_lighting_handbook),
+    9th edition (2000). edited by Mark S. Rea.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
