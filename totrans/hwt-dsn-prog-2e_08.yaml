@@ -12032,24 +12032,34 @@
   id: totrans-1477
   prefs: []
   type: TYPE_NORMAL
+  zh: 该函数查找所有价格低于 th 的库存清单上的项目。辅助函数几乎微不足道，但其定义却占用了三行。这种情况需要改进语言。程序员应该能够轻松地创建这样小而微不足道的函数。如果你还没有这样做，请从
+    DrRacket 的“语言”菜单中的“如何设计程序”子菜单中选择“带有 lambda 的中级学生”。[lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)
+    的历史与编程和编程语言设计的早期历史密切相关。在我们教学语言层次结构的下一级，“带有 lambda 的中级学生语言”通过引入一个新概念，即无名字函数，来解决这一问题。本章介绍了这一概念：其语法、其含义及其实用性。使用
+    [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)，上述定义在概念上可以说是一行代码：
 - en: '| ; [[List-of](#%28tech._sim-dd._list._of%29)  [IR](#%28tech._ir%29)] [Number](part_one.html#%28tech._number%29)
     -> [Boolean](part_one.html#%28tech._boolean%29) |'
   id: totrans-1478
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ; [[列表](#%28tech._sim-dd._list._of%29)  [红外](#%28tech._ir%29)] [数字](part_one.html#%28tech._number%29)
+    -> [布尔](part_one.html#%28tech._boolean%29) |'
 - en: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (find l th)
     |'
   id: totrans-1479
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '| ([define](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._define%29%29) (find l th)
+    |'
 - en: '|   ([filter](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._filter%29%29) ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (ir) ([<=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c~3d%29%29) (IR-price ir) th)) l))
     |'
   id: totrans-1480
   prefs:
   - PREF_BQ
   type: TYPE_TB
+  zh: '|   ([filter](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._filter%29%29) ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (ir) ([<=](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28def._htdp-intermediate-lambda._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._~3c~3d%29%29) (IR-price ir) th)) l))
+    |'
 - en: The first two sections focus the mechanics of [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29);
     the remaining ones use [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)
     for instantiating abstractions, for testing and specifying, and for representing
@@ -12057,17 +12067,24 @@
   id: totrans-1481
   prefs: []
   type: TYPE_NORMAL
+  zh: 前两节主要关注 [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)
+    的机制；其余部分使用 [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)
+    来实例化抽象概念、进行测试和指定，以及表示无限数据。
 - en: 17.1Functions from [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)[🔗](#(part._sec~3aint-lambda)
     "Link to here")
   id: totrans-1482
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 17.1 从 [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)[🔗](#(part._sec~3aint-lambda)
+    "链接到此处")
 - en: 'The syntax of [lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)
     is straightforward:'
   id: totrans-1483
   prefs: []
   type: TYPE_NORMAL
+  zh: '[lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29)
+    的语法简单明了：'
 - en: ([lambda](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._lambda%29%29) (variable-1 [...](http://docs.racket-lang.org/htdp-langs/intermediate-lam.html#%28form._%28%28lib._lang%2Fhtdp-intermediate-lambda..rkt%29._......%29%29) variable-N) expression)
   id: totrans-1484
   prefs:
