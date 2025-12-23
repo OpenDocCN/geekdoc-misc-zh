@@ -19,6 +19,7 @@
 +   [**物联网 101**](docs/iot-intel-edison/README.md)
 +   [面向团队的 Java 代码异味指南](docs/java-sml-tm/README.md)
 +   [ASP.NET Core 小型手册](docs/ltl-aspdn-core-bk/README.md)
++   [关卡设计手册](docs/lvl-dsn-bk/README.md)
 +   [可重现的研究实践指南](docs/prac-reprod-rsrch/README.md)
 +   [编程语言：应用与解释](docs/prog-lang-app-interp/README.md)
 +   [RubyFu 中文版](docs/rubyfu/README.md)
