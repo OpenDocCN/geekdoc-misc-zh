@@ -1,0 +1,15 @@
+<html><head></head><body>
+<h2 class="c27" id="h.m8d5hukax0wr"><span class="c4">Testing the Evaluator </span></h2><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">The examples above are fine, but we should write these in the syntax of </span><span class="c7">tests</span><span class="c4">, so that the computer checks them for us automatically:</span></p><p class="c3"><span class="c41"/></p><pre>(test (calc (num 1)) 1)
+(test (calc (num 2.3)) 2.3)
+(test (calc (plus (num 1) (num 2))) 3)
+(test (calc (plus (plus (num 1) (num 2))
+                  (num 3)))
+      6)
+(test (calc (plus (num 1)
+                  (plus (num 2) (num 3))))
+      6)
+(test (calc (plus (num 1)
+                  (plus (plus (num 2)
+                              (num 3))
+                        (num 4))))
+      10)</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">Sure enough, when we run this, Racket confirms that all these tests pass.</span></p><p class="c3"><span class="c4"/></p><p class="c31"><span class="c40">Pro Tip:</span><span class="c4"> It can get annoying to scan through all this testing output to see whether any of the tests failed. Simply add</span></p><p class="c51"><span class="c41"/></p><pre>(print-only-errors #true)</pre><p class="c51"><span class="c4"/></p><p class="c31"><span class="c4">before your tests and Racket will suppress reporting on the passing tests, so you can focus on the ones that failed: in other words, no news is good news.</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">In general, test early, often, and extensively. Programming language evaluators translate our thoughts into computer actions. Therefore, it’s critical that they do so precisely. This is why language implementations are some of the most tested software you can imagine (when’s the last time you were stopped by a bug in your language implementation?), and people who will tolerate bugs in just about any other software are much less forgiving of bugs in implementations. </span></p></body></html>

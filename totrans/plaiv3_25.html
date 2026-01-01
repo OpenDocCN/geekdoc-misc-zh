@@ -1,0 +1,39 @@
+<html><head></head><body>
+<h2 class="c27" id="h.2b62xte07uef"><span class="c4">Primus Inter Parsers</span></h2><p class="c3"><span class="c4"/></p><p class="c31"><span class="c40">Do Now: </span><span class="c4">Think about what type we want for our parser.</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">What does our parser need to produce? Whatever the calculator consumes, i.e., </span><code>Expr</code><span class="calibre3">. What does it consume? Program source expressions written in a “convenient” syntax, i.e., </span><code>S-Exp</code><span class="c4">. Hence, its type must be</span></p><p class="c3"><span class="c4"/></p><pre>(parse : (S-Exp -&gt; Exp))</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">That is, it converts the human-friendly(ier) syntax into the computer’s internal representation.</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">Writing this requires a certain degree of pedantry. First, we need a conditional to check what kind of s-exp we were given:</span></p><p class="c3"><span class="c4"/></p><pre>(define (parse s)
+  (cond
+    [(s-exp-number? s) …]
+    [(s-exp-list? s) …]))</pre><p class="c3"><span class="c41"/></p><p class="c5"><span class="calibre3">If it’s a numeric s-exp, then we need to extract the number and pass it to the </span><code>num</code><span class="c4"> constructor:</span></p><p class="c3"><span class="c4"/></p><pre>(num (s-exp-&gt;number s))</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">Otherwise, we need to extract the list and check whether the first thing in the list is an addition symbol. If it is not, we signal an error:</span></p><p class="c3"><span class="c4"/></p><pre>     (let ([l (s-exp-&gt;list s)])
+       (if (symbol=? '+
+                     (s-exp-&gt;symbol (first l)))
+           …
+           (error 'parse "list not an addition")))</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">Otherwise, we create a plus term by recurring on the two sub-pieces.</span></p><p class="c3"><span class="c4"/></p><pre>            (plus (parse (second l))
+                  (parse (third l)))
+ </pre><p class="c5"><span class="c4">Putting it all together:</span></p><p class="c3"><span class="c4"/></p><pre>(define (parse s)
+  (cond
+    [(s-exp-number? s)
+     (num (s-exp-&gt;number s))]
+    [(s-exp-list? s)
+     (let ([l (s-exp-&gt;list s)])
+       (if (symbol=? '+
+                     (s-exp-&gt;symbol (first l)))
+           (plus (parse (second l))
+                 (parse (third l)))
+           (error 'parse "list not an addition")))]))</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">It’s all a bit much, but fortunately this is about as hard as parsing will get in this book! Everything you see from now on will basically be this same sort of pattern, which you can freely copy.</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">We should, of course, make sure we’ve got good tests for our parser. For instance:</span></p><p class="c3"><span class="c4"/></p><pre>(test (parse `1) (num 1))
+(test (parse `2.3) (num 2.3))
+(test (parse `{+ 1 2}) (plus (num 1) (num 2)))
+(test (parse `{+ 1
+                 {+ {+ 2 3}
+                    4}})
+      (plus (num 1)
+            (plus (plus (num 2)
+                        (num 3))
+                  (num 4))))</pre><p class="c3"><span class="c4"/></p><p class="c31"><span class="c40">Do Now:</span><span class="c4"> Are there other kinds of tests we should have written?</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">We have only written </span><span class="c7">positive</span><span class="calibre3"> tests. We can also write </span><span class="c7">negative</span><span class="c4"> tests for situations where we expect errors:</span></p><p class="c3"><span class="c4"/></p><pre>(test/exn (parse `{1 + 2}) "")</pre><p class="c3"><span class="c4"/></p><p class="c5"><code>test/exn</code><span class="calibre3"> takes a string that must be a substring of the error message. You might be surprised that the test above uses the empty string rather than, say, </span><code>"addition"</code><span class="c4">. Try out this example to investigate why. How can you improve your parser to address this?</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">Other situations we should check for include there being too few or too many sub-parts. Addition, for instance, is defined to take exactly two sub-expressions. What if a source program contains none, one, three, four, …? This is the kind of pedantry that parsing calls for.</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">Once we have considered these situations, we’re in a happy place, because </span><code>parse</code><span class="calibre3"> produces output that </span><code>calc</code><span class="c4"> can consume. We can therefore compose the two functions! Better still, we can write a helper function that does it for us:</span></p><p class="c3"><span class="c4"/></p><pre>(run : (S-Exp -&gt; Number))</pre><p class="c3"><span class="c4"/></p><pre>(define (run s)
+  (calc (parse s)))</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">So we can now rewrite our old evaluator tests in a much more convenient way:</span></p><p class="c3"><span class="c4"/></p><pre>(test (run `1) 1)
+(test (run `2.3) 2.3)
+(test (run `{+ 1 2}) 3)
+(test (run `{+ {+ 1 2} 3})
+      6)
+(test (run `{+ 1 {+ 2 3}})
+      6)
+(test (run `{+ 1 {+ {+ 2 3} 4}})
+      10)</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">Compare this against the </span><code>calc</code><span class="c4"> tests we had earlier!</span></p></body></html>

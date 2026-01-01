@@ -1,0 +1,12 @@
+<html><head></head><body>
+<h2 class="c27" id="h.5dek1zu8vi2n"><span class="calibre3">The Value </span><span class="calibre3">Datatype</span></h2><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">Therefore, we first need to define a datatype that reflects the different kinds of values that an evaluator can produce. We will follow a convention and call the return type constructors </span><code>…V</code><span class="calibre3"> to distinguish from the inputs. Dually, we’ll call the inputs </span><code>…E</code><span class="c4"> (for expressions) to distinguish from the outputs.</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">First we’ll rename our expressions:</span></p><p class="c3"><span class="c4"/></p><pre>(define-type Exp
+  [numE (n : Number)]
+  [boolE (b : Boolean)]
+  [plusE (left : Exp) (right : Exp)]
+  [cndE (test : Exp) (then : Exp) (else : Exp)])</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">(nothing has changed other than the </span><span class="c7">names</span><span class="c4"> of the constructors).</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">Now we introduce a </span><code>Value</code><span class="c4"> datatype to represent the types of answers our evaluator can produce:</span></p><p class="c3"><span class="c4"/></p><pre>(define-type Value
+  [numV (the-number : Number)]
+  [boolV (the-boolean : Boolean)])</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">We update the type of our evaluator:</span></p><p class="c3"><span class="c4"/></p><pre>(calc : (Exp -&gt; Value))</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">and the early parts are easy:</span></p><p class="c3"><span class="c4"/></p><pre>(define (calc e)
+  (type-case Exp e
+    [(numE n) (numV n)]
+    [(boolE b) (boolV b)]
+    …))</pre></body></html>

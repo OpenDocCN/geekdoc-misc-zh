@@ -1,0 +1,28 @@
+<html><head></head><body>
+<h2 class="c27" id="h.i7z7r2g1gsy6"><span class="c4">S-Expressions</span></h2><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">There is a name for this syntax: these are called </span><span class="c7">s-expressions</span><span class="calibre3"> (the </span><span class="c7">s-</span><span class="calibre3"> is for historical reasons). In plait, we will write these expressions </span><span class="c7">preceded by a back-tick</span><span class="calibre3"> (</span><code>`</code><span class="calibre3">). A back-tick followed by a Racket term is of type </span><code>S-Exp</code><span class="c4">. Here are examples of s-expressions:</span></p><p class="c3"><span class="c4"/></p><pre>`1
+`2.3
+`-40</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">These are all numeric s-expressions. We can also write</span></p><p class="c3"><span class="c4"/></p><pre>`{+ 1 2}
+`{+ 1 {+ 2 3}}</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">It’s not obvious, but these are actually </span><span class="c7">list</span><span class="c4"> s-expressions. We can tell by asking</span></p><p class="c3"><span class="c4"/></p><pre>&gt; (s-exp-list? `1)
+- Boolean
+#f
+&gt; (s-exp-list? `{+ 1 2})
+- Boolean
+#t
+&gt; (s-exp-list? `{+ 1 {+ 2 3}})
+- Boolean
+#t</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">So the first is not but the second two are; similarly,</span></p><p class="c3"><span class="c4"/></p><pre>&gt; (s-exp-number? `1)
+- Boolean
+#t
+&gt; (s-exp-number? `{+ 1 {+ 2 3}})
+- Boolean
+#f</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">The </span><code>S-Exp</code><span class="c4"> type is a container around the actual number or list, which we can extract:</span></p><p class="c3"><span class="c4"/></p><pre>&gt; (s-exp-&gt;number `1)
+- Number
+1
+&gt; (s-exp-&gt;list `{+ 1 2})
+- (Listof S-Exp)
+(list `+ `1 `2)</pre><p class="c3"><span class="c4"/></p><p class="c31"><span class="c40">Do Now: </span><span class="calibre3">What happens if you apply </span><code>s-exp-&gt;number</code><span class="calibre3"> to a list s-exp or </span><code>s-exp-&gt;list</code><span class="c4"> to a number s-expression? Or either to something that isn't an s-expression at all? Try it right now and find out! Do you get somewhat different results?</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">Let’s look at that last output above a bit more closely. The resulting list has three elements, two of which are numbers, but the third is something else:</span></p><p class="c3"><span class="c41"/></p><pre>`+</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">is a </span><span class="c7">symbol</span><span class="calibre3"> s-expressions. Symbols are like strings but somewhat different in operations and performance. Whereas there are numerous string operations (like substrings), symbols are treated atomically; other than being converted to strings, the only other operation they support is equality. But in return, symbols can be checked for equality in </span><span class="c7">constant</span><span class="c4"> time.</span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">Symbols have the same syntax as Racket variables, and hence are perfect for representing variable-like things. Thus</span></p><p class="c3"><span class="c4"/></p><pre>&gt; (s-exp-symbol? `+)
+- Boolean
+#t
+&gt; (s-exp-&gt;symbol `+)
+- Symbol
+'+</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">This output shows how symbols are written in Racket: with a single-quote (</span><code>'</code><span class="calibre3">). </span></p><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">There are other kinds of s-expressions as well, but this is all we need for now! With this, we can write our first parser!</span></p></body></html>

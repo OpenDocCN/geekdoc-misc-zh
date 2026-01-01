@@ -1,0 +1,5 @@
+<html><head></head><body>
+<h2 class="c27" id="h.7bpl8hed3hv6"><span class="c4">Extending the AST</span></h2><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">Because we have fixed our conditionals to have three parts, we just need to represent that in the AST. This is straightforward:</span></p><p class="c3"><span class="c4"/></p><pre>(define-type Exp
+  [num (n : Number)]
+  [plus (left : Exp) (right : Exp)]
+  [cnd (test : Exp) (then : Exp) (else : Exp)])</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">The real work will happen in the evaluator.</span></p></body></html>

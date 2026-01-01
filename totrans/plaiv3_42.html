@@ -1,0 +1,8 @@
+<html><head></head><body>
+<h2 class="c27" id="h.k3te7b7wmk2r"><span class="c4">Functions in the Language</span></h2><p class="c3"><span class="c4"/></p><p class="c5"><span class="c4">There are many ways to think about adding functions to the language. Many languages, for instance, have top-level functions; e.g.:</span></p><p class="c3"><span class="c4"/></p><pre>fun f(x):
+  x + x</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">Indeed, some languages (such as C) </span><span class="c7">only</span><span class="c4"> have top-level functions. Most modern languages, however, have the ability to write functions outside the top-level: e.g.,</span></p><p class="c3"><span class="c4"/></p><pre>fun f(x):
+  fun sq(y):
+    y * y
+  sq(x) + sq(x)</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">and even to </span><span class="c7">return</span><span class="calibre3"> those functions, and even to allow them to be written </span><span class="c7">anonymously</span><span class="c4">. Since just about every modern language supports it, we’ll think of this as a component of SMoL. Indeed, with such a facility, we don’t really need a named function construct per se: we could instead have written</span></p><p class="c3"><span class="c4"/></p><pre>fun f(x):
+  sq = lam(y): y * y
+  sq(x) + sq(x)</pre><p class="c3"><span class="c4"/></p><p class="c5"><span class="calibre3">And in turn we can replace </span><code>f</code><span class="calibre3"> with a name-binding and </span><code>lam</code><span class="c4">, too.</span></p></body></html>
