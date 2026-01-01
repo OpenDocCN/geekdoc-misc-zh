@@ -1,0 +1,187 @@
+- en: Simulating an Interpreter by Hand
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Since we have decided to write an interpreter, let’s start by understanding
+    whatwe are trying to get it to do, before we start to investigate how we will
+    make it do it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s consider the following program:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: What does it produce? We can all guess that it produces `3`. Now suppose we’re
+    asked, whydoes it produce `3`? What might you say?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'There’s a good chance you’ll say that it’s because x gets replaced with 2 in
+    the body of f, then we compute the body, and that’s the answer:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(f 2)`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ x 1)`where `x`is replaced by `2`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ 2 1)`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `3`
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'These programs are written in Racket. You can put these programs into DrRacket
+    in an early student language level (like Beginning Student) and watch them run,
+    step-by-step, using the Step button in the menu bar:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](image21.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Now let’s look at an extended version of the program:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can use the same process:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(g 5)`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → (`f (+ z 4))`where `z`is replaced by `5`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(f (+ 5 4))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(f 9)`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ x 1)`where `x`is replaced by `9`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ 9 1)`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `10`
+  prefs: []
+  type: TYPE_NORMAL
+- en: Terminology:We call the variables in the function header the formal parametersand
+    the expressions in the function call the actual parameters. So in `f`, `x`is the
+    formal parameter, while `9`is an actual parameter. Some people also use argumentin
+    place of parameter, but there’s no real difference between these terms.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Observe that we had a choice: we could have gone either'
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(f (+ 5 4))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(f 9)`
+  prefs: []
+  type: TYPE_NORMAL
+- en: or
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(f (+ 5 4))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ x 1)`where `x`is replaced by `(+ 5 4)`
+  prefs: []
+  type: TYPE_NORMAL
+- en: For now, both will produce the same answer, but this is actually a very consequential
+    decision! It is in fact one of the most profound choices in programming language
+    design.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Terminology:The former choice is called eagerevaluation: think of it as “eagerly”
+    reducing the actual parameter to a value before starting the function call. The
+    latter choice is called lazy evaluation: think of it as not rushing to perform
+    the evaluation.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: SMoL is eager. There are good reasons for this, which we will explore later
+    [[👉](PLAIVersion3.2.2_split_151.html#h.9cpi3w9pvb34)].
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Okay, so back to evaluation. Let’s do one more step:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Once again, we can look at the steps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(h 6 7)`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → (+ `(g z) (g w))`where `z`is replaced by `6`and `w`is replaced by `7`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ (g 6) (g 7))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ (f (+ y 4)) (g 7))`where `y`is replaced by `6`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ (f (+ 6 4)) (g 7))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ (f 10) (g 7))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ (+ x 1) (g 7))`where `x`is replaced by `10`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ (+ 10 1) (g 7))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ 11 (g 7))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ 11 (f (+ y 4)))`where `y`is replaced by `7`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ 11 (f (+ 7 4)))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ 11 (f 11))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ 11 (+ x 1))`where `x`is replaced by `11`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ 11 (+ 11 1))`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `(+ 11 12)`
+  prefs: []
+  type: TYPE_NORMAL
+- en: → `23`
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Observe that we again had some choices:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Do we replace both calls at once, or do one at a time?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the latter, do we do the left or the right one first?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Languages have to make decisions about these, too! Above, we’ve again done
+    what SMoL does: it finishes one call before starting the other, which makes SMoL
+    sequential. Had we replaced both calls at once, we’d be exploring a parallel language.
+    Conventionally, most languages choose a left-to-right order, so that’s what we
+    choose in SMoL.'
+  prefs: []
+  type: TYPE_NORMAL

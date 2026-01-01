@@ -1,0 +1,30 @@
+- en: Evaluating Conditionals
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 'So far our language has had only arithmetic. Building on Mystery Language:
+    Conditionals, we will now examine how to extend our language to also support conditionals.
+    There can be quite complex conditional expressions in real languages, but for
+    our purposes it will suffice to have an `if` with three parts: the conditional,
+    the then-branch, and the else-branch. Later, when we learn how to extend the language,
+    we can see how to layer more sophisticated conditional expressions atop this.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In SImPl, we have to do at least two things:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Extend the datatype representing expressions to include conditionals.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Extend the evaluator to handle (the representation of) these new expressions.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Optionally, if we have a parser, we should also
+  prefs: []
+  type: TYPE_NORMAL
+- en: Extend the parser to produce these new representations.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL

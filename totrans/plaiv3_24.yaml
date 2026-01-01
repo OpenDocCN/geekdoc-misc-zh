@@ -1,0 +1,72 @@
+- en: S-Expressions
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'There is a name for this syntax: these are called s-expressions(the s-is for
+    historical reasons). In plait, we will write these expressions preceded by a back-tick (``
+    ` ``). A back-tick followed by a Racket term is of type `S-Exp`. Here are examples
+    of s-expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: These are all numeric s-expressions. We can also write
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: It’s not obvious, but these are actually list s-expressions. We can tell by
+    asking
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: So the first is not but the second two are; similarly,
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The `S-Exp` type is a container around the actual number or list, which we
+    can extract:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Do Now: What happens if you apply `s-exp->number`to a list s-exp or `s-exp->list` to
+    a number s-expression? Or either to something that isn''t an s-expression at all?
+    Try it right now and find out! Do you get somewhat different results?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s look at that last output above a bit more closely. The resulting list
+    has three elements, two of which are numbers, but the third is something else:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: is a symbols-expressions. Symbols are like strings but somewhat different in
+    operations and performance. Whereas there are numerous string operations (like
+    substrings), symbols are treated atomically; other than being converted to strings,
+    the only other operation they support is equality. But in return, symbols can
+    be checked for equality in constant time.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Symbols have the same syntax as Racket variables, and hence are perfect for
+    representing variable-like things. Thus
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This output shows how symbols are written in Racket: with a single-quote (`''`).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: There are other kinds of s-expressions as well, but this is all we need for
+    now! With this, we can write our first parser!
+  prefs: []
+  type: TYPE_NORMAL

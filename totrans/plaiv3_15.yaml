@@ -1,0 +1,25 @@
+- en: Representing Arithmetic
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Let’s start thinking about actually writing an evaluator. We’ll start with a
+    simple arithmetic language, and then build our way up from there. So our language
+    will have
+  prefs: []
+  type: TYPE_NORMAL
+- en: numbers
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'some arithmetic operations: in fact, just addition'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: and nothing more for now, so we can focus on the basics. Over time we’ll build
+    this up.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Before we can think about the body of an evaluator, however, we need to figure
+    out its type: in particular, what will it consume?'
+  prefs: []
+  type: TYPE_NORMAL

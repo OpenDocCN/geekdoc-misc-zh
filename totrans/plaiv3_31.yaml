@@ -1,0 +1,56 @@
+- en: Implementing Conditionals
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Okay, so we have many decisions to make! To first get a working evaluator,
+    without having to go beyond numbers, we can use a slightly different conditional
+    construct: one that checks whether evaluates to a special numeric value, such
+    as `0`. That is, instead of a proper `if`, we really have something we might call
+    `if0` that works only for numbers.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'How do we make this choice? Luckily, we’re writing our interpreter in plait,
+    which of course already has a conditional. Therefore, we can just reuse it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: Observe that the semantics of the conditional—that `0`is true, and everything
+    else is false—is now made manifest in the body of `calc`. If we want a different
+    semantics, that’s the part of the program to zero into and change.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This solution, and indeed so far our entire evaluator, might feel a bit… disappointing?
+    We have numbers and conditionals, sure, but all we’ve done is (mostly) deferred
+    to plait to handle these. Here are some thoughts on this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This is true!
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: This is not entirely true. We have made some conscious decisions, like the handling
+    of conditionals.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In fact, we have made even more decisions, whether or not we were conscious
+    of them, such as the handling of numbers. We just happened to defer those to plait,
+    but we could have made other decisions if we wanted.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'This reuse is actually part of the power of an interpreter: it lets you exploit
+    features that have already been built instead of having to re-implement all of
+    them from scratch.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: By reusing the host language (here, plait), we can zero in on the differences
+    (like the handling of conditionals), which would otherwise be lost if we had to
+    implement everything. Later we will see stronger departures from the semantics
+    of plait.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL

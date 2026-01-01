@@ -1,0 +1,8 @@
+- en: Evaluating Functions
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Now that we have arithmetic and conditionals, let’s proceed to creating a full-fledged
+    programming language by adding functions.
+  prefs: []
+  type: TYPE_NORMAL

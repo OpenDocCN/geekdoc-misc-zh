@@ -1,0 +1,72 @@
+- en: Evaluation on Paper
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Evaluators
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'We’re trying to implement a programming language: that is, to write an evaluator(i.e.,
+    something that “reduces programs to values”). It helps if we can first understand
+    how evaluation works on paper, before we start dealing with computer complexities.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Before we get into the details, it’s worth knowing that there are broadly speaking
+    two kinds of evaluators (as well as many combinations of them). They follow very
+    different strategies:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: An interpreterconsumes a program and simulates its execution. That is, the interpreter
+    does what we would expect “running the program” should do.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A compilerconsumes a program and produces another program. That output program
+    must then be further evaluated.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'That is, an interpreter maps programs in some language L to values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'interpreter :: ProgramL → Value'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We leave open exactly what a value is for now, informally understanding it to
+    be an answer the user would want to see—put differently, something that either
+    cannot or does not need to be further e-valu-ated. In contrast,
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'compiler :: ProgramL → ProgramT'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'That is, a compiler from Lto T(we use Tfor “target”) consumes programs in Land
+    produces programs in T. We aren’t saying about how this T program must be evaluated.
+    It may be interpreted directly, or it may be further compiled. For instance, one
+    can compile a Scheme program to C. The C program may be interpreted directly,
+    but it may very well be compiled to assembly. However, we can’t keep compiling
+    ad infinitum: at the bottom, there must be some kind of interpreter (e.g., in
+    the computer’s hardware) to provide answers.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that interpreters and compilers are themselves programs written in some
+    language and must themselves run. Naturally, this can lead to interesting ideas
+    and problems.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In our study, we will focus primarily on interpreters, but also see a very
+    lightweight form of compilers. Interpreters are useful because:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A simple interpreter is often much easier to write than a compiler.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Debugging an interpreter can sometimes be much easier than debugging a compiler.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Therefore, they provide a useful “baseline” implementation technology that everyone
+    can reach for. Compilers can often take an entire course of study.
+  prefs: []
+  type: TYPE_NORMAL

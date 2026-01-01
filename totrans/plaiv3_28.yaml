@@ -1,0 +1,30 @@
+- en: Extending the Calculator
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Clearly, adding conditionals doesn’t change what our calculator previously
+    did, we can leave that intact, and just focus on the handling of `if`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Indeed, we can recursively evaluate each term, in case it’s useful:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: Let’s take these one at a time.
+  prefs: []
+  type: TYPE_NORMAL
+- en: But now we run into a problem. What is the result of calling `(calc c)`? We
+    expect it to be some kind of Boolean value. But we don’t have Boolean values in
+    the language!
+  prefs: []
+  type: TYPE_NORMAL
+- en: That’s not all. Above, we have written both `(calc t)`and `(calc e)`. However,
+    the whole point of a conditional is that we don’t want to evaluate both, only
+    one. So we have to pick which one to evaluate based on some criterion.
+  prefs: []
+  type: TYPE_NORMAL

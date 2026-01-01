@@ -1,0 +1,33 @@
+- en: Testing the Evaluator
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'The examples above are fine, but we should write these in the syntax of tests,
+    so that the computer checks them for us automatically:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: Sure enough, when we run this, Racket confirms that all these tests pass.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Pro Tip: It can get annoying to scan through all this testing output to see
+    whether any of the tests failed. Simply add
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'before your tests and Racket will suppress reporting on the passing tests,
+    so you can focus on the ones that failed: in other words, no news is good news.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In general, test early, often, and extensively. Programming language evaluators
+    translate our thoughts into computer actions. Therefore, it’s critical that they
+    do so precisely. This is why language implementations are some of the most tested
+    software you can imagine (when’s the last time you were stopped by a bug in your
+    language implementation?), and people who will tolerate bugs in just about any
+    other software are much less forgiving of bugs in implementations.
+  prefs: []
+  type: TYPE_NORMAL

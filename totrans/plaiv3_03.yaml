@@ -1,0 +1,53 @@
+- en: Structuring Our Study
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'As I have argued in greater length [elsewhere](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Papers/Published/sk-teach-pl-post-linnaean/&sa=D&source=editors&ust=1695232021063528&usg=AOvVaw37Mi6t9TcyPiWLJtD_NsvH),
+    it is more meaningful to think of programming languages as aggregates of features.
+    The features are the building blocks. Of course, once combined, languages are
+    more like compounds than like mixtures: the features interact in ways that may
+    not be easy to predict. Understanding both the features and their compositions
+    is then a valuable way to approach a language.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The book revolves around a central idea, SMoL, the Standard Model of Languages.
+    This is the embodiment of the computational core of many of our widely-used programming
+    languages, from C# and Java to JavaScript, Lua, Python, and Ruby to OCaml and
+    Racket. The astute reader will notice that this commonality pays no respect to
+    “paradigms”. Rather, all these languages (and many others), to a large extent,
+    have a common computational core: safe runtime systems, automated memory management,
+    eager evaluation, first-class lexically-scoped functions, first-order mutable
+    variables, and first-class mutable structures. Contemporary programming demands
+    a deep understanding of these. For instance, I believe you cannot make sense of
+    concurrency with mutation, static members, or ownership, without understanding
+    SMoL.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'However, because languages are artificial and programming is an almost infinitely
+    malleable material, even “standard” features have historically seen variation.
+    Therefore, while we progress acrossfeatures, we also want to study variation withinthem.
+    We do this by using the [mystery language](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Papers/Published/pkf-teach-pl-exp-adv-think/&sa=D&source=editors&ust=1695232021064466&usg=AOvVaw0VIwT72D0WNabBksW4GD3x)approach:
+    with a fixed syntax, we explore the different ways the same feature can behave.
+    This hopes to build on the cognitive theory of [contrasting cases](https://www.google.com/url?q=https://www.cultofpedagogy.com/contrasting-cases/&sa=D&source=editors&ust=1695232021064751&usg=AOvVaw1sitvi37D-BaEv1xrf6erl) to
+    improve learning.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'What goes in SMoL is, of course, a judgment call: when a feature isn’t present
+    across a large number of diverse languages (like static types), or shows too much
+    variation between languages (like objects), I argue that it’s no longer part of
+    the standardmodel. But it is not a value judgment: in this book we explore SMoL
+    in some depth,  then turn our attention to several non-“standard” features that
+    are not only important but also beautiful and fascinating.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Turning to implementation, the book provides another pillar: SImPl, the Standard
+    Implementation Plan. This is the idea that programming languages are usefully
+    thought of in terms of an abstract syntax tree; this tree is represented well
+    by an algebraic datatype; and a program that processes this tree is a recursive
+    function that is largely guided by the structure of the type. This level of description
+    encompasses both the standard media for evaluation, interpreters and compilers.
+    It also captures the essence of type-checkers, type inference, static analysis,
+    and more. Thus, students should gain facility with this structure for when they
+    want to implement their own language experiments.'
+  prefs: []
+  type: TYPE_NORMAL

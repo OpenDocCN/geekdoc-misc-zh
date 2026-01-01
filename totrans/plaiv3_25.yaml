@@ -1,0 +1,105 @@
+- en: Primus Inter Parsers
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Do Now: Think about what type we want for our parser.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: What does our parser need to produce? Whatever the calculator consumes, i.e.,
+    `Expr`. What does it consume? Program source expressions written in a “convenient”
+    syntax, i.e., `S-Exp`. Hence, its type must be
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: That is, it converts the human-friendly(ier) syntax into the computer’s internal
+    representation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Writing this requires a certain degree of pedantry. First, we need a conditional
+    to check what kind of s-exp we were given:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If it’s a numeric s-exp, then we need to extract the number and pass it to
+    the `num` constructor:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Otherwise, we need to extract the list and check whether the first thing in
+    the list is an addition symbol. If it is not, we signal an error:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: Otherwise, we create a plus term by recurring on the two sub-pieces.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Putting it all together:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: It’s all a bit much, but fortunately this is about as hard as parsing will get
+    in this book! Everything you see from now on will basically be this same sort
+    of pattern, which you can freely copy.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We should, of course, make sure we’ve got good tests for our parser. For instance:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: Do Now: Are there other kinds of tests we should have written?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We have only written positivetests. We can also write negative tests for situations
+    where we expect errors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`test/exn`takes a string that must be a substring of the error message. You
+    might be surprised that the test above uses the empty string rather than, say,
+    `"addition"`. Try out this example to investigate why. How can you improve your
+    parser to address this?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Other situations we should check for include there being too few or too many
+    sub-parts. Addition, for instance, is defined to take exactly two sub-expressions.
+    What if a source program contains none, one, three, four, …? This is the kind
+    of pedantry that parsing calls for.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Once we have considered these situations, we’re in a happy place, because `parse`produces
+    output that `calc` can consume. We can therefore compose the two functions! Better
+    still, we can write a helper function that does it for us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'So we can now rewrite our old evaluator tests in a much more convenient way:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: Compare this against the `calc` tests we had earlier!
+  prefs: []
+  type: TYPE_NORMAL

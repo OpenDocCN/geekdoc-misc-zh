@@ -1,0 +1,206 @@
+- en: Representing Abstract Syntax
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: In the rest of this book, except where indicated otherwise, we will implement
+    things in the [plait](https://www.google.com/url?q=https://docs.racket-lang.org/plait/index.html&sa=D&source=editors&ust=1695232021101325&usg=AOvVaw1V2YliLbtsEZqqySfseP61) 
+    language of Racket. Please make sure you have plait installed to follow along.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We will create a new tree datatype in plait to represent ASTs. In the sentence
+    diagram above, the leaves of the tree are words, and the nodes are grammatical
+    terms. In our AST, the leaves will be numbers, while the nodes will be operations
+    on the trees representing each sub-expression. For now, we have only one operation:
+    addition. Here’s how we can represent this in plait syntax:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This says:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We are defining a new type, `Exp`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There are two ways of making an `Exp`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'One way is through the constructor `num`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A `num` takes one argument
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That argument must be an actual number
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The other way is through the constructor `plus`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A `plus` takes two arguments
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Both arguments must be `Exp`s
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If it helps as you read what follows, this is very analogous to the following
+    Java pseudocode skeleton (or the analog with Python dataclasses):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s look at how some of the previous examples would be represented:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Surface Syntax | AST |'
+  prefs: []
+  type: TYPE_TB
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '|'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Observe a few things about these examples:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The datatype definition does not let us directlyrepresent surface syntax terms
+    such as `1 + 2 + 3 + 4`; any ambiguity has to be handled by the time we construct
+    the corresponding AST term.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The number representation might look a bit odd: we have a `num` constructor
+    whose only job is to “wrap” a number. We do this for consistency of representation.
+    As we start writing programs to process these data, it’ll become clear why we
+    did this.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Notice that every significant part of the expression went into its AST representation,
+    though not always in the same way. In particular, the `+`of an addition is represented
+    by the constructor; it is not part of the parameters.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The AST really doesn’t care what surface syntax was used. The last term could
+    instead have been written as `(+ 1   (+ (+ 2 3)      4))` or even as ![](image11.png)
+    and it would presumably produce the same AST.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In short, ASTs are tree-structured data that represent programs in programs.
+    This is a profound idea! In fact, it’s one of the great ideas of the 20th century,
+    building on the brilliant work of Gödel (encoding), Turing (universal machine),
+    von Neumann (stored program computer), and McCarthy (metacircular interpreter).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Aside:Not every part of the source program has been represented in the AST.
+    For instance, presumably both `1 + 2`and `1    +  2` would be represented the
+    same way, ignoring the spaces. In practice, a real language implementation does
+    need to know something about the syntax: for instance, to highlight pieces of
+    the program source when there is an error, as DrRacket does. Therefore, real-world
+    implementations use abstract syntax but with metadata relating it back to the
+    source.'
+  prefs: []
+  type: TYPE_NORMAL

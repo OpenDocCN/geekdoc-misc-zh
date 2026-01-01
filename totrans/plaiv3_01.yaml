@@ -1,0 +1,38 @@
+- en: The Target Audience
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Starting with the first edition, this book’s target has been “the other 90%”.
+    That is, I conjecture that roughly 10% of students in a programming languages
+    class are like the educator: they are deeply excited about and motivated to learn
+    the subject, identify with it personally, and may want to continue to study it
+    further. These are wonderful students, and many of them will go on to become the
+    next generation of educators. There are several terrific books that are designed—or
+    at least, work best—for this kind of student.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: But most of them—say 90%—may not have this deep personal identification. Instead,
+    they want to learn the subject enough to become better computer scientists. What
+    do they need to learn, and how do they need to learn it? They are the target audience
+    for this book. On the one hand, the book tries to connect to many programming
+    tasks. At the same time, it’s too easy to pander to such an audience. The book
+    tries to balance these connections with a focus on principles that will stand
+    the learner in good stead for a long time.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Of course, I believe the 10% will learn something useful from this book, too.
+    If nothing else, they may learn a different perspective on the subject, and maybe
+    also develop some empathy for learners not like themselves. If nothing else, well
+    over a dozen students who used earlier editions of this book successfully completed
+    PhDs in programming languages, and several are themselves professors now. So,
+    at least, the book has not harmed them. I can live with those odds.
+  prefs: []
+  type: TYPE_NORMAL
+- en: I have also written this book with working programmers in mind. Many of them
+    may have not had a formal computer science education, or at least one that included
+    a proper introduction to programming languages. At some point, like that 90% of
+    students, some of them become curious about the media they use. I want this book
+    to speak to them, gently drawing them away from the hustle and bustle of daily
+    programming into a space of reflection and thought.
+  prefs: []
+  type: TYPE_NORMAL

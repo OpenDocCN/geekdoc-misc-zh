@@ -1,0 +1,30 @@
+- en: Using Truthy-Falsy Values
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Some languages use truthy-falsy values to handle partial functions. Instead
+    of signaling an error, they return a falsy value when the argument cannot be handled.
+    For instance, it is common to return `#false`in Racket or `None` in Python as
+    an error code, and a proper value for normal execution. Consider this Racket example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This function accepts a string that may or may not represent a number. If it
+    does, it returns one bigger number; otherwise it returns `1`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: This works because `string->number`returns a number or, if the string is not
+    legal, `#false`. In Racket, all values other than `#false`are truthy. Thus, legitimate
+    strings short-circuit evaluation of the `or`, while non-numeric strings result
+    in `0`. These therefore serve as a rough-and-ready option types in languages that
+    don’t (or didn’t) have proper datatype constructors.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We will discuss this issue further later in the book [[👉](PLAIVersion3.2.2_split_125.html#h.tg4ohkq8ngzt)].
+  prefs: []
+  type: TYPE_NORMAL

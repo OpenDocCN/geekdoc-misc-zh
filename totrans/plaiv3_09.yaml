@@ -1,0 +1,79 @@
+- en: Teach Yourself SMoL
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 'This work is centered around your understanding of SMoL. However, to avoid
+    a passive reading experience, [Kuang-Chen Lu](https://www.google.com/url?q=https://lukc1024.github.io/&sa=D&source=editors&ust=1695232021072512&usg=AOvVaw3O6JByCXbnLV7Fth_iekCw) has
+    implemented a series of self-paced tutors to teach you SMoL. The tutors both give
+    you conceptual knowledge and teach you important terminology. Importantly, they
+    also have short, quick test questions to make sure you’re on the right track.
+    These questions serve two ends. First, they force you to pay attention to the
+    tutor: you can’t just scroll through passively. Second, they are based on known
+    misconceptions with this material. Other learners made these mistakes, so you
+    might too. Pay attention!'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The tutors are still preliminary, but they have already been used successfully
+    at Brown.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Because the tutorials currently do not support stopping, saving your work, and
+    resuming, we have broken the material down into a set of small (!) tutors, each
+    covering one concept (and sometimes even less). That way, you can do a tutor or
+    three, take a break, and pick up later.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The tutors are here, in order:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[scope](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dscope&sa=D&source=editors&ust=1695232021073286&usg=AOvVaw2jCaJDO7DIAc1Y7QPXR-ip)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[order](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dorder&sa=D&source=editors&ust=1695232021073631&usg=AOvVaw02VK-IQlGPN10i1EaDWAJM)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[more-scope](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dmore-scope&sa=D&source=editors&ust=1695232021073959&usg=AOvVaw1mN0Av1aAjugY4QlJtO35W)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[mutable variables](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dmut-vars&sa=D&source=editors&ust=1695232021074279&usg=AOvVaw3QZUxWQRk99MfEme5JBqpk)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[sequencing](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dbegin&sa=D&source=editors&ust=1695232021074610&usg=AOvVaw0QYgUMQE-j5fpEjO6x6mAQ)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[vectors1](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dvectors1&sa=D&source=editors&ust=1695232021074972&usg=AOvVaw09X5FEnk6B-VwB80otQiwc)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[vectors2](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dvectors2&sa=D&source=editors&ust=1695232021075331&usg=AOvVaw3rziWdxNWxf2RqKYGxrRja)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[the heap](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dheap&sa=D&source=editors&ust=1695232021075752&usg=AOvVaw2ooiEXa9eegpjBTMsXUlGR)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[lambda1](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlambda1&sa=D&source=editors&ust=1695232021076127&usg=AOvVaw1lsI1lKbVaBzKVhviJOg0s)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[lambda2](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlambda2&sa=D&source=editors&ust=1695232021076493&usg=AOvVaw2S6_5DVxcpafrdm2oJbvrL)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[lambda3](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlambda3&sa=D&source=editors&ust=1695232021076846&usg=AOvVaw0KtSU5-rn9A3Fmd9SeHqPn)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[local](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlocal&sa=D&source=editors&ust=1695232021077191&usg=AOvVaw3b75zQfeMig-XzwSltgyok)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Before you go on in this book, you should do the tutors!
+  prefs: []
+  type: TYPE_NORMAL

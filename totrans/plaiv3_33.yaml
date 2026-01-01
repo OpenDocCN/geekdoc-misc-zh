@@ -1,0 +1,38 @@
+- en: The Value Datatype
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Therefore, we first need to define a datatype that reflects the different kinds
+    of values that an evaluator can produce. We will follow a convention and call
+    the return type constructors `…V`to distinguish from the inputs. Dually, we’ll
+    call the inputs `…E` (for expressions) to distinguish from the outputs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First we’ll rename our expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: (nothing has changed other than the names of the constructors).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Now we introduce a `Value` datatype to represent the types of answers our evaluator
+    can produce:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We update the type of our evaluator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'and the early parts are easy:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE

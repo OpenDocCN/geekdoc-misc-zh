@@ -1,0 +1,51 @@
+- en: Adding Booleans
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Okay, so what if we wanted proper Booleans?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Again, to employ SImPl, we need to alter the AST, the evaluator, and the parser.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can add Booleans much like we did numbers: with a constructor that wraps
+    a plait representation of the Boolean.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'It’s very important to keep in mind what the `num`and `bool`constructors stand
+    for. Recall that this is abstract syntax: we are just (abstractly) representing
+    the program that the user wrote, not the result of its evaluation. Therefore,
+    these constructors are capturing syntactic constantsin the source program: values
+    like `3.14`and `-1`for the former and `#true`and `#false`for the latter. They
+    do notrepresent compound expressions that will evaluate to numbers or Booleans.
+    What an expression will evaluate to, for now, can only be determined by running
+    it. Later [[👉](PLAIVersion3.2.2_split_088.html#h.7rb3ecnk20em)], we will see there
+    are other ways of doing it too!'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Aside:The abstract syntax does not dictate what concrete syntax we use. For
+    instance, we may write numbers as `3`or as `III`. We might write Boolean values
+    as `#t`, `#true`, `true`, `True`, …. We may even have different concrete syntaxes
+    for the same abstract syntax. This is precisely the abstraction that abstract
+    syntax provides!
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Easy peasy! This naturally suggests what we should do in the evaluator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: Oh…oops. This version of `calc` doesn’t type-check, because our calculator is
+    supposed to return only numbers, not Booleans!
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In fact, we had to know that this couldn’t last. We aren’t interested only
+    in calculators; we want to build full-fledged programming languages. They have
+    a wide range of values, i.e., answers: numbers, Boolean, strings, images, functions,
+    and more.'
+  prefs: []
+  type: TYPE_NORMAL

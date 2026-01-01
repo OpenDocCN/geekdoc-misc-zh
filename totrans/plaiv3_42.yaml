@@ -1,0 +1,31 @@
+- en: Functions in the Language
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'There are many ways to think about adding functions to the language. Many languages,
+    for instance, have top-level functions; e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Indeed, some languages (such as C) only have top-level functions. Most modern
+    languages, however, have the ability to write functions outside the top-level:
+    e.g.,'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'and even to returnthose functions, and even to allow them to be written anonymously.
+    Since just about every modern language supports it, we’ll think of this as a component
+    of SMoL. Indeed, with such a facility, we don’t really need a named function construct
+    per se: we could instead have written'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: And in turn we can replace `f`with a name-binding and `lam`, too.
+  prefs: []
+  type: TYPE_NORMAL

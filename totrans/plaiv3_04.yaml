@@ -1,0 +1,25 @@
+- en: Equipment for Learning
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'While over time all the material might be incorporated into this book, for
+    now, the book is part of a broader learning ecosystem, which is the course CSCI
+    1730 at Brown University. All the materials are available from the following site:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[https://cs.brown.edu/courses/csci1730/2022/](https://www.google.com/url?q=https://cs.brown.edu/courses/csci1730/2022/&sa=D&source=editors&ust=1695232021066072&usg=AOvVaw12rsq8ZewnReEjggrk9lO5)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The course’s work is divided into four “threads”. One thread, SMoL, uses an
+    automated tutor to teach students SMoL. A second thread, ML, makes students work
+    through mystery languages. The third is the Implementation thread. The fourth
+    is Analysis, which asks students to relate material they are learning in the class
+    to real-world language contexts. I especially encourage educators to make use
+    of the Analysis thread assignments in their classes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The book also makes extensive use of the [Stacker](https://www.google.com/url?q=https://github.com/LuKC1024/stacker&sa=D&source=editors&ust=1695232021066666&usg=AOvVaw0F8H7448KxzXTTcrlEvX1V) notional
+    machine. Readers will find it useful to run SMoL programs in the Stacker and study
+    how they behave.
+  prefs: []
+  type: TYPE_NORMAL

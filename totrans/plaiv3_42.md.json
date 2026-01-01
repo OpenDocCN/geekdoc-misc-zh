@@ -1,0 +1,1 @@
+["```\nfun f(x):\n  x + x\n```", "```\nfun f(x):\n  fun sq(y):\n    y * y\n  sq(x) + sq(x)\n```", "```\nfun f(x):\n  sq = lam(y): y * y\n  sq(x) + sq(x)\n```"]

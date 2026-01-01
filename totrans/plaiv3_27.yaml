@@ -1,0 +1,14 @@
+- en: Extending the AST
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Because we have fixed our conditionals to have three parts, we just need to
+    represent that in the AST. This is straightforward:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: The real work will happen in the evaluator.
+  prefs: []
+  type: TYPE_NORMAL

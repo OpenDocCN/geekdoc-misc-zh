@@ -1,0 +1,126 @@
+- en: Caching Substitution
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: We repeatedly—and rightly—refer back to substitution to understand how programs
+    should work, and indeed will do so again later. But substitution as an evaluationtechnique
+    is messy. This requires us to constantly keep rewriting the program text, which
+    takes time linear in the size of the program (which can get quite large) for every variable
+    binding. Most real language implementations do not work this way.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Instead, we might think of employing a space-time tradeoff: we’ll use a little
+    extra space to save ourselves a whole lot of time. That is, we’ll cachethe substitution
+    in a data structure called the environment. An environment records names and their
+    corresponding values: that is, it’s a collection of key-value pairs. Thus, whenever
+    we encounter a binding we remember its value, and when we encounter a variable,
+    we look up its value.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Aside: As with all caches, we want them to only improve performance along a
+    dimension, not change the meaning. That is, we no longer want substitution to
+    define howwe produce an answer. But, we still want it to tell us what answer to
+    produce. This will become important below.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We will use a hash table to represent the environment:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We will need the interpreter to actually take an environment as a formal parameter,
+    to use in place of substitution. Thus:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Now what happens when we encounter a variable? We try to look it up in the
+    environment. That may succeed or, in the case of our last example above, fail.
+    We will use `hash-ref`, which looks up keys in hash tables, and returns an `Optionof` type
+    to account for the possibility of failure. We can encapsulate it in a function
+    that we will repeatedly find useful:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the event the lookup succeeds, then we want the value found, which is wrapped
+    in `some`. This function  enables our interpreter to stay very clean and readable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: Finally, we are ready to tackle `let1`. What happens here? We must
+  prefs: []
+  type: TYPE_NORMAL
+- en: evaluate the body of the expression, in
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: an environment that has been extended, with
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: the new name
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: bound to its value.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Phew!
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Fortunately, this isn’t as bad as it sounds. Again, a function will help a
+    lot:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With this, we can see the structure clearly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: (Observe that we used `let`in plait to define `let1` in Paret. We’ll see more
+    of this…)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In sum, our core interpreter is now:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Exercise:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: What if we had not called `(interp val nv)` above?
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: What if we’d used `nv`instead of `new-env`in the call to `interp`?}
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Are there any other errors in the interpreter based on copying what we had before?
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: We seem to extend the environment but never remove anything from it. Is that
+    okay? If not, it should cause an error. What program would demonstrate this error,
+    and does it actually do so? (If not, why not?)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: This concludes our first interesting “programming language”. We have already
+    been forced to deal with some fairly subtle questions of scope, and with how to
+    interpret them. Things will only get more interesting from here!
+  prefs: []
+  type: TYPE_NORMAL

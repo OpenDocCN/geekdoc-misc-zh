@@ -1,0 +1,31 @@
+- en: The Language(s) of the Book
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'This book makes heavy use of [Racket](https://www.google.com/url?q=https://racket-lang.org/&sa=D&source=editors&ust=1695232021067159&usg=AOvVaw0kEHgZx4wlLC_o1l7GnVcx).
+    However, that is too simplistic. Racket’s power comes from its ability to define
+    new languages: [this article](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Papers/Published/fffkbmt-programmable-prog-lang/&sa=D&source=editors&ust=1695232021067394&usg=AOvVaw214fGxlshmCAnJzUJUG5dk)and
+    [this brief video](https://www.google.com/url?q=https://youtu.be/R_1TnfCuxK8&sa=D&source=editors&ust=1695232021067621&usg=AOvVaw055kiEdpnPdwxtKaQRyL0R) discuss
+    that in more detail. Indeed, some programs in this book are written in the Racket
+    programming language (`#lang racket`), but many are in a language ideally designed
+    for this book (`#lang plait`). In addition, other parts define their own languages:
+    there are multiple SMoL languages and well over a dozen mystery languages. Thus,
+    while the learner must demonstrate some forbearance for parenthetical syntax,
+    in return they will be richly rewarded with learning experiences.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The existence of `#lang`, in some ways, drove this book’s redesign. I had some
+    hand in that feature’s [design](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Papers/Published/cffk-macros-to-dsls/&sa=D&source=editors&ust=1695232021068197&usg=AOvVaw2ek0jEgcbTPyCNMaXY6ktq),
+    which made me acutely self-conscious: materials intended to be for a broad audience
+    shouldn’t be about work too close to my heart. That was one of the reasons that,
+    while the first edition used a predecessor of Racket, the second edition did not.
+    In the process, however, I realized that I was depriving my students of numerous
+    learning opportunities: after all, what better medium for the study of languages
+    than a language designed for designing languages? For instance, the first version
+    of the mystery languages were ad hoc and confusing; reimplementing them as a collection
+    of Racket `#lang`s made them far simpler and clearer (and also open them up to
+    be an object of direct study themselves). Thus, this edition doubles down (and
+    then some) on the use of Racket. Getting it right can be tricky (e.g., avoiding
+    mode confusion) and may take a few iterations, but it’s well worth the effort.'
+  prefs: []
+  type: TYPE_NORMAL

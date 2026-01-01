@@ -1,0 +1,45 @@
+- en: Preface
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: Why Study Programming Languages?
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'It is always healthy to begin a course of study by asking why we should engage
+    in it. So let us list a few reasons to justify this one:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Programming languages are some of the most beautiful and powerful objects invented
+    by human beings.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: They let us—indeed, force us to—capture our thoughts precisely, and in return
+    command machines of immense power to do our bidding.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: To a programmer, they are the ultimate human-computer interface.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'They are industrially important: so important that major companies create new
+    languages or co-opt existing ones to establish or expand their market share.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'They embody a new form of knowledge: what [Structure and Interpretation of
+    Computer Programs](https://www.google.com/url?q=https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/index.html&sa=D&source=editors&ust=1695232021060331&usg=AOvVaw0FxIsmtPtHl1wGbU99LU18) called
+    a “procedural epistemology”.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: They enable us to prove powerful statements about the means and limits of our
+    expression. How many other languages let us do either?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How many more reasons does one need?
+  prefs: []
+  type: TYPE_NORMAL

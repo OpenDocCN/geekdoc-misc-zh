@@ -1,0 +1,42 @@
+- en: Everyone Else
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: This edition builds on [two](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/&sa=D&source=editors&ust=1695232021070204&usg=AOvVaw3CVpbu9X47jQ8MLGb5Ajjn) [previous](https://www.google.com/url?q=https://cs.brown.edu/courses/cs173/2012/book/&sa=D&source=editors&ust=1695232021070493&usg=AOvVaw3c8_IB5k6Y0qVdQIpSCQg9) editions.
+    I remain deeply grateful to all the people who helped make those editions happen.
+  prefs: []
+  type: TYPE_NORMAL
+- en: My group’s PhD students, especially Jack Wrenn, have tolerated years of my complaining
+    about my course. Amidst their eye-rolling they heard me out, batted away my worst
+    ideas, and fleshed out my better ones. I am deeply fortunate to be able to work
+    with them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: John Clements’s sabbatical at Brown was a huge fillip to my rethinking the basics,
+    and our conversations reminded me how much I have missed his company.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Kuang-Chen Lu has believed in this project from the start, and built and maintained
+    numerous of the materials that make it possible. He has not only collaborated
+    on but actively leads many of the materials that power or augment this book. His
+    dissertation research will likely lead to significant improvements in how we teach
+    programming languages.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Matthew Flatt’s fingerprints are all over this book. I especially thank him
+    for the Racket ecosystem and the `#lang` concept, which also drove the redesign
+    of this book, and for the plait language especially, which is central to much
+    of this book’s code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Most of this book’s ideas and composition were formed on the East Bay Bike Path.
+    To the people who made it happen and keep it alive, many thanks, and may the winds
+    always be at your back (which they often can be, if you ride south and then back
+    north between 2pm and 4pm).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Finally, this book wouldn’t have migrated from head to page without the love
+    and support of Kathi and Tara, who alsotolerated years of my complaining about
+    my course and provided their own eye-rolling support. They are my rocks.
+  prefs: []
+  type: TYPE_NORMAL

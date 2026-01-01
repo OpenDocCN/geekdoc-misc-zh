@@ -1,0 +1,9 @@
+- en: ••••• Evaluation •••••
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 'We begin by studying the process of building evaluators: programs that turn
+    programs into answers. We will follow SImPl, while exploring the core concepts
+    in SMoL.'
+  prefs: []
+  type: TYPE_NORMAL

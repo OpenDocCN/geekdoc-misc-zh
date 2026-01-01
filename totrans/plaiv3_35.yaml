@@ -1,0 +1,42 @@
+- en: Evaluating Local Binding
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 'Most programming languages have some notion of local binding. There are two
+    words there, which we’ll tease apart:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Binding means to associate names with values. For instance, when we call a function,
+    the act of calling associates (“binds”) the formal parameters with the actual
+    values.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Local means they are limited to some region of the program, and not available
+    outside that region.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For instance, in many languages we can write something like
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This seems clear enough. But here is a more subtle program:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: Is that legal? It depends on whether the `y`is still “alive” or “active” or
+    “visible” or whatever other phrase you would like; formally, we would say, it
+    depends on whether `y`is in scope. Specifically, we’d ask whether the last `y`is
+    a boundinstance of the bindingthat takes place in the `for`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This is complicated! Many languages do rather odd, complicated, and certainly
+    unintuitive things, as you will see from Mystery Languages. These odd things are
+    not really part of SMoL; if anything, they are a violation of it.
+  prefs: []
+  type: TYPE_NORMAL

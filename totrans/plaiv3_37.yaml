@@ -1,0 +1,155 @@
+- en: The Meaning of Local Binding
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Do Now:Here are some examples of this new construct; what do you expect each
+    one to produce?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Do Now: Oh, did you notice something? None of the above programs is syntactically
+    legal! Why?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'It’s because there is no syntax yet for variables. Our syntax permits us to
+    bindvariables but not to use them. So we have to fix that:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: Now the above terms are all syntactically valid, so we can go back to the question
+    of what they should evaluate to.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The first two programs are pretty obvious:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: should evaluate to 2, and
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: should evaluate to 3.
+  prefs: []
+  type: TYPE_NORMAL
+- en: How about this program?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: Here we see the advantage of the parenthetical notation. In a more conventional
+    syntax, this might correspond to
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'where any number of things could happen: we might have two different `x`’s;
+    we might have an `x`bound and then modified; and in some languages, an introduction
+    of `x`could be “lifted” so that it’s no longer clear which `x`is most recent.
+    With our parenthetical syntax, though, it’s pretty clear what scopes we want.
+    To determine the value, we can rely on our old friend, substitution. However,
+    when we substitute the outer `x`, we expect that to stop at the point where the
+    inner `x`begins: that is, the inner `x` shadowsthe outer one. Hence, the result
+    should be `5`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Do Now: The example above is uninteresting in that the outer `x`never sees
+    any use. What kind of program might we write that has two `let`bindings of `x`that
+    lets us clearly see that there are two `x`’s?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'That’s what this program shows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'It seems fairly clear that the left `x`in the addition should be `1`, while
+    `x`in the right expression should be shadowed and hence should evaluate to `2`.
+    The sum should therefore be `3`. Incidentally, DrRacket is useful in such cases,
+    because we can write an equivalent expression in #lang racket—'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '—and hover over the last `x`, and DrRacket (for Racket, which represents a
+    fairly ideal form of SMoL) will automatically draw a blue arrow showing where
+    the variable is bound:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](image18.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Now for a more complex example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: Here, it’s especially useful to turn to substitution to determine the answer.
+    Again, it seems clear that `x`in the left expression is shadowed and hence should
+    be `2`. The big question, of course, is what about the `x` on the right hand side
+    of the addition (i.e., on the last line)?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Here, again, conventional textual syntax is fraught with ambiguity: is'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: on the left a bindingof a new `x` or a modificationof the outer `x`? Those are
+    two very different things! But with our syntax it’s much clearer that it shouldbe
+    the former, not the latter. Thus, by substitution, the outer `x`is replaced by
+    `1`, giving
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: in which we perform one more substitution, producing
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'and hence `3`. This time, DrRacket is especially useful confirmation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](image2.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'That leaves just one program:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: Because `x` is not bound anywhere, this is just a syntax error.
+  prefs: []
+  type: TYPE_NORMAL

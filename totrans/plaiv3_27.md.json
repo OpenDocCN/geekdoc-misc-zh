@@ -1,0 +1,1 @@
+["```\n(define-type Exp\n  [num (n : Number)]\n  [plus (left : Exp) (right : Exp)]\n  [cnd (test : Exp) (then : Exp) (else : Exp)])\n```"]

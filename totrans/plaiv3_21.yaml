@@ -1,0 +1,35 @@
+- en: Some Subtler Tests
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Try the following test:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'It succeeds! Are we happy? Suppose we instead write it as:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'As expected, it fails: but the error message reveals that the left-hand side
+    evaluated to 0.30000000000000004\. This should be a cue that we have actually
+    gotten [floating point](https://www.google.com/url?q=https://0.30000000000000004.com/&sa=D&source=editors&ust=1695232021117958&usg=AOvVaw3K_UT0jvSMRzJJKE3HmGaN)addition.
+    This is because plait treats numbers written with a decimal point, like `0.1`,
+    as floating pointbitstrings. However, floating point bitstrings cannot precisely
+    represent the number 0.3\. In fact, plait’s `test`allows a little bit of numeric
+    slack so that the passing test above works. (This is because in plait, `0.3` really
+    does precisely represent the number 0.3, because it was written literally and
+    not the result of a floating-point computation.)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This reinforces a point we made in passing above and was therefore easy to
+    miss: by adopting plait’s primitives, we have also inherited its semantics. This
+    may or may not be what we wanted! Therefore, when writing an evaluator using a
+    host language, we have to make sure that its semantics are the one we want, otherwise
+    we could be in for an unpleasant surprise. If we want different behavior, we have
+    to implement it explicitly.'
+  prefs: []
+  type: TYPE_NORMAL

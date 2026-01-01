@@ -1,0 +1,104 @@
+- en: Updating the Evaluator
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: 'Now suppose we try to use our existing code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This has two problems. The first is we can’t return a number; we have to return
+    a `numV`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: But now we run into a subtler problem. The type-checker is not happy with this
+    program. Why?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Because the result of `calc`is a `Value`, and `+`consumes only `Number`s. Indeed,
+    the type checker is forcing us to make a decisionhere: what happens if one of
+    the sides of `+` does not evaluate to a number?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First, let’s build an abstraction to handle this, so that we can keep the core
+    of the interpreter relatively clean:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Now we can defer all the logic of evaluating `+`to `add`. Now we have to make
+    a semantic decision. Should we be allowed to “add” two Boolean values? What about
+    adding a number to a Boolean or vice versa? Though there isn’t quite a SMoL decision
+    here—some languages are very strict while others are very permissive—the least-non-standard
+    policy is to require both branches to evaluate to numbers, which we would express
+    as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: Observe that these `else` clauses can easily represent other decisions. We can
+    embed an entire family of mystery languages in the different choices available!
+  prefs: []
+  type: TYPE_NORMAL
+- en: Exercise:Why did we write the numV constructor in `add`rather than in `calc`?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pro Tip: You’ve just added a complex chunk of code. Now would be a very good
+    time to test your evaluator. Here are two things to consider:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Right now the code for conditionals alsodoes not type-check. You may find it
+    convenient to replace the entire RHS with something semantically incorrect but
+    type-correct, like `(numV 0)`, so you restore your working evaluator.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Don’t forget to test for the error cases! You would do so using `test/exn`.
+    For instance: `(test/exn (calc (plusE (numE 4) (boolE #false))) "RHS")`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Let’s now turn our attention to the conditional (with the constructor name
+    updated):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The core logic must clearly be similar: check something about the condition,
+    and based on it, evaluate only one of the other two clauses. Once again, we have
+    to make decisions about how we handle the conditional: should we strictly require
+    a Boolean value, or should we make a truthy/falsy decision? We can again defer
+    that to a helper function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Again, the least non-standard policy, and one that sets up later material,
+    is to be strict about requiring a Boolean:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'But again, starting from a strict interpretation, we can see where we can give
+    in to any urges we feel to design a more liberal semantics: by replacing the `else` clause.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Observe, by the way, that we did something different with conditionals than
+    we did for addition. With `add`, we evaluated both branches and gave it their
+    corresponding `Value`s. It would be a terrible idea to do that with conditionals,
+    because the entire point of a conditional is to notevaluate one of the branches!
+    We could have sent the ASTs for the branches to a helper function, but what we
+    have done above also works well: it localizes the variation in the semantics to
+    the helper function, but keeps what is not expected to change (the fact that a
+    conditional syntax leads to a conditional evaluation) in the core of the evaluator.'
+  prefs: []
+  type: TYPE_NORMAL

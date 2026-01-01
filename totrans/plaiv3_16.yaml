@@ -1,0 +1,60 @@
+- en: Representing Programs
+  prefs:
+  - PREF_H2
+  type: TYPE_NORMAL
+- en: Well, what doesan evaluator consume? It consumes programs. So we need to figure
+    out how to represent programs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Of course, computers represent programs all the time. When we’re writing code,
+    our text editor holds the program source. Every executable on disk and in memory
+    is a representation of a program. When we visit a Web page, it sends down a JavaScript
+    program. These are all programs represented in the computer. But all these are
+    a bit inconvenient for our needs, and we’ll come up with a better representation
+    in a moment.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Before thinking about representations, let’s think about what we’re representing.
+    Here are some example (arithmetic) programs:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Already we have a question. How should we write our program? You can see where
+    this is going: should we be writing the sum of 1 and 2 as'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: or as
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'and so on. (For that matter, we can even ask what numeral system to use for
+    basic numbers: e..g, should we write `3`or `III`? You can [program with the latter](https://www.google.com/url?q=https://github.com/shriram/roman-numerals&sa=D&source=editors&ust=1695232021096337&usg=AOvVaw196-G7CiljdYG4eyIDGvwA) if
+    you’d really like to.)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: These are questions of what surface syntax to use. And they are very important!
+    And interesting! And important! People get really attached to some surface syntaxes
+    over the other (you may already be having some feelings about Racket’s parenthetical
+    syntax…I certainly do). You can even write that expression as
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](image12.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: in Scratch and Snap!, and this syntax has been invaluable in getting young children
+    to learn how to program without all the vagaries of textual syntax.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Thus, these are great human-factors considerations. But for now these are a
+    distraction in terms of getting to understand the models underlying languages.
+    Therefore, we need a way to represent all these different programs in a way that
+    ignores these distinctions.
+  prefs: []
+  type: TYPE_NORMAL
