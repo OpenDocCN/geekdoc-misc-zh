@@ -1,1 +1,0 @@
-["```\n(define (calc e)\n  (type-case Exp e\n    [(num n) n]\n    [(plus l r) (+ (calc l) (calc r))]\n    [(cnd c t e) (if (zero? (calc c))\n                     (calc t)\n                     (calc e))]))\n```"]

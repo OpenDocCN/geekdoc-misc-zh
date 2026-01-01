@@ -1,1 +1,0 @@
-["```\n(define (f x) (+ x 1))\n(f 2)\n```", "```\n;; f is the same as before\n(define (g z)\n  (f (+ z 4)))\n(g 5)\n```", "```\n;; f is the same as before\n;; g is the same as before\n(define (h z w)\n  (+ (g z) (g w)))\n(h 6 7)\n```"]

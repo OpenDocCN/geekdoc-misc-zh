@@ -1,1 +1,0 @@
-["```\n(define-type Exp\n  [numE (n : Number)]\n  [plusE (left : Exp) (right : Exp)]\n  [varE (name : Symbol)]\n  [let1E (var : Symbol)\n         (value : Exp)\n         (body : Exp)])\n```", "```\n(define (interp e)\n  (type-case (Exp) e\n    [(numE n) n]\n    [(varE s) …]\n    [(plusE l r) (+ (interp l) (interp r))]\n    [(let1E var val body) …]))\n```"]
