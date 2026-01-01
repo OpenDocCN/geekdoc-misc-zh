@@ -1,38 +1,60 @@
 - en: The Value Datatype
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 值数据类型
 - en: Therefore, we first need to define a datatype that reflects the different kinds
     of values that an evaluator can produce. We will follow a convention and call
     the return type constructors `…V`to distinguish from the inputs. Dually, we’ll
     call the inputs `…E` (for expressions) to distinguish from the outputs.
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我们首先需要定义一个数据类型，以反映评估器可以产生的不同类型的值。我们将遵循一个约定，并将返回类型构造函数称为`…V`以区分输入。相应地，我们将输入称为`…E`（对于表达式）以区分输出。
 - en: 'First we’ll rename our expressions:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们将重命名我们的表达式：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: (nothing has changed other than the names of the constructors).
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: （除了构造函数的名称外，没有其他变化）。
 - en: 'Now we introduce a `Value` datatype to represent the types of answers our evaluator
     can produce:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们引入一个`Value`数据类型来表示评估器可以产生的答案类型：
 - en: '[PRE1]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'We update the type of our evaluator:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们更新了评估器的类型：
 - en: '[PRE2]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'and the early parts are easy:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 以及早期部分很简单：
 - en: '[PRE3]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'

@@ -1,59 +1,84 @@
 - en: Abstract Syntax
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 抽象语法
 - en: 'This leads us to the first part of SImPl(the Standard Implementation Plan):
     the creation of what is called abstract syntax. In abstract syntax, we represent
     the essence of the input, ignoring the superficial syntactic details. Thus, in
     abstract syntax, all of the above programs will have the exact same representation.'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 这引导我们来到SImPl（标准实现计划）的第一部分：创建所谓的抽象语法。在抽象语法中，我们表示输入的本质，忽略表面的语法细节。因此，在抽象语法中，所有上述程序都将有完全相同的表示。
 - en: 'An abstract syntax is an in-computer representation of programs. There are
     many kinds of data we can use as a representation, so let’s think about the kinds
     of programs we might want to represent. For simplicity, we’ll assume that our
     language has only numbers and addition; once we can handle that, it’ll be easy
     to handle additional operations. Here are some sample (surface syntax) programs:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 抽象语法是程序在计算机中的表示。我们可以使用许多种类的数据作为表示，所以让我们考虑我们可能想要表示的程序类型。为了简单起见，我们假设我们的语言只有数字和加法；一旦我们能够处理这一点，处理其他操作就会变得容易。以下是一些样本（表面语法）程序：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: In conventional arithmetic notation, of course, we have to worry about the order
     of operations and what operations take precedence over what others. In abstract
     syntax, that’s another detail we want to ignore; we’ll instead assume that we
     are working internally with the equivalent of fully-parenthesized expressions,
     where all these issues have been resolved. Thus, it’s as if the last two expressions
     above were written as
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 在传统的算术表示法中，当然，我们必须担心运算的顺序以及哪些运算比其他运算优先。在抽象语法中，这也是我们想要忽略的另一个细节；我们将假设我们在内部使用完全括号化的表达式，其中所有这些问题都已解决。因此，上面的最后两个表达式可以写成
 - en: '`(1 + 2) + 3`    or    `1 + (2 + 3)`'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: '`(1 + 2) + 3` 或 `1 + (2 + 3)`'
 - en: '[PRE1]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Observe, then, that each side of the addition operation can be a full-blown
     expression in its own right. This gives us a strong hint as to what kind of representation
     to use internally: a tree. Indeed, it’s so common to use abstract syntax trees that
     the abbreviation, AST, is routinely used without explanation; you can expect to
     see it in books, papers, blog posts, etc. on this topic.'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 那么，观察一下加法运算的每一侧都可以是一个完整的表达式。这给我们一个强烈的暗示，即我们应该使用什么样的内部表示：一棵树。确实，抽象语法树（AST）的使用如此普遍，以至于缩写AST通常被直接使用而不加解释；你可以预期在关于这个主题的书籍、论文、博客文章等中看到它。
 - en: 'You have quite possibly seen this idea before: it’s called sentence diagramming(read
     more on [Wikipedia](https://www.google.com/url?q=https://en.wikipedia.org/wiki/Sentence_diagram&sa=D&source=editors&ust=1695232021099891&usg=AOvVaw0mLql56jjx6e6LF3zsSv2s)).
     Here, for instance, is a diagram of the sentence “He studies linguistics at the
     university”:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能之前已经见过这个想法：它被称为句子图（更多内容请参阅[Wikipedia](https://www.google.com/url?q=https://en.wikipedia.org/wiki/Sentence_diagram&sa=D&source=editors&ust=1695232021099891&usg=AOvVaw0mLql56jjx6e6LF3zsSv2s)）。例如，这是句子“他在大学学习语言学”的图示：
 - en: '![](image1.png)'
+  id: totrans-9
   prefs: []
   type: TYPE_IMG
+  zh: '![image1.png](image1.png)'
 - en: 'By Xbarst1.jpg: Russky1802 derivative work: Maxdamantus - This file was derived
     from: Xbarst1.jpg:, Public Domain, https://commons.wikimedia.org/w/index.php?curid=21979041'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: '![Xbarst1.jpg](https://commons.wikimedia.org/w/index.php?curid=21979041) 由
+    Russky1802 衍生作品：Maxdamantus - 此文件是从 Xbarst1.jpg 衍生而来：，公有领域，https://commons.wikimedia.org/w/index.php?curid=21979041'
 - en: An NP is a Noun Phrase, V is a Verb, and so on. Observe how the sentence diagram
     takes a linearsentence and turns it into a tree-shaped representation of the grammatical
     structure. We want to do the same for programs.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个NP是名词短语，V是动词，以此类推。观察句子图是如何将线性句子转换成语法结构的树形表示。我们希望对程序也做同样的事情。

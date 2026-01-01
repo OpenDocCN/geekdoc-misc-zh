@@ -1,9 +1,13 @@
 - en: ••••• Evaluation •••••
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: ••••• 评估 •••••
 - en: 'We begin by studying the process of building evaluators: programs that turn
     programs into answers. We will follow SImPl, while exploring the core concepts
     in SMoL.'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们首先研究构建评估器的过程：将程序转换为答案的程序。我们将遵循SImPl，同时探索SMoL的核心概念。

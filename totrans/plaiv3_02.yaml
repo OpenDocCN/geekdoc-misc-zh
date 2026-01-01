@@ -1,23 +1,29 @@
 - en: Why a Third Edition
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 为什么会有第三版
 - en: Over the past several years, a significant part of [my research](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Papers/Published/&sa=D&source=editors&ust=1695232021062166&usg=AOvVaw1RZYx27xWDC--rnWjNoVEQ) examines
     how students understand programming languages at many different levels. What I
     have learned has convinced me that we need a new approach to teaching this material.
     This edition is a first iteration to that end. (It was also a chance to rewrite
     the prose in my current “voice”, which has evolved a lot over two decades. Virtually
     no text is in common with the first edition, and only some with the second.)
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 在过去几年中，我的研究[部分](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Papers/Published/&sa=D&source=editors&ust=1695232021062166&usg=AOvVaw1RZYx27xWDC--rnWjNoVEQ)主要考察了学生在不同层次上如何理解编程语言。我所学到的知识使我确信，我们需要一种新的方法来教授这些材料。这一版是朝着这个目标迈出的第一步。（这同时也是一次机会，可以重写我当前“声音”中的散文，这种声音在过去的二十年中已经发生了很大的变化。几乎没有任何文本与第一版相同，只有一些与第二版相似。）
 - en: We also live in a world of unprecedented linguistic diversity and novelty. It
     seems like every few weeks I learn about someone trying some new linguistic experiment.
     The wide availability of robust and interesting run-time systems—as diverse as
     Erlang’s, the Java Virtual Machine, the browser’s JavaScript, Racket’s, and more—makes
     it easy to get a working prototype “with batteries” and focus on novelty. This
     affects both people trying to learn new languages and those trying to build them.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还生活在一个前所未有的语言多样性和新颖性的世界中。似乎每隔几周，我都会了解到有人在进行某种新的语言实验。强大且有趣的运行时系统的广泛可用性——如Erlang的、Java虚拟机、浏览器的JavaScript、Racket的等等——使得获得一个带有“电池”的工作原型变得容易，并专注于新颖性。这既影响了试图学习新语言的人，也影响了试图构建它们的人。
 - en: Relatedly, the first edition took a very “classical” look at programming languages,
     shaped by my own formal training in the subject. The second edition started to
     migrate from it, but not entirely. The third edition has mostly broken free of
@@ -25,8 +31,10 @@
     are not many books that cover topics like “scripting” and “gradual typing” without
     reducing them to slogans and fluff; this book tries to cover them in more rigorous
     ways.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 相关地，第一版对编程语言采取了非常“经典”的视角，这受到了我在该领域正规训练的影响。第二版开始从它迁移出来，但并不完全。第三版主要摆脱了这些限制，更多地反映了当前的语景。很少有书籍在不将其简化为口号和空话的情况下涵盖像“脚本”和“渐进式类型”这样的主题；这本书试图以更严谨的方式涵盖它们。
 - en: But all this diversity brings up the important challenge of how to approach
     it. In other disciplines, we approach new objects by decomposing them into familiar
     constituent elements. Their commonalities provide an anchor, and a point of departure
@@ -37,5 +45,7 @@
     But programming languages are artificial, not natural, entities, and nothing prevents
     designers from freely mixing between the boxes—as indeed many have. When virtually
     everything is “multiparadigm”, how can we make sense out of the world?
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 但所有这些多样性都提出了一个重要的挑战，那就是如何去应对它。在其他学科中，我们通过将新对象分解成熟悉的组成部分来接近它们。它们的共性提供了一个支点，以及一个起点，来探索它们的新颖之处。对于编程语言来说，这些元素是什么？教学传统认为，“范例”是这种组织媒介之一，但我发现它们是计算想要被视为“科学”时期的僵化遗产，那时人们认为将事物放入标签化的框中是最好的方式。但编程语言是人工的，不是自然的实体，没有任何东西阻止设计者自由地在这些框之间混合——事实上，很多人都是这样做的。当几乎所有东西都是“多范例”的时候，我们如何才能理解这个世界呢？

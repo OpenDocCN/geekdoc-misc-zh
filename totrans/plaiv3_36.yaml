@@ -1,24 +1,33 @@
 - en: A Syntax for Local Binding
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 本地绑定的语法
 - en: 'Part of the problem is actually syntactic. When we write a program like the
     above, there’s no clear beginning or ending of the scope of `y`(i.e., the region
     where `y`is bound). This is actually a great virtue of parenthetical syntax: it
     suggestsa clear region (between the parentheses). Of course, we have a responsibility
     to make sure that that’s where the variable is actually bound (though this is
     something that we’ll find, in a little while, is not so trivial).'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 问题的一部分实际上是语法的。当我们编写上述程序时，`y`的作用域（即`y`被绑定的区域）没有明确的开始或结束。这实际上是括号语法的一个优点：它暗示了一个清晰的区域（括号之间）。当然，我们有责任确保变量实际上绑定在那里（尽管我们稍后会发现这并不那么简单）。
 - en: 'Following the syntax of Racket, we’ll add a new construct to our language.
     At this point it’s getting a bit tricky to keep track of the full syntax, so we’ll
     use a notation called BNF (short for Backus-Naur Form). Let’s start with our arithmetic
     language:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 按照Racket的语法，我们将在我们的语言中添加一个新的结构。到目前为止，跟踪完整的语法变得有点棘手，因此我们将使用一种称为BNF（Backus-Naur
+    Form的缩写）的符号。让我们从我们的算术语言开始：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: which reads as “define (`::=`) `expr` (short for expression) to be either a
     number or (`|`) the surface syntax consisting of an opening brace (`{`), a plus
     sign (`+`), an `expr`, another `expr`, and a closing brace”. BNF gives us a convenient
@@ -27,16 +36,20 @@
     (Observe, however, that in the BNF, we simply say that each sub-expression is
     an `expr`, because that’s all we need to know to properly form programs. However,
     in the AST, we give the parts different names to tell them apart.)
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 它读作“定义（`::=`）`expr`（表达式）为数字或（`|`）由一个开括号（`{`）、一个加号（`+`）、一个`expr`、另一个`expr`和一个闭括号组成的表面语法”。BNF通过其具体语法为我们提供了一种方便的符号来表示语言的语法，我们的抽象语法通常将与BNF以非常自然的方式直接对应。（然而，请注意，在BNF中，我们只是简单地说每个子表达式都是一个`expr`，因为这是我们正确形成程序所需知道的一切。然而，在AST中，我们给不同的部分赋予不同的名称以区分它们。）
 - en: 'Notation:BNF is divided into terminalsand non-terminals. Non-terminals are
     placeholders like `expr`and `num`above: they stand for many more possibilities
     (an `expr`above can be replaced with one of two possibilities (for now), while
     there are many possible ways to write `num`s). They are given this name because
     the grammar doesn’t “terminate” here: the name is a place-holder that can (and
     must) be further expanded.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 符号：BNF分为终结符和非终结符。非终结符是像`expr`和`num`上面的占位符：它们代表许多更多的可能性（上面的`expr`可以替换为两种可能性之一（目前是这样），而`num`有许多可能的写法）。它们之所以被赋予这个名字，是因为语法在这里没有“终止”：这个名字是一个占位符，可以（并且必须）进一步展开。
 - en: The convention is to write non-terminals inside `<`pointy brackets`>`. Terminals,
     in contrast, are concrete syntax, like `{`, `}`, and `+`above. They are so-called
     because they stand for themselves and can’t be expanded further. They are sometimes
@@ -44,15 +57,23 @@
     reason, they are not surrounded by any decorative symbols. Everything is written
     literally unless it’s a non-terminal, in which case it’s replaced by something
     according to the definition of the non-terminal.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 习惯上，将非终结符写在`尖括号`内。相比之下，终结符是具体的语法，如`{`、`}`和`+`上面的。它们被称为终结符，因为它们代表自身并且不能进一步展开。它们有时也被称为字面量，因为它们必须按所示字面地写出。因此，它们不被任何装饰性符号包围。除非是非终结符，否则一切都是按字面意思写的，在这种情况下，它将被根据非终结符的定义替换为某种东西。
 - en: 'Now we can define an extended language:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，我们可以定义一个扩展语言：
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'That is, we’re adding a new language construct, `let1`, which has three parts:
     a variable (`var`) and two expressions (the two `expr`’s).'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 即，我们正在添加一个新的语言结构`let1`，它有三个部分：一个变量（`var`）和两个表达式（两个`expr`）。

@@ -1,200 +1,310 @@
 - en: Representing Abstract Syntax
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 抽象语法的表示
 - en: In the rest of this book, except where indicated otherwise, we will implement
     things in the [plait](https://www.google.com/url?q=https://docs.racket-lang.org/plait/index.html&sa=D&source=editors&ust=1695232021101325&usg=AOvVaw1V2YliLbtsEZqqySfseP61) 
     language of Racket. Please make sure you have plait installed to follow along.
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本书的其余部分，除非另有说明，我们将使用Racket语言的[plait](https://www.google.com/url?q=https://docs.racket-lang.org/plait/index.html&sa=D&source=editors&ust=1695232021101325&usg=AOvVaw1V2YliLbtsEZqqySfseP61)语言来实现这些功能。请确保您已安装plait，以便跟随。
 - en: 'We will create a new tree datatype in plait to represent ASTs. In the sentence
     diagram above, the leaves of the tree are words, and the nodes are grammatical
     terms. In our AST, the leaves will be numbers, while the nodes will be operations
     on the trees representing each sub-expression. For now, we have only one operation:
     addition. Here’s how we can represent this in plait syntax:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将在plait中创建一个新的树状数据类型来表示AST。在上面的句子图中，树的叶子是单词，节点是语法术语。在我们的AST中，叶子将是数字，而节点将是表示每个子表达式的树的运算。目前，我们只有一个运算：加法。以下是我们在plait语法中表示它的方法：
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'This says:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 这表示：
 - en: We are defining a new type, `Exp`
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们正在定义一个新的类型，`Exp`
 - en: There are two ways of making an `Exp`
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建`Exp`有两种方式
 - en: 'One way is through the constructor `num`:'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一种方式是通过构造函数`num`：
 - en: A `num` takes one argument
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`num`运算需要一个参数'
 - en: That argument must be an actual number
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 那个参数必须是一个实际的数字
 - en: 'The other way is through the constructor `plus`:'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 另一种方式是通过构造函数`plus`：
 - en: A `plus` takes two arguments
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`plus`运算需要两个参数'
 - en: Both arguments must be `Exp`s
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 两个参数都必须是`Exp`
 - en: 'If it helps as you read what follows, this is very analogous to the following
     Java pseudocode skeleton (or the analog with Python dataclasses):'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果阅读以下内容时这有助于您，这非常类似于以下Java伪代码框架（或Python数据类的类似物）：
 - en: '[PRE1]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[PRE2]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[PRE3]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Let’s look at how some of the previous examples would be represented:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看一些先前示例是如何表示的：
 - en: '| Surface Syntax | AST |'
+  id: totrans-18
   prefs: []
   type: TYPE_TB
+  zh: '| 表面语法 | AST |'
 - en: '|'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE4]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '|'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE5]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '|'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '|'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE6]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '|'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE7]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '|'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '|'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE8]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '|'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE9]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '|'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '|'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE10]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '|'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE11]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '|'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '|'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE12]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '|'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE13]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '|'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '|'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE14]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '|'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE15]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '|'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: 'Observe a few things about these examples:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 观察这些示例的几个方面：
 - en: The datatype definition does not let us directlyrepresent surface syntax terms
     such as `1 + 2 + 3 + 4`; any ambiguity has to be handled by the time we construct
     the corresponding AST term.
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数据类型定义不允许我们直接表示表面语法术语，例如`1 + 2 + 3 + 4`；任何歧义都必须在我们构造相应的AST术语时处理。
 - en: 'The number representation might look a bit odd: we have a `num` constructor
     whose only job is to “wrap” a number. We do this for consistency of representation.
     As we start writing programs to process these data, it’ll become clear why we
     did this.'
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数字表示可能看起来有点奇怪：我们有一个`num`构造函数，它的唯一任务就是“包装”一个数字。我们这样做是为了保持表示的一致性。当我们开始编写处理这些数据的程序时，就会清楚为什么我们这样做。
 - en: Notice that every significant part of the expression went into its AST representation,
     though not always in the same way. In particular, the `+`of an addition is represented
     by the constructor; it is not part of the parameters.
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 注意，表达式的每个重要部分都进入了其AST表示，尽管不一定是以相同的方式。特别是，加法运算的`+`由构造函数表示；它不是参数的一部分。
 - en: The AST really doesn’t care what surface syntax was used. The last term could
     instead have been written as `(+ 1   (+ (+ 2 3)      4))` or even as ![](image11.png)
     and it would presumably produce the same AST.
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: AST实际上并不关心使用了什么表面语法。最后一个术语也可以写成`(+ 1 (+ (+ 2 3) 4))`或者甚至写成![image11.png](image11.png)，它可能会产生相同的AST。
 - en: In short, ASTs are tree-structured data that represent programs in programs.
     This is a profound idea! In fact, it’s one of the great ideas of the 20th century,
     building on the brilliant work of Gödel (encoding), Turing (universal machine),
     von Neumann (stored program computer), and McCarthy (metacircular interpreter).
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 简而言之，ASTs是表示程序中的程序的树状结构数据。这是一个深刻的思想！事实上，这是20世纪伟大的思想之一，建立在哥德尔（编码）、图灵（通用机器）、冯·诺伊曼（存储程序计算机）和麦卡锡（元循环解释器）的杰出工作之上。
 - en: 'Aside:Not every part of the source program has been represented in the AST.
     For instance, presumably both `1 + 2`and `1    +  2` would be represented the
     same way, ignoring the spaces. In practice, a real language implementation does
@@ -202,5 +312,7 @@
     the program source when there is an error, as DrRacket does. Therefore, real-world
     implementations use abstract syntax but with metadata relating it back to the
     source.'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 旁白：源程序中的每一部分并不都在抽象语法树（AST）中得到了表示。例如，假设`1 + 2`和`1 + 2`将以相同的方式表示，忽略空格。在实践中，一个真实的语言实现确实需要了解一些关于语法的知识：例如，当存在错误时，像DrRacket那样突出显示程序源代码的某些部分。因此，现实世界的实现使用抽象语法，但带有与源代码相关的元数据。

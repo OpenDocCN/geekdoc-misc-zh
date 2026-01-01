@@ -1,97 +1,144 @@
 - en: Updating the Evaluator
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 更新评估器
 - en: 'Now suppose we try to use our existing code:'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在假设我们尝试使用现有的代码：
 - en: '[PRE0]'
+  id: totrans-2
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'This has two problems. The first is we can’t return a number; we have to return
     a `numV`:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 这有两个问题。第一个是我们不能返回一个数字；我们必须返回一个`numV`：
 - en: '[PRE1]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: But now we run into a subtler problem. The type-checker is not happy with this
     program. Why?
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 但现在我们遇到了一个更微妙的问题。类型检查器对这个程序不满意。为什么？
 - en: 'Because the result of `calc`is a `Value`, and `+`consumes only `Number`s. Indeed,
     the type checker is forcing us to make a decisionhere: what happens if one of
     the sides of `+` does not evaluate to a number?'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为`calc`的结果是一个`Value`，而`+`运算符只消耗`Number`类型的值。实际上，类型检查器正在强迫我们做出决定：如果`+`运算符的一侧没有评估为数字会发生什么？
 - en: 'First, let’s build an abstraction to handle this, so that we can keep the core
     of the interpreter relatively clean:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，让我们构建一个抽象来处理这个问题，这样我们就可以保持解释器核心的相对简洁：
 - en: '[PRE2]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Now we can defer all the logic of evaluating `+`to `add`. Now we have to make
     a semantic decision. Should we be allowed to “add” two Boolean values? What about
     adding a number to a Boolean or vice versa? Though there isn’t quite a SMoL decision
     here—some languages are very strict while others are very permissive—the least-non-standard
     policy is to require both branches to evaluate to numbers, which we would express
     as follows:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们可以将评估`+`的逻辑推迟到`add`函数。现在我们必须做出一个语义上的决定。我们是否应该允许“添加”两个布尔值？或者将一个数字添加到布尔值，或者反过来？虽然这里并没有一个明确的SMoL决定——一些语言非常严格，而另一些语言则非常宽容——但最不标准的政策是要求两个分支都评估为数字，我们可以这样表达：
 - en: '[PRE3]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Observe that these `else` clauses can easily represent other decisions. We can
     embed an entire family of mystery languages in the different choices available!
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，这些`else`子句可以轻松地表示其他决策。我们可以在不同的选择中嵌入一个完整的神秘语言家族！
 - en: Exercise:Why did we write the numV constructor in `add`rather than in `calc`?
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 练习：为什么我们在`add`而不是在`calc`中编写了`numV`构造函数？
 - en: 'Pro Tip: You’ve just added a complex chunk of code. Now would be a very good
     time to test your evaluator. Here are two things to consider:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 小贴士：你刚刚添加了一块复杂的代码。现在是一个非常好的时候来测试你的评估器。这里有几点要考虑：
 - en: Right now the code for conditionals alsodoes not type-check. You may find it
     convenient to replace the entire RHS with something semantically incorrect but
     type-correct, like `(numV 0)`, so you restore your working evaluator.
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 目前，条件语句的代码也没有通过类型检查。你可能发现用一些语义上不正确但类型正确的代码替换整个右侧部分很方便，比如`(numV 0)`，这样你就可以恢复你的工作评估器。
 - en: 'Don’t forget to test for the error cases! You would do so using `test/exn`.
     For instance: `(test/exn (calc (plusE (numE 4) (boolE #false))) "RHS")`'
+  id: totrans-15
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '不要忘记测试错误情况！你可以使用`test/exn`来这样做。例如：`(test/exn (calc (plusE (numE 4) (boolE #false)))
+    "RHS")`'
 - en: 'Let’s now turn our attention to the conditional (with the constructor name
     updated):'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，让我们将注意力转向条件（构造函数名称已更新）：
 - en: '[PRE4]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'The core logic must clearly be similar: check something about the condition,
     and based on it, evaluate only one of the other two clauses. Once again, we have
     to make decisions about how we handle the conditional: should we strictly require
     a Boolean value, or should we make a truthy/falsy decision? We can again defer
     that to a helper function:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 核心逻辑必须明显相似：检查一下条件，然后根据它评估另外两个子句中的一个。再一次，我们必须决定如何处理条件：我们应该严格要求布尔值，还是应该做出真/假的决定？我们还可以将这个决定推迟到辅助函数：
 - en: '[PRE5]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Again, the least non-standard policy, and one that sets up later material,
     is to be strict about requiring a Boolean:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 再次强调，最不标准的政策，也是为后续内容奠定基础的政策，是严格要求布尔值：
 - en: '[PRE6]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'But again, starting from a strict interpretation, we can see where we can give
     in to any urges we feel to design a more liberal semantics: by replacing the `else` clause.'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 但再次强调，从严格的解释开始，我们可以看到我们可以在哪里屈服于我们感到的任何想要设计更自由语义的冲动：通过替换`else`子句。
 - en: 'Observe, by the way, that we did something different with conditionals than
     we did for addition. With `add`, we evaluated both branches and gave it their
     corresponding `Value`s. It would be a terrible idea to do that with conditionals,
@@ -100,5 +147,7 @@
     have done above also works well: it localizes the variation in the semantics to
     the helper function, but keeps what is not expected to change (the fact that a
     conditional syntax leads to a conditional evaluation) in the core of the evaluator.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 顺便说一下，我们在处理条件语句时与处理加法时有所不同。对于`add`，我们评估了两个分支并给出了它们相应的`Value`。对条件语句做这样的事情是个糟糕的想法，因为条件语句的全部意义就在于不评估其中一个分支！我们可以将分支的AST发送给一个辅助函数，但我们上面所做的方法也适用：它将语义上的变化局部化到辅助函数中，但将那些预期不会改变的部分（即条件语法导致条件评估的事实）保留在评估器的核心部分。

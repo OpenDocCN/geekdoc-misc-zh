@@ -1,42 +1,59 @@
 - en: Everyone Else
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 其他所有人
 - en: This edition builds on [two](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/&sa=D&source=editors&ust=1695232021070204&usg=AOvVaw3CVpbu9X47jQ8MLGb5Ajjn) [previous](https://www.google.com/url?q=https://cs.brown.edu/courses/cs173/2012/book/&sa=D&source=editors&ust=1695232021070493&usg=AOvVaw3c8_IB5k6Y0qVdQIpSCQg9) editions.
     I remain deeply grateful to all the people who helped make those editions happen.
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 这版书籍是在[两个](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/&sa=D&source=editors&ust=1695232021070204&usg=AOvVaw3CVpbu9X47jQ8MLGb5Ajjn)
+    [先前](https://www.google.com/url?q=https://cs.brown.edu/courses/cs173/2012/book/&sa=D&source=editors&ust=1695232021070493&usg=AOvVaw3c8_IB5k6Y0qVdQIpSCQg9)版本的基础上构建的。我对所有帮助那些版本成为现实的人们怀有深深的感激。
 - en: My group’s PhD students, especially Jack Wrenn, have tolerated years of my complaining
     about my course. Amidst their eye-rolling they heard me out, batted away my worst
     ideas, and fleshed out my better ones. I am deeply fortunate to be able to work
     with them.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我的小组中的博士生，尤其是杰克·雷恩，容忍了我多年对课程的抱怨。在他们翻白眼的同时，他们倾听了我的话，驳回了我的最糟糕的想法，并完善了我的较好想法。我有幸能与他们一起工作。
 - en: John Clements’s sabbatical at Brown was a huge fillip to my rethinking the basics,
     and our conversations reminded me how much I have missed his company.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 约翰·克莱门茨在布朗大学的休假对我重新思考基础知识起到了巨大的推动作用，我们的对话让我意识到我多么怀念他的陪伴。
 - en: Kuang-Chen Lu has believed in this project from the start, and built and maintained
     numerous of the materials that make it possible. He has not only collaborated
     on but actively leads many of the materials that power or augment this book. His
     dissertation research will likely lead to significant improvements in how we teach
     programming languages.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 钱德·卢从一开始就相信这个项目，并构建和维护了使它成为可能的大量材料。他不仅参与了合作，而且积极领导了许多推动或增强这本书的材料。他的博士研究可能会在如何教授编程语言方面带来重大的改进。
 - en: Matthew Flatt’s fingerprints are all over this book. I especially thank him
     for the Racket ecosystem and the `#lang` concept, which also drove the redesign
     of this book, and for the plait language especially, which is central to much
     of this book’s code.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 马修·弗拉特的指纹遍布这本书。我特别感谢他为Racket生态系统和`#lang`概念所做的贡献，这些概念也推动了这本书的重设计，特别是对于编织语言，它是这本书大部分代码的核心。
 - en: Most of this book’s ideas and composition were formed on the East Bay Bike Path.
     To the people who made it happen and keep it alive, many thanks, and may the winds
     always be at your back (which they often can be, if you ride south and then back
     north between 2pm and 4pm).
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 这本书的大部分思想和构思都是在东湾自行车道上形成的。向那些使它成为可能并保持其活力的人们致以深深的谢意，愿风永远在你们身后（如果你们在下午2点到4点之间向南骑行然后再向北骑行，这通常是可以的）。
 - en: Finally, this book wouldn’t have migrated from head to page without the love
     and support of Kathi and Tara, who alsotolerated years of my complaining about
     my course and provided their own eye-rolling support. They are my rocks.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，如果没有Kathi和Tara的爱与支持，这本书就不会从头脑迁移到纸张上。她们不仅容忍了我多年对课程的抱怨，还提供了自己的翻白眼支持。她们是我的支柱。

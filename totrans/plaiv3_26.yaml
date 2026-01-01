@@ -1,30 +1,45 @@
 - en: Evaluating Conditionals
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 评估条件语句
 - en: 'So far our language has had only arithmetic. Building on Mystery Language:
     Conditionals, we will now examine how to extend our language to also support conditionals.
     There can be quite complex conditional expressions in real languages, but for
     our purposes it will suffice to have an `if` with three parts: the conditional,
     the then-branch, and the else-branch. Later, when we learn how to extend the language,
     we can see how to layer more sophisticated conditional expressions atop this.'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们的语言只有算术。基于神秘语言：条件语句，我们现在将探讨如何扩展我们的语言以支持条件语句。现实语言中可能有相当复杂的条件表达式，但就我们的目的而言，有一个包含三个部分（条件、then
+    分支和 else 分支）的 `if` 语句就足够了。稍后，当我们学习如何扩展语言时，我们可以看到如何在这个基础上叠加更复杂的条件表达式。
 - en: 'In SImPl, we have to do at least two things:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 SImPl 中，我们至少需要做两件事：
 - en: Extend the datatype representing expressions to include conditionals.
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 将表示表达式的数据类型扩展以包括条件语句。
 - en: Extend the evaluator to handle (the representation of) these new expressions.
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 将评估器扩展以处理（这些新表达式的）表示。
 - en: Optionally, if we have a parser, we should also
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 可选地，如果我们有一个解析器，我们还应该
 - en: Extend the parser to produce these new representations.
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 将解析器扩展以生成这些新表示。

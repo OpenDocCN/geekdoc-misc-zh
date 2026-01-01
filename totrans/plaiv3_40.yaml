@@ -1,126 +1,188 @@
 - en: Caching Substitution
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 缓存替换
 - en: We repeatedly—and rightly—refer back to substitution to understand how programs
     should work, and indeed will do so again later. But substitution as an evaluationtechnique
     is messy. This requires us to constantly keep rewriting the program text, which
     takes time linear in the size of the program (which can get quite large) for every variable
     binding. Most real language implementations do not work this way.
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们反复——并且正确地——回溯到替换以了解程序应该如何工作，并且确实会在以后再次这样做。但是，作为评估技术的替换是混乱的。这要求我们不断重写程序文本，这需要与程序大小成线性关系的线性时间（这可以相当大）来处理每个变量绑定。大多数真实语言实现都不是这样做的。
 - en: 'Instead, we might think of employing a space-time tradeoff: we’ll use a little
     extra space to save ourselves a whole lot of time. That is, we’ll cachethe substitution
     in a data structure called the environment. An environment records names and their
     corresponding values: that is, it’s a collection of key-value pairs. Thus, whenever
     we encounter a binding we remember its value, and when we encounter a variable,
     we look up its value.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，我们可能会考虑采用时空权衡：我们会用一点额外的空间来节省大量的时间。也就是说，我们将把替换保存在一个称为环境的数据结构中。环境记录名称及其对应的值：也就是说，它是一系列键值对。因此，每当遇到绑定时，我们会记住它的值，当我们遇到变量时，我们会查找它的值。
 - en: 'Aside: As with all caches, we want them to only improve performance along a
     dimension, not change the meaning. That is, we no longer want substitution to
     define howwe produce an answer. But, we still want it to tell us what answer to
     produce. This will become important below.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 顺便说一句：与所有缓存一样，我们希望它们只在某个维度上提高性能，而不是改变意义。也就是说，我们不再希望替换定义我们如何产生答案。但是，我们仍然希望它告诉我们应该产生什么答案。这将在下面变得很重要。
 - en: 'We will use a hash table to represent the environment:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将使用哈希表来表示环境：
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'We will need the interpreter to actually take an environment as a formal parameter,
     to use in place of substitution. Thus:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将需要解析器实际接受一个环境作为形式参数，以替换的形式使用。因此：
 - en: '[PRE1]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Now what happens when we encounter a variable? We try to look it up in the
     environment. That may succeed or, in the case of our last example above, fail.
     We will use `hash-ref`, which looks up keys in hash tables, and returns an `Optionof` type
     to account for the possibility of failure. We can encapsulate it in a function
     that we will repeatedly find useful:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们遇到变量时会发生什么？我们试图在环境中查找它。这可能成功，或者，在我们的上一个例子中，失败。我们将使用`hash-ref`，它在哈希表中查找键，并返回一个`Optionof`类型以考虑到失败的可能性。我们可以将其封装在一个我们将反复发现有用的函数中：
 - en: '[PRE2]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'In the event the lookup succeeds, then we want the value found, which is wrapped
     in `some`. This function  enables our interpreter to stay very clean and readable:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果查找成功，我们想要找到的值，它被包裹在`some`中。这个函数使我们的解析器保持非常干净和可读：
 - en: '[PRE3]'
+  id: totrans-11
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Finally, we are ready to tackle `let1`. What happens here? We must
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，我们准备处理`let1`。这里会发生什么？我们必须
 - en: evaluate the body of the expression, in
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在`in`中评估表达式的主体
 - en: an environment that has been extended, with
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个扩展了的环境，其中
 - en: the new name
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 新的名称
 - en: bound to its value.
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 绑定到它的值。
 - en: Phew!
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 呼吸一下！
 - en: 'Fortunately, this isn’t as bad as it sounds. Again, a function will help a
     lot:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 幸运的是，这并不像听起来那么糟糕。同样，一个函数会大有帮助：
 - en: '[PRE4]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'With this, we can see the structure clearly:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 这样，我们可以清楚地看到结构：
 - en: '[PRE5]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: (Observe that we used `let`in plait to define `let1` in Paret. We’ll see more
     of this…)
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: （注意，我们在Paret中使用了`let`来定义`let1`。我们将会看到更多这样的例子……）
 - en: 'In sum, our core interpreter is now:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 总的来说，我们的核心解析器现在是这样的：
 - en: '[PRE6]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Exercise:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 练习：
 - en: What if we had not called `(interp val nv)` above?
+  id: totrans-26
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 如果我们没有在上面调用`(interp val nv)`会怎样？
 - en: What if we’d used `nv`instead of `new-env`in the call to `interp`?}
+  id: totrans-27
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 如果我们在调用`interp`时使用了`nv`而不是`new-env`会怎样？}
 - en: Are there any other errors in the interpreter based on copying what we had before?
+  id: totrans-28
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 在基于复制我们之前的内容的解析器中，还有其他错误吗？
 - en: We seem to extend the environment but never remove anything from it. Is that
     okay? If not, it should cause an error. What program would demonstrate this error,
     and does it actually do so? (If not, why not?)
+  id: totrans-29
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 我们似乎扩展了环境，但从未从其中删除任何东西。这是否可以？如果不可以，它应该导致错误。哪个程序可以演示这个错误，并且它实际上是这样做的吗？（如果不是，为什么不是？）
 - en: This concludes our first interesting “programming language”. We have already
     been forced to deal with some fairly subtle questions of scope, and with how to
     interpret them. Things will only get more interesting from here!
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 这标志着我们第一个有趣的“编程语言”的结束。我们已经不得不处理一些相当微妙的作用域问题，以及如何解释它们。从这里开始，事情只会变得更加有趣！

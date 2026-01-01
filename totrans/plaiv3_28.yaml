@@ -1,30 +1,46 @@
 - en: Extending the Calculator
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 扩展计算器
 - en: 'Clearly, adding conditionals doesn’t change what our calculator previously
     did, we can leave that intact, and just focus on the handling of `if`:'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 显然，添加条件语句并没有改变我们的计算器之前的功能，我们可以保持它不变，只需专注于处理`if`：
 - en: '[PRE0]'
+  id: totrans-2
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Indeed, we can recursively evaluate each term, in case it’s useful:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 事实上，我们可以递归地评估每个项，以防它有用：
 - en: '[PRE1]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Let’s take these one at a time.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们逐个来看这些。
 - en: But now we run into a problem. What is the result of calling `(calc c)`? We
     expect it to be some kind of Boolean value. But we don’t have Boolean values in
     the language!
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 但现在我们遇到了一个问题。调用`(calc c)`的结果是什么？我们期望它是一个某种布尔值。但我们语言中没有布尔值！
 - en: That’s not all. Above, we have written both `(calc t)`and `(calc e)`. However,
     the whole point of a conditional is that we don’t want to evaluate both, only
     one. So we have to pick which one to evaluate based on some criterion.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 这还不是全部。在上面，我们既写了`(calc t)`也写了`(calc e)`。然而，条件语句的整个目的就是，我们不想评估两个，只想评估一个。所以我们必须根据某些标准来选择评估哪一个。

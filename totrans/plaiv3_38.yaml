@@ -1,88 +1,136 @@
 - en: Static Scoping
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 静态作用域
 - en: The program
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 程序
 - en: '[PRE0]'
+  id: totrans-2
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'introduces us to a very important concept: indeed, one of the central ideas
     behind SMoL. This is that a variable’s binding is determined by its position in
     the source program, and notby the order of the program’s execution. That is, the
     `x` on the last line is bound by the same place—and hence obtains the same value—irrespective
     of other bindings that took place before it was evaluated. To understand this
     better, let’s see a progression of programs:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 介绍了一个非常重要的概念：实际上，SMoL背后的核心思想之一。这就是变量的绑定由其在源程序中的位置决定，而不是由程序执行的顺序决定。也就是说，最后一行的`x`与相同的绑定位置绑定——因此获得相同的值——不考虑它在评估之前发生的其他绑定。为了更好地理解这一点，让我们看看一系列程序：
 - en: '[PRE1]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: You might think it’s okay whether it produces `3`or `4`. How about this?
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能会认为，无论它产生`3`还是`4`都是可以接受的。再看看这个？
 - en: '[PRE2]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'You should expect the same out of this: the conditional is always true, so
     clearly we are always going to evaluate the inner binding, so its answer should
     be the same as for the previous program. But how about this?'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 你应该期望这个结果：条件始终为真，因此显然我们总是要评估内部绑定，所以它的答案应该与上一个程序相同。但是，关于这个呢？
 - en: '[PRE3]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '{let1 {x 2} x}`}`'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: '{let1 {x 2} x}`}`'
 - en: '[PRE4]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Now you might not be so sure. Since the conditional is never taken, you probably
     don’t want the inner binding to have an influence. That is, you are willing to
     let the program’s control flow influence the bindings. On its face that sounds
     reasonable, but now how about this program?
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在你可能不太确定。由于条件从未被采取，你可能不希望内部绑定产生影响。也就是说，你愿意让程序的流程控制影响绑定。表面上这听起来合理，但现在看看这个程序？
 - en: '[PRE5]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '`{+ {if` {random}'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: '`{+ {if` {random}'
 - en: '[PRE6]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: or
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 或
 - en: '[PRE7]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '`{+ {if` {moon-is-currently-full}'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '`{+ {if` {moon-is-currently-full}'
 - en: '[PRE8]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Are you okay with the binding structure changing every two weeks? What about
     this version:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 你能否接受绑定结构每两周改变一次？看看这个版本：
 - en: '[PRE9]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '`         {let1 {`y` 2} x}}`'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '`         {let1 {`y` 2} x}}`'
 - en: y`}}`
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: y`}}`
 - en: Then, depending on the phase of the moon, the program either produces an answer
     or results in an unbound-variable error.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，根据月亮的相位，程序要么产生一个答案，要么导致未绑定变量错误。
 - en: 'The decision to let control flow determine binding is called dynamic scope.
     It is the one unambiguously wrong design decision in programming languages. It
     has a long and sordid history: the original Lisp had it, and it was not until
@@ -90,34 +138,48 @@
     history are doomed to repeat it: early versions of Python and JavaScript also
     had dynamic scope. Taking it back out has been a herculean effort. Dynamic scope
     means:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 让控制流决定绑定的决定被称为动态作用域。这是编程语言中一个明确错误的设计决策。它有一个漫长而复杂的历史：原始的Lisp就有这个，直到十多年后Scheme才修复了它。不幸的是，那些不了解历史的人注定要重蹈覆辙：Python和JavaScript的早期版本也有动态作用域。将其移除是一个艰巨的任务。动态作用域意味着：
 - en: We can’t be sure about the binding structure of our programs.
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们无法确定我们程序的绑定结构。
 - en: The evaluator can’t be sure, either.
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 评估器也无法确定。
 - en: Nor can programmer tools.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 程序员工具也无法确定。
 - en: 'For instance, a program refactoring tool needs to know binding structure: even
     a simple “variable renaming” tool needs to know which variables to rename. In
     DrRacket, there is no ambiguity, so variable renaming works correctly. This is
     not true in other languages: see, for instance, Appendix 2 of [this paper](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Papers/Published/pmmwplck-python-full-monty/&sa=D&source=editors&ust=1695232021187018&usg=AOvVaw137u3e7Dklg2SwW_JHiS7q) on
     the semantics of Python.'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，一个程序重构工具需要了解绑定结构：即使是简单的“变量重命名”工具也需要知道哪些变量需要重命名。在DrRacket中，没有歧义，因此变量重命名可以正确工作。在其他语言中并非如此：例如，参见[这篇论文](https://www.google.com/url?q=https://cs.brown.edu/~sk/Publications/Papers/Published/pmmwplck-python-full-monty/&sa=D&source=editors&ust=1695232021187018&usg=AOvVaw137u3e7Dklg2SwW_JHiS7q)附录2中关于Python语法的讨论。
 - en: The opposite of dynamic scope—where we can determine the binding by following
     the structure of the AST—is called static scope. Static scope is a defining characteristic
     of SMoL.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 与动态作用域相反——我们可以通过跟随AST的结构来确定绑定——被称为静态作用域。静态作用域是SMoL的一个定义特征。
 - en: 'Dynamic scope occurred in early implementations because it was easy to obtain:
     it was the default behavior. We have to work a bit harder to obtain static scope,
     as we will see.'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 动态作用域在早期实现中发生，因为它很容易获得：它是默认行为。我们将看到，要获得静态作用域，我们需要付出更多的努力。

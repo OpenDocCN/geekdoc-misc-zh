@@ -1,9 +1,13 @@
 - en: Conclusion
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 结论
 - en: 'This concludes our first look at SImPl: we have representeda program in a program,
     and we have processed that represented program in a program. We have just written
     our first program that processes programs—now we’re off to the races!'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 这标志着我们对SImPl的第一次探索的结束：我们已经在程序中代表了程序，并且我们已经在程序中处理了那个被代表的程序。我们刚刚编写了第一个处理程序的程序——现在我们就可以大步向前了！

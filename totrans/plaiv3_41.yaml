@@ -1,8 +1,12 @@
 - en: Evaluating Functions
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 函数求值
 - en: Now that we have arithmetic and conditionals, let’s proceed to creating a full-fledged
     programming language by adding functions.
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们有了算术和条件语句，接下来让我们通过添加函数来创建一个完整的编程语言。

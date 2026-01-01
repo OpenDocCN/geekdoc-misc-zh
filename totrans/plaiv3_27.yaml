@@ -1,14 +1,22 @@
 - en: Extending the AST
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 扩展抽象语法树（AST）
 - en: 'Because we have fixed our conditionals to have three parts, we just need to
     represent that in the AST. This is straightforward:'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为我们将条件语句固定为三个部分，所以我们只需要在抽象语法树（AST）中表达这一点。这是直截了当的：
 - en: '[PRE0]'
+  id: totrans-2
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The real work will happen in the evaluator.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 真正的工作将在评估器中发生。

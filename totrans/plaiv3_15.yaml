@@ -1,25 +1,37 @@
 - en: Representing Arithmetic
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 表示算术
 - en: Let’s start thinking about actually writing an evaluator. We’ll start with a
     simple arithmetic language, and then build our way up from there. So our language
     will have
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们开始思考实际编写评估器的过程。我们将从一个简单的算术语言开始，然后逐步构建。因此，我们的语言将具有
 - en: numbers
+  id: totrans-2
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数字
 - en: 'some arithmetic operations: in fact, just addition'
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一些算术运算：实际上，仅仅是加法
 - en: and nothing more for now, so we can focus on the basics. Over time we’ll build
     this up.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 目前没有更多内容，这样我们可以专注于基础知识。随着时间的推移，我们将逐步完善。
 - en: 'Before we can think about the body of an evaluator, however, we need to figure
     out its type: in particular, what will it consume?'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，在我们思考评估器的主体之前，我们需要弄清楚它的类型：特别是，它将消耗什么？

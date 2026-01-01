@@ -1,33 +1,49 @@
 - en: Testing the Evaluator
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 测试评估器
 - en: 'The examples above are fine, but we should write these in the syntax of tests,
     so that the computer checks them for us automatically:'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 上述示例是好的，但我们应该用测试的语法来编写这些内容，这样计算机可以自动为我们检查：
 - en: '[PRE0]'
+  id: totrans-2
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Sure enough, when we run this, Racket confirms that all these tests pass.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 确实，当我们运行这个程序时，Racket 确认所有这些测试都通过了。
 - en: Pro Tip: It can get annoying to scan through all this testing output to see
     whether any of the tests failed. Simply add
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 高级技巧：浏览所有这些测试输出以查看是否有任何测试失败可能会变得很烦人。只需添加
 - en: '[PRE1]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'before your tests and Racket will suppress reporting on the passing tests,
     so you can focus on the ones that failed: in other words, no news is good news.'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 在你的测试之前，Racket 将会抑制对通过测试的报道，这样你就可以专注于失败的测试：换句话说，没有消息就是好消息。
 - en: In general, test early, often, and extensively. Programming language evaluators
     translate our thoughts into computer actions. Therefore, it’s critical that they
     do so precisely. This is why language implementations are some of the most tested
     software you can imagine (when’s the last time you were stopped by a bug in your
     language implementation?), and people who will tolerate bugs in just about any
     other software are much less forgiving of bugs in implementations.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常情况下，应该尽早、频繁和广泛地进行测试。编程语言评估器将我们的思想转化为计算机动作。因此，它们必须精确地执行这一任务至关重要。这也是为什么语言实现是你可以想象到的最经过测试的软件之一（你上次因为语言实现中的错误而受阻是什么时候？），而对于几乎任何其他软件中的错误都能容忍的人，对于实现中的错误则宽容度要小得多。

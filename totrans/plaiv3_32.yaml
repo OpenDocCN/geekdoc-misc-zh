@@ -1,20 +1,30 @@
 - en: Adding Booleans
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 添加布尔值
 - en: Okay, so what if we wanted proper Booleans?
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 好吧，如果我们想要真正的布尔值怎么办？
 - en: Again, to employ SImPl, we need to alter the AST, the evaluator, and the parser.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 再次，要使用SImPl，我们需要修改AST（抽象语法树）、评估器和解析器。
 - en: 'We can add Booleans much like we did numbers: with a constructor that wraps
     a plait representation of the Boolean.'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以像处理数字一样添加布尔值：使用一个构造函数来包装布尔值的编织表示。
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'It’s very important to keep in mind what the `num`and `bool`constructors stand
     for. Recall that this is abstract syntax: we are just (abstractly) representing
     the program that the user wrote, not the result of its evaluation. Therefore,
@@ -24,28 +34,41 @@
     What an expression will evaluate to, for now, can only be determined by running
     it. Later [[👉](PLAIVersion3.2.2_split_088.html#h.7rb3ecnk20em)], we will see there
     are other ways of doing it too!'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 记住`num`和`bool`构造函数代表什么非常重要。回想一下，这是抽象语法：我们只是（抽象地）表示用户编写的程序，而不是其评估的结果。因此，这些构造函数正在捕获源程序中的句法常量：前者如`3.14`和`-1`，后者如`#true`和`#false`。它们不代表将评估为数字或布尔值的复合表达式。目前，一个表达式将评估为什么，只能通过运行它来确定。稍后
+    [[👉](PLAIVersion3.2.2_split_088.html#h.7rb3ecnk20em)]，我们将看到还有其他方法可以做到这一点！
 - en: Aside:The abstract syntax does not dictate what concrete syntax we use. For
     instance, we may write numbers as `3`or as `III`. We might write Boolean values
     as `#t`, `#true`, `true`, `True`, …. We may even have different concrete syntaxes
     for the same abstract syntax. This is precisely the abstraction that abstract
     syntax provides!
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 旁白：抽象语法并不规定我们使用什么具体语法。例如，我们可能将数字写成`3`或`III`。我们可能将布尔值写成`#t`、`#true`、`true`、`True`等等。我们甚至可能为相同的抽象语法有不同的具体语法。这正是抽象语法提供的抽象！
 - en: 'Easy peasy! This naturally suggests what we should do in the evaluator:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 简单易行！这自然提示我们在评估器中应该做什么：
 - en: '[PRE1]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Oh…oops. This version of `calc` doesn’t type-check, because our calculator is
     supposed to return only numbers, not Booleans!
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 哦……糟糕。这个版本的`calc`没有类型检查，因为我们的计算器应该只返回数字，而不是布尔值！
 - en: 'In fact, we had to know that this couldn’t last. We aren’t interested only
     in calculators; we want to build full-fledged programming languages. They have
     a wide range of values, i.e., answers: numbers, Boolean, strings, images, functions,
     and more.'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 事实上，我们必须知道这不可能持久。我们不仅对计算器感兴趣；我们想要构建完整的编程语言。它们具有广泛的价值范围，即答案：数字、布尔值、字符串、图像、函数等等。

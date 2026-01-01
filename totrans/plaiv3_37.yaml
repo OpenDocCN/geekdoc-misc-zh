@@ -1,72 +1,114 @@
 - en: The Meaning of Local Binding
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 局部绑定的含义
 - en: Do Now:Here are some examples of this new construct; what do you expect each
     one to produce?
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在来做一下练习：这里有一些这种新构造的例子；你期望每个会产生什么结果？
 - en: '[PRE0]'
+  id: totrans-2
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[PRE1]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[PRE2]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[PRE3]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[PRE4]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[PRE5]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Do Now: Oh, did you notice something? None of the above programs is syntactically
     legal! Why?'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在来做一下练习：哦，你注意到什么了吗？上述所有程序在语法上都是不合法的！为什么？
 - en: 'It’s because there is no syntax yet for variables. Our syntax permits us to
     bindvariables but not to use them. So we have to fix that:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是因为还没有为变量定义语法。我们的语法允许我们绑定变量，但不能使用它们。所以我们必须解决这个问题：
 - en: '[PRE6]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Now the above terms are all syntactically valid, so we can go back to the question
     of what they should evaluate to.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在上述术语在语法上都是有效的，因此我们可以回到它们应该评估为什么的问题。
 - en: 'The first two programs are pretty obvious:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 前两个程序相当明显：
 - en: '[PRE7]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: should evaluate to 2, and
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 应该评估为 2，并且
 - en: '[PRE8]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: should evaluate to 3.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 应该评估为 3。
 - en: How about this program?
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 那么这个程序怎么样？
 - en: '[PRE9]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: Here we see the advantage of the parenthetical notation. In a more conventional
     syntax, this might correspond to
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，我们可以看到括号记法的优势。在更传统的语法中，这可能会对应于
 - en: '[PRE10]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'where any number of things could happen: we might have two different `x`’s;
     we might have an `x`bound and then modified; and in some languages, an introduction
     of `x`could be “lifted” so that it’s no longer clear which `x`is most recent.
@@ -75,81 +117,131 @@
     when we substitute the outer `x`, we expect that to stop at the point where the
     inner `x`begins: that is, the inner `x` shadowsthe outer one. Hence, the result
     should be `5`.'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，可能发生任何情况：我们可能有不同的两个 `x`；我们可能有一个 `x` 被绑定然后被修改；在某些语言中，`x` 的引入可能被“提升”，以至于不再清楚哪个
+    `x` 是最新的。然而，在我们的括号语法中，我们可以很清楚地知道我们想要的范围。为了确定值，我们可以依靠我们老朋友替换。然而，当我们替换外部的 `x` 时，我们期望它停止在内部
+    `x` 开始的地方：也就是说，内部 `x` 遮蔽了外部的 `x`。因此，结果应该是 `5`。
 - en: 'Do Now: The example above is uninteresting in that the outer `x`never sees
     any use. What kind of program might we write that has two `let`bindings of `x`that
     lets us clearly see that there are two `x`’s?'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在来做一下练习：上面的例子没有意思，因为外部的 `x` 从未被使用。我们可能编写什么样的程序，有两个 `x` 的 `let` 绑定，使我们清楚地看到有两个
+    `x`？
 - en: 'That’s what this program shows:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个程序显示的就是这个：
 - en: '[PRE11]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'It seems fairly clear that the left `x`in the addition should be `1`, while
     `x`in the right expression should be shadowed and hence should evaluate to `2`.
     The sum should therefore be `3`. Incidentally, DrRacket is useful in such cases,
     because we can write an equivalent expression in #lang racket—'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '很明显，加法中的左边的 `x` 应该是 `1`，而右边的表达式中的 `x` 应该被遮蔽，因此应该评估为 `2`。因此，总和应该是 `3`。顺便说一句，DrRacket
+    在这种情况下很有用，因为我们可以在 #lang racket 中写出等效的表达式——'
 - en: '[PRE12]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '—and hover over the last `x`, and DrRacket (for Racket, which represents a
     fairly ideal form of SMoL) will automatically draw a blue arrow showing where
     the variable is bound:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: ——并将鼠标悬停在最后一个 `x` 上，DrRacket（对于 Racket，它代表了一种相当理想的 SMoL 形式）将自动绘制一个蓝色箭头，显示变量的绑定位置：
 - en: '![](image18.png)'
+  id: totrans-28
   prefs: []
   type: TYPE_IMG
+  zh: '![](image18.png)'
 - en: 'Now for a more complex example:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在来看一个更复杂的例子：
 - en: '[PRE13]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: Here, it’s especially useful to turn to substitution to determine the answer.
     Again, it seems clear that `x`in the left expression is shadowed and hence should
     be `2`. The big question, of course, is what about the `x` on the right hand side
     of the addition (i.e., on the last line)?
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: '在这里，使用替换来确定答案特别有用。再次强调，左边的表达式中的 `x` 被遮蔽，因此应该是 `2`。当然，最大的问题是加法右边（即最后一行）的 `x`
+    是什么？ '
 - en: 'Here, again, conventional textual syntax is fraught with ambiguity: is'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里，同样，传统的文本语法充满了歧义：是
 - en: '[PRE14]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: on the left a bindingof a new `x` or a modificationof the outer `x`? Those are
     two very different things! But with our syntax it’s much clearer that it shouldbe
     the former, not the latter. Thus, by substitution, the outer `x`is replaced by
     `1`, giving
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 左边是一个新的 `x` 绑定或外部 `x` 的修改？这两者是非常不同的事情！但根据我们的语法，它应该更清楚地表明应该是前者，而不是后者。因此，通过替换，外部
+    `x` 被替换为 `1`，得到
 - en: '[PRE15]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: in which we perform one more substitution, producing
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 在其中我们进行一次替换，产生
 - en: '[PRE16]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'and hence `3`. This time, DrRacket is especially useful confirmation:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此这次，DrRacket 特别有用以确认：
 - en: '![](image2.png)'
+  id: totrans-39
   prefs: []
   type: TYPE_IMG
+  zh: '![](image2.png)'
 - en: 'That leaves just one program:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就留下了一个程序：
 - en: '[PRE17]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: Because `x` is not bound anywhere, this is just a syntax error.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为 `x` 在任何地方都没有绑定，这只是一个语法错误。

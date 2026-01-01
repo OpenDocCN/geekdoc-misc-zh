@@ -1,94 +1,142 @@
 - en: Evaluating Arithmetic
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 评估算术
 - en: Defining the Evaluator
+  id: totrans-1
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 定义评估器
 - en: Having seen how to represent arithmetic programs, we turn to writing an evaluator
     program that turns them into answers.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 看过如何表示算术程序后，我们转向编写一个评估程序，将它们转换为答案。
 - en: What is the type of this evaluator? Clearly it consumes programs, which here
     are represented by `Exp`s. What does it produce? In this case, all these expressions
     are going to produce numbers. For this reason, we’ll call this a calculator, or
     `calc`for short, for now. We can thus give `calc` the type
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个评估器的类型是什么？显然它消耗程序，在这里由`Exp`表示。它产生什么？在这种情况下，所有这些表达式都将产生数字。因此，我们现在可以称这个为计算器，或者简称为`calc`。因此，我们可以给`calc`赋予类型
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Let’s now try to define its body. Clearly we must have
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们来尝试定义它的主体。显然我们必须有
 - en: '[PRE1]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'In the body, given an Exp, we will want to take it apart using type-case, which
     tells us there are two options, each with some additional data (this is the moral
     equivalent of the method dispatch we’d have used in Java):'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 在主体中，给定一个Exp，我们希望使用类型匹配将其拆分，这告诉我们有两种选择，每种选择都有一些额外的数据（这在Java中相当于方法调用的方式）：
 - en: '[PRE2]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'What happens in the case that the whole expression is already a number? Well,
     we have our answer, so we just return it. Otherwise, we have to add the two sides:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果整个表达式已经是一个数字会发生什么？好吧，我们有了答案，所以我们只需返回它。否则，我们必须将两边相加：
 - en: '[PRE3]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'giving us an overall body of:'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 给我们一个整体体：
 - en: '[PRE4]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Let’s run it to…oops! We get a type error! It tells us that addition is expecting
     a number, but `l`is not a number: it’s an `Exp`. Ah, that’s because `l`and `r`still
     represent expressions, not the answer that the expressions evaluate to. To fix
     that, we need something that can turn an expression into a number…which is precisely
     what we’re defining! Thus, we instead write'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们运行它……哎呀！我们得到一个类型错误！它告诉我们加法期望一个数字，但`l`不是一个数字：它是一个`Exp`。啊，这是因为`l`和`r`仍然代表表达式，而不是表达式评估到的答案。为了解决这个问题，我们需要一个可以将表达式转换为数字的东西……这正是我们正在定义的！因此，我们改为写
 - en: '[PRE5]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'The type-checker is happy now. And sure enough, we can confirm that our examples
     produce what we expect. For instance:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型检查器现在很高兴。确实，我们可以确认我们的示例产生了我们预期的结果。例如：
 - en: '[PRE6]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: produces `1`,
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 产生`1`，
 - en: '[PRE7]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: produces `3`, and
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 产生`3`，并且
 - en: '[PRE8]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: produces` 6`.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 产生`6`。
 - en: 'Aside:We’ve glossed over a detail: we’ve assumed that `+` always means numeric
     addition (which was already implicit in calling it “`plus`” in the AST). But some
     languages allow any number of different types to be “added”: e.g., it can also
     concatenate strings. In such languages, the name in the AST might be something
     more generic, and the evaluator would need to handle the different possible behaviors.'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 旁白：我们忽略了一个细节：我们假设`+`总是表示数值加法（这在AST中调用它为“`plus`”时已经隐含）。但有些语言允许任何数量的不同类型进行“加法”：例如，它也可以连接字符串。在这些语言中，AST中的名称可能更通用，评估器需要处理不同的可能行为。
 - en: 'In fact, we’ve glossed over something even more basic: what numeric addition
     means, or for that matter, even what numbers are. As we see from the Mystery Language:
     Arithmetic, there are many choices here. In our calculator, we have adopted numbers
     from plait (in `num`) and addition from plait (by using `+`). Those places in
     `calc` also tell us where we would go to change those choices.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 实际上，我们忽略了一个更基本的问题：数值加法的含义，或者更确切地说，甚至数字是什么。正如我们从《神秘语言：算术》中看到的那样，这里有很多选择。在我们的计算器中，我们采用了来自plait（在`num`中）的数字和来自plait的加法（通过使用`+`）。`calc`中的这些地方也告诉我们，如果我们想要改变这些选择，我们应该去哪里。

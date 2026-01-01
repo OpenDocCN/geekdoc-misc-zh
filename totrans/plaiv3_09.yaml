@@ -1,7 +1,9 @@
 - en: Teach Yourself SMoL
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 教你自己SMoL
 - en: 'This work is centered around your understanding of SMoL. However, to avoid
     a passive reading experience, [Kuang-Chen Lu](https://www.google.com/url?q=https://lukc1024.github.io/&sa=D&source=editors&ust=1695232021072512&usg=AOvVaw3O6JByCXbnLV7Fth_iekCw) has
     implemented a series of self-paced tutors to teach you SMoL. The tutors both give
@@ -11,69 +13,104 @@
     tutor: you can’t just scroll through passively. Second, they are based on known
     misconceptions with this material. Other learners made these mistakes, so you
     might too. Pay attention!'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 这项工作围绕你对SMoL的理解。然而，为了避免被动的阅读体验，[黄陈晨](https://www.google.com/url?q=https://lukc1024.github.io/&sa=D&source=editors&ust=1695232021072512&usg=AOvVaw3O6JByCXbnLV7Fth_iekCw)
+    实施了一系列自我定速的教程来教授SMoL。这些教程既提供了概念知识，又教授了重要的术语。重要的是，它们还包含简短、快速的问题测试，以确保你走在正确的道路上。这些问题有两个目的。首先，它们迫使你注意教程：你不能只是被动地滚动浏览。其次，它们基于对这一材料的已知误解。其他学习者犯了这些错误，你也可能犯。请注意！
 - en: The tutors are still preliminary, but they have already been used successfully
     at Brown.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些教程仍然是初步的，但它们已经在布朗大学成功使用。
 - en: Because the tutorials currently do not support stopping, saving your work, and
     resuming, we have broken the material down into a set of small (!) tutors, each
     covering one concept (and sometimes even less). That way, you can do a tutor or
     three, take a break, and pick up later.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于当前教程不支持停止、保存工作并继续，我们将材料分解成一系列小(!)教程，每个教程涵盖一个概念（有时甚至更少）。这样，你可以完成一个或三个教程，休息一下，然后继续。
 - en: 'The tutors are here, in order:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 教程按以下顺序排列：
 - en: '[scope](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dscope&sa=D&source=editors&ust=1695232021073286&usg=AOvVaw2jCaJDO7DIAc1Y7QPXR-ip)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[scope](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dscope&sa=D&source=editors&ust=1695232021073286&usg=AOvVaw2jCaJDO7DIAc1Y7QPXR-ip)'
 - en: '[order](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dorder&sa=D&source=editors&ust=1695232021073631&usg=AOvVaw02VK-IQlGPN10i1EaDWAJM)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[order](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dorder&sa=D&source=editors&ust=1695232021073631&usg=AOvVaw02VK-IQlGPN10i1EaDWAJM)'
 - en: '[more-scope](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dmore-scope&sa=D&source=editors&ust=1695232021073959&usg=AOvVaw1mN0Av1aAjugY4QlJtO35W)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[more-scope](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dmore-scope&sa=D&source=editors&ust=1695232021073959&usg=AOvVaw1mN0Av1aAjugY4QlJtO35W)'
 - en: '[mutable variables](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dmut-vars&sa=D&source=editors&ust=1695232021074279&usg=AOvVaw3QZUxWQRk99MfEme5JBqpk)'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[可变变量](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dmut-vars&sa=D&source=editors&ust=1695232021074279&usg=AOvVaw3QZUxWQRk99MfEme5JBqpk)'
 - en: '[sequencing](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dbegin&sa=D&source=editors&ust=1695232021074610&usg=AOvVaw0QYgUMQE-j5fpEjO6x6mAQ)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[sequencing](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dbegin&sa=D&source=editors&ust=1695232021074610&usg=AOvVaw0QYgUMQE-j5fpEjO6x6mAQ)'
 - en: '[vectors1](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dvectors1&sa=D&source=editors&ust=1695232021074972&usg=AOvVaw09X5FEnk6B-VwB80otQiwc)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[vectors1](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dvectors1&sa=D&source=editors&ust=1695232021074972&usg=AOvVaw09X5FEnk6B-VwB80otQiwc)'
 - en: '[vectors2](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dvectors2&sa=D&source=editors&ust=1695232021075331&usg=AOvVaw3rziWdxNWxf2RqKYGxrRja)'
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[vectors2](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dvectors2&sa=D&source=editors&ust=1695232021075331&usg=AOvVaw3rziWdxNWxf2RqKYGxrRja)'
 - en: '[the heap](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dheap&sa=D&source=editors&ust=1695232021075752&usg=AOvVaw2ooiEXa9eegpjBTMsXUlGR)'
+  id: totrans-12
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[the heap](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dheap&sa=D&source=editors&ust=1695232021075752&usg=AOvVaw2ooiEXa9eegpjBTMsXUlGR)'
 - en: '[lambda1](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlambda1&sa=D&source=editors&ust=1695232021076127&usg=AOvVaw1lsI1lKbVaBzKVhviJOg0s)'
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[lambda1](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlambda1&sa=D&source=editors&ust=1695232021076127&usg=AOvVaw1lsI1lKbVaBzKVhviJOg0s)'
 - en: '[lambda2](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlambda2&sa=D&source=editors&ust=1695232021076493&usg=AOvVaw2S6_5DVxcpafrdm2oJbvrL)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[lambda2](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlambda2&sa=D&source=editors&ust=1695232021076493&usg=AOvVaw2S6_5DVxcpafrdm2oJbvrL)'
 - en: '[lambda3](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlambda3&sa=D&source=editors&ust=1695232021076846&usg=AOvVaw0KtSU5-rn9A3Fmd9SeHqPn)'
+  id: totrans-15
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[lambda3](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlambda3&sa=D&source=editors&ust=1695232021076846&usg=AOvVaw0KtSU5-rn9A3Fmd9SeHqPn)'
 - en: '[local](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlocal&sa=D&source=editors&ust=1695232021077191&usg=AOvVaw3b75zQfeMig-XzwSltgyok)'
+  id: totrans-16
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[local](https://www.google.com/url?q=https://script.google.com/a/brown.edu/macros/s/AKfycbz8R8BnTfQg9GErWjqt6RluW64tdgD1Bg4zCbQ6Y12_I85R3c3ihozuF3L8Ji4x-iMa/exec?tutorial%3Dlocal&sa=D&source=editors&ust=1695232021077191&usg=AOvVaw3b75zQfeMig-XzwSltgyok)'
 - en: Before you go on in this book, you should do the tutors!
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 在继续阅读本书之前，你应该完成导师的指导！

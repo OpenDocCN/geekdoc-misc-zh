@@ -1,105 +1,163 @@
 - en: Primus Inter Parsers
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 首先解析器
 - en: 'Do Now: Think about what type we want for our parser.'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在行动：考虑我们想要为我们的解析器选择哪种类型。
 - en: What does our parser need to produce? Whatever the calculator consumes, i.e.,
     `Expr`. What does it consume? Program source expressions written in a “convenient”
     syntax, i.e., `S-Exp`. Hence, its type must be
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的解析器需要产生什么？无论计算器消费什么，即`Expr`。它消费什么？用“方便”的语法编写的程序源表达式，即`S-Exp`。因此，它的类型必须是
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: That is, it converts the human-friendly(ier) syntax into the computer’s internal
     representation.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 也就是说，它将人类友好的（更友好的）语法转换为计算机的内部表示。
 - en: 'Writing this requires a certain degree of pedantry. First, we need a conditional
     to check what kind of s-exp we were given:'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 编写这需要一定程度的繁琐。首先，我们需要一个条件来检查我们得到了哪种类型的s表达式：
 - en: '[PRE1]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'If it’s a numeric s-exp, then we need to extract the number and pass it to
     the `num` constructor:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果它是一个数值s表达式，那么我们需要提取这个数字并将其传递给`num`构造函数：
 - en: '[PRE2]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Otherwise, we need to extract the list and check whether the first thing in
     the list is an addition symbol. If it is not, we signal an error:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 否则，我们需要提取列表并检查列表中的第一项是否是加法符号。如果不是，我们发出错误信号：
 - en: '[PRE3]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Otherwise, we create a plus term by recurring on the two sub-pieces.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 否则，我们通过递归两个子部分来创建一个加法项。
 - en: '[PRE4]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Putting it all together:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 将所有这些放在一起：
 - en: '[PRE5]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: It’s all a bit much, but fortunately this is about as hard as parsing will get
     in this book! Everything you see from now on will basically be this same sort
     of pattern, which you can freely copy.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 这一切似乎有点多，但幸运的是，这本书中解析的难度不会超过这个程度！从现在开始，你看到的所有内容基本上都是这种类型的模式，你可以自由地复制。
 - en: 'We should, of course, make sure we’ve got good tests for our parser. For instance:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 当然，我们应该确保我们的解析器有良好的测试。例如：
 - en: '[PRE6]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Do Now: Are there other kinds of tests we should have written?
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在行动：我们是否应该编写其他类型的测试？
 - en: 'We have only written positivetests. We can also write negative tests for situations
     where we expect errors:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们只写了正测试。我们还可以为预期出现错误的情况编写负测试：
 - en: '[PRE7]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '`test/exn`takes a string that must be a substring of the error message. You
     might be surprised that the test above uses the empty string rather than, say,
     `"addition"`. Try out this example to investigate why. How can you improve your
     parser to address this?'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '`test/exn`接受一个字符串，该字符串必须是错误消息的子串。你可能会惊讶，上面的测试使用空字符串而不是，比如说，“addition”。尝试这个例子来调查为什么。你如何改进你的解析器来解决这个问题？'
 - en: Other situations we should check for include there being too few or too many
     sub-parts. Addition, for instance, is defined to take exactly two sub-expressions.
     What if a source program contains none, one, three, four, …? This is the kind
     of pedantry that parsing calls for.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还应该检查的其他情况包括子部分太少或太多。例如，加法被定义为恰好接受两个子表达式。如果源程序包含零个、一个、三个、四个……会发生什么？这就是解析所要求的这种繁琐。
 - en: 'Once we have considered these situations, we’re in a happy place, because `parse`produces
     output that `calc` can consume. We can therefore compose the two functions! Better
     still, we can write a helper function that does it for us:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 一旦我们考虑了这些情况，我们就处于一个愉快的位置，因为`parse`产生的输出是`calc`可以消费的。因此，我们可以组合这两个函数！更好的是，我们可以编写一个辅助函数来为我们完成这项工作：
 - en: '[PRE8]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[PRE9]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'So we can now rewrite our old evaluator tests in a much more convenient way:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我们现在可以用一种更方便的方式重写我们旧的评估器测试：
 - en: '[PRE10]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: Compare this against the `calc` tests we had earlier!
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 将其与我们在早期进行的`calc`测试进行比较！

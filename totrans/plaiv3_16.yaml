@@ -1,60 +1,88 @@
 - en: Representing Programs
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 程序的表示
 - en: Well, what doesan evaluator consume? It consumes programs. So we need to figure
     out how to represent programs.
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 好吧，评估器消耗了什么？它消耗的是程序。因此，我们需要弄清楚如何表示程序。
 - en: Of course, computers represent programs all the time. When we’re writing code,
     our text editor holds the program source. Every executable on disk and in memory
     is a representation of a program. When we visit a Web page, it sends down a JavaScript
     program. These are all programs represented in the computer. But all these are
     a bit inconvenient for our needs, and we’ll come up with a better representation
     in a moment.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 当然，计算机一直在表示程序。当我们编写代码时，我们的文本编辑器保存着程序源代码。磁盘和内存中的每个可执行文件都是程序的一种表示。当我们访问网页时，它会发送一个JavaScript程序。这些都是计算机中表示的程序。但所有这些对我们来说都有些不方便，我们将在下一刻提出一个更好的表示方法。
 - en: 'Before thinking about representations, let’s think about what we’re representing.
     Here are some example (arithmetic) programs:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 在考虑表示之前，让我们先思考一下我们要表示什么。以下是一些示例（算术）程序：
 - en: '[PRE0]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Already we have a question. How should we write our program? You can see where
     this is going: should we be writing the sum of 1 and 2 as'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 已经有一个问题。我们应该如何编写我们的程序？你可以看到这个趋势：我们应该将1和2的和写成
 - en: '[PRE1]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: or as
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者作为
 - en: '[PRE2]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'and so on. (For that matter, we can even ask what numeral system to use for
     basic numbers: e..g, should we write `3`or `III`? You can [program with the latter](https://www.google.com/url?q=https://github.com/shriram/roman-numerals&sa=D&source=editors&ust=1695232021096337&usg=AOvVaw196-G7CiljdYG4eyIDGvwA) if
     you’d really like to.)'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 等等。（至于基本数字的数制，我们甚至可以询问应该使用哪种：例如，我们应该写`3`还是`III`？如果你真的想这么做，你可以[使用后者编程](https://www.google.com/url?q=https://github.com/shriram/roman-numerals&sa=D&source=editors&ust=1695232021096337&usg=AOvVaw196-G7CiljdYG4eyIDGvwA)。）
 - en: These are questions of what surface syntax to use. And they are very important!
     And interesting! And important! People get really attached to some surface syntaxes
     over the other (you may already be having some feelings about Racket’s parenthetical
     syntax…I certainly do). You can even write that expression as
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是关于使用什么表面语法的疑问。而且它们非常重要！而且很有趣！非常重要！人们会非常偏爱某些表面语法（你可能已经对Racket的括号语法有所感触……我确实有）。你甚至可以将那个表达式写成
 - en: '![](image12.png)'
+  id: totrans-11
   prefs: []
   type: TYPE_IMG
+  zh: '![](image12.png)'
 - en: in Scratch and Snap!, and this syntax has been invaluable in getting young children
     to learn how to program without all the vagaries of textual syntax.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Scratch和Snap!中，这种语法对于引导年幼的孩子学习编程，而不必面对文本语法的复杂性，是非常宝贵的。
 - en: Thus, these are great human-factors considerations. But for now these are a
     distraction in terms of getting to understand the models underlying languages.
     Therefore, we need a way to represent all these different programs in a way that
     ignores these distinctions.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，这些都是很好的考虑人类因素的问题。但就目前而言，这些因素在理解语言背后的模型方面是一个干扰。因此，我们需要一种方法来表示所有这些不同的程序，同时忽略这些区别。

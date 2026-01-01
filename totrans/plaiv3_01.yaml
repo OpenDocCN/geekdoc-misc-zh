@@ -1,7 +1,9 @@
 - en: The Target Audience
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 目标读者
 - en: 'Starting with the first edition, this book’s target has been “the other 90%”.
     That is, I conjecture that roughly 10% of students in a programming languages
     class are like the educator: they are deeply excited about and motivated to learn
@@ -9,8 +11,10 @@
     further. These are wonderful students, and many of them will go on to become the
     next generation of educators. There are several terrific books that are designed—or
     at least, work best—for this kind of student.'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 从第一版开始，这本书的目标就是“其他90%”。也就是说，我推测在一个编程语言课程中，大约有10%的学生像教育者一样：他们对这个主题非常兴奋，有学习的动力，并与之产生个人认同，可能还想进一步研究它。这些学生很棒，其中许多人将成为下一代教育者。有几本出色的书是为这类学生设计的——至少，对于这类学生来说效果最好。
 - en: But most of them—say 90%—may not have this deep personal identification. Instead,
     they want to learn the subject enough to become better computer scientists. What
     do they need to learn, and how do they need to learn it? They are the target audience
@@ -18,21 +22,27 @@
     tasks. At the same time, it’s too easy to pander to such an audience. The book
     tries to balance these connections with a focus on principles that will stand
     the learner in good stead for a long time.
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 但其中大多数人——比如说90%的人——可能没有这种深刻的个人认同感。相反，他们想要学习这个主题，以便成为更好的计算机科学家。他们需要学习什么，以及他们应该如何学习？他们是这本书的目标读者。一方面，这本书试图与许多编程任务建立联系。同时，迎合这样的读者太容易了。这本书试图通过关注那些能够长期帮助学习者的原则来平衡这些联系。
 - en: Of course, I believe the 10% will learn something useful from this book, too.
     If nothing else, they may learn a different perspective on the subject, and maybe
     also develop some empathy for learners not like themselves. If nothing else, well
     over a dozen students who used earlier editions of this book successfully completed
     PhDs in programming languages, and several are themselves professors now. So,
     at least, the book has not harmed them. I can live with those odds.
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 当然，我相信这10%的人也会从这本书中学到一些有用的东西。至少，他们可能会对这个主题有一个不同的视角，也许还会对与自己不同类型的学习者产生一些同理心。至少，有超过一打的学生使用这本书的早期版本成功完成了编程语言专业的博士学位，其中几位现在自己也成为了教授。所以，至少，这本书没有对他们造成伤害。我可以接受这样的概率。
 - en: I have also written this book with working programmers in mind. Many of them
     may have not had a formal computer science education, or at least one that included
     a proper introduction to programming languages. At some point, like that 90% of
     students, some of them become curious about the media they use. I want this book
     to speak to them, gently drawing them away from the hustle and bustle of daily
     programming into a space of reflection and thought.
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 我还考虑到在职程序员来写这本书。他们中许多人可能没有接受过正式的计算机科学教育，或者至少没有包括对编程语言的适当介绍。在某个时刻，就像那90%的学生一样，他们中的一些人对他们使用的媒体产生了好奇心。我希望这本书能对他们说话，温和地将他们从日常编程的喧嚣中引导到反思和思考的空间。

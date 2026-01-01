@@ -1,45 +1,66 @@
 - en: Preface
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 前言
 - en: Why Study Programming Languages?
+  id: totrans-1
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 为什么要学习编程语言？
 - en: 'It is always healthy to begin a course of study by asking why we should engage
     in it. So let us list a few reasons to justify this one:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 在开始一门课程学习之前询问为什么我们应该参与其中总是有益的。因此，让我们列出一些理由来证明这一点：
 - en: Programming languages are some of the most beautiful and powerful objects invented
     by human beings.
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 编程语言是人类发明的一些最美丽、最强大的对象。
 - en: They let us—indeed, force us to—capture our thoughts precisely, and in return
     command machines of immense power to do our bidding.
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们让我们——实际上，迫使我们——精确地捕捉我们的思想，并以此命令强大的机器为我们执行任务。
 - en: To a programmer, they are the ultimate human-computer interface.
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于程序员来说，它们是终极的人机界面。
 - en: 'They are industrially important: so important that major companies create new
     languages or co-opt existing ones to establish or expand their market share.'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们在工业上非常重要：重要到主要公司会创建新的语言或采用现有的语言来建立或扩大他们的市场份额。
 - en: 'They embody a new form of knowledge: what [Structure and Interpretation of
     Computer Programs](https://www.google.com/url?q=https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/index.html&sa=D&source=editors&ust=1695232021060331&usg=AOvVaw0FxIsmtPtHl1wGbU99LU18) called
     a “procedural epistemology”.'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们体现了一种新的知识形式：[《计算机程序的构造和解释》](https://www.google.com/url?q=https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/index.html&sa=D&source=editors&ust=1695232021060331&usg=AOvVaw0FxIsmtPtHl1wGbU99LU18)
+    所称的“程序性认识论”。
 - en: They enable us to prove powerful statements about the means and limits of our
     expression. How many other languages let us do either?
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们使我们能够证明关于我们表达手段和限制的强大论断。还有多少其他语言让我们做到这一点？
 - en: How many more reasons does one need?
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 还需要多少理由？

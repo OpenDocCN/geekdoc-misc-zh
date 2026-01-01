@@ -1,95 +1,145 @@
 - en: The Design Space of Conditionals
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 条件语句的设计空间
 - en: 'Even the simplest conditional exposes us to many variations in language design.
     The intent is that test-expression is evaluated first; if it results in a true
     value then (only) the then-expression is evaluated, else (only) the else-expression
     is evaluated. (We usually refer to these two parts as branches, since the program’s
     control must take one or the other.) However, even this simple construct results
     in at least three different, mostly independent design decisions:'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使是最简单的条件语句也暴露了语言设计中许多不同的变体。其意图是首先评估测试表达式；如果结果是真值，那么（仅）评估then表达式，否则（仅）评估else表达式。（我们通常将这两部分称为分支，因为程序的控制必须采取其中之一。）然而，即使这个简单的结构也导致了至少三个不同的、主要独立的设计决策：
 - en: What kind of values can the test-expression be? In some languages they must
     be Boolean values (two values, one representing truth and the other falsehood).
     In other languages this expression can evaluate to just about any value, with
     some set—colloquially called truthy—representing truth (i.e., they result in execution
     of the then-expression) while the remaining ones are falsy, meaning they cause
     the else-expression to run.
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 测试表达式可以是哪种类型的值？在一些语言中，它们必须是布尔值（两个值，一个代表真，另一个代表假）。在其他语言中，这个表达式可以评估为几乎任何值，其中一些集合——俗称为真值——代表真（即，它们会导致执行then表达式），而其余的则是假值，意味着它们会导致else表达式执行。
 - en: 'Initially, it may seem attractive to design a language with several truthy
     and falsy values: after all, this appears to give the programmer more convenience,
     permitting non-Boolean-valued functions and expressions to be used in conditionals.
     However, this can lead to bewildering inconsistencies across languages:'
+  id: totrans-3
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 初始时，设计一个具有多个真值和假值的语言可能看起来很有吸引力：毕竟，这似乎给程序员提供了更多便利，允许非布尔值函数和表达式在条件中使用。然而，这可能导致跨语言之间令人困惑的不一致性：
 - en: '| Value | JavaScript | Perl | PHP | Python | Ruby |'
+  id: totrans-4
   prefs: []
   type: TYPE_TB
+  zh: '| 值 | JavaScript | Perl | PHP | Python | Ruby |'
 - en: '|'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE0]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '| truthy | truthy | truthy | truthy | truthy |'
+  id: totrans-7
   prefs: []
   type: TYPE_TB
+  zh: '| 真值 | 真值 | 真值 | 真值 | 真值 |'
 - en: '|'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE1]'
+  id: totrans-9
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '| falsy | falsy | falsy | falsy | truthy |'
+  id: totrans-10
   prefs: []
   type: TYPE_TB
+  zh: '| 假值 | 假值 | 假值 | 假值 | 真值 |'
 - en: '|'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE2]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '| falsy | falsy | falsy | falsy | truthy |'
+  id: totrans-13
   prefs: []
   type: TYPE_TB
+  zh: '| 假值 | 假值 | 假值 | 假值 | 真值 |'
 - en: '|'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE3]'
+  id: totrans-15
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '| truthy | falsy | falsy | truthy | truthy |'
+  id: totrans-16
   prefs: []
   type: TYPE_TB
+  zh: '| 真值 | 假值 | 假值 | 真值 | 真值 |'
 - en: '|'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE4]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '| falsy | truthy | truthy | truthy | truthy |'
+  id: totrans-19
   prefs: []
   type: TYPE_TB
+  zh: '| 假值 | 真值 | 真值 | 真值 | 真值 |'
 - en: '| `nil`, `null`, `None`, undefined | falsy | falsy | falsy | falsy | falsy
     |'
+  id: totrans-20
   prefs: []
   type: TYPE_TB
+  zh: '| `nil`、`null`、`None`、未定义 | 假值 | 假值 | 假值 | 假值 | 假值 |'
 - en: '|'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '|'
 - en: '[PRE5]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '| truthy | truthy | falsy | falsy | truthy |'
+  id: totrans-23
   prefs: []
   type: TYPE_TB
+  zh: '| 真值 | 真值 | 假值 | 假值 | 真值 |'
 - en: '| empty map or object | truthy | falsy | falsy | falsy | truthy |'
+  id: totrans-24
   prefs: []
   type: TYPE_TB
+  zh: '| 空映射或对象 | 真值 | 假值 | 假值 | 假值 | 真值 |'
 - en: 'Of course, it need not be so complex. Scheme, for instance, has only one value
     that is falsy: false itself (written as `#false`). Everyother value is truthy.
     For those who value allowing non-Boolean values in conditionals, this represents
@@ -99,28 +149,38 @@
     string might be treated differently from every other string.) Note that Ruby,
     which is inspired in part by Scheme, adopted this simple model. Lua, another Scheme-inspired
     language, is also spartan in its falsy values.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 当然，这不必如此复杂。例如，Scheme语言只有一个假值：false本身（写作`#false`）。其他所有值都是真值。对于那些重视在条件中允许非布尔值的人来说，这代表了一种优雅的权衡：这意味着一个函数不需要担心计算结果中可能引起条件反转的类型一致值。（例如，如果一个函数返回字符串，它不需要担心空字符串可能与其他字符串被不同对待。）请注意，受Scheme部分启发的Ruby语言采用了这个简单的模型。另一个受Scheme启发的语言Lua，在假值方面也很简洁。
 - en: 'What kind of terms are the branches? Some languages make a distinction between
     statementsand expressions; in such languages, designers need to decide which of
     these are permitted. In some languages, there are even two syntactic forms of
     conditional to reflect these two choices: e.g., in C, `if` uses statements (and
     does not return any value) while the “ternary operator” (`(...?...:...)`) permits
     expressions and returns a value.'
+  id: totrans-26
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 分支有哪些术语？一些语言在语句和表达式之间做出区分；在这些语言中，设计者需要决定哪些是允许的。在一些语言中，甚至有两种语法形式的条件来反映这两种选择：例如，在C语言中，`if`使用语句（并且不返回任何值），而“三元运算符”（`(...?...:...)`）允许表达式并返回一个值。
 - en: If the branches are expressions and hence allowed to evaluate to values, how
     do the values relate? Many (but not all) languages with static type systems expect
     the two branches to have the same type [[👉](PLAIVersion3.2.2_split_096.html#h.d70s6cjh8dnk)].
     Languages without static type systems usually place no restrictions.
+  id: totrans-27
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 如果分支是表达式并且因此可以评估为值，这些值之间是如何相关的？许多（但并非所有）具有静态类型系统的语言都期望两个分支具有相同的类型 [[👉](PLAIVersion3.2.2_split_096.html#h.d70s6cjh8dnk)]。没有静态类型系统的语言通常不设置任何限制。
 - en: 'Aside: While writing an earlier version of this very chapter, I stumbled on
     a strange bug in the Pyret programming language: all numeric s-expressions parsed
     as `s-num`values except `0`, which parsed as a `s-sym`. Eventually Justin Pombrio
     reported: “It’s a silly bug with an `if`in JavaScript that’s getting `0` and thinking
     it’s false.” Seems fitting.'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 旁白：在撰写本章的早期版本时，我在 Pyret 编程语言中遇到了一个奇怪的错误：所有数值 s-表达式都被解析为 `s-num` 值，除了 `0`，它被解析为
+    `s-sym`。最终 Justin Pombrio 报告说：“这是一个愚蠢的错误，在 JavaScript 中的 `if` 语句中，它将 `0` 误认为是
+    false。”这似乎很合适。

@@ -1,36 +1,52 @@
 - en: 'Parsing: From Source to ASTs'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 解析：从源代码到ASTs
 - en: The Problem
+  id: totrans-1
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 问题
 - en: 'Earlier we went through the basic steps of the SImPl, but we left open a big
     question: how do we get programs into the AST representation? Of course, the simplest
     way is what we already did: to write the AST constructors directly, e.g.,'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 之前我们介绍了SImPl的基本步骤，但我们留下了一个大问题：我们如何将程序放入AST表示中？当然，最简单的方法就是我们之前所做的那样：直接编写AST构造函数，例如，
 - en: '[PRE0]'
+  id: totrans-3
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[PRE1]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[PRE2]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: which, as we noted, has the virtue of also ignoring exactly how the program
     source was written.
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 正如我们所指出的，这也具有忽略程序源代码确切编写方式的优点。
 - en: However, this can get very tedious. We don’t want to have to write `(num …)`every
     time we want to write a number, for instance! In particular, the more tedious
     it is the less likely we are to write many or complex tests, and that would be
     especially unfortunate. Therefore, we’d like a more convenient surface syntax,
     along with a program to translate that into ASTs.
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，这可能会变得非常繁琐。我们不想每次想要写一个数字时都要写`(num …)`！特别是，越繁琐，我们写很多或复杂的测试的可能性就越小，这将会特别不幸。因此，我们希望有一个更便利的表面语法，以及一个程序来将其翻译成ASTs。
 - en: 'As we have already seen, there is a large number of surface syntaxes we can
     use, and we aren’t even limited to textual syntax: it could be graphical; spoken;
     gestural (imagine you’re in a virtual reality environment); and so on. As we have
@@ -38,24 +54,34 @@
     has physical constraints—but it’s outside the range of our current study. Even
     with textual syntax, we have to deal with issues like ambiguity (e.g., order of
     operations in arithmetic).'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 正如我们之前所看到的，我们可以使用大量的表面语法，而且我们甚至不受限于文本语法：它可以是图形的；口头的；手势的（想象你身处一个虚拟现实环境中）；等等。正如我们所指出的，这种广泛的模态范围很重要——尤其是如果程序员有身体限制的话——但它超出了我们当前研究的范围。即使是在文本语法中，我们也必须处理诸如歧义（例如，算术中的运算顺序）等问题。
 - en: In general, the process of converting the input syntax into ASTs is called parsing.
     We could write a whole booklet just on parsing…so we won’t. Instead, we’re going
     to pick one syntax that strikes a reasonable balance between convenience and simplicity,
     which is the parenthetical syntax of Racket, and has special support in plait.
     That is, we will write the above examples as
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常，将输入语法转换为ASTs的过程被称为解析。我们完全可以写一本关于解析的整个手册……但我们不会这么做。相反，我们将选择一种在便利性和简单性之间取得合理平衡的语法，即Racket的括号语法，它在plait中有特殊支持。也就是说，我们将按照以下方式编写上述示例：
 - en: '[PRE3]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'and see how Racket can help us make these convenient to work with. In fact,
     in this book we will follow a convention (that Racket doesn’t care about, because
     it treats `()`, `[]`, and `{}`interchangeably): we’ll write programs to be represented
     using `{}`instead of `()`. Thus, the above three programs become'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 并看看Racket如何帮助我们使这些语法变得易于使用。实际上，在这本书中，我们将遵循一个约定（Racket并不关心，因为它将`()`、`[]`和`{}`视为可互换的）：我们将使用`{}`而不是`()`来编写程序。因此，上述三个程序变为
 - en: '[PRE4]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'

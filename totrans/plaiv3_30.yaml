@@ -1,30 +1,46 @@
 - en: Using Truthy-Falsy Values
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 使用真值-假值
 - en: 'Some languages use truthy-falsy values to handle partial functions. Instead
     of signaling an error, they return a falsy value when the argument cannot be handled.
     For instance, it is common to return `#false`in Racket or `None` in Python as
     an error code, and a proper value for normal execution. Consider this Racket example:'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些语言使用真值-假值来处理部分函数。当参数无法处理时，它们不会返回错误信号，而是返回一个假值。例如，在 Racket 中通常返回 `#false`，在
+    Python 中返回 `None` 作为错误代码，而在正常执行时返回适当的值。考虑以下 Racket 示例：
 - en: '[PRE0]'
+  id: totrans-2
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'This function accepts a string that may or may not represent a number. If it
     does, it returns one bigger number; otherwise it returns `1`:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 此函数接受一个可能表示也可能不表示数字的字符串。如果它表示数字，则返回一个更大的数字；否则返回 `1`：
 - en: '[PRE1]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: This works because `string->number`returns a number or, if the string is not
     legal, `#false`. In Racket, all values other than `#false`are truthy. Thus, legitimate
     strings short-circuit evaluation of the `or`, while non-numeric strings result
     in `0`. These therefore serve as a rough-and-ready option types in languages that
     don’t (or didn’t) have proper datatype constructors.
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 这之所以可行，是因为 `string->number` 返回一个数字，如果字符串不合法，则返回 `#false`。在 Racket 中，所有非 `#false`
+    的值都是真值。因此，合法的字符串会短路 `or` 的评估，而非数字字符串则导致 `0`。因此，这些在那些没有（或曾经没有）适当的数据类型构造函数的语言中充当了粗略的选项类型。
 - en: We will discuss this issue further later in the book [[👉](PLAIVersion3.2.2_split_125.html#h.tg4ohkq8ngzt)].
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将在本书的后续部分进一步讨论这个问题 [[👉](PLAIVersion3.2.2_split_125.html#h.tg4ohkq8ngzt)]。

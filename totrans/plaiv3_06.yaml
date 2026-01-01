@@ -1,33 +1,49 @@
 - en: Acknowledgments
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 致谢
 - en: Readers
+  id: totrans-1
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 读者
 - en: 'For this edition, I thank the students and other readers who have pointed out
     errors and suggested improvements:'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于这一版，我要感谢指出错误和提出改进意见的学生和其他读者：
 - en: Alex Ding, Ashley Chung, Calder Ruhl Hansen, Charles Gagnon, David Fryd, David
     Young, garare992 @ GitHub, Geoffrey J. Teale, Jack Zeng, Jason Eveleth, Kevin
     Gibbons, Kristoffer Balintona, Liam Bai, Michael Fishman, Nicholas Vadasz, Nolan
     Serbent, Paul Biberstein, Paul Carduner, Peter Li, Robert Wang, Shihang Li, Sidharth
     Anand, Sreshtaa Rajesh, Suzanne Rivoire, Tomas Dougan, Zack Amiton, Zack Eisbach
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 阿列克斯·丁，艾什利·钟，卡尔·鲁尔·汉森，查尔斯·加农，大卫·弗赖德，大卫·杨，garare992 @ GitHub，杰弗里·J·蒂尔，曾杰，杰森·伊夫利特，凯文·吉本斯，克里斯托弗·巴林托纳，李立，迈克尔·费什曼，尼古拉斯·瓦达兹，诺兰·塞班特，保罗·比贝斯坦，保罗·卡登纳，李彼得，王罗伯特，李世航，阿南德·西达哈特，拉杰什·斯雷什塔，苏珊·里沃伊尔，托马斯·道根，阿米顿·扎克，艾斯巴赫·扎克
 - en: 'A few have made numerous or especially good suggestions:'
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 有少数人提出了许多或特别好的建议：
 - en: Benjamin Lee, Ian Arawjo, Neil Ramaswamy, Qiuhong Wei, Tianren Dong, Yongming
     Han, Zack Cheng
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 本杰明·李，伊恩·阿拉沃，尼尔·拉马斯瓦米，邱红伟，董天仁，韩永明，程泽克
 - en: 'Finally, a few deserve extra special praise for their attention to detail and
     staying power:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，有少数人因他们对细节的关注和坚持不懈而值得特别赞扬：
 - en: Chen Li, Ezra Marks, Futao Wei
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 陈立，艾兹拉·马克斯，魏复陶

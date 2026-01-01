@@ -1,42 +1,62 @@
 - en: Evaluating Local Binding
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 评估局部绑定
 - en: 'Most programming languages have some notion of local binding. There are two
     words there, which we’ll tease apart:'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数编程语言都有局部绑定的概念。这里有两个词，我们将把它们分开来讨论：
 - en: Binding means to associate names with values. For instance, when we call a function,
     the act of calling associates (“binds”) the formal parameters with the actual
     values.
+  id: totrans-2
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 绑定意味着将名称与值关联起来。例如，当我们调用一个函数时，调用行为将形式参数与实际值关联（绑定）。
 - en: Local means they are limited to some region of the program, and not available
     outside that region.
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 局部意味着它们限制在程序的某个区域，并且在该区域之外不可用。
 - en: For instance, in many languages we can write something like
+  id: totrans-4
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，在许多语言中，我们可以写一些像这样的东西
 - en: '[PRE0]'
+  id: totrans-5
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'This seems clear enough. But here is a more subtle program:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 这看起来足够清晰。但是这里有一个更微妙的程序：
 - en: '[PRE1]'
+  id: totrans-7
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Is that legal? It depends on whether the `y`is still “alive” or “active” or
     “visible” or whatever other phrase you would like; formally, we would say, it
     depends on whether `y`is in scope. Specifically, we’d ask whether the last `y`is
     a boundinstance of the bindingthat takes place in the `for`.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是合法的吗？这取决于`y`是否仍然“活跃”或“有效”或“可见”或你喜欢的任何其他短语；正式地说，我们会说，这取决于`y`是否在作用域内。具体来说，我们会问最后一个`y`是否是`for`中发生的绑定的绑定实例。
 - en: This is complicated! Many languages do rather odd, complicated, and certainly
     unintuitive things, as you will see from Mystery Languages. These odd things are
     not really part of SMoL; if anything, they are a violation of it.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 这很复杂！许多语言做了一些相当奇怪、复杂，当然也是不直观的事情，正如你在《神秘语言》中看到的。这些奇怪的事情并不是SMoL的一部分；如果有什么的话，它们是对SMoL的违反。

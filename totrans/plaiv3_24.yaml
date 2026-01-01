@@ -1,72 +1,112 @@
 - en: S-Expressions
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: S-Expressions
 - en: 'There is a name for this syntax: these are called s-expressions(the s-is for
     historical reasons). In plait, we will write these expressions preceded by a back-tick (``
     ` ``). A back-tick followed by a Racket term is of type `S-Exp`. Here are examples
     of s-expressions:'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种语法有一个名字：这些被称为 s-表达式（s 是出于历史原因）。在 plait 中，我们将用反引号（`` ` ``）前缀这些表达式。反引号后跟 Racket
+    项的类型是 `S-Exp`。以下是一些 s-表达式的示例：
 - en: '[PRE0]'
+  id: totrans-2
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: These are all numeric s-expressions. We can also write
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些都是数值 s-表达式。我们也可以写
 - en: '[PRE1]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: It’s not obvious, but these are actually list s-expressions. We can tell by
     asking
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 这并不明显，但实际上这些都是列表 s-表达式。我们可以通过询问
 - en: '[PRE2]'
+  id: totrans-6
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: So the first is not but the second two are; similarly,
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 所以第一个不是，但后两个是；同样地，
 - en: '[PRE3]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The `S-Exp` type is a container around the actual number or list, which we
     can extract:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: '`S-Exp` 类型是实际数字或列表的容器，我们可以从中提取：'
 - en: '[PRE4]'
+  id: totrans-10
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Do Now: What happens if you apply `s-exp->number`to a list s-exp or `s-exp->list` to
     a number s-expression? Or either to something that isn''t an s-expression at all?
     Try it right now and find out! Do you get somewhat different results?'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在就做：如果你将 `s-exp->number` 应用到一个列表 s-表达式或 `s-exp->list` 应用到一个数值 s-表达式会发生什么？或者应用到根本不是
+    s-表达式的东西上？现在就试一试，看看结果如何！你得到的结果是否有些不同？
 - en: 'Let’s look at that last output above a bit more closely. The resulting list
     has three elements, two of which are numbers, but the third is something else:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们更仔细地看看上面的最后一个输出。结果列表有三个元素，其中两个是数字，但第三个是其他东西：
 - en: '[PRE5]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: is a symbols-expressions. Symbols are like strings but somewhat different in
     operations and performance. Whereas there are numerous string operations (like
     substrings), symbols are treated atomically; other than being converted to strings,
     the only other operation they support is equality. But in return, symbols can
     be checked for equality in constant time.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 是一个符号表达式。符号像字符串，但在操作和性能上有所不同。虽然有很多字符串操作（如子字符串），但符号被视为原子；除了转换为字符串外，它们只支持其他一种操作，即相等性。但作为回报，符号可以在常数时间内检查相等性。
 - en: Symbols have the same syntax as Racket variables, and hence are perfect for
     representing variable-like things. Thus
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 符号具有与 Racket 变量相同的语法，因此非常适合表示类似变量的东西。因此
 - en: '[PRE6]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'This output shows how symbols are written in Racket: with a single-quote (`''`).'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个输出显示了在 Racket 中符号的写法：使用单引号 (`'`)。
 - en: There are other kinds of s-expressions as well, but this is all we need for
     now! With this, we can write our first parser!
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 还有其他类型的 s-表达式，但现在我们只需要这些！有了这个，我们就可以编写我们的第一个解析器了！

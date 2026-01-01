@@ -1,45 +1,65 @@
 - en: Evaluation on Paper
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 纸上评估
 - en: Evaluators
+  id: totrans-1
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 评估器
 - en: 'We’re trying to implement a programming language: that is, to write an evaluator(i.e.,
     something that “reduces programs to values”). It helps if we can first understand
     how evaluation works on paper, before we start dealing with computer complexities.'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们试图实现一种编程语言：也就是说，编写一个评估器（即“将程序简化为值”的东西）。如果我们能首先理解在纸上如何进行评估，然后再开始处理计算机复杂性，这会有所帮助。
 - en: 'Before we get into the details, it’s worth knowing that there are broadly speaking
     two kinds of evaluators (as well as many combinations of them). They follow very
     different strategies:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们深入细节之前，值得知道的是，从广义上讲，有两种类型的评估器（以及许多它们的组合）。它们遵循非常不同的策略：
 - en: An interpreterconsumes a program and simulates its execution. That is, the interpreter
     does what we would expect “running the program” should do.
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 解释器消耗一个程序并模拟其执行。也就是说，解释器做的是我们预期“运行程序”应该做的事情。
 - en: A compilerconsumes a program and produces another program. That output program
     must then be further evaluated.
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 编译器消耗一个程序并生成另一个程序。然后，必须进一步评估该输出程序。
 - en: 'That is, an interpreter maps programs in some language L to values:'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 即，解释器将某种语言L中的程序映射到值：
 - en: 'interpreter :: ProgramL → Value'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '解释器 :: ProgramL → Value'
 - en: We leave open exactly what a value is for now, informally understanding it to
     be an answer the user would want to see—put differently, something that either
     cannot or does not need to be further e-valu-ated. In contrast,
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们现在不对“值”的确切含义进行详细说明，非正式地理解它为用户希望看到的答案——换句话说，某种不需要或不需要进一步评估的东西。相比之下，
 - en: 'compiler :: ProgramL → ProgramT'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: '编译器 :: ProgramL → ProgramT'
 - en: 'That is, a compiler from Lto T(we use Tfor “target”) consumes programs in Land
     produces programs in T. We aren’t saying about how this T program must be evaluated.
     It may be interpreted directly, or it may be further compiled. For instance, one
@@ -47,26 +67,38 @@
     but it may very well be compiled to assembly. However, we can’t keep compiling
     ad infinitum: at the bottom, there must be some kind of interpreter (e.g., in
     the computer’s hardware) to provide answers.'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 即，从L到T（我们用T表示“目标”）的编译器消耗L中的程序并生成T中的程序。我们并没有说这个T程序必须如何评估。它可以直接被解释，或者可以进一步被编译。例如，可以将Scheme程序编译成C。C程序可以直接被解释，但它也可能被编译成汇编。然而，我们不能无限制地编译：在底层，必须有一些类型的解释器（例如，在计算机的硬件中）来提供答案。
 - en: Note that interpreters and compilers are themselves programs written in some
     language and must themselves run. Naturally, this can lead to interesting ideas
     and problems.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，解释器和编译器本身也是用某种语言编写的程序，并且必须自己运行。这自然会引出有趣的想法和问题。
 - en: 'In our study, we will focus primarily on interpreters, but also see a very
     lightweight form of compilers. Interpreters are useful because:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们的研究中，我们将主要关注解释器，但也会看到一种非常轻量级的编译器形式。解释器之所以有用，是因为：
 - en: A simple interpreter is often much easier to write than a compiler.
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 简单的解释器通常比编译器更容易编写。
 - en: Debugging an interpreter can sometimes be much easier than debugging a compiler.
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 调试解释器有时可能比调试编译器要容易得多。
 - en: Therefore, they provide a useful “baseline” implementation technology that everyone
     can reach for. Compilers can often take an entire course of study.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，它们提供了一个有用的“基准”实现技术，每个人都可以达到。编译器通常可以涵盖整个学习课程。

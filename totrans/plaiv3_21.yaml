@@ -1,19 +1,29 @@
 - en: Some Subtler Tests
+  id: totrans-0
   prefs:
   - PREF_H2
   type: TYPE_NORMAL
+  zh: 一些更微妙的测试
 - en: 'Try the following test:'
+  id: totrans-1
   prefs: []
   type: TYPE_NORMAL
+  zh: 尝试以下测试：
 - en: '[PRE0]'
+  id: totrans-2
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'It succeeds! Are we happy? Suppose we instead write it as:'
+  id: totrans-3
   prefs: []
   type: TYPE_NORMAL
+  zh: 它成功了！我们高兴吗？假设我们将其改写为：
 - en: '[PRE1]'
+  id: totrans-4
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'As expected, it fails: but the error message reveals that the left-hand side
     evaluated to 0.30000000000000004\. This should be a cue that we have actually
     gotten [floating point](https://www.google.com/url?q=https://0.30000000000000004.com/&sa=D&source=editors&ust=1695232021117958&usg=AOvVaw3K_UT0jvSMRzJJKE3HmGaN)addition.
@@ -23,13 +33,17 @@
     slack so that the passing test above works. (This is because in plait, `0.3` really
     does precisely represent the number 0.3, because it was written literally and
     not the result of a floating-point computation.)'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 如预期的那样，它失败了：但是错误信息揭示了左侧评估结果为0.30000000000000004。这应该是一个提示，我们实际上得到了[浮点数](https://www.google.com/url?q=https://0.30000000000000004.com/&sa=D&source=editors&ust=1695232021117958&usg=AOvVaw3K_UT0jvSMRzJJKE3HmGaN)加法。这是因为plait将带有小数点的数字，如`0.1`，视为浮点比特串。然而，浮点比特串无法精确表示数字0.3。事实上，plait的`test`允许一点数值上的宽松，使得上面的通过测试得以进行。（这是因为在大脑中，`0.3`确实精确地表示了数字0.3，因为它是以文字形式书写的，而不是浮点计算的结果。）
 - en: 'This reinforces a point we made in passing above and was therefore easy to
     miss: by adopting plait’s primitives, we have also inherited its semantics. This
     may or may not be what we wanted! Therefore, when writing an evaluator using a
     host language, we have to make sure that its semantics are the one we want, otherwise
     we could be in for an unpleasant surprise. If we want different behavior, we have
     to implement it explicitly.'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: 这加强了我们上面提到的一个观点，因此很容易被忽略：通过采用plait的原始元素，我们也继承了其语义。这可能是我们想要的，也可能不是！因此，当使用宿主语言编写评估器时，我们必须确保其语义是我们想要的，否则我们可能会遇到不愉快的惊喜。如果我们想要不同的行为，我们必须明确实现它。
